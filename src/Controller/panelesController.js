@@ -2,7 +2,7 @@
  * En este archivo se definen las funciones necesarias para realizar las operaciones hacia base de datos.
  * En concreto a la tabla de Paneles y su procedimiento almacenado.
  * @author: Jesús Daniel Carrera Falcón
- * @version: 1.0.0
+ * @version: 2.0.0
  * @date: 20/Febrero/2020
  */
 
@@ -63,6 +63,19 @@ function consultarPaneles() {
   	});
 }
 
+function consultarPanelesPorId(idPanel) {
+  	return new Promise((resolve, reject) => {
+        mysqlConnection.query('CALL SP_Panel(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+		[4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(rows[0]);
+			}
+		});
+  	});
+}
+
 module.exports.insertar = async function (panelModel, response) {
 	const result = await insertarPanel(panelModel);
 	return result;
@@ -80,5 +93,10 @@ module.exports.actualizar = async function (panelModel, response) {
 
 module.exports.consultar = async function (response) {
 	const result = await consultarPaneles();
+	return result;
+}
+
+module.exports.consultarPorId = async function (idPanel, response) {
+    const result = await consultarPanelesPorId(idPanel);
 	return result;
 }

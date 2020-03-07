@@ -2,7 +2,7 @@
  * En este archivo se define la lógica del proceso, administrando el control de acceso al controller de paneles,
  * implementando validaciones y manejando los resultados obtenidos en conjunto con el log de eventos y errores.
  * @author: Jesús Daniel Carrera Falcón
- * @version: 1.0.0
+ * @version: 2.0.0
  * @date: 20/Febrero/2020
  */
 
@@ -72,7 +72,22 @@ module.exports.actualizar = async function (panelModel, response) {
 
 module.exports.consultar = async function (response) {
 	const result = await controller.consultar();
+	if (result.propertyIsEnumerable(0) !== true) {
+		log.errores('Consultar Paneles', 'Ocurrió un error al consultar los registros de los paneles de la base de datos.');
+		throw new Error('Ocurrió un error al consultar los paneles.');
+	}
 
 	log.eventos('Consultar Paneles', 'Se han consultado: ' + result.length + ' registros.');
+	return result;
+}
+
+module.exports.consultarPorId = async function (idPanel, response) {
+	const result = await controller.consultarPorId(idPanel);
+	if (result.propertyIsEnumerable(0) !== true) {
+		log.errores('Consultar Panel', 'Ocurrió un error al consultar los datos del panel de la base de datos.');
+		throw new Error('Ocurrió un error al consultar los datos del panel.');
+	}
+
+	log.eventos('Consultar Panel', 'Se han consultado los datos del panel de la base de datos.');
 	return result;
 }
