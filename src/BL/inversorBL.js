@@ -1,5 +1,5 @@
 const inversor = require('../Controller/inversorController');
-const log = require('../../config/log');
+const log = require('../../config/logConfig');
 const validations = require('../Middleware/inversorMiddleware');
 
 var moment = require('moment-timezone');
