@@ -1,93 +1,140 @@
-/**
- * En este archivo se define la lógica del proceso, administrando el control de acceso al controller de paneles,
- * implementando validaciones y manejando los resultados obtenidos en conjunto con el log de eventos y errores.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 2.0.0
- * @date: 20/Febrero/2020
- */
+/*
+- @description: 		Archivo correspondiente a la sección de reglas a cumplir de los datos recibidos.
+- @author: 				Yael Ramirez (@iaelrmz)
+- @date: 				19/02/2020
+*/
 
-const controller = require('../Controller/panelesController'); //Constante que hace uso de la clase controller de los paneles.
-const log = require('../../config/logConfig'); //Constante que instancia el modelo del log de eventos y errores.
+const panel = require('../Controller/panelesController');
+const log = require('../../config/log');
+const validations = require('../Middleware/panelesMiddleware');
 
-function validarDatos(panelModel) {
-	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP } = panelModel;
+var moment = require('moment-timezone');
 
-	if (vNombreMaterialFot.length == 0 || vMarca.length == 0 || fPotencia.length == 0 || fPrecio.length == 0 ||
-		vTipoMoneda.length == 0 || fISC.length == 0 || fVOC.length == 0 || fVMP.length == 0) {
-		throw new Error('Los campos no pueden estar vacios.');
+module.exports.insertar = async function (request, response) {
+	let validate = await validations.panelValidation(request);
+
+	if (validate.status == true) {
+		let now = moment().tz("America/Mexico_City").format();
+		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+
+		const datas = {
+			vNombreMaterialFot: request.nombrematerial,
+			vMarca: request.marca,
+			fPotencia: parseFloat(request.potencia),
+			fPrecio: parseFloat(request.precio),
+			vTipoMoneda: request.moneda,
+			fISC: parseFloat(request.isc),
+			fVOC: parseFloat(request.voc),
+			fVMP: parseFloat(request.vmp),
+			created_at: fecha
+		};
+
+		result = await panel.insertar(datas);
+
+		if(result.status !== true) {
+			log.errores('INSERTAR / PANELES.', result.message);
+
+			throw new Error('Error al insertar los datos.');
+		}
+
+		log.eventos('INSERTAR / PANELES.', '1 fila insertada.');
+
+		return result.message;
+	} else {
+		console.log(validate.message);
+
+		throw new Error(validate.message);
 	}
-
-	/*if (typeof vNombreMaterialFot !== 'string') {
-		throw new Error('El nombre del material debe ser solo texto.');
-	}*/
-
-	/*if (isNaN(data.salario)) {
-		throw new Error('El salario debe tener valores numéricos.');
-	}*/
 }
 
-module.exports.insertar = async function (panelModel, response) {
-	validarDatos(panelModel);
+module.exports.eliminar = async function (request, response) {
+	let now = moment().tz("America/Mexico_City").format();
+	let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
 
-	result = await controller.insertar(panelModel);
+	const datas = {
+		idPanel: request.id,
+		deleted_at: fecha
+	};
 
-	if(result !== true) {
-		log.errores('Insertar Panel', 'Ocurrió un error al insertar los datos del panel "' + panelModel.vNombreMaterialFot + '" en la base de datos.');
-		throw new Error('Ocurrió un error al insertar los datos del panel.');
+	result = await panel.eliminar(datas);
+
+	if(result.status !== true) {
+		log.errores('ELIMINAR / PANELES.', result.message);
+
+		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('Insertar Panel', 'Se ha insertado correctamente el panel "' + panelModel.vNombreMaterialFot + '" en la base de datos.');
-	return result;
+	log.eventos('ELIMINAR / PANELES.', '1 fila eliminada.');
+
+	return result.message;
 }
 
-module.exports.eliminar = async function (panelModel, response) {
-	if (panelModel.idPanel.length == 0) {
-		throw new Error('El ID no puede estar vacio.');
+module.exports.editar = async function (request, response) {
+	let validate = await validations.panelValidation(request);
+
+	if (validate.status == true) {
+		let now = moment().tz("America/Mexico_City").format();
+		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+
+		const datas = {
+			idPanel: request.id,
+			vNombreMaterialFot: request.nombrematerial,
+			vMarca: request.marca,
+			fPotencia: parseFloat(request.potencia),
+			fPrecio: parseFloat(request.precio),
+			vTipoMoneda: request.moneda,
+			fISC: parseFloat(request.isc),
+			fVOC: parseFloat(request.voc),
+			fVMP: parseFloat(request.vmp),
+			updated_at: fecha
+		};
+
+		result = await panel.editar(datas);
+
+		if(result.status !== true) {
+			log.errores('EDITAR / PANELES.', result.message);
+
+			throw new Error('Error al editar los datos.');
+		}
+
+		log.eventos('EDITAR / PANELES.', '1 fila editada.');
+
+		return result.message;
+	} else {
+		console.log(validate.message);
+
+		throw new Error(validate.message);
 	}
-
-	result = await controller.eliminar(panelModel);
-
-	if(result !== true) {
-		log.errores('Eliminar Panel', 'Ocurrió un error al eliminar los datos del panel de la base de datos.');
-		throw new Error('Ocurrió un error al eliminar el panel.');
-	}
-
-	log.eventos('Eliminar Panel', 'Se ha eliminado correctamente el panel de la base de datos.');
-	return result;
-}
-
-module.exports.actualizar = async function (panelModel, response) {
-	validarDatos(panelModel);
-
-	result = await controller.actualizar(panelModel);
-
-	if(result !== true) {
-		log.errores('Actualizar Panel', 'Ocurrió un error al actualizar los datos del panel "' + panelModel.vNombreMaterialFot + '" en la base de datos.');
-		throw new Error('Ocurrió un error al actualizar el panel.');
-	}
-
-	log.eventos('Actualizar Panel', 'Se ha actualizado correctamente el panel "' + panelModel.vNombreMaterialFot + '" en la base de datos.');
-	return result;
 }
 
 module.exports.consultar = async function (response) {
-	const result = await controller.consultar();
-	if (result.propertyIsEnumerable(0) !== true) {
-		log.errores('Consultar Paneles', 'Ocurrió un error al consultar los registros de los paneles de la base de datos.');
-		throw new Error('Ocurrió un error al consultar los paneles.');
+	const result = await panel.consultar();
+
+	if(result.status !== true) {
+		log.errores('CONSULTA / PANELES.', result.message);
+
+		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('Consultar Paneles', 'Se han consultado: ' + result.length + ' registros.');
-	return result;
+	log.eventos('CONSULTA / PANELES.', result.message.length + ' filas consultadas.');
+
+	return result.message;
 }
 
-module.exports.consultarPorId = async function (idPanel, response) {
-	const result = await controller.consultarPorId(idPanel);
-	if (result.propertyIsEnumerable(0) !== true) {
-		log.errores('Consultar Panel', 'Ocurrió un error al consultar los datos del panel de la base de datos.');
-		throw new Error('Ocurrió un error al consultar los datos del panel.');
+module.exports.buscar = async function (request, response) {
+	const datas = {
+		idPanel: request.id
+	};
+
+	result = await panel.buscar(datas);
+
+	if(result.status !== true) {
+		log.errores('BUSQUEDA / PANELES.', result.message);
+
+		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('Consultar Panel', 'Se han consultado los datos del panel de la base de datos.');
-	return result;
+	log.eventos('BUSQUEDA / PANELES.', result.message.length + ' filas consultadas.');
+
+	return result.message;
 }
