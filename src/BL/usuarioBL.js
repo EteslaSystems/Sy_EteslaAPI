@@ -2,7 +2,7 @@
  * En este archivo se define la lógica del proceso, administrando el control de acceso al controller de usuario,
  * implementando validaciones y manejando los resultados obtenidos en conjunto con el log de eventos y errores.
  * @author: Jesús Daniel Carrera Falcón
- * @version: 2.0.0
+ * @version: 3.0.0
  * @date: 21/Febrero/2020
  */
 
@@ -28,10 +28,13 @@ module.exports.insertar = async function (usuarioModel, response) {
 module.exports.validar = async function (usuarioModel, response) {
 	result = await controller.validar(usuarioModel);
 
-	if (result.propertyIsEnumerable(0) !== true) {
-		log.errores('Validar Usuario', 'Ocurrió un error al validar las credenciales del usuario en la base de datos.');
+    if (result.hasOwnProperty('sqlMessage')) {
+        log.errores('Validar Usuario', 'Ocurrió un error al validar las credenciales del usuario: ' + result.sqlMessage);
 		throw new Error('Ocurrió un error al validar las credenciales del usuario.');
-	}
+    } else if (result.propertyIsEnumerable(0) !== true) {
+        log.errores('Validar Usuario', 'Las credenciales proporcionadas por el usuario no coinciden con ningún registro en la base de datos.');
+		throw new Error('Las credenciales proporcionadas son incorrectas.');
+    }
 
 	const payload = {
 		idUsuario: result[0].idUsuario,
