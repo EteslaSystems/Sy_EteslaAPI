@@ -1,102 +1,155 @@
-/**
- * En este archivo se definen las funciones necesarias para realizar las operaciones hacia base de datos.
- * En concreto a la tabla de Paneles y su procedimiento almacenado.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 2.0.0
- * @date: 20/Febrero/2020
- */
+/*
+- @description: 		Archivo correspondiente a las funciones de la API con la BD.
+- @author: 				Yael Ramirez (@iaelrmz)
+- @date: 				19/02/2020
+*/
 
 const mysqlConnection = require('../../config/database');
 
-function insertarPanel(panelModel) {
-	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, created_at } = panelModel;
+function insertarBD (datas) {
+	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, created_at } = datas;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, created_at, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, created_at, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha guardado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function eliminarPanel(panelModel) {
-	const { idPanel, deleted_at } = panelModel;
+function eliminarBD(datas) {
+	const { idPanel, deleted_at } = datas;
+
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Panel(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[1, idPanel, null, null, null, null, null, null, null, null, null, null, deleted_at], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null, deleted_at], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha eliminado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function actualizarPanel(panelModel) {
-	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, updated_at } = panelModel;
+function editarBD (datas) {
+	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, updated_at } = datas;
+
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Panel(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, null, updated_at, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, null, updated_at, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha editado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function consultarPaneles() {
+function consultaBD () {
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[3, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function consultarPanelesPorId(idPanel) {
+function buscarBD (datas) {
+	const { idPanel } = datas;
+
   	return new Promise((resolve, reject) => {
-        mysqlConnection.query('CALL SP_Panel(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-module.exports.insertar = async function (panelModel, response) {
-	const result = await insertarPanel(panelModel);
+module.exports.insertar = async function (datas, response) {
+	const result = await insertarBD(datas);
+
 	return result;
 }
 
-module.exports.eliminar = async function (panelModel, response) {
-	const result = await eliminarPanel(panelModel);
+module.exports.eliminar = async function (datas, response) {
+	const result = await eliminarBD(datas);
+
 	return result;
 }
 
-module.exports.actualizar = async function (panelModel, response) {
-	const result = await actualizarPanel(panelModel);
+module.exports.buscar = async function (datas, response) {
+	const result = await buscarBD(datas);
+
+	return result;
+}
+
+module.exports.editar = async function (datas, response) {
+	const result = await editarBD(datas);
+
 	return result;
 }
 
 module.exports.consultar = async function (response) {
-	const result = await consultarPaneles();
-	return result;
-}
+	const result = await consultaBD();
 
-module.exports.consultarPorId = async function (idPanel, response) {
-    const result = await consultarPanelesPorId(idPanel);
 	return result;
 }
