@@ -17,26 +17,12 @@ router.use(express.json());
 - @section: 		Rutas para la sección de usuarios.
 */
 
-router.post('/insertarUsuario', function (request, response) {
-	const usuarioModel = {
-        siRol: request.body.rol,
-        ttTipoUsuario: request.body.tipoUsuario,
-        vContrasenia: request.body.contrasenia,
-        vOficina: request.body.oficina,
-        vNombrePersona: request.body.nombrePersona,
-        vPrimerApellido: request.body.primerApellido,
-        vSegundoApellido: request.body.segundoApellido,
-        vTelefono: request.body.telefono,
-        vCelular: request.body.celular,
-        vEmail: request.body.email.toLowerCase(),
-        created_at: moment().format('YYYY-MM-DDTHH:mm:ss').replace(/T/, ' ')
-	};
-
-	usuarioBL.insertar(usuarioModel)
+router.post('/agregar-usuario', function (request, response) {
+	usuarioBL.insertar(request.body)
 	.then(usuario => {
 		response.json({
 			status: 200,
-			message: "Se ha insertado correctamente el usuario."
+			message: usuario,
 		});
 	})
 	.catch(error => {
@@ -47,19 +33,13 @@ router.post('/insertarUsuario', function (request, response) {
 	});
 });
 
-router.post('/validarUsuario', function (request, response) {
-	const usuarioModel = {
-        vContrasenia: request.body.contrasenia,
-        vEmail: request.body.email
-	};
-
-	usuarioBL.validar(usuarioModel)
+router.post('/validar-usuario', function (request, response) {
+	usuarioBL.validar(request.body)
 	.then(usuario => {
-        response.json({
-    		status: 200,
-    		message: "Se han validado correctamente las credenciales del usuario, son correctas.",
-    		token: usuario
-    	});
+		response.json({
+			status: 200,
+			message: usuario
+		});
 	})
 	.catch(error => {
 		response.json({

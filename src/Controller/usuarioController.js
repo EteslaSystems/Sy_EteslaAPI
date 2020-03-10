@@ -1,47 +1,67 @@
-/**
- * En este archivo se definen las funciones necesarias para realizar las operaciones hacia base de datos.
- * En concreto a la tabla de Persona y Usuario junto con sus respectivos procedimientos almacenados.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 1.0.0
- * @date: 21/Febrero/2020
- */
+/*
+- @description: 		Archivo correspondiente a las funciones de la API con la BD.
+- @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcón
+- @date: 				19/02/2020
+*/
 
 const mysqlConnection = require('../../config/database');
 
-function insertarUsuario(usuarioModel) {
-    const { siRol, ttTipoUsuario, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at } = usuarioModel;
+function insertarBD (datas) {
+    const { siRol, ttTipoUsuario, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at } = datas;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Usuario(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[0, null, null, siRol, ttTipoUsuario, vContrasenia, vOficina, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, null, siRol, ttTipoUsuario, vContrasenia, vOficina, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha guardado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function validarUsuario(usuarioModel) {
-    const { vContrasenia, vEmail } = usuarioModel;
+function validarBD (datas) {
+    const { vContrasenia, vEmail } = datas;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Usuario(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[4, null, null, null, null, vContrasenia, null, null, null, null, null, null, null, vEmail, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, null, null, null, null, vContrasenia, null, null, null, null, null, null, null, vEmail, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-module.exports.insertar = async function (usuarioModel, response) {
-	const result = await insertarUsuario(usuarioModel);
+module.exports.insertar = async function (datas, response) {
+	const result = await insertarBD(datas);
+
 	return result;
 }
 
-module.exports.validar = async function (usuarioModel, response) {
-	const result = await validarUsuario(usuarioModel);
+module.exports.validar = async function (datas, response) {
+	const result = await validarBD(datas);
+
 	return result;
 }
