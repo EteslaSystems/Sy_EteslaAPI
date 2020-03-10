@@ -5,7 +5,7 @@
 */
 
 const panel = require('../Controller/panelesController');
-const log = require('../../config/log');
+const log = require('../../config/logConfig');
 const validations = require('../Middleware/panelesMiddleware');
 
 var moment = require('moment-timezone');
