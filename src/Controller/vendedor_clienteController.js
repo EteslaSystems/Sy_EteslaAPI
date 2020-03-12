@@ -1,29 +1,37 @@
-/**
- * En este archivo se definen las funciones necesarias para realizar las operaciones hacia base de datos.
- * En concreto a la tabla de Vendedor_Cliente junto con su respectivo procedimiento almacenado.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 1.0.0
- * @date: 28/Febrero/2020
- */
+/*
+- @description: 		Archivo correspondiente a las funciones de la API con la BD.
+- @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcón
+- @date: 				10/03/2020
+*/
 
 const mysqlConnection = require('../../config/database');
 
-function insertarVendedorCliente(vendedor_clienteModel) {
-    const { id_Usuario, id_Cliente } = vendedor_clienteModel;
+function insertarBD(datas) {
+    const { id_Usuario, id_Cliente } = datas;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Vendedor_Cliente(?,?,?,?)',
-		[0, null, id_Usuario, id_Cliente], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Vendedor_Cliente(?, ?, ?, ?)', [0, null, id_Usuario, id_Cliente], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha guardado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function actualizarVendedorCliente(vendedor_clienteModel) {
-	const { id_Usuario, id_Cliente } = vendedor_clienteModel;
+function actualizarBD(datas) {
+	const { id_Usuario, id_Cliente } = datas;
   	return new Promise((resolve, reject) => {
 		mysqlConnection.query('CALL SP_Vendedor_Cliente(?,?,?,?)',
 		[1, null, id_Usuario, id_Cliente], (error, rows) => {
@@ -36,12 +44,14 @@ function actualizarVendedorCliente(vendedor_clienteModel) {
   	});
 }
 
-module.exports.insertar = async function (vendedor_clienteModel, response) {
-	const result = await insertarVendedorCliente(vendedor_clienteModel);
+module.exports.insertar = async function (datas, response) {
+	const result = await insertarBD(datas);
+
 	return result;
 }
 
-module.exports.actualizar = async function (vendedor_clienteModel, response) {
-	const result = await actualizarVendedorCliente(vendedor_clienteModel);
+module.exports.actualizar = async function (datas, response) {
+	const result = await actualizarBD(datas);
+
 	return result;
 }

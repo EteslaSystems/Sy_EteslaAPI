@@ -9,6 +9,7 @@ const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
+const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 
 router.use(express.json());
@@ -215,127 +216,93 @@ router.put('/editar-panel', function (request, response) {
 - @section: 		Rutas para la sección de clientes.
 */
 
-router.post('/insertarCliente', function (request, response) {
-	const clienteModel = {
-        id_Usuario: request.body.idUsuario,
-		id_Cliente: '',
-		fConsumo: parseFloat(request.body.consumo),
-        vNombrePersona: request.body.nombrePersona,
-        vPrimerApellido: request.body.primerApellido,
-        vSegundoApellido: request.body.segundoApellido,
-        vTelefono: request.body.telefono,
-        vCelular: request.body.celular,
-        vEmail: request.body.email.toLowerCase(),
-        created_at: moment().format('YYYY-MM-DDTHH:mm:ss').replace(/T/, ' '),
-        vCalle: request.body.calle,
-        vMunicipio: request.body.municipio,
-        vEstado: request.body.estado
-	};
-
-	clienteBL.insertar(clienteModel)
+router.post('/agregar-cliente', function (request, response) {
+	clienteBL.insertar(request.body)
 	.then(cliente => {
 		response.json({
 			status: 200,
-			message: "Se ha insertado correctamente el cliente."
+			message: cliente,
 		});
 	})
 	.catch(error => {
 		response.json({
-			status: 500,
-			message: error.message
-		});
-	});
-});
-
-router.post('/eliminarCliente', function (request, response) {
-	const clienteModel = {
-		idPersona: request.body.idPersona,
-        deleted_at: moment().format('YYYY-MM-DDTHH:mm:ss').replace(/T/, ' ')
-	};
-
-	clienteBL.eliminar(clienteModel)
-	.then(cliente => {
-		response.json({
-			status: 200,
-			message: "Se ha eliminado correctamente el cliente."
-		});
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message
-		});
-	});
-});
-
-router.post('/actualizarCliente', function (request, response) {
-    const clienteModel = {
-        idPersona: request.body.idPersona,
-		fConsumo: parseFloat(request.body.consumo),
-        vNombrePersona: request.body.nombrePersona,
-        vPrimerApellido: request.body.primerApellido,
-        vSegundoApellido: request.body.segundoApellido,
-        vTelefono: request.body.telefono,
-        vCelular: request.body.celular,
-        vEmail: request.body.email.toLowerCase(),
-        updated_at: moment().format('YYYY-MM-DDTHH:mm:ss').replace(/T/, ' '),
-        vCalle: request.body.calle,
-        vMunicipio: request.body.municipio,
-        vEstado: request.body.estado
-	};
-
-	clienteBL.actualizar(clienteModel)
-	.then(cliente => {
-		response.json({
-			status: 200,
-			message: "Se ha actualizado correctamente el cliente."
-		});
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message
-		});
-	});
-});
-
-router.get('/listarClientes', function (request, response) {
-	clienteBL.consultar()
-	.then(clientes => {
-		response.json(clientes);
-	})
-	.catch(error => {
-        response.json({
 			status: 500,
 			message: error.message,
 		});
 	});
 });
 
-router.post('/listarClientePorId', function (request, response) {
-    const { idPersona } = request.body;
+router.put('/eliminar-cliente', function (request, response) {
+	clienteBL.eliminar(request.body)
+	.then(cliente => {
+		response.json({
+			status: 200,
+			message: cliente,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
 
-	clienteBL.consultarPorId(idPersona)
+router.put('/editar-cliente', function (request, response) {
+	clienteBL.editar(request.body)
+	.then(cliente => {
+		response.json({
+			status: 200,
+			message: cliente,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.get('/lista-clientes', function (request, response) {
+	clienteBL.consultar()
 	.then(cliente => {
 		response.json(cliente);
 	})
 	.catch(error => {
-        response.json({
+		response.json({
 			status: 500,
 			message: error.message,
 		});
 	});
 });
 
-router.post('/listarClientePorUsuario', function (request, response) {
-    const { idUsuario } = request.body;
-
-	clienteBL.consultarPorUsuario(idUsuario)
-	.then(clientes => {
-		response.json(clientes);
+router.put('/lista-clientes-id', function (request, response) {
+	clienteBL.consultarId(request.body)
+	.then(cliente => {
+		response.json({
+			status: 200,
+			message: cliente,
+		});
 	})
 	.catch(error => {
-        response.json({
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/lista-clientes-usuario', function (request, response) {
+	clienteBL.consultarUser(request.body)
+	.then(cliente => {
+		response.json({
+			status: 200,
+			message: cliente,
+		});
+	})
+	.catch(error => {
+		response.json({
 			status: 500,
 			message: error.message,
 		});

@@ -1,120 +1,215 @@
-/**
- * En este archivo se definen las funciones necesarias para realizar las operaciones hacia base de datos.
- * En concreto a la tabla de Persona, Cliente y Vendedor_Cliente junto con sus respectivos procedimientos almacenados.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 2.0.0
- * @date: 28/Febrero/2020
- */
+/*
+- @description: 		Archivo correspondiente a las funciones de la API con la BD.
+- @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcón
+- @date: 				10/03/2020
+*/
 
 const mysqlConnection = require('../../config/database');
 
-function insertarCliente(clienteModel) {
-    const { fConsumo, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, vCalle, vMunicipio, vEstado } = clienteModel;
+function insertarBD(datas) {
+    const { fConsumo, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, vCalle, vMunicipio, vEstado } = datas;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[0, null, fConsumo, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, fConsumo, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function eliminarCliente(clienteModel) {
-	const { idPersona, deleted_at } = clienteModel;
+function eliminarBD(datas) {
+	const { idPersona, deleted_at } = datas;
+
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Cliente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[1, null, null, idPersona, null, null, null, null, null, null, null, null, deleted_at, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, null, null, idPersona, null, null, null, null, null, null, null, null, deleted_at, null, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha eliminado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function actualizarCliente(clienteModel) {
-	const { fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, updated_at, vCalle, vMunicipio, vEstado } = clienteModel;
+function editarBD (datas) {
+	const { fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, updated_at, vCalle, vMunicipio, vEstado } = datas;
+
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Cliente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[2, null, fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, updated_at, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, updated_at, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(true);
+				const response = {
+					status: true,
+					message: "El registro se ha editado con éxito."
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function consultarClientes() {
+function consultaBD () {
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Cliente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function consultarClientesPorId(idPersona) {
+function consultaIdBD (datas) {
+	const { idPersona } = datas;
+
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Cliente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[4, null, null, idPersona, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, null, null, idPersona, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-function consultarClientesPorUsuario(idUsuario) {
+function consultaUserBD (datas) {
+	const { idUsuario } = datas;
+
   	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Cliente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-		[5, idUsuario, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, idUsuario, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
-				resolve(error);
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
 			} else {
-				resolve(rows[0]);
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
 			}
 		});
   	});
 }
 
-module.exports.insertar = async function (clienteModel, response) {
-	const result = await insertarCliente(clienteModel);
+function destruirBD(datas) {
+	const { idCliente } = datas;
+
+  	return new Promise((resolve, reject) => {
+		mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [6, idCliente, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+			if (error) {
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
+			} else {
+				const response = {
+					status: true,
+					message: "Error al insertar los datos."
+				}
+
+				resolve(response);
+			}
+		});
+  	});
+}
+
+module.exports.insertar = async function (datas, response) {
+	const result = await insertarBD(datas);
+
 	return result;
 }
 
-module.exports.eliminar = async function (clienteModel, response) {
-	const result = await eliminarCliente(clienteModel);
+module.exports.eliminar = async function (datas, response) {
+	const result = await eliminarBD(datas);
+
 	return result;
 }
 
-module.exports.actualizar = async function (clienteModel, response) {
-	const result = await actualizarCliente(clienteModel);
+module.exports.editar = async function (datas, response) {
+	const result = await editarBD(datas);
+
 	return result;
 }
 
 module.exports.consultar = async function (response) {
-	const result = await consultarClientes();
+	const result = await consultaBD();
+
 	return result;
 }
 
-module.exports.consultarPorId = async function (idPersona, response) {
-	const result = await consultarClientesPorId(idPersona);
+module.exports.consultarId = async function (datas, response) {
+	const result = await consultaIdBD(datas);
+
 	return result;
 }
 
-module.exports.consultarPorUsuario = async function (idUsuario, response) {
-	const result = await consultarClientesPorUsuario(idUsuario);
+module.exports.consultarUser = async function (datas, response) {
+	const result = await consultaUserBD(datas);
+
+	return result;
+}
+
+module.exports.destruir = async function (datas, response) {
+	const result = await destruirBD(datas);
+
 	return result;
 }

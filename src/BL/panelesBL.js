@@ -41,8 +41,6 @@ module.exports.insertar = async function (request, response) {
 
 		return result.message;
 	} else {
-		console.log(validate.message);
-
 		throw new Error(validate.message);
 	}
 }
@@ -101,8 +99,6 @@ module.exports.editar = async function (request, response) {
 
 		return result.message;
 	} else {
-		console.log(validate.message);
-
 		throw new Error(validate.message);
 	}
 }

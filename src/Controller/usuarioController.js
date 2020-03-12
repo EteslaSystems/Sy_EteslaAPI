@@ -1,7 +1,7 @@
 /*
 - @description: 		Archivo correspondiente a las funciones de la API con la BD.
 - @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcón
-- @date: 				19/02/2020
+- @date: 				10/03/2020
 */
 
 const mysqlConnection = require('../../config/database');

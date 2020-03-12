@@ -17,47 +17,47 @@ const message = {
 }
 
 // Función de validación. Se establecen las reglas que se requieren por campo, utilizando la librería "yup"
-function inversorValidation (data) {
+function clienteValidation (data) {
     const schema = yup.object().shape({
-        nombrematerial: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
-        marca: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
-        potencia: yup
+        consumo: yup
             .string(message.string)
             .matches(/^[0-9]+\.?[0-9]*$/, message.number)
             .required(message.required),
-        precio: yup
-            .string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
-        moneda: yup
+        nombrePersona: yup
             .string(message.string)
             .matches(/^[A-Za-z\s]+$/g, message.letter)
             .required(message.required),
-        isc: yup
+        primerApellido: yup
             .string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
+            .matches(/^[A-Za-z\s]+$/g, message.letter)
             .required(message.required),
-        ivmin: yup
+        segundoApellido: yup
+            .string(message.string)
+            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .required(message.required),
+        telefono: yup
             .string(message.string)
             .matches(/^([0-9])*$/, message.number)
             .required(message.required),
-        ivmax: yup
+        celular: yup
             .string(message.string)
             .matches(/^([0-9])*$/, message.number)
             .required(message.required),
-        ipmax: yup
+        email: yup
             .string(message.string)
-            .matches(/^([0-9])*$/, message.number)
+            .matches(/^[a-z0-9_.]+@[a-z0-9]+\.[a-z0-9_.]+$/, message.email)
             .required(message.required),
-        ipmin: yup
+        calle: yup
             .string(message.string)
-            .matches(/^([0-9])*$/, message.number)
+            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .required(message.required),
+        municipio: yup
+            .string(message.string)
+            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .required(message.required),
+        estado: yup
+            .string(message.string)
+            .matches(/^[A-Za-z\s]+$/g, message.letter)
             .required(message.required),
     });
 
@@ -87,5 +87,5 @@ function inversorValidation (data) {
 
 // Exportamos la función para el uso de la misma en otros archivos.
 module.exports = {
-    inversorValidation,
+    clienteValidation,
 };
