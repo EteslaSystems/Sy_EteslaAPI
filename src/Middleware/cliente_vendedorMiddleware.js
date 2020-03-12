@@ -17,47 +17,13 @@ const message = {
 }
 
 // Función de validación. Se establecen las reglas que se requieren por campo, utilizando la librería "yup"
-function inversorValidation (data) {
+function clientevendedorValidation (data) {
     const schema = yup.object().shape({
-        nombrematerial: yup
+        idUsuario: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
             .required(message.required),
-        marca: yup
+        idCliente: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
-        potencia: yup
-            .string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
-        precio: yup
-            .string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
-        moneda: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
-        isc: yup
-            .string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
-        ivmin: yup
-            .string(message.string)
-            .matches(/^([0-9])*$/, message.number)
-            .required(message.required),
-        ivmax: yup
-            .string(message.string)
-            .matches(/^([0-9])*$/, message.number)
-            .required(message.required),
-        ipmax: yup
-            .string(message.string)
-            .matches(/^([0-9])*$/, message.number)
-            .required(message.required),
-        ipmin: yup
-            .string(message.string)
-            .matches(/^([0-9])*$/, message.number)
             .required(message.required),
     });
 
@@ -87,5 +53,5 @@ function inversorValidation (data) {
 
 // Exportamos la función para el uso de la misma en otros archivos.
 module.exports = {
-    inversorValidation,
+    clientevendedorValidation,
 };

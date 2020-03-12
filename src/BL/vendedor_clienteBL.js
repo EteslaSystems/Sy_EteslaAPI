@@ -6,24 +6,48 @@
  * @date: 28/Febrero/2020
  */
 
-const controller = require('../Controller/vendedor_clienteController'); //Constante que hace uso de la clase controller de vendedor_cliente.
-const log = require('../../config/logConfig'); //Constante que instancia el modelo del log de eventos y errores.
+const vendedorCliente = require('../Controller/vendedor_clienteController');
+const log = require('../../config/logConfig');
+const validations = require('../Middleware/cliente_vendedorMiddleware');
 
-module.exports.insertar = async function (vendedor_clienteModel, response) {
-	result = await controller.insertar(vendedor_clienteModel);
+module.exports.insertar = async function (request, response) {
+	let validate = await validations.clientevendedorValidation(request);
 
-	if(result !== true) {
-		log.errores('Insertar Vendedor_Cliente', 'Ocurrió un error al insertar la relación de vendedor con cliente en la base de datos.');
-		throw new Error('Ocurrió un error al insertar los datos de la relación vendedor/cliente.');
+	if (validate.status == true) {
+		const datas = {
+	        id_Usuario: request.idUsuario,
+			id_Cliente: request.idCliente
+		};
+		
+		result = await vendedorCliente.insertar(datas);
+
+		if(result.status !== true) {
+			log.errores('INSERTAR / CLIENTE.', result.message);
+
+			const info = {
+				status: 500,
+				message: datas.id_Cliente
+			};
+
+      		return info;
+		}
+
+		log.eventos('INSERTAR / CLIENTE.', '1 fila insertada.');
+
+		const info = {
+			status: 200,
+			message: result.message
+		}
+
+		return info;
+	} else {
+		throw new Error(validate.message);
 	}
-
-	log.eventos('Insertar Vendedor_Cliente', 'Se ha insertado correctamente la relación de vendedor con cliente en la base de datos.');
-	return result;
 }
 
 module.exports.actualizar = async function (vendedor_clienteModel, response) {
 
-	result = await controller.actualizar(vendedor_clienteModel);
+	result = await vendedorCliente.actualizar(vendedor_clienteModel);
 
 	if(result !== true) {
 		log.errores('Actualizar Vendedor_Cliente', 'Ocurrió un error al actualizar el vendedor del cliente en la base de datos.');

@@ -1,96 +1,176 @@
-/**
- * En este archivo se define la lógica del proceso, administrando el control de acceso al controller de cliente,
- * implementando validaciones y manejando los resultados obtenidos en conjunto con el log de eventos y errores.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 3.0.0
- * @date: 28/Febrero/2020
- */
+/*
+- @description: 		Archivo correspondiente a la sección de reglas a cumplir de los datos recibidos.
+- @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcon
+- @date: 				19/02/2020
+*/
 
-const controller = require('../Controller/clienteController'); //Constante que hace uso de la clase controller de Cliente.
-const vendedor_clienteBL = require('./vendedor_clienteBL'); //Constante que instancia la clase BL de vendedor_cliente con sus métodos.
-const log = require('../../config/logConfig'); //Constante que instancia el modelo del log de eventos y errores.
+const cliente = require('../Controller/clienteController');
+const log = require('../../config/logConfig');
+const validations = require('../Middleware/clienteMiddleware');
+const vendedor_clienteBL = require('./vendedor_clienteBL');
 
-module.exports.insertar = async function (clienteModel, response) {
-	const nombreCompleto = clienteModel.vNombrePersona + ' ' + clienteModel.vPrimerApellido + ' ' + clienteModel.vSegundoApellido;
+var moment = require('moment-timezone');
 
-	result = await controller.insertar(clienteModel);
+module.exports.insertar = async function (request, response) {
+	let validate = await validations.clienteValidation(request);
 
-	if(result.propertyIsEnumerable(0) !== true) {
-		log.errores('Insertar Cliente', 'Ocurrió un error al insertar los datos del cliente "' + nombreCompleto + '" en la base de datos.');
-		throw new Error('Ocurrió un error al insertar los datos del cliente.');
+	if (validate.status == true) {
+		let now = moment().tz("America/Mexico_City").format();
+		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+
+		const datas = {
+	        id_Usuario: request.idUsuario,
+			id_Cliente: '',
+			fConsumo: parseFloat(request.consumo),
+	        vNombrePersona: request.nombrePersona,
+	        vPrimerApellido: request.primerApellido,
+	        vSegundoApellido: request.segundoApellido,
+	        vTelefono: request.telefono,
+	        vCelular: request.celular,
+	        vEmail: request.email.toLowerCase(),
+	        created_at: fecha,
+	        vCalle: request.calle,
+	        vMunicipio: request.municipio,
+	        vEstado: request.estado
+		};
+
+		result = await cliente.insertar(datas);
+
+		if(result.status !== true) {
+			log.errores('INSERTAR / CLIENTES.', result.message);
+
+			throw new Error('Error al insertar los datos.');
+		}
+
+		const dCliente = {
+			idUsuario: datas.id_Usuario,
+			idCliente: result.message[0].idCliente
+		} 
+
+		new_result = await vendedor_clienteBL.insertar(dCliente);
+		
+		if(new_result.status !== 200) {
+			const eCliente = {
+				idCliente: new_result.message
+			};
+
+			del_result = await cliente.destruir(eCliente);
+
+			return del_result.message;
+		}
+
+		return new_result.message;
+	} else {
+		throw new Error(validate.message);
 	}
-
-	clienteModel.id_Cliente = result[0].idCliente;
-
-	vendedor_clienteBL.insertar(clienteModel)
-	.then(panel => {
-		log.eventos('Insertar Cliente', 'Se ha insertado correctamente el cliente "' + nombreCompleto + '" en la base de datos.');
-		return result;
-	})
-	.catch(error => {
-		throw new Error(error.message);
-	});
 }
 
-module.exports.eliminar = async function (clienteModel, response) {
-	result = await controller.eliminar(clienteModel);
+module.exports.eliminar = async function (request, response) {
+	let now = moment().tz("America/Mexico_City").format();
+	let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
 
-	if(result !== true) {
-		log.errores('Eliminar Cliente', 'Ocurrió un error al eliminar los datos del cliente de la base de datos.');
-		throw new Error('Ocurrió un error al eliminar el cliente.');
+	const datas = {
+		idPersona: request.id,
+		deleted_at: fecha
+	};
+
+	result = await cliente.eliminar(datas);
+
+	if(result.status !== true) {
+		log.errores('ELIMINAR / CLIENTE.', result.message);
+
+		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('Eliminar Cliente', 'Se ha eliminado correctamente el cliente de la base de datos.');
-	return result;
+	log.eventos('ELIMINAR / CLIENTE.', '1 fila eliminada.');
+
+	return result.message;
 }
 
-module.exports.actualizar = async function (clienteModel, response) {
-	const nombreCompleto = clienteModel.vNombrePersona + ' ' + clienteModel.vPrimerApellido + ' ' + clienteModel.vSegundoApellido;
+module.exports.editar = async function (request, response) {
+	let validate = await validations.clienteValidation(request);
 
-	result = await controller.actualizar(clienteModel);
+	if (validate.status == true) {
+		let now = moment().tz("America/Mexico_City").format();
+		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
 
-	if(result !== true) {
-		log.errores('Actualizar Cliente', 'Ocurrió un error al actualizar los datos del cliente "' + nombreCompleto + '" en la base de datos.');
-		throw new Error('Ocurrió un error al actualizar el cliente.');
+		const datas = {
+	        idPersona: request.idPersona,
+			fConsumo: parseFloat(request.consumo),
+	        vNombrePersona: request.nombrePersona,
+	        vPrimerApellido: request.primerApellido,
+	        vSegundoApellido: request.segundoApellido,
+	        vTelefono: request.telefono,
+	        vCelular: request.celular,
+	        vEmail: request.email.toLowerCase(),
+	        updated_at: fecha,
+	        vCalle: request.calle,
+	        vMunicipio: request.municipio,
+	        vEstado: request.estado
+		};
+
+		result = await cliente.editar(datas);
+
+		if(result.status !== true) {
+			log.errores('EDITAR / CLIENTES.', result.message);
+
+			throw new Error('Error al editar los datos.');
+		}
+
+		log.eventos('EDITAR / CLIENTES.', '1 fila editada.');
+
+		return result.message;
+	} else {
+		throw new Error(validate.message);
 	}
-
-	log.eventos('Actualizar Cliente', 'Se ha actualizado correctamente el cliente "' + nombreCompleto + '" en la base de datos.');
-	return result;
 }
 
 module.exports.consultar = async function (response) {
-	const result = await controller.consultar();
-	if (result.propertyIsEnumerable(0) !== true) {
-		log.errores('Consultar Clientes', 'Ocurrió un error al consultar los registros de los clientes de la base de datos.');
-		throw new Error('Ocurrió un error al consultar los clientes.');
+	const result = await cliente.consultar();
+
+	if(result.status !== true) {
+		log.errores('CONSULTA / CLIENTES.', result.message);
+
+		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('Consultar Clientes', 'Se han consultado: ' + result.length + ' registros.');
-	return result;
+	log.eventos('CONSULTA / CLIENTES.', result.message.length + ' filas consultadas.');
+
+	return result.message;
 }
 
-module.exports.consultarPorId = async function (idPersona, response) {
-	const result = await controller.consultarPorId(idPersona);
-	if (result.propertyIsEnumerable(0) !== true) {
-		log.errores('Consultar Cliente', 'Ocurrió un error al consultar los datos del cliente de la base de datos.');
-		throw new Error('Ocurrió un error al consultar los datos del cliente.');
+module.exports.consultarId = async function (request, response) {
+	const datas = {
+		idPersona: request.id
+	};
+
+	result = await cliente.consultarId(datas);
+
+	if(result.status !== true) {
+		log.errores('BUSQUEDA / CLIENTES POR ID.', result.message);
+
+		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('Consultar Cliente', 'Se han consultado los datos del cliente de la base de datos.');
-	return result;
+	log.eventos('BUSQUEDA / CLIENTES POR ID.', result.message.length + ' filas consultadas.');
+
+	return result.message;
 }
 
-module.exports.consultarPorUsuario = async function (idUsuario, response) {
-	const result = await controller.consultarPorUsuario(idUsuario);
+module.exports.consultarUser = async function (request, response) {
+	const datas = {
+		idUsuario: request.id
+	};
 
-    if (result.hasOwnProperty('sqlMessage')) {
-        log.errores('Consultar Clientes de Usuario', 'Ocurrió un error al consultar los clientes del usuario: ' + result.sqlMessage);
-		throw new Error('Ocurrió un error al consultar los clientes del usuario.');
-    } else if (result.propertyIsEnumerable(0) !== true) {
-        log.errores('Consultar Clientes de Usuario', 'Este vendedor no tiene clientes registrados aún.');
-		throw new Error('Este vendedor no tiene clientes registrados aún.');
-    }
+	result = await cliente.consultarUser(datas);
 
-	log.eventos('Consultar Clientes de Usuario', 'Se han consultado los clientes del usuario de la base de datos.');
-	return result;
+	if(result.status !== true) {
+		log.errores('BUSQUEDA / CLIENTES POR USUARIO.', result.message);
+
+		throw new Error('Error al consultar los datos.');
+	}
+
+	log.eventos('BUSQUEDA / CLIENTES POR USUARIO.', result.message.length + ' filas consultadas.');
+
+	return result.message;
 }
