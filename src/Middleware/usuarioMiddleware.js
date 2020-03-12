@@ -47,14 +47,6 @@ function usuarioValidation (data) {
     		.string(message.string)
     		.matches(/^[A-Za-z\s]+$/g, message.letter)
     		.required(message.required),
-  		telefono: yup
-    		.string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
-        celular: yup
-    		.string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
         email: yup
     		.string(message.string)
             .matches(/^[a-z0-9_.]+@[a-z0-9]+\.[a-z0-9_.]+$/, message.email)

@@ -1,3 +1,9 @@
+/*
+- @description: 		Archivo correspondiente a las funciones de la API con la BD.
+- @author: 				Yael Ramirez Herrerias
+- @date: 				19/02/2020
+*/
+
 const mysqlConnection = require('../../config/database');
 
 function insertarBD (datas) {
@@ -94,6 +100,30 @@ function consultaBD () {
   	});
 }
 
+function buscarBD (datas) {
+	const { idInversor } = datas;
+
+  	return new Promise((resolve, reject) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+			if (error) {
+				const response = {
+					status: false,
+					message: error
+				}
+
+				resolve (response);
+			} else {
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
+			}
+		});
+  	});
+}
+
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
 
@@ -102,6 +132,12 @@ module.exports.insertar = async function (datas, response) {
 
 module.exports.eliminar = async function (datas, response) {
 	const result = await eliminarBD(datas);
+
+	return result;
+}
+
+module.exports.buscar = async function (datas, response) {
+	const result = await buscarBD(datas);
 
 	return result;
 }
@@ -117,56 +153,3 @@ module.exports.consultar = async function (response) {
 
 	return result;
 }
-
-// const mysqlConnection = require('../Config/database');
-
-// module.exports = {
-// 	read() {
-// 		return new Promise((resolve, reject) => {
-// 			mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null], 
-// 			(error, rows) => {
-// 				if (error) {
-// 					reject (error);
-// 				} else {
-// 					resolve(rows[0]);
-// 				}
-// 			});
-// 		});
-// 	},
-// 	updated() {
-// 		return new Promise((resolve, reject) => {
-// 			mysqlConnection.query('CALL CRUDEmpresa(?, ?, ?, ?, ?, ?, ?, ?)', [2, id, vEmpresa, vEmail, vContrasenia, null, updated_at, null],
-// 			(error) => {
-// 				if (error) {
-// 					reject (error);
-// 				} else {
-// 					resolve();
-// 				}
-// 			});
-// 		});
-// 	},
-// 	delete() {
-// 		return new Promise((resolve, reject) => {
-// 			mysqlConnection.query('CALL CRUDEmpresa(?, ?, ?, ?, ?, ?, ?, ?)', [1, id, null, null, null, null, null, deleted_at],
-// 			(error) => {
-// 				if (error) {
-// 					reject (error);
-// 				} else {
-// 					resolve();
-// 				}
-// 			});
-// 		});
-// 	},
-// 	create() {
-// 		return new Promise((resolve, reject) => {
-// 			mysqlConnection.query('CALL CRUDEmpresa(?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vEmpresa, vEmail, vContrasenia, created_at, null, null],
-// 			(error) => {
-// 				if (error) {
-// 					reject (error);
-// 				} else {
-// 					resolve();
-// 				}
-// 			});
-// 		});
-// 	}
-// }

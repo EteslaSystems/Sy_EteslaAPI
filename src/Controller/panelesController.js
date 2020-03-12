@@ -1,6 +1,6 @@
 /*
 - @description: 		Archivo correspondiente a las funciones de la API con la BD.
-- @author: 				Yael Ramirez (@iaelrmz)
+- @author: 				Yael Ramirez Herrerias
 - @date: 				19/02/2020
 */
 
