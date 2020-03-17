@@ -1,0 +1,144 @@
+[14 de marzo de 2020 12:16:41] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Error. || DETALLES: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+{"code":"ER_SP_WRONG_NO_OF_ARGS","errno":1318,"sqlMessage":"Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23","sqlState":"42000","index":0,"sql":"CALL SP_Cliente(4, NULL, NULL, `attributes` = '[object Object]', `request` = '[object Object]', `query` = '[object Object]', `server` = '[object Object]', `files` = '[object Object]', `cookies` = '[object Object]', `headers` = '[object Object]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)"}
+Error: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+    at Query.Sequence._packetToError (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Query.ErrorPacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Query.js:79:18)
+    at Protocol._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (events.js:305:20)
+    at addChunk (_stream_readable.js:341:12)
+    --------------------
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:107:22
+    at new Promise (<anonymous>)
+    at consultaIdBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:106:11)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:200:23)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\clienteBL.js:147:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:281:12
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[14 de marzo de 2020 12:16:41] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Error. || DETALLES: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+{"code":"ER_SP_WRONG_NO_OF_ARGS","errno":1318,"sqlMessage":"Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23","sqlState":"42000","index":0,"sql":"CALL SP_Cliente(4, NULL, NULL, `attributes` = '[object Object]', `request` = '[object Object]', `query` = '[object Object]', `server` = '[object Object]', `files` = '[object Object]', `cookies` = '[object Object]', `headers` = '[object Object]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)"}
+Error: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+    at Query.Sequence._packetToError (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Query.ErrorPacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Query.js:79:18)
+    at Protocol._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (events.js:305:20)
+    at addChunk (_stream_readable.js:341:12)
+    --------------------
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:107:22
+    at new Promise (<anonymous>)
+    at consultaIdBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:106:11)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:200:23)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\clienteBL.js:147:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:281:12
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[14 de marzo de 2020 12:16:41] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Error. || DETALLES: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+{"code":"ER_SP_WRONG_NO_OF_ARGS","errno":1318,"sqlMessage":"Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23","sqlState":"42000","index":0,"sql":"CALL SP_Cliente(4, NULL, NULL, `attributes` = '[object Object]', `request` = '[object Object]', `query` = '[object Object]', `server` = '[object Object]', `files` = '[object Object]', `cookies` = '[object Object]', `headers` = '[object Object]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)"}
+Error: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+    at Query.Sequence._packetToError (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Query.ErrorPacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Query.js:79:18)
+    at Protocol._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (events.js:305:20)
+    at addChunk (_stream_readable.js:341:12)
+    --------------------
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:107:22
+    at new Promise (<anonymous>)
+    at consultaIdBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:106:11)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:200:23)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\clienteBL.js:147:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:281:12
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[14 de marzo de 2020 12:25:45] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Error. || DETALLES: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+{"code":"ER_SP_WRONG_NO_OF_ARGS","errno":1318,"sqlMessage":"Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23","sqlState":"42000","index":0,"sql":"CALL SP_Cliente(4, NULL, NULL, `attributes` = '[object Object]', `request` = '[object Object]', `query` = '[object Object]', `server` = '[object Object]', `files` = '[object Object]', `cookies` = '[object Object]', `headers` = '[object Object]', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)"}
+Error: ER_SP_WRONG_NO_OF_ARGS: Incorrect number of arguments for PROCEDURE eteslamx_eteslapanelessolares_sy.SP_Cliente; expected 17, got 23
+    at Query.Sequence._packetToError (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Query.ErrorPacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\sequences\Query.js:79:18)
+    at Protocol._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (events.js:305:20)
+    at addChunk (_stream_readable.js:341:12)
+    --------------------
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:107:22
+    at new Promise (<anonymous>)
+    at consultaIdBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:106:11)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:200:23)
+    at Object.module.exports.consultarId (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\clienteBL.js:147:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:281:12
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[14 de marzo de 2020 12:25:45] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: read ECONNRESET
+{"errno":-4077,"code":"ECONNRESET","syscall":"read","fatal":true}
+Error: read ECONNRESET
+    at TCP.onStreamRead (internal/stream_base_commons.js:205:27)
+    --------------------
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[14 de marzo de 2020 12:25:45] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[14 de marzo de 2020 12:25:45] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Proyectos NodeJs\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Proyectos NodeJs\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Proyectos NodeJs\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Proyectos NodeJs\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
