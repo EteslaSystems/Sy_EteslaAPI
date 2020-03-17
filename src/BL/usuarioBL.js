@@ -28,14 +28,12 @@ module.exports.insertar = async function (request, response) {
 	        vNombrePersona: request.nombrePersona,
 	        vPrimerApellido: request.primerApellido,
 	        vSegundoApellido: request.segundoApellido,
-	        vTelefono: parseInt(request.telefono),
-	        vCelular: parseInt(request.celular),
 	        vEmail: request.email.toLowerCase(),
 			created_at: fecha
 		};
 
 		result = await usuario.insertar(datas);
-
+		console.log(result);
 		if(result.status !== true) {
 			log.errores('INSERTAR / USUARIOS.', result.message);
 
