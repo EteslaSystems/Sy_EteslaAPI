@@ -1,62 +1,392 @@
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: VALIDAR / USUARIOS. || ESTATUS: Correcto. || DETALLES: Token de usuario generado, acceso a: Benny Yael.
+﻿[17 de marzo de 2020 11:29:44] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+[17 de marzo de 2020 11:29:44] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+[17 de marzo de 2020 11:29:44] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 11:29:44] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 11:29:44] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+[17 de marzo de 2020 11:36:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 11:36:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+[17 de marzo de 2020 11:36:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 11:36:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+[17 de marzo de 2020 11:36:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+[17 de marzo de 2020 11:59:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 11:59:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:01:06] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 12:01:06] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+[17 de marzo de 2020 12:01:06] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:36:23] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:48:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:48:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:58:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:58:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 12:07:16] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:58:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-[17 de marzo de 2020 10:58:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:09:32] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 3 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: INSERTAR / CLIENTE. || ESTATUS: Correcto. || DETALLES: 1 fila insertada.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:15:49] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:25:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: VALIDAR / USUARIOS. || ESTATUS: Correcto. || DETALLES: Token de usuario generado, acceso a: Benny Yael.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:28:58] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: VALIDAR / USUARIOS. || ESTATUS: Correcto. || DETALLES: Token de usuario generado, acceso a: Benny Yael.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 4 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: INSERTAR / CLIENTE. || ESTATUS: Correcto. || DETALLES: 1 fila insertada.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 5 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:41:13] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 5 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 5 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 5 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: INSERTAR / CLIENTE. || ESTATUS: Correcto. || DETALLES: 1 fila insertada.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 6 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 0 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR ID. || ESTATUS: Correcto. || DETALLES: 1 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 6 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: INSERTAR / CLIENTE. || ESTATUS: Correcto. || DETALLES: 1 fila insertada.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 12:58:59] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: VALIDAR / USUARIOS. || ESTATUS: Correcto. || DETALLES: Token de usuario generado, acceso a: Benny Yael.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:29:02] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 13:41:57] INFO  || ACCIÓN: VALIDAR / USUARIOS. || ESTATUS: Correcto. || DETALLES: Token de usuario generado, acceso a: Benny Yael.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: VALIDAR / USUARIOS. || ESTATUS: Correcto. || DETALLES: Token de usuario generado, acceso a: Benny Yael.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 16:53:43] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:08:46] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:08:46] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:08:46] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:10:01] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:10:01] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:10:01] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:11:07] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:11:07] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:11:07] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:22:33] INFO  || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Correcto. || DETALLES: 10 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:22:33] INFO  || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Correcto. || DETALLES: 25 filas consultadas.
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[17 de marzo de 2020 17:22:33] INFO  || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Correcto. || DETALLES: 7 filas consultadas.
 ---------------------------------------------------------------------------------------------------------------------------------------------------- 
