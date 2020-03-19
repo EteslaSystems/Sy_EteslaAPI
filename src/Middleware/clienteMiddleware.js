@@ -49,7 +49,6 @@ function clienteValidation (data) {
             .required(message.required),
         calle: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
             .required(message.required),
         municipio: yup
             .string(message.string)
