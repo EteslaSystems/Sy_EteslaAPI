@@ -1,0 +1,302 @@
+[2020 M03 18 10:24:35] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: read ECONNRESET
+{"errno":"ECONNRESET","code":"ECONNRESET","syscall":"read","fatal":true}
+Error: read ECONNRESET
+    at TCP.onStreamRead (internal/stream_base_commons.js:200:27)
+    --------------------
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:24:35] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:24:35] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:36:29] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: read ECONNRESET
+{"errno":"ECONNRESET","code":"ECONNRESET","syscall":"read","fatal":true}
+Error: read ECONNRESET
+    at TCP.onStreamRead (internal/stream_base_commons.js:200:27)
+    --------------------
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:36:29] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:36:29] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:36:29] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:36:29] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 10:36:29] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:33:43] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: read ECONNRESET
+{"errno":"ECONNRESET","code":"ECONNRESET","syscall":"read","fatal":true}
+Error: read ECONNRESET
+    at TCP.onStreamRead (internal/stream_base_commons.js:200:27)
+    --------------------
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:33:43] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:33:43] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: read ECONNRESET
+{"errno":"ECONNRESET","code":"ECONNRESET","syscall":"read","fatal":true}
+Error: read ECONNRESET
+    at TCP.onStreamRead (internal/stream_base_commons.js:200:27)
+    --------------------
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Sy_EteslaAPI\node_modules\express\lib\router\route.js:137:13)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: CONSULTA / PANELES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\panelesController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\panelesController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\panelesController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\panelesBL.js:107:29)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:139:10
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: CONSULTA / INVERSORES. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\inversorController.js:83:22
+    at new Promise (<anonymous>)
+    at consultaBD (C:\Sy_EteslaAPI\src\Controller\inversorController.js:82:11)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\Controller\inversorController.js:152:23)
+    at Object.module.exports.consultar (C:\Sy_EteslaAPI\src\BL\inversorBL.js:111:32)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:58:13
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
+[2020 M03 18 23:44:21] ERROR || ACCIÓN: BUSQUEDA / CLIENTES POR USUARIO. || ESTATUS: Error. || DETALLES: Cannot enqueue Query after fatal error.
+{"code":"PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR","fatal":false}
+Error: Cannot enqueue Query after fatal error.
+    at Protocol._validateEnqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+    at Protocol._enqueue (C:\Sy_EteslaAPI\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+    at Connection.query (C:\Sy_EteslaAPI\node_modules\mysql\lib\Connection.js:198:25)
+    at C:\Sy_EteslaAPI\src\Controller\clienteController.js:131:22
+    at new Promise (<anonymous>)
+    at consultaUserBD (C:\Sy_EteslaAPI\src\Controller\clienteController.js:130:11)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\Controller\clienteController.js:206:23)
+    at Object.module.exports.consultarUser (C:\Sy_EteslaAPI\src\BL\clienteBL.js:165:25)
+    at C:\Sy_EteslaAPI\src\Routes\web.js:297:12
+    at Layer.handle [as handle_request] (C:\Sy_EteslaAPI\node_modules\express\lib\router\layer.js:95:5)
+---------------------------------------------------------------------------------------------------------------------------------------------------- 
