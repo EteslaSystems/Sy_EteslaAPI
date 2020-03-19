@@ -11,6 +11,7 @@ const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
 const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
+const mediaTensionBL = require('../BL/mediaTensionBL');
 
 router.use(express.json());
 
@@ -333,6 +334,27 @@ router.post('/actualizarVendedorCliente', function (request, response) {
 		});
 	});
 });
+
+/*
+- @section: 		Rutas para la sección de media tensión.
+*/
+//--------------------------------------------------
+router.post('/promedioArray', function (request, response) {
+	mediaTensionBL.promedioArray(request.body)
+	.then(array => {
+		response.json({
+			status: 200,
+			message: array,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+//--------------------------------------------------
 
 module.exports = router; 
 /*Exportar la constate 'router' con el fin de que esta clase pueda 
