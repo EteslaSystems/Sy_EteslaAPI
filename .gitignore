@@ -1,6 +1,6 @@
 /config
 /node_modules
-src/Logs/LogErrores/*
+src/Logs/*
 package-lock.json
 package.json
 LICENSE
