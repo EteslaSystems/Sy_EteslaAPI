@@ -11,6 +11,7 @@ const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
 const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
+const mediaTensionBL = require('../BL/mediaTensionBL');
 
 router.use(express.json());
 
