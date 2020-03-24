@@ -11,6 +11,7 @@ const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
 const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
+const mediaTensionController = require('../Controller/mediaTensionController');
 
 router.use(express.json());
 
@@ -352,6 +353,10 @@ router.post('/promedioArray', function (request, response) {
 			message: error.message,
 		});
 	});
+});
+
+router.post('/sendPeriods', function(request){
+	mediaTensionController.cotizarGDMTH(request.body);
 });
 //--------------------------------------------------
 
