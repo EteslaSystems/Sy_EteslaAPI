@@ -355,9 +355,11 @@ router.post('/promedioArray', function (request, response) {
 	});
 });
 
+/*#region GDMTH*/
 router.post('/sendPeriods', function(request){
 	mediaTensionController.cotizarGDMTH(request.body);
 });
+/*#endregion GDMTH*/
 //--------------------------------------------------
 
 module.exports = router; 
