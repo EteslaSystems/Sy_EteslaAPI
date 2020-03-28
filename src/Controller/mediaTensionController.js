@@ -51,6 +51,56 @@ function promediarArray(array) {
   	});
 }
 
+/*
+- @description: 		Archivo que contiene todas las operaciones matematicas para llevar acabo una cotizaación de Media Tension
+- @author: 				LH420
+- @date: 				20/03/2020
+*/
+
+/*#region GDMTH*/
+var propertyBkWh = [];
+var propertyIkWh = [];
+var propertyPkWh = [];
+var propertyBkW = [];
+var propertyIkW = [];
+var propertyPkW = [];
+var averageBkWh = 0.0;
+var averageIkWh = 0.0;
+var averagePkWh = 0.0;
+var averageBkW = 0.0;
+var averageIkW = 0.0;
+var averagePkW = 0.0;
+
+//Datos de consumo
+function cotizacionGDMTH(data){
+    promedioDePropiedadPeriodoGDMTH(data);
+}
+
+/*#endregion*/
+/*#region GDMTO*/
+/*#endregion*/
+
+function promedioDePropiedadPeriodoGDMTH(data){
+	if(obtenerEspaciosFaltantesDelArray(data) == null){
+		data.forEach(function(){
+			periodo => console.log(periodo.bkwh);
+		});
+	}
+}
+
+function obtenerEspaciosFaltantesDelArray(data){
+    if(data.length < 2){
+        return 12 - arrayGDMTH.length;
+    }
+    else if(data.length == 3){
+        return null;
+	}
+}
+
+module.exports.cotizarGDMTH = async function(data){
+    await cotizacionGDMTH(data);
+}
+
 module.exports.promedioArray = async function (array, response) {
 	const result = await promediarArray(array);
 	return result;
