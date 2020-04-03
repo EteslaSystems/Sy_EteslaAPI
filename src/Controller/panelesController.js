@@ -123,6 +123,48 @@ function buscarBD (datas) {
 		});
   	});
 }
+/*#region LH420*/
+/*
+- @description: 		Funciones para la cotizacion de media tension
+- @author: 				LH420
+- @date: 				01/04/2020
+*/
+function numberOfModuls(monthlyAvarageConsumption, irradiation, efficiency){
+	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency);
+	console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
+	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
+	console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
+	var _arrayPaneles = getPanelsArray();
+
+	
+
+}
+
+async function getPanelsArray(){
+	consultaPaneles = await consultaBD();
+	consultaPaneles = consultaPaneles.message;
+	arrayPaneles = consultaPaneles;
+	return arrayPaneles;
+}
+
+function getSystemPowerInWatts(powerRequired){
+	potenciaRequeridaEnW = powerRequired * 1000;
+	potenciaRequeridaEnW = parseFloat(Math.round(potenciaRequeridaEnW * 100) / 100).toFixed(2);
+	return potenciaRequeridaEnW;
+}
+
+function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency){
+	potenciaRequeridaEnKwp = monthlyAvarageConsumption / (irradiation * efficiency);
+	potenciaRequeridaEnKwp = parseFloat(Math.round(potenciaRequeridaEnKwp * 100) / 100).toFixed(2);
+	return potenciaRequeridaEnKwp;
+}
+
+module.exports.numeroDePaneles = function (consumoPromedioMensual, irradiacion, eficiencia){
+	const result = numberOfModuls(consumoPromedioMensual, irradiacion, eficiencia);
+
+	//return result;
+}
+/*#endregion*/
 
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);

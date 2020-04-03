@@ -1,64 +1,13 @@
 /*
-- @description: Archivo correspondiente a las funciones de la API del módulo de media tensión.
-- @author: 	 Jesus Daniel Carrera Falcón
-- @date: 		 17/03/2020
-*/
-
-function promediarArray(array) {
-  	return new Promise((resolve, reject) => {
-  		const longitud = array.length;
-  		var sumaObjetos = 0;
-  		var promedio = 0;
-  		if (longitud == 12) {
-  			for (var i in array) {
-  				var suma = 0;
-  				for (var j in array[i]) {
-  					suma = suma + array[i][j];
-  				}
-  				sumaObjetos = sumaObjetos + suma;
-  			}
-  			promedio = sumaObjetos / longitud;
-
-  			const response = {
-  				status: true,
-  				message: promedio
-  			}
-
-  			resolve(response);
-  		} else {
-  			const faltantes = 12 - longitud;
-
-  			for (var i in array) {
-  				var suma = 0;
-  				for (var j in array[i]) {
-  					suma = suma + array[i][j];
-  				}
-  				sumaObjetos = sumaObjetos + suma;
-  			}
-  			promedio = sumaObjetos / longitud;
-
-  			for(var i = 0; i < faltantes; i++) {
-  				array.push(promedio);
-  			}
-
-  			const response = {
-  				status: true,
-  				message: array
-  			}
-
-  			resolve(response);
-  		}
-  	});
-}
-
-/*
 - @description: 		Archivo que contiene todas las operaciones matematicas para llevar acabo una cotizaación de Media Tension
 - @author: 				LH420
 - @date: 				20/03/2020
 */
 const irradiacion = require('../Controller/irradiacionController');
+const paneles = require('../Controller/panelesController');
 
 /*#region GDMTH*/
+var eficiencia = 0.82;
 var menosUno;
 var averagePeriodsGDMTH = {};
 var averageBkWh = 0.0;
@@ -87,9 +36,9 @@ function cotizacionGDMTH(data){
 var sumaConsumoTotalkWh = 0;
 var promedioConsumoTotalkWh = 0;
 
-function promedioDePropiedadesPeriodoGDMTH(data){
+async function promedioDePropiedadesPeriodoGDMTH(data){
 	if(obtenerEspaciosFaltantesDelArray(data) == null){
-		for(var i = 0; i <= 11; i++) //Cambiar al condiconal21 del for de "data.length" a "12"
+		for(var i = 0; i <= 11; i++) 
 		{
 			var condicional1 = i == 11;
 			var bkwh = Number.parseFloat(data[i].bkwh);
@@ -106,8 +55,16 @@ function promedioDePropiedadesPeriodoGDMTH(data){
 				console.log('Promedio inicial: '+promedioConsumoTotalkWh);
 				promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
 				console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
-				_pontenciaNecesaria = obtenerPotenciaNecesaria();
-				console.log('_potenciaNecesaria: '+_pontenciaNecesaria);
+				
+				var municipio = 'Tuxpan';
+				var irradiacion_ = await getIrradiation(municipio);
+				var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
+				var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
+				
+				console.log('_irradiacion: '+irradiacion_);
+				console.log('_potenciaNecesaria: '+_potenciaNecesaria);
+				console.log('Consumo promedio 365: '+_consumoPromedio365)
+				paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
 			}
 			/*#endregion*/
 
@@ -217,27 +174,27 @@ function promedioDePropiedadesPeriodoGDMTH(data){
 	}
 }
 
-function obtenerPotenciaNecesaria(){
-	var municipio = 'Tuxpan';
+async function obtenerPotenciaNecesaria(irradiacion_lugar){
+	let _porcentajePerdida = calcularPorcentajeDePerdida(18);//La cantidad que se envia 18%, tiene que cambiarse por una cantidad dinamica obtenida del clienteWeb
+	potenciaNecesaria = ((sumaConsumoTotalkWh / irradiacion_lugar) / (1 - _porcentajePerdida))/365;
+	potenciaNecesaria = parseFloat(Math.round(potenciaNecesaria * 100) / 100).toFixed(2);
+	return potenciaNecesaria;
+}
 
-	irradiacion.buscarIrradiacionFiltrada(municipio)
-	.then(irradiacionLugar => {
-		var _irradiacionLugar = irradiacionLugar[0].fIrradiacion;
-		var _porcentajePerdida = calcularPorcentajeDePerdida(18); //La cantidad que se envia 18%, tiene que cambiarse por una cantidad dinamica obtenida del clienteWeb
-		var potenciaNecesaria = ((sumaConsumoTotalkWh / _irradiacionLugar) / (1 - _porcentajePerdida))/365;
+async function getIrradiation(municipio){
+	_irradiacion = await irradiacion.buscarIrradiacionFiltrada(municipio);
+	_irradiacion = _irradiacion[0].fIrradiacion;
+	return _irradiacion;
+}
 
-		console.log('Irradiacion del lugar: '+_irradiacionLugar);
-		return potenciaNecesaria;
-	})
-	.catch(error => {
-		console.log('Error: '+error.message)
-	});
+function consumoPromedio365(powerNeeded){
+	__consumoPromedioMensual = powerNeeded/365;
+	__consumoPromedioMensual = parseFloat(Math.round(__consumoPromedioMensual * 100) / 100).toFixed(2);
+	return __consumoPromedioMensual;
 }
 
 function calcularPorcentajeDePerdida(_setPorcentajePerdida){
 	var porcentajePerdida = _setPorcentajePerdida / 100;
-	console.log('Porcentaje de perdia: '+porcentajePerdida);
-
 	return porcentajePerdida;
 }
 

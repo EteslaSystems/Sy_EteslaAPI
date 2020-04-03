@@ -13,16 +13,15 @@ function irradiacionFiltered(vMunicipio){
                     status: false,
                     message: error
                 }
-                resolve(response);
+                reject(response);
             }
             else{
                 const response = {
-					status: true,
-					message: rows[0]
-				}
-
-				resolve(response);
-            }
+                    status: true,
+                    message: rows[0]
+                }
+                resolve(response);
+            }       
         });
     });
 }
