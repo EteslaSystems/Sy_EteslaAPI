@@ -64,7 +64,10 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 				console.log('_irradiacion: '+irradiacion_);
 				console.log('_potenciaNecesaria: '+_potenciaNecesaria);
 				console.log('Consumo promedio 365: '+_consumoPromedio365)
-				paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
+				_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
+				
+				console.log('promedioDePropiedadesPeriodoGDMTH() says: ');
+				console.log(_arrayNoDePaneles);
 			}
 			/*#endregion*/
 

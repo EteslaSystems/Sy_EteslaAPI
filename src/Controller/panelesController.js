@@ -129,22 +129,51 @@ function buscarBD (datas) {
 - @author: 				LH420
 - @date: 				01/04/2020
 */
-function numberOfModuls(monthlyAvarageConsumption, irradiation, efficiency){
+const otrosMateriales = require('../Controller/otrosMateriales');
+
+var objNoDeModulosPorPotenciaDelPanel = {};
+
+async function numberOfModuls(monthlyAvarageConsumption, irradiation, efficiency){
 	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency);
 	console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
 	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
 	console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
-	var _arrayPaneles = getPanelsArray();
+	var _arrayTodosPaneles = await getAllPanelsArray();
+	_arrayObjectsNoOfModuls = getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
 
-	
-
+	return _arrayObjectsNoOfModuls;
 }
 
-async function getPanelsArray(){
+async function getAllPanelsArray(){
 	consultaPaneles = await consultaBD();
 	consultaPaneles = consultaPaneles.message;
 	arrayPaneles = consultaPaneles;
 	return arrayPaneles;
+}
+
+function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
+	arrayNoDeModulosPorPotenciaDelPanel = [];
+
+	for(var i = 0; i < arrayAllOfPanels.length; i++){
+		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
+		_marca = arrayAllOfPanels[i].vMarca
+		_precio = arrayAllOfPanels[i].fPrecio;
+		potenciaDelPanel = arrayAllOfPanels[i].fPotencia;
+		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
+		costOfStructures = otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
+
+		objNoDeModulosPorPotenciaDelPanel = {
+			nombre: _nombre,
+			marca: _marca,
+			potencia: potenciaDelPanel,
+			noModulos: NoOfModuls,
+			precioPorPanel: _precio,
+			costoDeEstructuras: costOfStructures
+		};
+
+		arrayNoDeModulosPorPotenciaDelPanel.push(objNoDeModulosPorPotenciaDelPanel);
+	}
+	return arrayNoDeModulosPorPotenciaDelPanel;
 }
 
 function getSystemPowerInWatts(powerRequired){
@@ -159,10 +188,10 @@ function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency)
 	return potenciaRequeridaEnKwp;
 }
 
-module.exports.numeroDePaneles = function (consumoPromedioMensual, irradiacion, eficiencia){
-	const result = numberOfModuls(consumoPromedioMensual, irradiacion, eficiencia);
+module.exports.numeroDePaneles = async function (consumoPromedioMensual, irradiacion, eficiencia){
+	const result = await numberOfModuls(consumoPromedioMensual, irradiacion, eficiencia);
 
-	//return result;
+	return result;
 }
 /*#endregion*/
 
