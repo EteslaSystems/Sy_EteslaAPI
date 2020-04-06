@@ -52,6 +52,22 @@ router.post('/validar-usuario', function (request, response) {
 	});
 });
 
+router.post('/verificar-email', function (request, response) {
+	usuarioBL.verificarEmail(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
 /*
 - @section: 		Rutas para la sección de inversores.
 */
