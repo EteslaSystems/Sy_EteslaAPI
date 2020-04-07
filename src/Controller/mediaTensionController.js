@@ -5,6 +5,7 @@
 */
 const irradiacion = require('../Controller/irradiacionController');
 const paneles = require('../Controller/panelesController');
+const inversores = require('../Controller/inversorController');
 
 /*#region GDMTH*/
 var eficiencia = 0.82;
@@ -55,19 +56,23 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 				console.log('Promedio inicial: '+promedioConsumoTotalkWh);
 				promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
 				console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
-				
+				/*#region PotenciaNecesaria*/
 				var municipio = 'Tuxpan';
 				var irradiacion_ = await getIrradiation(municipio);
 				var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
 				var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
-				
+				/*#endregion*/
 				console.log('_irradiacion: '+irradiacion_);
 				console.log('_potenciaNecesaria: '+_potenciaNecesaria);
 				console.log('Consumo promedio 365: '+_consumoPromedio365)
+				/*#region Paneles_cotizacion*/
 				_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
-				
-				console.log('promedioDePropiedadesPeriodoGDMTH() says: ');
-				console.log(_arrayNoDePaneles);
+				//console.log('_arrayNoDePaneles says: ');
+				//console.log(_arrayNoDePaneles);
+				/*#endregion*/
+				/*#region Inversores_cotizacion*/
+				_arrayNoDeInversores = await inversores.numeroDeInversores(_arrayNoDePaneles);
+				/*#endregion*/
 			}
 			/*#endregion*/
 
@@ -181,6 +186,7 @@ async function obtenerPotenciaNecesaria(irradiacion_lugar){
 	let _porcentajePerdida = calcularPorcentajeDePerdida(18);//La cantidad que se envia 18%, tiene que cambiarse por una cantidad dinamica obtenida del clienteWeb
 	potenciaNecesaria = ((sumaConsumoTotalkWh / irradiacion_lugar) / (1 - _porcentajePerdida))/365;
 	potenciaNecesaria = parseFloat(Math.round(potenciaNecesaria * 100) / 100).toFixed(2);
+	potenciaNecesaria >= 500 ? potenciaNecesaria = 499 : potenciaNecesaria;
 	return potenciaNecesaria;
 }
 

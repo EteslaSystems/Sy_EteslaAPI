@@ -124,6 +124,93 @@ function buscarBD (datas) {
   	});
 }
 
+/*#region LH420*/
+/*
+- @description: 		Funciones para la cotizacion de media tension
+- @author: 				LH420
+- @date: 				07/04/2020
+*/
+var objNoDeInversores = {};
+
+function numberOfInvestors(NumberOfPanelesArray){
+	getMaximumPower(NumberOfPanelesArray);
+}
+
+async function getAllInvestors(){
+	consultaInversores = await consultaBD();
+	consultaInversores = consultaInversores.message;
+	arrayInversores = consultaInversores;
+	return arrayInversores;
+}
+
+async function getMaximumPower(NumberOfPanelesArray){
+	arrayInversoresWPmx = [];
+
+	arrayAllInvestors = await getAllInvestors();
+	
+	var j;
+	for(j = 0; j < NumberOfPanelesArray.length; j++)
+	{
+		_nombrePanel = NumberOfPanelesArray[j];
+		_potenciaPicoInvrsr = NumberOfPanelesArray[j].potenciaReal;
+
+		for(var i = 0; i <= j; i++){
+			_nombreInversor = arrayAllInvestors[i].vNombreMaterialFot;
+			_potencia = arrayAllInvestors[i].fPotencia;
+			_precio = arrayAllInvestors[i].fPrecio;
+			_potenciaMaximaInversor = _potencia * 1.25;
+			NoOfInvestors = _potenciaPicoInvrsr / _potenciaMaximaInversor;
+		}
+
+		objNoDeInversores = {
+			nombrePanel: _nombrePanel,
+			nombreInversor: _nombreInversor,
+			potencia: _potencia,
+			precio: _precio,
+			potenciaMaxima: _potenciaMaximaInversor,
+			noInversores: NoOfInvestors
+		}
+
+		arrayInversoresWPmx.push(objNoDeInversores);
+	}
+
+	console.log('getMaximumPower() says: ');
+	console.log(arrayInversoresWPmx);
+
+	/*for(var i = 0; i < arrayAllInvestors.length; i++){
+		_nombreInversor = arrayAllInvestors[i].vNombreMaterialFot;
+		_potencia = arrayAllInvestors[i].fPotencia;
+		_precio = arrayAllInvestors[i].fPrecio;
+		_potenciaMaximaInversor = _potencia * 1.25;
+		_nombrePanel = NumberOfPanelesArray[i].nombre;
+		_potenciaPicoInvrsr = NumberOfPanelesArray[i].potenciaReal;
+		NoOfIvestors = _potenciaPicoInvrsr / _potenciaMaximaInversor;
+
+		console.log('getMaximumPower() says: '+NumberOfPanelesArray[i].nombre);
+
+		objNoDeInversores = {
+			nombrePanel: _nombrePanel,
+			nombreInversor: _nombre,
+			potencia: _potencia,
+			precio: _precio,
+			potenciaMaxima: _potenciaMaximaInversor,
+			noInversores: NoOfIvestors
+		}
+
+		arrayInversoresWPmx.push(objNoDeInversores);
+	}
+	//console.log('getMaximumPower() says: '+NumberOfPanelesArray[0].nombre);
+	console.log(arrayInversoresWPmx);
+	//return arrayAllInvestors;*/
+}
+
+module.exports.numeroDeInversores = function(arrayNoDePaneles){
+	const result = numberOfInvestors(arrayNoDePaneles);
+	
+	//return result;
+}
+/*#endregion*/
+
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
 

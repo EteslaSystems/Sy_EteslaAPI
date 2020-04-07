@@ -133,8 +133,8 @@ const otrosMateriales = require('../Controller/otrosMateriales');
 
 var objNoDeModulosPorPotenciaDelPanel = {};
 
-async function numberOfModuls(monthlyAvarageConsumption, irradiation, efficiency){
-	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency);
+async function numberOfModuls(powerNeeded, irradiation, efficiency){
+	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(powerNeeded, irradiation, efficiency);
 	console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
 	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
 	console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
@@ -161,11 +161,13 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 		potenciaDelPanel = arrayAllOfPanels[i].fPotencia;
 		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
 		costOfStructures = otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
+		_potenciaReal = (potenciaDelPanel * NoOfModuls)/1000;
 
 		objNoDeModulosPorPotenciaDelPanel = {
 			nombre: _nombre,
 			marca: _marca,
 			potencia: potenciaDelPanel,
+			potenciaReal: _potenciaReal,
 			noModulos: NoOfModuls,
 			precioPorPanel: _precio,
 			costoDeEstructuras: costOfStructures
@@ -185,11 +187,12 @@ function getSystemPowerInWatts(powerRequired){
 function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency){
 	potenciaRequeridaEnKwp = monthlyAvarageConsumption / (irradiation * efficiency);
 	potenciaRequeridaEnKwp = parseFloat(Math.round(potenciaRequeridaEnKwp * 100) / 100).toFixed(2);
+	potenciaRequeridaEnKwp >= 500 ? potenciaRequeridaEnKwp = 499 : potenciaRequeridaEnKwp;
 	return potenciaRequeridaEnKwp;
 }
 
-module.exports.numeroDePaneles = async function (consumoPromedioMensual, irradiacion, eficiencia){
-	const result = await numberOfModuls(consumoPromedioMensual, irradiacion, eficiencia);
+module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficiencia){
+	const result = await numberOfModuls(potenciaNecesaria, irradiacion, eficiencia);
 
 	return result;
 }
