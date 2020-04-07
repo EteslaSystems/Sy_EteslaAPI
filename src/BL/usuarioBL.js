@@ -7,7 +7,7 @@
 const usuario = require('../Controller/usuarioController');
 const log = require('../../config/logConfig');
 const validations = require('../Middleware/usuarioMiddleware');
-
+const mailer = require('../../config/mailConfig');
 const jwt = require('jsonwebtoken'); 
 const secret = 'eTeslaSecret';
 var moment = require('moment-timezone');
@@ -19,21 +19,23 @@ module.exports.insertar = async function (request, response) {
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
 		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+		let telefono = 666;
 
 		const datas = {
 			siRol: parseInt(request.rol),
-	        ttTipoUsuario: request.tipoUsuario,
-	        vContrasenia: request.contrasenia,
-	        vOficina: request.oficina,
-	        vNombrePersona: request.nombrePersona,
-	        vPrimerApellido: request.primerApellido,
-	        vSegundoApellido: request.segundoApellido,
-	        vEmail: request.email.toLowerCase(),
+			ttTipoUsuario: request.tipoUsuario,
+			vContrasenia: request.contrasenia,
+	        	vOficina: request.oficina,
+	        	vNombrePersona: request.nombrePersona,
+	        	vPrimerApellido: request.primerApellido,
+	        	vSegundoApellido: request.segundoApellido,
+	        	vTelefono: telefono,
+	        	vEmail: request.email.toLowerCase(),
 			created_at: fecha
 		};
 
 		result = await usuario.insertar(datas);
-		console.log(result);
+
 		if(result.status !== true) {
 			log.errores('INSERTAR / USUARIOS.', result.message);
 
@@ -41,6 +43,23 @@ module.exports.insertar = async function (request, response) {
 		}
 
 		log.eventos('INSERTAR / USUARIOS.', '1 fila insertada.');
+
+		const payload = { email: datas.vEmail };
+		const emailToken = jwt.sign(payload, secret, { expiresIn: 86400 });
+		//La parte del host de la url se cambiará una vez se ponga en producción o si tu host es diferente.
+		const url = 'http://127.0.0.1:8000/verificarEmail/' + emailToken;
+		const oEmail = new mailer();
+
+		let email = {
+			from: 'Depto. de sistemas Etesla',
+			to: datas.vEmail,
+			subject: "Verificación de correo electrónico",
+			html: `<b>Por favor de click en el siguiente enlace para confirmar su correo electrónico:</b>
+				<br><br><a href="${url}">${url}</a><br><br><br>
+				<b>El enlace caduca en un día.</b>`
+		};
+
+		oEmail.enviarCorreo(email);
 
 		return result.message;
 	} else {
@@ -66,6 +85,13 @@ module.exports.validar = async function (request, response) {
 		log.errores('VALIDAR / USUARIOS.', 'Las credenciales proporcionadas por el usuario no coinciden con los registros de la base de datos.');
 
 		throw new Error('Las credenciales proporcionadas son incorrectas.');
+	}
+
+	if (result.message[0].vTelefono != null || result.message[0].vTelefono == 666) {
+		const nombrecompleto = result.message[0].vNombrePersona +' '+ result.message[0].vPrimerApellido +' '+ result.message[0].vSegundoApellido;
+		log.eventos('VALIDAR / USUARIOS.', 'El usuario ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.');
+
+		throw new Error('Debe verificar su correo electrónico para iniciar sesión.');
 	}
 
 	const payload = {
@@ -98,4 +124,18 @@ module.exports.validar = async function (request, response) {
 			}
 		});
 	});
+}
+
+module.exports.verificarEmail = async function (request, response) {
+	const datas = { vEmail: request.email.toLowerCase() };
+	result = await usuario.verificarEmail(datas);
+
+	if(result.status !== true) {
+		log.errores('VERIFICAR / EMAIL.', result.message);
+
+		throw new Error('Error al verificar el email: ' + request.email);
+	}
+	log.eventos('VERIFICAR / EMAIL.', 'Se verificó con éxito el email: ' + request.email);
+
+	return result.message;
 }
