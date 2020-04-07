@@ -11,6 +11,7 @@ const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
 const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
+const mediaTensionBL = require('../BL/mediaTensionBL');
 const mediaTensionController = require('../Controller/mediaTensionController');
 
 router.use(express.json());
@@ -47,6 +48,22 @@ router.post('/validar-usuario', function (request, response) {
 		response.json({
 			status: 500,
 			message: error.message
+		});
+	});
+});
+
+router.post('/verificar-email', function (request, response) {
+	usuarioBL.verificarEmail(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
 		});
 	});
 });

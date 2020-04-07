@@ -54,6 +54,28 @@ function validarBD (datas) {
   	});
 }
 
+function verificarEmailDB(datas) {
+	const { vEmail } = datas;
+
+	return new Promise((resolve, reject) => {
+		mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [7, null, null, null, null, null, null, null, null, null, null, null, null, vEmail, null, null, null], (error, rows) => {
+			if (error) {
+				const response = {
+					status: false,
+					message: error
+				}
+				resolve (response);
+			} else {
+				const response = {
+					status: true,
+					message: "El usuario se ha verificado con éxito."
+				}
+				resolve(response);
+			}
+		});
+	});
+}
+
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
 
@@ -62,6 +84,12 @@ module.exports.insertar = async function (datas, response) {
 
 module.exports.validar = async function (datas, response) {
 	const result = await validarBD(datas);
+
+	return result;
+}
+
+module.exports.verificarEmail = async function (datas, response) {
+	const result = await verificarEmailDB(datas);
 
 	return result;
 }
