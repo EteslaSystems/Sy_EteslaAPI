@@ -71,7 +71,16 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 				//console.log(_arrayNoDePaneles);
 				/*#endregion*/
 				/*#region Inversores_cotizacion*/
+
+
+
+				//Mandar el ID del Inversor seleccionado, para que este pueda ser filtrado
+
+
+
 				_arrayNoDeInversores = await inversores.numeroDeInversores(_arrayNoDePaneles);
+				console.log('mediaTensionController() _arrayNoDeInversores says: ');
+				console.log(_arrayNoDeInversores);
 				/*#endregion*/
 			}
 			/*#endregion*/
