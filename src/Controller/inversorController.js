@@ -100,11 +100,12 @@ function consultaBD () {
   	});
 }
 
-function buscarBD (datas) {
-	const { idInversor } = datas;
+function buscarBD (idInversor) {
+	//const { idInversor } = datas;
+	var _idInversor = idInversor;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, _idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -130,84 +131,94 @@ function buscarBD (datas) {
 - @author: 				LH420
 - @date: 				07/04/2020
 */
-var objNoDeInversores = {};
+var objNoDeInversores = {
+	nombrePanel: '',
+	potenciaPicoInversor: 0,
+	cantidadPaneles: 0,
+	inversor: {
+		nombreInversor: '',
+		potenciaInversor: 0,
+		precioInversor: 0,
+		potenciaMaximaInversor: 0,
+		numeroDeInversores: 0
+	}
+};
 
-function numberOfInvestors(NumberOfPanelesArray){
-	getMaximumPower(NumberOfPanelesArray);
+async function numberOfInvestors(NumberOfPanelesArray){
+	var result = await getMaximumPower(NumberOfPanelesArray);
+	return result;
 }
 
-async function getAllInvestors(){
-	consultaInversores = await consultaBD();
-	consultaInversores = consultaInversores.message;
-	arrayInversores = consultaInversores;
+async function getFilteredInvestor(idInversor){
+	consultaFiltradaInversor = await buscarBD(idInversor);
+	consultaFiltradaInversor = consultaFiltradaInversor.message;
+	arrayInversores = consultaFiltradaInversor;
 	return arrayInversores;
 }
 
 async function getMaximumPower(NumberOfPanelesArray){
-	arrayInversoresWPmx = [];
+	var arrayInversoresWPmx = [];
 
-	arrayAllInvestors = await getAllInvestors();
-	
-	var j;
-	for(j = 0; j < NumberOfPanelesArray.length; j++)
+	for(var j = 0; j < NumberOfPanelesArray.length; j++)
 	{
-		_nombrePanel = NumberOfPanelesArray[j];
-		_potenciaPicoInvrsr = NumberOfPanelesArray[j].potenciaReal;
-
-		for(var i = 0; i <= j; i++){
-			_nombreInversor = arrayAllInvestors[i].vNombreMaterialFot;
-			_potencia = arrayAllInvestors[i].fPotencia;
-			_precio = arrayAllInvestors[i].fPrecio;
-			_potenciaMaximaInversor = _potencia * 1.25;
-			NoOfInvestors = _potenciaPicoInvrsr / _potenciaMaximaInversor;
-		}
-
+		_nombrePanel = NumberOfPanelesArray[j].nombre;
+		_marcaPanel = NumberOfPanelesArray[j].marca;
+		_potenciaPanel = NumberOfPanelesArray[j].potencia;
+		_potenciaReal = NumberOfPanelesArray[j].potenciaReal;
+		_cantidadPaneles = NumberOfPanelesArray[j].noModulos;
+		
 		objNoDeInversores = {
+			no: j,
 			nombrePanel: _nombrePanel,
-			nombreInversor: _nombreInversor,
-			potencia: _potencia,
-			precio: _precio,
-			potenciaMaxima: _potenciaMaximaInversor,
-			noInversores: NoOfInvestors
-		}
-
+			marcaPanel: _marcaPanel,
+			potenciaPanel: _potenciaPanel,
+			cantidadPaneles: _cantidadPaneles,
+			potenciaReal: _potenciaReal
+		};
+		
+		await putInvestorsToObject(_potenciaReal);
 		arrayInversoresWPmx.push(objNoDeInversores);
 	}
+	return arrayInversoresWPmx;
+}
 
-	console.log('getMaximumPower() says: ');
-	console.log(arrayInversoresWPmx);
+async function putInvestorsToObject(potenciaReal_){
+	idInvestor = '30653962386633302D373930342D3131';
+	arrayAllInvestors = await getFilteredInvestor(idInvestor);
 
-	/*for(var i = 0; i < arrayAllInvestors.length; i++){
+	for(var i = 0; i < arrayAllInvestors.length; i++)
+	{
 		_nombreInversor = arrayAllInvestors[i].vNombreMaterialFot;
 		_potencia = arrayAllInvestors[i].fPotencia;
 		_precio = arrayAllInvestors[i].fPrecio;
+		_marca = arrayAllInvestors[i].vMarca;
 		_potenciaMaximaInversor = _potencia * 1.25;
-		_nombrePanel = NumberOfPanelesArray[i].nombre;
-		_potenciaPicoInvrsr = NumberOfPanelesArray[i].potenciaReal;
-		NoOfIvestors = _potenciaPicoInvrsr / _potenciaMaximaInversor;
+		NoOfInvestors = potenciaReal_ / _potenciaMaximaInversor;
+		NoOfInvestors = NoOfInvestors * 1000;
+		NoOfInvestors = Math.ceil(NoOfInvestors);
+		_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
+		_porcentajeSobreDimensionamiento = _potenciaPicoInversor / potenciaReal_;
+		_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
+		_porcentajeSobreDimensionamiento = Math.ceil(_porcentajeSobreDimensionamiento);
 
-		console.log('getMaximumPower() says: '+NumberOfPanelesArray[i].nombre);
-
-		objNoDeInversores = {
-			nombrePanel: _nombrePanel,
-			nombreInversor: _nombre,
-			potencia: _potencia,
-			precio: _precio,
-			potenciaMaxima: _potenciaMaximaInversor,
-			noInversores: NoOfIvestors
-		}
-
-		arrayInversoresWPmx.push(objNoDeInversores);
+		objNoDeInversores.inversor = {
+			nombreInversor: _nombreInversor,
+			marcaInversor: _marca,
+			potenciaInversor: _potencia,
+			precioInversor: _precio,
+			potenciaMaximaInversor: _potenciaMaximaInversor,
+			numeroDeInversores: NoOfInvestors,
+			potenciaPicoInversor: _potenciaPicoInversor,
+			porcentajeSobreDimens: _porcentajeSobreDimensionamiento
+		};
 	}
-	//console.log('getMaximumPower() says: '+NumberOfPanelesArray[0].nombre);
-	console.log(arrayInversoresWPmx);
-	//return arrayAllInvestors;*/
 }
 
-module.exports.numeroDeInversores = function(arrayNoDePaneles){
-	const result = numberOfInvestors(arrayNoDePaneles);
+
+module.exports.numeroDeInversores = async function(arrayNoDePaneles){
+	const result = await numberOfInvestors(arrayNoDePaneles);
 	
-	//return result;
+	return result;
 }
 /*#endregion*/
 
