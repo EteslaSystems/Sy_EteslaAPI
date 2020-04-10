@@ -1,4 +1,6 @@
-/config
+config/configStart.js
+config/database.js
+config/logConfig.js
 /node_modules
 src/Logs/*
 package-lock.json
