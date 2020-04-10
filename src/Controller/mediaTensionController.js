@@ -6,6 +6,7 @@
 const irradiacion = require('../Controller/irradiacionController');
 const paneles = require('../Controller/panelesController');
 const inversores = require('../Controller/inversorController');
+const viaticos = require('../Controller/opcionesViaticsController');
 
 /*#region GDMTH*/
 var eficiencia = 0.82;
@@ -25,9 +26,14 @@ var averageCmxn = 0.0;
 var averageDmxn = 0.0;*/
 
 //Datos de consumo
-function cotizacionGDMTH(data){
-	menosUno = data.length - 1;
-	promedioDePropiedadesPeriodoGDMTH(data);
+async function cotizacionGDMTH(data){
+	oficina = data[0].oficina;
+	direccionCliente = data[0].direccionCliente;
+	viaticos.main(oficina, direccionCliente);
+	/*v = data.length - 1;
+	arrayConVinacionesPanelesInversores = await promedioDePropiedadesPeriodoGDMTH(data);
+	console.log('cotizacionGDMTH(data) says: ');
+	console.log(arrayConVinacionesPanelesInversores);*/
 }
 
 /*#endregion*/
@@ -78,9 +84,8 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 
 
 
-				_arrayNoDeInversores = await inversores.numeroDeInversores(_arrayNoDePaneles);
-				console.log('mediaTensionController() _arrayNoDeInversores says: ');
-				console.log(_arrayNoDeInversores);
+				_arrayConvinacionesPanInv = await inversores.numeroDeInversores(_arrayNoDePaneles);
+				return _arrayConvinacionesPanInv;
 				/*#endregion*/
 			}
 			/*#endregion*/

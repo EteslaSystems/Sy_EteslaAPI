@@ -12,6 +12,7 @@ const panelBL = require('../BL/panelesBL');
 const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 const mediaTensionBL = require('../BL/mediaTensionBL');
+
 const mediaTensionController = require('../Controller/mediaTensionController');
 
 router.use(express.json());
@@ -19,6 +20,11 @@ router.use(express.json());
 /*
 - @section: 		Rutas para la sección de usuarios.
 */
+const v = require('../Controller/opcionesViaticsController');
+
+router.get('/test', function(){
+	v.main();
+});
 
 router.post('/agregar-usuario', function (request, response) {
 	usuarioBL.insertar(request.body)

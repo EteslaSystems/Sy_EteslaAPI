@@ -132,9 +132,12 @@ function buscarBD (idInversor) {
 - @date: 				07/04/2020
 */
 var objNoDeInversores = {
-	nombrePanel: '',
-	potenciaPicoInversor: 0,
-	cantidadPaneles: 0,
+	no: 0,
+	panel: {
+		nombrePanel: '',
+		potenciaPicoInversor: 0,
+		cantidadPaneles: 0,
+	},
 	inversor: {
 		nombreInversor: '',
 		potenciaInversor: 0,
@@ -169,11 +172,13 @@ async function getMaximumPower(NumberOfPanelesArray){
 		
 		objNoDeInversores = {
 			no: j,
-			nombrePanel: _nombrePanel,
-			marcaPanel: _marcaPanel,
-			potenciaPanel: _potenciaPanel,
-			cantidadPaneles: _cantidadPaneles,
-			potenciaReal: _potenciaReal
+			panel: {
+				nombrePanel: _nombrePanel,
+				marcaPanel: _marcaPanel,
+				potenciaPanel: _potenciaPanel,
+				cantidadPaneles: _cantidadPaneles,
+				potenciaReal: _potenciaReal
+			}
 		};
 		
 		await putInvestorsToObject(_potenciaReal);
@@ -217,7 +222,6 @@ async function putInvestorsToObject(potenciaReal_){
 
 module.exports.numeroDeInversores = async function(arrayNoDePaneles){
 	const result = await numberOfInvestors(arrayNoDePaneles);
-	
 	return result;
 }
 /*#endregion*/
@@ -251,3 +255,4 @@ module.exports.consultar = async function (response) {
 
 	return result;
 }
+

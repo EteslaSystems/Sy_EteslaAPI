@@ -129,7 +129,7 @@ function buscarBD (datas) {
 - @author: 				LH420
 - @date: 				01/04/2020
 */
-const otrosMateriales = require('../Controller/otrosMateriales');
+const otrosMateriales = require('./otrosMaterialesController');
 
 var objNoDeModulosPorPotenciaDelPanel = {};
 
