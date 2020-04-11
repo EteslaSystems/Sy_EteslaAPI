@@ -12,6 +12,8 @@ const panelBL = require('../BL/panelesBL');
 const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 const mediaTensionBL = require('../BL/mediaTensionBL');
+const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
+const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 
 const mediaTensionController = require('../Controller/mediaTensionController');
 
@@ -383,5 +385,11 @@ router.post('/sendPeriods', function(request){
 	mediaTensionController.cotizarGDMTH(request.body);
 });
 /*#endregion GDMTH*/
+
+/*
+- @section: 		Rutas para la sección de otros materiales y viaticos.
+*/
+
+
 
 module.exports = router; //Exportar la constate 'router' con el fin de que esta clase pueda ser ocupada por las demas
