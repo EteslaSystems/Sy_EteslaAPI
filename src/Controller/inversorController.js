@@ -176,7 +176,7 @@ async function getMaximumPower(NumberOfPanelesArray){
 				nombrePanel: _nombrePanel,
 				marcaPanel: _marcaPanel,
 				potenciaPanel: _potenciaPanel,
-				cantidadPaneles: _cantidadPaneles,
+				cantidadPaneles: _cantidadPaneles, //numeroDeModulos
 				potenciaReal: _potenciaReal
 			}
 		};

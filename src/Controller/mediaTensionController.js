@@ -27,13 +27,10 @@ var averageDmxn = 0.0;*/
 
 //Datos de consumo
 async function cotizacionGDMTH(data){
-	oficina = data[0].oficina;
-	direccionCliente = data[0].direccionCliente;
-	viaticos.main(oficina, direccionCliente);
-	/*v = data.length - 1;
+	menosUno = data.length - 1;
 	arrayConVinacionesPanelesInversores = await promedioDePropiedadesPeriodoGDMTH(data);
-	console.log('cotizacionGDMTH(data) says: ');
-	console.log(arrayConVinacionesPanelesInversores);*/
+	//console.log('cotizacionGDMTH(data) says: ');
+	//console.log(arrayConVinacionesPanelesInversores);
 }
 
 /*#endregion*/
@@ -48,9 +45,9 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 		for(var i = 0; i <= 11; i++) 
 		{
 			var condicional1 = i == 11;
-			var bkwh = Number.parseFloat(data[i].bkwh);
-			var ikwh = Number.parseFloat(data[i].ikwh);
-			var pkwh = Number.parseFloat(data[i].pkwh);
+			var bkwh = Number.parseFloat(data[i+1].bkwh);
+			var ikwh = Number.parseFloat(data[i+1].ikwh);
+			var pkwh = Number.parseFloat(data[i+1].pkwh);
 
 			/*#region Hipotesis ConsumoTotal*/
 			var periodo = bkwh + ikwh + pkwh;
@@ -63,6 +60,7 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 				promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
 				console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
 				/*#region PotenciaNecesaria*/
+				//var municipio = data[0].direccionCliente;	//Programar metodo que formate y obtenga el municipio de la DIRECCION del Cliente, ya que se pretende obtener un string largo para este parametro
 				var municipio = 'Tuxpan';
 				var irradiacion_ = await getIrradiation(municipio);
 				var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
@@ -85,7 +83,13 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 
 
 				_arrayConvinacionesPanInv = await inversores.numeroDeInversores(_arrayNoDePaneles);
-				return _arrayConvinacionesPanInv;
+				
+				//console.log('promedioDePropiedadesPeriodoGDMTH(data) says: ');
+				//console.log(_arrayConvinacionesPanInv);
+				/*#endregion*/
+				/*#region CalculoDeCuadrillas_Instaladores*/
+				var oficinaSucursal = data[0].oficina;
+				viaticos.main(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
 				/*#endregion*/
 			}
 			/*#endregion*/

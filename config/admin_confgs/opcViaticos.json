@@ -1,0 +1,13 @@
+{
+    "cuadrilla": {
+        "numeroDeCuadrillas": 1,
+        "numeroDePersonas": 6,
+        "modulosInstaladosPorCuadrilla": 40,
+        "semana": 1
+    },
+    "notasDeArchivoConf": {
+        "nota1": "Este archivo es para cambiar la formulas del numero total de personas que integran una cuadrilla de instaladores",
+        "nota2": "Los parametros de este archivo, pueden ser modificados unicamente por un SuperUsuario o un Administrador",
+        "nota3": "Favor de no editar, al menos que sepas para que sirve :v y en que afecta si le mueves!!!"
+    }
+}
