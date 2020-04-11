@@ -3,15 +3,10 @@
 - @author: 				LH420 & Jesús Daniel Carrera Falcón
 - @date: 				09/04/2020
 */
-<<<<<<< HEAD
 const request = require('request');
 const process = require('process'); 
 const fs = require('fs');
-=======
-
 const mysqlConnection = require('../../config/database');
-var request = require('request');
->>>>>>> 06daa9f66ad1f5f4ed725715a0632eca3e48d8b9
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -184,13 +179,10 @@ function obtenerDistanciaEnKm(origen, destino){
 }
 /*#endregion */
 
-<<<<<<< HEAD
 module.exports.main = function(arrayCotizacion, oficina, direccionCliente){
     main_calcularViaticos(arrayCotizacion, oficina, direccionCliente);
 }
-=======
-//Clave API GOOGLE:
-//AIzaSyCmixyi6v0bnLCfJYbp4RTcatXG4yb7NR8
+
 
 /* #region Opciones Viaticos Propuesta */
 function insertarOpcionesVPropuestaBD (datas) {
@@ -331,4 +323,3 @@ module.exports.buscarOpcionesVPropuesta = async function (datas, response) {
     return result;
 }
 /* #endregion */
->>>>>>> 06daa9f66ad1f5f4ed725715a0632eca3e48d8b9
