@@ -142,6 +142,7 @@ var objNoDeInversores = {
 		nombreInversor: '',
 		potenciaInversor: 0,
 		precioInversor: 0,
+		potenciaNominalInversor: 0,
 		potenciaMaximaInversor: 0,
 		numeroDeInversores: 0
 	}
@@ -169,6 +170,8 @@ async function getMaximumPower(NumberOfPanelesArray){
 		_potenciaPanel = NumberOfPanelesArray[j].potencia;
 		_potenciaReal = NumberOfPanelesArray[j].potenciaReal;
 		_cantidadPaneles = NumberOfPanelesArray[j].noModulos;
+		_precioPorPanel = NumberOfPanelesArray[j].precioPorPanel;
+		_costoDeEstructuras = NumberOfPanelesArray[j].costoDeEstructuras;
 		
 		objNoDeInversores = {
 			no: j,
@@ -177,7 +180,9 @@ async function getMaximumPower(NumberOfPanelesArray){
 				marcaPanel: _marcaPanel,
 				potenciaPanel: _potenciaPanel,
 				cantidadPaneles: _cantidadPaneles, //numeroDeModulos
-				potenciaReal: _potenciaReal
+				potenciaReal: _potenciaReal,
+				precioPorPanel: _precioPorPanel,
+				costoDeEstructuras: _costoDeEstructuras
 			}
 		};
 		
@@ -188,7 +193,7 @@ async function getMaximumPower(NumberOfPanelesArray){
 }
 
 async function putInvestorsToObject(potenciaReal_){
-	idInvestor = '30653962386633302D373930342D3131';
+	idInvestor = '30653962386633302D373930342D3131'; //Este id del inversor tiene que ser dinamico e ingresado por el usuario
 	arrayAllInvestors = await getFilteredInvestor(idInvestor);
 
 	for(var i = 0; i < arrayAllInvestors.length; i++)
@@ -202,14 +207,18 @@ async function putInvestorsToObject(potenciaReal_){
 		NoOfInvestors = NoOfInvestors * 1000;
 		NoOfInvestors = Math.ceil(NoOfInvestors);
 		_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
-		_porcentajeSobreDimensionamiento = _potenciaPicoInversor / potenciaReal_;
+		_potenciaPicoInversor = _potenciaPicoInversor * 1000;
+		_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
 		_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
-		_porcentajeSobreDimensionamiento = Math.ceil(_porcentajeSobreDimensionamiento);
+		_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
+		_porcentajeSobreDimensionamiento = parseFloat(_porcentajeSobreDimensionamiento);
+		potenciaNominal = NoOfInvestors * _potencia;
 
 		objNoDeInversores.inversor = {
 			nombreInversor: _nombreInversor,
 			marcaInversor: _marca,
 			potenciaInversor: _potencia,
+			potenciaNominalInversor: potenciaNominal,
 			precioInversor: _precio,
 			potenciaMaximaInversor: _potenciaMaximaInversor,
 			numeroDeInversores: NoOfInvestors,

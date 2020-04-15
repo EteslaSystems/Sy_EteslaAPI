@@ -22,11 +22,23 @@ router.use(express.json());
 /*
 - @section: 		Rutas para la sección de usuarios.
 */
+
+/*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
 const v = require('../Controller/opcionesViaticsController');
 
 router.get('/test', function(){
 	v.main();
 });
+
+/*router.post('/manoDeObra', function(request){
+	noPaneles = request.body;
+	noPaneles = noPaneles.noPaneles;
+
+	v.obtenerPrecioDeManoDeObra(noPaneles);
+});*/
+/*#endregion*/
+
+
 
 router.post('/agregar-usuario', function (request, response) {
 	usuarioBL.insertar(request.body)
