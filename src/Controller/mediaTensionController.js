@@ -33,10 +33,6 @@ async function cotizacionGDMTH(data){
 	//console.log(arrayConVinacionesPanelesInversores);
 }
 
-/*#endregion*/
-/*#region GDMTO*/
-/*#endregion*/
-
 var sumaConsumoTotalkWh = 0;
 var promedioConsumoTotalkWh = 0;
 
@@ -55,7 +51,7 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 			sumaConsumoTotalkWh += periodo;
 			condicional1 ? promedioConsumoTotalkWh = Number.parseFloat(sumaConsumoTotalkWh / 12) : null;
 			if(promedioConsumoTotalkWh > 0){
-				console.log('Suma total de periodos: '+sumaConsumoTotalkWh);
+				console.log('Consumo anual: '+sumaConsumoTotalkWh);
 				console.log('Promedio inicial: '+promedioConsumoTotalkWh);
 				promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
 				console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
@@ -199,6 +195,7 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 		}
 	}
 }
+/*#endregion*/
 
 async function obtenerPotenciaNecesaria(irradiacion_lugar){
 	let _porcentajePerdida = calcularPorcentajeDePerdida(18);//La cantidad que se envia 18%, tiene que cambiarse por una cantidad dinamica obtenida del clienteWeb
@@ -242,3 +239,6 @@ module.exports.promedioArray = async function (array, response) {
 	const result = await promediarArray(array);
 	return result;
 }
+
+/*#region GDMTO*/
+/*#endregion*/

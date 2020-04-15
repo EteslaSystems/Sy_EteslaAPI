@@ -160,7 +160,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 		_precio = arrayAllOfPanels[i].fPrecio;
 		potenciaDelPanel = arrayAllOfPanels[i].fPotencia;
 		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
-		costOfStructures = otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
+		structuresCost = otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
 		_potenciaReal = (potenciaDelPanel * NoOfModuls)/1000;
 
 		objNoDeModulosPorPotenciaDelPanel = {
@@ -170,7 +170,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 			potenciaReal: _potenciaReal,
 			noModulos: NoOfModuls,
 			precioPorPanel: _precio,
-			costoDeEstructuras: costOfStructures
+			costoDeEstructuras: structuresCost
 		};
 
 		arrayNoDeModulosPorPotenciaDelPanel.push(objNoDeModulosPorPotenciaDelPanel);
