@@ -402,6 +402,320 @@ router.post('/sendPeriods', function(request){
 - @section: 		Rutas para la sección de otros materiales y viaticos.
 */
 
+router.post('/agregar-categoriaMateriales', function (request, response) {
+	otrosMaterialesBL.insertarCategoriaMaterialesBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
 
+router.put('/eliminar-categoriaMateriales', function (request, response) {
+	otrosMaterialesBL.eliminarCategoriaMaterialesBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/editar-categoriaMateriales', function (request, response) {
+	otrosMaterialesBL.editarCategoriaMaterialesBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.get('/listar-categoriaMateriales', function (request, response) {
+	otrosMaterialesBL.consultaCategoriaMaterialesBL()
+	.then(material => {
+		response.json(material);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/buscar-categoriaMateriales', function (request, response) {
+	otrosMaterialesBL.buscarCategoriaMaterialesBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+/* --------------------------------------------------------------------------- */
+
+router.post('/agregar-otroMaterial', function (request, response) {
+	otrosMaterialesBL.insertarOtroMaterialBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/eliminar-otroMaterial', function (request, response) {
+	otrosMaterialesBL.eliminarOtroMaterialBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/editar-otroMaterial', function (request, response) {
+	otrosMaterialesBL.editarOtroMaterialBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.get('/listar-otroMaterial', function (request, response) {
+	otrosMaterialesBL.consultaOtroMaterialBL()
+	.then(material => {
+		response.json(material);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/buscar-otroMaterial', function (request, response) {
+	otrosMaterialesBL.buscarOtroMaterialBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+/* --------------------------------------------------------------------------- */
+
+router.post('/agregar-materialesPropuesta', function (request, response) {
+	otrosMaterialesBL.insertarMaterialesPropuestaBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/eliminar-materialesPropuesta', function (request, response) {
+	otrosMaterialesBL.eliminarMaterialesPropuestaBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/editar-materialesPropuesta', function (request, response) {
+	otrosMaterialesBL.editarMaterialesPropuestaBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.get('/listar-materialesPropuesta', function (request, response) {
+	otrosMaterialesBL.consultaMaterialesPropuestaBL()
+	.then(material => {
+		response.json(material);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/buscar-materialesPropuesta', function (request, response) {
+	otrosMaterialesBL.buscarMaterialesPropuestaBL(request.body)
+	.then(material => {
+		response.json({
+			status: 200,
+			message: material,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+/*
+- @section: 		Rutas para la sección de opciones viaticos.
+*/
+
+router.post('/agregar-opcionesViatics', function (request, response) {
+	opcionesViaticsBL.insertar(request.body)
+	.then(viatics => {
+		response.json({
+			status: 200,
+			message: viatics,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/eliminar-opcionesViatics', function (request, response) {
+	opcionesViaticsBL.eliminar(request.body)
+	.then(viatics => {
+		response.json({
+			status: 200,
+			message: viatics,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/editar-opcionesViatics', function (request, response) {
+	opcionesViaticsBL.editar(request.body)
+	.then(viatics => {
+		response.json({
+			status: 200,
+			message: viatics,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.get('/listar-opcionesViatics', function (request, response) {
+	opcionesViaticsBL.consultar()
+	.then(viatics => {
+		response.json(viatics);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
+
+router.put('/buscar-opcionesViatics', function (request, response) {
+	opcionesViaticsBL.buscar(request.body)
+	.then(viatics => {
+		response.json({
+			status: 200,
+			message: viatics,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
+	});
+});
 
 module.exports = router; //Exportar la constate 'router' con el fin de que esta clase pueda ser ocupada por las demas
