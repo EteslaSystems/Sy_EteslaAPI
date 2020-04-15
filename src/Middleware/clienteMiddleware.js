@@ -25,15 +25,15 @@ function clienteValidation (data) {
             .required(message.required),
         nombrePersona: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
             .required(message.required),
         primerApellido: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
             .required(message.required),
         segundoApellido: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
             .required(message.required),
         telefono: yup
             .string(message.string)
@@ -52,11 +52,11 @@ function clienteValidation (data) {
             .required(message.required),
         municipio: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
             .required(message.required),
         estado: yup
             .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
+            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
             .required(message.required),
     });
 

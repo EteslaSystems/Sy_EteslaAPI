@@ -6,7 +6,7 @@
 
 const otrosMateriales = require('../Controller/otrosMaterialesController');
 const log = require('../../config/logConfig');
-const validations = require('../Middleware/otrosMaterialesMiddleware');
+//const validations = require('../Middleware/otrosMaterialesMiddleware');
 var moment = require('moment-timezone');
 
 /* #region Categoría Otros Materiales */
@@ -286,7 +286,7 @@ module.exports.eliminarMaterialesPropuestaBL = async function (request, response
 }
 
 module.exports.editarMaterialesPropuestaBL = async function (request, response) {
-	let validate = await validations.panelValidation(request);
+	//let validate = await validations.panelValidation(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
