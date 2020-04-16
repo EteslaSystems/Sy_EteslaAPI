@@ -8,7 +8,7 @@
 const mysqlConnection = require('../../config/database');
 
 /*#region Paneles*/
-var costoEstructura = 42; //Este dato tiene que ser dinamico y extraido de una tabla de BD (Nota: agregar tabla "otros_materiales" a la Bd)
+var costoEstructura = 45; //Este dato tiene que ser dinamico y extraido de una tabla de BD (Nota: agregar tabla "otros_materiales" a la Bd)
 
 function getCostPanelsStructures(numberOfPanels){
     structuresCost = numberOfPanels * costoEstructura;

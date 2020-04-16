@@ -22,14 +22,90 @@ router.use(express.json());
 /*
 - @section: 		Rutas para la sección de usuarios.
 */
+
+/*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
 const v = require('../Controller/opcionesViaticsController');
 
 router.get('/test', function(){
 	v.main();
 });
 
+/*router.post('/manoDeObra', function(request){
+	noPaneles = request.body;
+	noPaneles = noPaneles.noPaneles;
+
+	v.obtenerPrecioDeManoDeObra(noPaneles);
+});*/
+/*#endregion*/
+
+
+
 router.post('/agregar-usuario', function (request, response) {
 	usuarioBL.insertar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/eliminar-usuario', function (request, response) {
+	usuarioBL.eliminar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/editar-usuario', function (request, response) {
+	usuarioBL.editar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.get('/consultar-usuarios', function (request, response) {
+	usuarioBL.consultar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/buscar-usuario', function (request, response) {
+	usuarioBL.consultarId(request.body)
 	.then(usuario => {
 		response.json({
 			status: 200,
