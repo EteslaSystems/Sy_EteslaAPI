@@ -7,11 +7,10 @@
 const usuario = require('../Controller/usuarioController');
 const log = require('../../config/logConfig');
 const validations = require('../Middleware/usuarioMiddleware');
-//const mailer = require('../../config/mailConfig');
+const mailer = require('../../config/mailConfig');
 const jwt = require('jsonwebtoken'); 
 const secret = 'eTeslaSecret';
 var moment = require('moment-timezone');
-
 
 module.exports.insertar = async function (request, response) {
 	let validate = await validations.usuarioValidation(request);
@@ -65,6 +64,93 @@ module.exports.insertar = async function (request, response) {
 	} else {
 		throw new Error(validate.message);
 	}
+}
+
+module.exports.eliminar = async function (request, response) {
+	let now = moment().tz("America/Mexico_City").format();
+	let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+
+	const datas = {
+		idPersona: request.id,
+		deleted_at: fecha
+	};
+
+	result = await usuario.eliminar(datas);
+
+	if(result.status !== true) {
+		log.errores('ELIMINAR / USUARIO.', result.message);
+
+		throw new Error('Error al eliminar los datos.');
+	}
+
+	log.eventos('ELIMINAR / USUARIO.', '1 fila eliminada.');
+
+	return result.message;
+}
+
+module.exports.editar = async function (request, response) {
+	let validate = await validations.usuarioValidation(request);
+
+	if (validate.status == true) {
+		let now = moment().tz("America/Mexico_City").format();
+		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+
+		const datas = {
+			idPersona: request.idPersona,
+			vContrasenia: request.contrasenia,
+	        	vOficina: request.oficina,
+	        	vNombrePersona: request.nombrePersona,
+	        	vPrimerApellido: request.primerApellido,
+	        	vSegundoApellido: request.segundoApellido,
+			updated_at: fecha
+	     };
+
+		result = await usuario.editar(datas);
+
+		if(result.status !== true) {
+			log.errores('EDITAR / USUARIO.', result.message);
+
+			throw new Error('Error al editar los datos.');
+		}
+
+		log.eventos('EDITAR / USUARIO.', '1 fila editada.');
+
+		return result.message;
+	} else {
+		throw new Error(validate.message);
+	}
+}
+
+module.exports.consultar = async function (response) {
+	const result = await usuario.consultar();
+
+	if(result.status !== true) {
+		log.errores('CONSULTA / USUARIOS.', result.message);
+
+		throw new Error('Error al consultar los datos.');
+	}
+
+	log.eventos('CONSULTA / USUARIOS.', result.message.length + ' filas consultadas.');
+
+	return result.message;
+}
+
+module.exports.consultarId = async function (request, response) {
+	const datas = {
+		idPersona: request.id
+	};
+
+	result = await usuario.consultarId(datas);
+
+	if(result.status !== true) {
+		log.errores('BUSQUEDA / USUARIO POR ID.', result.message);
+
+		throw new Error('Error al consultar los datos.');
+	}
+
+	log.eventos('BUSQUEDA / USUARIO POR ID.', result.message.length + ' filas consultadas.');
+
+	return result.message;
 }
 
 module.exports.validar = async function (request, response) {
