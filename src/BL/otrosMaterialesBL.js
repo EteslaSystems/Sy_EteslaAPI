@@ -1,6 +1,6 @@
 /*
 - @description: 		Archivo correspondiente a la sección de reglas a cumplir de los datos recibidos.
-- @author: 			Jesús Daniel Carrera Falcón
+- @author: 				Jesús Daniel Carrera Falcón
 - @date: 				13/04/2020
 */
 
@@ -11,7 +11,7 @@ var moment = require('moment-timezone');
 
 /* #region Categoría Otros Materiales */
 module.exports.insertarCategoriaMaterialesBL = async function (request, response) {
-	//let validate = await validations.panelValidation(request);
+	let validate = await validations.categoriaValidation(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
@@ -61,7 +61,7 @@ module.exports.eliminarCategoriaMaterialesBL = async function (request, response
 }
 
 module.exports.editarCategoriaMaterialesBL = async function (request, response) {
-	//let validate = await validations.panelValidation(request);
+	let validate = await validations.categoriaValidation(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
@@ -108,7 +108,7 @@ module.exports.buscarCategoriaMaterialesBL = async function (request, response) 
 		idCategOtrosMateriales: request.id
 	};
 
-	result = await otrosMateriales.buscarCategoriaMaterialesBL(datas);
+	result = await otrosMateriales.buscarCategoriaMateriales(datas);
 
 	if(result.status !== true) {
 		log.errores('BUSQUEDA / CATEGORIA MATERIALES.', result.message);
@@ -124,7 +124,7 @@ module.exports.buscarCategoriaMaterialesBL = async function (request, response) 
 
 /* #region Otros Materiales */
 module.exports.insertarOtroMaterialBL = async function (request, response) {
-	//let validate = await validations.panelValidation(request);
+	let validate = await validations.materialesValidation(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
@@ -177,7 +177,7 @@ module.exports.eliminarOtroMaterialBL = async function (request, response) {
 }
 
 module.exports.editarOtroMaterialBL = async function (request, response) {
-	//let validate = await validations.panelValidation(request);
+	let validate = await validations.materialesValidation(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
