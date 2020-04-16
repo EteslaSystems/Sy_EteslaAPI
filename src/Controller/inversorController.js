@@ -170,7 +170,7 @@ async function getMaximumPower(NumberOfPanelesArray){
 		_potenciaPanel = NumberOfPanelesArray[j].potencia;
 		_potenciaReal = NumberOfPanelesArray[j].potenciaReal;
 		_cantidadPaneles = NumberOfPanelesArray[j].noModulos;
-		_precioPorPanel = NumberOfPanelesArray[j].precioPorPanel;
+		_precioPorWatt = NumberOfPanelesArray[j].precioPorPanel;
 		_costoDeEstructuras = NumberOfPanelesArray[j].costoDeEstructuras;
 		
 		objNoDeInversores = {
@@ -181,7 +181,7 @@ async function getMaximumPower(NumberOfPanelesArray){
 				potenciaPanel: _potenciaPanel,
 				cantidadPaneles: _cantidadPaneles, //numeroDeModulos
 				potenciaReal: _potenciaReal,
-				precioPorPanel: _precioPorPanel,
+				precioPorWatt: _precioPorWatt,
 				costoDeEstructuras: _costoDeEstructuras
 			}
 		};

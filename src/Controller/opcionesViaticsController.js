@@ -10,12 +10,15 @@ const configFile = require('../Controller/configFileController');
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
+var descuento = 0.00; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
 
 async function main_calcularViaticos(_arrayCotizacion, _oficina, _direccionCliente){
     distanciaEnKm = await obtenerDistanciaEnKm(_oficina, _direccionCliente);
     //distanciaEnKm = distanciaEnKm.message;
     distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
-    calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm);
+    _arrayCotizacion = await calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm);
+    
+    return _arrayCotizacion;
 }
 
 /*#region Cuadrilla - Mano de obra*/
@@ -32,9 +35,9 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
         __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel;
         __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles; //numeroDeModulos
         __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal;
-        //__precioPorPanel = _arrayCotizacion[x].panel.precioPorPanel;
+        __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
         __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
-        __precioPorModulo = __potenciaPanel * _configFile.costos.precio_watt;
+        __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
         costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
 
         __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor;
@@ -59,9 +62,15 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
         pagoComidaTotal = comida * numeroDePersonasRequeridas * numeroDiasReales;
         pagoHospedajeTotal = hospedaje * numeroDePersonasRequeridas * numeroDiasReales;
         totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
-        costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles);
         costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras;
         costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes);
+        costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
+        subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
+        margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
+        totalDeTodo = subtotOtrFletManObrTPIE + margen;
+        precio = totalDeTodo * (1 - descuento);
+        precioMasIVA = precio * _configFile.costos.precio_mas_iva;
+        costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
 
         cotizacion = {
             no: _arrayCotizacion[x].no,
@@ -99,16 +108,22 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                 totalViaticosMT: totalViaticosMT
             },
             totales: {
-                manoDeObra: costoManoDeObra,
+                manoDeObra: costoManoDeObra[0],
+                otrosTotal: costoManoDeObra[1],
                 costoTotalFletes: costoTotalFletes,
-                totalPanelesInversoresEstructuras: costoTotalPanInvEstr
+                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
+                margen: margen,
+                totalDeTodo: totalDeTodo,
+                precio: precio,
+                precioMasIVA: precioMasIVA,
+                costForWatt: costForWatt
             }
         }
 
         _cotizacion.push(cotizacion);
     }
-    console.log('calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm) says: ');
-    console.log(_cotizacion);
+    return _cotizacion;
 }
 
 function getNumberOfCrews(_numeroPanelesAInstalar){
@@ -121,7 +136,8 @@ function getNumberOfCrews(_numeroPanelesAInstalar){
     return numberOfCrews;
 }
 
-function getPrecioDeManoDeObra(__cantidadPaneles){
+function getPrecioDeManoDeObra(__cantidadPaneles, _costoTotalPanInvEstr){
+    var arrayLaborOtrosPrice = [];
     var laborPrice = 0;
     var otros = 0;
 
@@ -130,9 +146,13 @@ function getPrecioDeManoDeObra(__cantidadPaneles){
         otros = 4100;
 
         if(__cantidadPaneles === 1){
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+            return arrayLaborOtrosPrice;
         }else{
             for(var i=2; i <= __cantidadPaneles; i++){
+                otros = otros + 100;
+
                 if(i === 2){
                     laborPrice = laborPrice + 200;
                 }
@@ -146,30 +166,45 @@ function getPrecioDeManoDeObra(__cantidadPaneles){
                     laborPrice = laborPrice + 192;
                 }
             }
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+
+            return arrayLaborOtrosPrice;
         }
     }
 
     if(__cantidadPaneles >= 8 && __cantidadPaneles < 14){
         laborPrice = 3350;
+        otros = 4800;
 
         if(__cantidadPaneles === 8){
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+            return arrayLaborOtrosPrice;
         }else{
             for(var i=9; i == __cantidadPaneles; i++){
                 laborPrice = laborPrice + 50;
+                otros = otros + 100;
             }
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+            
+            return arrayLaborOtrosPrice;
         }
     }
 
     if(__cantidadPaneles >= 14 && __cantidadPaneles < 22){
         laborPrice = 3650;
+        otros = 6700;
 
         if(__cantidadPaneles === 14){
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+            return arrayLaborOtrosPrice;
         }else{
             for(var i=15; i<=__cantidadPaneles; i++){
+                otros = otros + 100;
+
                 if(i === 17){
                     laborPrice = laborPrice + 15;
                 }
@@ -185,17 +220,25 @@ function getPrecioDeManoDeObra(__cantidadPaneles){
                     laborPrice = laborPrice + 25;
                 }
             }
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+
+            return arrayLaborOtrosPrice;
         }
     }
 
     if(__cantidadPaneles >= 22 && __cantidadPaneles < 40){
         laborPrice = 4000;
+        otros = 8500;
         
         if(__cantidadPaneles === 22){
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+            return arrayLaborOtrosPrice;
         }else{
             for(var i=23; i <= __cantidadPaneles; i++){
+                otros = otros + 100;
+
                 if(i === 25){
                     laborPrice = laborPrice + 223;
                 }
@@ -212,29 +255,43 @@ function getPrecioDeManoDeObra(__cantidadPaneles){
                     laborPrice = laborPrice + 222;
                 }
             }
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+
+            return arrayLaborOtrosPrice;
         }
     }
 
     if(__cantidadPaneles >= 40 && __cantidadPaneles < 46){
         laborPrice = 8000;
+        otros = 10300;
 
         if(__cantidadPaneles === 40){
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+            return arrayLaborOtrosPrice;
         }else{
             for(var i=41; i <= __cantidadPaneles; i++)
             {
                 laborPrice = laborPrice + 200;
+                otros = otros + 100;
             }
-            return laborPrice;
+            arrayLaborOtrosPrice[0] = laborPrice;
+            arrayLaborOtrosPrice[1] = otros;
+
+            return arrayLaborOtrosPrice;
         }
     }
 
-    laborPrice = __cantidadPaneles >= 46 ? (__cantidadPaneles * 200)/17 : null;
+    if(__cantidadPaneles >= 46){
+        laborPrice = Math.floor((__cantidadPaneles * 200)/17);
+        otros = Math.ceil(((_costoTotalPanInvEstr + laborPrice) * 0.036*17)/17);
+        arrayLaborOtrosPrice[0] = laborPrice;
+        arrayLaborOtrosPrice[1] = otros;
 
-    return laborPrice = Math.floor(laborPrice);
+        return arrayLaborOtrosPrice;
+    }
 }
-
 /*#endregion*/
 
 function getDays(_numeroPanelesAInstalar){
@@ -307,8 +364,9 @@ function obtenerDistanciaEnKm(origen, destino){
 }
 /*#endregion */
 
-module.exports.main = function(arrayCotizacion, oficina, direccionCliente){
-    main_calcularViaticos(arrayCotizacion, oficina, direccionCliente);
+module.exports.main = async function(arrayCotizacion, oficina, direccionCliente){
+    const result = await main_calcularViaticos(arrayCotizacion, oficina, direccionCliente);
+    return result;
 }
 
 

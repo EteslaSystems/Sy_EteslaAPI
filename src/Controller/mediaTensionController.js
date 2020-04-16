@@ -85,7 +85,9 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 				/*#endregion*/
 				/*#region CalculoDeCuadrillas_Instaladores*/
 				var oficinaSucursal = data[0].oficina;
-				viaticos.main(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
+				var _arrayCotizacion = viaticos.main(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
+
+				console.log('promedioDePropiedadesPeriodoGDMTH(data) says: '+_arrayCotizacion);
 				/*#endregion*/
 			}
 			/*#endregion*/
