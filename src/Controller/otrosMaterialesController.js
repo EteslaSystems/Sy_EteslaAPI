@@ -1,5 +1,5 @@
 /*
-- @description: 		Funciones para calcular los materiales que no son paneles o inversores, 
+- @description: 		Funciones para calcular los materiales que no son paneles o inversores,
 					pero que igual van incluidos en una instalación (estructuras, etc)
 - @author: 			LH420 & Jesús Daniel Carrera Falcón
 - @date: 				03/04/2020

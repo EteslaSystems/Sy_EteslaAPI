@@ -6,7 +6,7 @@
 
 const opcionesViatics = require('../Controller/opcionesViaticsController');
 const log = require('../../config/logConfig');
-const validations = require('../Middleware/otrosMaterialesMiddleware');
+//const validations = require('../Middleware/otrosMaterialesMiddleware');
 var moment = require('moment-timezone');
 
 module.exports.insertar = async function (request, response) {
