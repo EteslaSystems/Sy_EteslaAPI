@@ -6,7 +6,7 @@
 
 const otrosMateriales = require('../Controller/otrosMaterialesController');
 const log = require('../../config/logConfig');
-//const validations = require('../Middleware/otrosMaterialesMiddleware');
+const validations = require('../Middleware/otrosMaterialesMiddleware');
 var moment = require('moment-timezone');
 
 /* #region Categoría Otros Materiales */
