@@ -54,7 +54,7 @@ function editarBD (datas) {
 	const { idPersona, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido, updated_at } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, idPersona, null, null, vContrasenia, vOficina, null, vNombrePersona, vPrimerApellido, vSegundoApellido, null, null, null, null, updated_at, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, null, null, null, vContrasenia, vOficina, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, null, null, null, null, updated_at, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -64,7 +64,7 @@ function editarBD (datas) {
 			} else {
 				const response = {
 					status: true,
-					message: "El registro se ha editado con éxito."
+					message: rows[0]
 				}
 				resolve(response);
 			}
