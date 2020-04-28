@@ -1,0 +1,38 @@
+CREATE PROCEDURE SP_Irradiacion(
+	IN Opcion INT,
+	IN xIdIrradiacion VARCHAR(255),
+	IN CP VARCHAR(9),
+	IN Muncipio (30),
+	IN Irradiacion FLOAT,
+	IN created TIMESTAMP,
+	IN updated TIMESTAMP,
+	IN deleted TIMESTAMP
+)
+BEGIN
+	IF(Opcion = 0) THEN
+	/*Insertar*/
+	   INSERT INTO Irradiacion
+	   VALUES(UUID(), CP, Municipio, Irradiacion, created, NULL, NULL);
+	ELSEIF(Opcion = 1) THEN
+	/*Eliminar*/
+	   UPDATE Irradiacion
+	   SET deleted_at = deleted
+	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
+	ELSEIF(Opcion = 2) THEN
+	/*Actualizar*/
+	   UPDATE Irradiacion
+	   SET vCP = CP, vMunicipio = Municipio, fIrradiacion = Irradiacion, updated_at = updated
+	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
+	ELSEIF(Opcion = 3) THEN
+	/*Leer*/
+	   SELECT HEX(idIrradiacion) AS idIrradiacion, vCP, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
+	   FROM Irradiacion
+	   WHERE deleted_at IS NULL	
+	   ORDER BY created_at DESC;
+	ELSEIF(Opcion = 4) THEN
+	/*Leer - filtrado*/
+	   SELECT HEX(idIrradiacion) AS idIrradiacion, vCP, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
+	   FROM Irradiacion
+	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
+	END IF;
+END

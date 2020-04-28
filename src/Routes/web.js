@@ -36,6 +36,12 @@ router.get('/test', function(){
 	v.main();
 });
 
+const y = require('../Controller/powerController');
+
+router.get('/y', function(){
+	y.obtenerIrradiacionDiasMeses();
+});
+
 /*#endregion*/
 
 

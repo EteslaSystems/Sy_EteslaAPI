@@ -7,6 +7,7 @@ const irradiacion = require('../Controller/irradiacionController');
 const paneles = require('../Controller/panelesController');
 const inversores = require('../Controller/inversorController');
 const viaticos = require('../Controller/opcionesViaticsController');
+const power = require('../Controller/powerController');
 
 /*#region GDMTH*/
 var eficiencia = 0.82;
@@ -85,9 +86,13 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 				/*#endregion*/
 				/*#region CalculoDeCuadrillas_Instaladores*/
 				var oficinaSucursal = data[0].oficina;
-				var _arrayCotizacion = viaticos.main(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
+				var _arrayCotizacion = await viaticos.mainViaticos(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
 
-				console.log('promedioDePropiedadesPeriodoGDMTH(data) says: '+_arrayCotizacion);
+				//console.log('promedioDePropiedadesPeriodoGDMTH(data) says: ');
+				//console.log(_arrayCotizacion);
+
+				let _porcentajePerdida = calcularPorcentajeDePerdida(18);
+				power.mainPower(_arrayCotizacion, _porcentajePerdida, data);
 				/*#endregion*/
 			}
 			/*#endregion*/

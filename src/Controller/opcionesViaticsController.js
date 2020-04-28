@@ -364,7 +364,7 @@ function obtenerDistanciaEnKm(origen, destino){
 }
 /*#endregion */
 
-module.exports.main = async function(arrayCotizacion, oficina, direccionCliente){
+module.exports.mainViaticos = async function(arrayCotizacion, oficina, direccionCliente){
     const result = await main_calcularViaticos(arrayCotizacion, oficina, direccionCliente);
     return result;
 }
