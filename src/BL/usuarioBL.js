@@ -288,7 +288,7 @@ module.exports.eliminar = async function (request, response) {
 }
 
 module.exports.editar = async function (request, response) {
-	let validate = await validations.usuarioValidation(request);
+	let validate = await validations.usuarioValidationEdit(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
@@ -314,7 +314,36 @@ module.exports.editar = async function (request, response) {
 
 		log.eventos('EDITAR / USUARIO.', '1 fila editada.');
 
-		return result.message;
+		const payload = {
+			idUsuario: result.message[0].idUsuario,
+			rol: result.message[0].siRol,
+			tipoUsuario: result.message[0].ttTipoUsuario,
+			contrasenia: result.message[0].vContrasenia,
+			oficina: result.message[0].vOficina,
+			idPersona: result.message[0].idPersona,
+			nombrePersona: result.message[0].vNombrePersona,
+			primerApellido: result.message[0].vPrimerApellido,
+			segundoApellido: result.message[0].vSegundoApellido,
+			telefono: result.message[0].vTelefono,
+			celular: result.message[0].vCelular,
+			email: result.message[0].vEmail,
+			created_at: result.message[0].created_at,
+			updated_at: result.message[0].updated_at
+		};
+
+		return new Promise((resolve, reject) => {
+			jwt.sign(payload, secret, { expiresIn: 36000 }, (error, token) => {
+				if (error) {
+					log.errores('EDITAR / USUARIO.', 'Ocurrió un error al generar el token de usuario.');
+
+					throw new Error('Error en la genereación del token.');
+				} else {
+					log.eventos('EDITAR / USUARIO.', 'Token de usuario generado, acceso a: ' + payload.nombrePersona + '.');
+
+					resolve(token);
+				}
+			});
+		});
 	} else {
 		throw new Error(validate.message);
 	}
@@ -348,6 +377,8 @@ module.exports.consultarId = async function (request, response) {
 	}
 
 	log.eventos('BUSQUEDA / USUARIO POR ID.', result.message.length + ' filas consultadas.');
+
+	result.message[0].vContrasenia = String.fromCharCode.apply(null, result.message[0].vContrasenia);
 
 	return result.message;
 }
