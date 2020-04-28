@@ -62,6 +62,70 @@ router.post('/agregar-usuario', function (request, response) {
 	});
 });
 
+router.put('/eliminar-usuario', function (request, response) {
+	usuarioBL.eliminar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/editar-usuario', function (request, response) {
+	usuarioBL.editar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.get('/consultar-usuarios', function (request, response) {
+	usuarioBL.consultar(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/buscar-usuario', function (request, response) {
+	usuarioBL.consultarId(request.body)
+	.then(usuario => {
+		response.json({
+			status: 200,
+			message: usuario,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
 router.post('/validar-usuario', function (request, response) {
 	usuarioBL.validar(request.body)
 	.then(usuario => {

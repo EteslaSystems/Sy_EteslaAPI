@@ -1,5 +1,8 @@
 /config
+<<<<<<< HEAD
 /node_modules
+=======
+>>>>>>> f33d15decffdddaeb3a0f450d95aa26f2908b121
 /node_modules/*
 src/Logs/*
 package-lock.json
