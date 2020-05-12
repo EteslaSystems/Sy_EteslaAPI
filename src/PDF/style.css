@@ -1,0 +1,519 @@
+body {
+    width: 1295px;
+    height: 1000px;
+    padding: 0;
+    position: relative;
+    display: flex;
+}
+body .document-page {
+    width: 1245px;
+    height: 950px;
+    border: solid #FFF;
+    padding: 0;
+    position: absolute;
+    left: 25px;
+    top: 25px;
+}
+.document-page .header-pdf {
+    width: 1245px;
+    height: 250px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+    .header-pdf .header-info {
+        width: 865px;
+        height: 250px;
+        position: absolute;
+        left: 0;
+    }
+        .header-info .top {
+            width: 850px;
+            height: 125px;
+            border-bottom: solid grey 5px;
+            position: relative;
+        }
+            .top .info {
+                width: 550px;
+                height: 125px;
+                position: absolute;
+                left: 0;
+            }
+                .info .datas {
+                    width: 500px;
+                    height: 31.25px;
+                    position: relative;
+                }
+                    .datas div {
+                        height: 30px;
+                        position: absolute;
+                    }
+                    .datas .label-datas {
+                        width: 200px;
+                        left: 0;
+                    }
+                        .label-datas label {
+                            font-size: 20px;
+                            color: #777b7A;
+                            font-weight: bold;
+                            position: absolute;
+                            top: 2.5px;
+                            left: 5px;
+                        }
+                    .datas .input-datas {
+                        width: 300px;
+                        right: 0;
+                    }
+                        .input-datas input {
+                            width: 100%;
+                            height: 25px;
+                            border: none;
+                            border-radius: 5px;
+                            background: #CCC;
+                            position: absolute;
+                            top: 1.5px;
+                            text-align: center;
+                            font-size: 15px;
+                            font-weight: bold;
+                        }
+            .top .logo {
+                width: 300px;
+                height: 125px;
+                position: absolute;
+                padding: 0;
+                margin: 0;
+                right: 0;
+                text-align: center;
+            }
+                .logo img {
+                    width: 250px;
+                    height: 105px;
+                    position: absolute;
+                    top: 10px;
+                    left: 15px;
+                }
+        .header-info .bottom {
+            width: 795px;
+            height: 120px;
+            position: absolute;
+        }
+            .bottom div {
+                top: 10px;
+                height: 100px;
+                position: absolute;
+            }
+            .bottom .bottom-left {
+                width: 395px;
+                left: 0;
+            }
+                .bottom-left div {
+                    height: 95px;
+                    position: absolute;
+                }
+                .bottom-left .icons {
+                    width: 50px;
+                    border-right: solid lightgray 3px;
+                    left: 0;
+                }
+                .bottom-left .client {
+                    width: 330px;
+                    margin: 0;
+                    padding: 0;
+                    right: 5px;
+                }
+                    .client .client-info {
+                        width: 100%;
+                        height: 33px;
+                        position: relative;
+                        top: 0;
+                    }
+                        .client-info input {
+                            width: 100%;
+                            height: 27.5px;
+                            border: none;
+                            font-size: 15px;
+                            font-weight: bold;
+                        }
+            .bottom .bottom-right {
+                width: 395px;
+                right: 0;
+            }
+                .bottom-right div {
+                    height: 95px;
+                    position: absolute;
+                }
+                .bottom-right .icons {
+                    width: 50px;
+                    border-right: solid lightgray 3px;
+                    left: 0;
+                }
+                .bottom-right .client {
+                    width: 330px;
+                    margin: 0;
+                    padding: 0;
+                    right: 5px;
+                }
+                    .client .client-info {
+                        width: 100%;
+                        height: 33px;
+                        position: relative;
+                        top: 0;
+                    }
+                        .client-info input {
+                            width: 100%;
+                            height: 27.5px;
+                            border: none;
+                            font-size: 15px;
+                            font-weight: bold;
+                        }
+    .header-pdf .header-map {
+        width: 380px;
+        height: 250px;
+        position: absolute;
+        right: 0;
+    }
+        .header-map div {
+            width: 380px;
+            height: 240px;
+            position: absolute;
+            top: 5px;
+            background: #306BC9;
+        }
+.document-page .body-pdf {
+    width: 1245px;
+    height: 475px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+    .body-pdf .body-left {
+        width: 680px;
+        height: 430px;
+        background-color: #A9A9A9;
+        float: left;
+        border-radius: 10px 10px;
+        /* -----  PROPIOS  ----- */
+        z-index: 3;
+        position: absolute;
+        bottom: 0;
+    }
+        .body-left .left-margin {
+            width: 620px;
+            height: 370px;
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+            .left-margin .left-content {
+                width: 100%;
+                height: 160px;
+            }
+                .left-content .row {
+                    width: 100%;
+                    height: 40px;
+                    display: flex;
+                }
+                    .row label {
+                        margin: auto 5px;
+                        font-size: 22.5px;
+                        color: #7E7E7E;
+                        font-weight: normal;
+                    }
+                    .row input {
+                        width: 100%;
+                        height: 100%;
+                        margin: auto auto;
+                        border-radius: 5px 5px;
+                        border: none;
+                        background: #CCC;
+                        text-align: center;
+                        font-size: 35px;
+                    }
+                    .row .triangle, .row .triangle-1 {
+                        width: 0px;
+                        height: 0px;
+                        border-top: 35px solid gray;
+                        border-right: 50px solid transparent;
+                        border-left: 50px solid transparent;
+                    }
+                        .triangle {
+                            margin: auto auto;
+                        }
+                        .triangle-1 {
+                            margin: auto 5px;
+                        }
+                    .row .colors {
+                        width: 100%;
+                        height: 60%;
+                        margin: auto auto;
+                        background: rgba(19,171,70,1);
+                        background: linear-gradient(to right, rgba(19,171,70,1) 0%, rgba(19,171,70,1) 10%, rgba(189,207,72,1) 35%, rgba(189,207,72,1) 65%, rgba(242,22,22,1) 90%, rgba(242,22,22,1) 100%);
+                        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#13ab46', endColorstr='#f21616', GradientType=1 );
+                    }
+            .left-margin .left-content-an {
+                width: 100%;
+                height: 50px;
+                text-align: center;
+                padding: 15px 0px;
+            }
+                .left-content-an label {
+                    font-size: 15px;
+                    color: #7E7E7E;
+                    font-weight: bold;
+                }
+    .body-pdf .body-right {
+        width: 80%;
+        height: 470.25px;
+        background-color: #43555F;
+        float: right;
+        border-radius: 10px 10px;
+        /* -----  PROPIOS  ----- */
+        box-shadow: 1px 5px 10px;
+    }
+        .body-right .right-margin {
+            width: 540px;
+            height: 430px;
+            position: absolute;
+            top: 20px;
+            right: 10px;
+        }
+            .right-margin h1 {
+                margin-top: 50px;
+                font-size: 22.5px;
+                font-weight: normal;
+                color: #CCC;
+            }
+            .right-margin hr {
+                margin-top: -10px;
+                margin-bottom: 20px;
+            }
+            .right-margin .right-input {
+                width: 100%;
+                height: 320px;
+            }
+                .input-div {
+                    width: 100%;
+                    height: 100px;
+                    margin-bottom: 5px;
+                }
+                    .input-div .div-ll{
+                        width: 30%;
+                        height: 100px;
+                        position: absolute;
+                        left: 0;
+                    }
+                        .div-ll label {
+                            font-size: 20px;
+                            color: #CCC;
+                            font-weight: normal;
+                            position: absolute;
+                            left: 10px;
+                            top: 40px;
+                        }
+                    .input-div .div-it{
+                        width: 67.5%;
+                        height: 100px;
+                        position: absolute;
+                        right: 0;
+                    }
+                        .div-it input {
+                            width: 100%;
+                            height: 35px;
+                            border-radius: 5px 5px;
+                            border: none;
+                            background: #CCC;
+                            text-align: center;
+                            font-size: 35px;
+                            position: absolute;
+                            left: 0;
+                            top: 32.5px;
+                        }
+.document-page .footer-pdf {
+    width: 100%;
+    height: 225px;
+    padding: 0;
+    position: relative;
+}
+    .footer-pdf .footer-title {
+        width: 100%;
+        height: 65px;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        top: 0;
+    }
+        .footer-title h1 {
+            color: #777b7A;
+            position: inherit;
+            bottom: 0;
+            left: 30px;
+            font-size: 25px;
+            font-weight: normal;
+        }
+    .footer-pdf .footer-body {
+        width: 1245px;
+        height: 165px;
+        position: absolute;
+        bottom: 0;
+        z-index: 3;
+        border-radius: 10px;
+        background: rgba(204,204,204,1);
+        background: linear-gradient(to bottom, rgba(204,204,204,1) 0%, rgba(143,143,143,1) 35%, rgba(115,115,115,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cccccc', endColorstr='#737373', GradientType=0 );
+    }
+        .footer-body .footer-section-1, .footer-body .footer-section-2, .footer-body .footer-section-3 {
+            width: 400px;
+            height: 145px;
+            position: absolute;
+        }
+            .footer-section-1 {
+                left: 10px;
+                top: 10px;
+            }
+            .footer-section-2 {
+                left: 420px;
+                top: 10px;
+            }
+            .footer-section-3 {
+                right: 10px;
+                top: 10px;
+            }
+                .footer-section-1 .section-img, .footer-section-2 .section-img, .footer-section-3 .section-img   {
+                    width: 150px;
+                    height: 145px;
+                    position: absolute;
+                    left: 0;
+                }
+                    .section-img div {
+                        width: 115px;
+                        height: 115px;
+                        position: absolute;
+                        top: 15px;
+                        left: 17.5px;
+                        background: rgba(204, 204, 204, .5);
+                        border-radius: 15px 15px;
+                    }
+                        .section-img div img {
+                            width: 85px;
+                            height: 85px;
+                            position: absolute;
+                            top: 15px;
+                            left: 15px;
+                        }
+                .footer-section-1 .section-txt, .footer-section-2 .section-txt, .footer-section-3 .section-txt {
+                    width: 250px;
+                    height: 145px;
+                    position: absolute;
+                    right: 0;
+                }
+                    .section-txt .txt {
+                        width: 90%;
+                        height: 45px;
+                        text-align: center;
+                        margin-top: 5px;
+                    }
+                        .txt label {
+                            font-size: 18px;
+                            font-weight: bold;
+                        }
+                    .section-txt .txt-1 {
+                        width: 90%;
+                        height: 100px;
+                        text-align: center;
+                        position: relative;
+                    }
+                        .txt-1 input {
+                            width: 100%;
+                            height: 40px;
+                            border: none;
+                            border-radius: 5px;
+                            background: #CCCCCC;
+                            text-align: center;
+                            font-size: 25px;
+                            position: absolute;
+                            top: 5px;
+                            left: 0;
+                        }
+
+body .document-page-2 {
+    width: 1245px;
+    height: 950px;
+    border: solid #FFF;
+    padding: 0;
+    position: absolute;
+    left: 25px;
+    top: 1040px;
+}
+    .document-page-2 .content-logo {
+        width: 1200px;
+        height: 90px;
+        position: absolute;
+        top: 10px;
+        left: 22.5px;
+    }
+        .content-logo img {
+            width: 190px;
+            height: 90px;
+            position: absolute;
+            right: 10px;
+        }
+    .document-page-2 .content-top {
+        width: 1200px;
+        height: 400px;
+        position: absolute;
+        top: 110px;
+        left: 22.5px;
+    }
+        .content-top .top-left {
+            width: 575px;
+            height: 400px;
+            border: solid green;
+            position: absolute;
+            left: 10px;
+        }
+        .content-top .top-right {
+            width: 575px;
+            height: 400px;
+            border: solid green;
+            position: absolute;
+            right: 10px;
+        }
+    .document-page-2 .content-bottom {
+        width: 1200px;
+        height: 400px;
+        position: absolute;
+        bottom: 10px;
+        left: 22.5px;
+    }
+        .content-bottom .bottom-left {
+            width: 575px;
+            height: 400px;
+            border: solid green;
+            position: absolute;
+            left: 10px;
+        }
+        .content-bottom .bottom-right {
+            width: 575px;
+            height: 400px;
+            border: solid green;
+            position: absolute;
+            right: 10px;
+        }
+body .document-page-3 {
+    width: 1245px;
+    height: 950px;
+    border: solid #000;
+    padding: 0;
+    position: absolute;
+    left: 25px;
+    top: 2055px;
+}
+body .document-page-4 {
+    width: 1245px;
+    height: 950px;
+    border: solid #000;
+    padding: 0;
+    position: absolute;
+    left: 25px;
+    top: 3070px;
+}
