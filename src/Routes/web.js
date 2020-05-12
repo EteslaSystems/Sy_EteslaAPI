@@ -15,6 +15,8 @@ const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 
+const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
+
 router.use(express.json());
 
 /*
@@ -778,6 +780,26 @@ router.put('/buscar-opcionesViatics', function (request, response) {
 		response.json({
 			status: 500,
 			message: error.message,
+		});
+	});
+});
+
+/*
+- @section: 		Ruta para la creación del archivo PDF.
+*/
+
+router.post('/pdf', function (request, response) {
+	archivoPDF.crear(request.body)
+	.then(pdf => {
+		response.json({
+			status: 200,
+			message: pdf,
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
 		});
 	});
 });
