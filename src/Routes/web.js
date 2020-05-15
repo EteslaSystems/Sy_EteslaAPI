@@ -24,13 +24,45 @@ router.use(express.json());
 */
 
 /*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
-/*#region GDMTH*/
 const mediaTensionController = require('../Controller/mediaTensionController');
+/*#region Cotización*/
 
-router.post('/sendPeriods', function(request){
-	mediaTensionController.cotizarGDMTH(request.body);
+/*#region cotizacion_producto(sin ingresar datos de consumo)*/
+const cotizIndiv = require('../Controller/cotizacion_individualController');
+
+router.post('/cotizacionIndividual', function(request){
+	cotizIndiv.cotizacion_individual(request.body);
 });
+/*#endregion*/
+/*#region GDMTO*/
+/*#endregion*/
+/*#region GDMTH*/
+//1er. Paso:
+router.post('/sendPeriods', function(request, response){
+	mediaTensionController.obtenerEnergiaReqPanelesReq(request.body)
+	.then(convinacionPaneles => {
+		response.json({
+			status: 200,
+			message: convinacionPaneles
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
+
+
+
+
+
+
+
 /*#endregion GDMTH*/
+/*#endregion*/
 
 const v = require('../Controller/opcionesViaticsController');
 

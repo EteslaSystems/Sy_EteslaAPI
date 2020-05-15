@@ -5,13 +5,10 @@
   "main": "configStart.js",
   "scripts": {
     "start": "nodemon config/configStart.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "forever start config/database.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "API-Rest",
     "API",
-    "Rest",
     "Etesla",
     "Paneles",
     "Solares",

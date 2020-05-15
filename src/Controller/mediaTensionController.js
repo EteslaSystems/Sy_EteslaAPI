@@ -29,15 +29,37 @@ var averageDmxn = 0.0;*/
 //Datos de consumo
 async function cotizacionGDMTH(data){
 	menosUno = data.length - 1;
-	arrayConVinacionesPanelesInversores = await promedioDePropiedadesPeriodoGDMTH(data);
+	//arrayConVinacionesPanelesInversores = await promedioDePropiedadesPeriodoGDMTH(data);
 	//console.log('cotizacionGDMTH(data) says: ');
 	//console.log(arrayConVinacionesPanelesInversores);
+
+	/*1.- Obtener el consumo de energia y los paneles*/
+
 }
 
 var sumaConsumoTotalkWh = 0;
 var promedioConsumoTotalkWh = 0;
 
-async function promedioDePropiedadesPeriodoGDMTH(data){
+var responseEneryPanelsRequired = {
+	energiaRequerida: {
+		consumoAnual: 0,
+		promedioDelConsumo: 0,
+		potenciaNecesaria: 0
+	},
+	panel: {
+		nombre: '',
+		marca: '',
+		potencia: 0,
+		potenciaReal: 0,
+		noModulos: 0,
+		precioPorPanel: 0,
+		costoDeEstructuras: 0
+	}
+};
+
+async function obtenerEnergiaPaneles_Requeridos(data){
+	var arrayResponse = [];
+	
 	if(obtenerEspaciosFaltantesDelArray(data) == null){
 		for(var i = 0; i <= 11; i++) 
 		{
@@ -48,53 +70,9 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 
 			/*#region Hipotesis ConsumoTotal*/
 			var periodo = bkwh + ikwh + pkwh;
-			console.log('Periodo: '+periodo);
+			// console.log('Periodo: '+periodo);
 			sumaConsumoTotalkWh += periodo;
 			condicional1 ? promedioConsumoTotalkWh = Number.parseFloat(sumaConsumoTotalkWh / 12) : null;
-			if(promedioConsumoTotalkWh > 0){
-				console.log('Consumo anual: '+sumaConsumoTotalkWh);
-				console.log('Promedio inicial: '+promedioConsumoTotalkWh);
-				promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
-				console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
-				/*#region PotenciaNecesaria*/
-				//var municipio = data[0].direccionCliente;	//Programar metodo que formate y obtenga el municipio de la DIRECCION del Cliente, ya que se pretende obtener un string largo para este parametro
-				var municipio = 'Tuxpan';
-				var irradiacion_ = await getIrradiation(municipio);
-				var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
-				var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
-				/*#endregion*/
-				console.log('_irradiacion: '+irradiacion_);
-				console.log('_potenciaNecesaria: '+_potenciaNecesaria);
-				console.log('Consumo promedio 365: '+_consumoPromedio365)
-				/*#region Paneles_cotizacion*/
-				_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
-				//console.log('_arrayNoDePaneles says: ');
-				//console.log(_arrayNoDePaneles);
-				/*#endregion*/
-				/*#region Inversores_cotizacion*/
-
-
-
-				//Mandar el ID del Inversor seleccionado, para que este pueda ser filtrado
-
-
-
-				_arrayConvinacionesPanInv = await inversores.numeroDeInversores(_arrayNoDePaneles);
-				
-				//console.log('promedioDePropiedadesPeriodoGDMTH(data) says: ');
-				//console.log(_arrayConvinacionesPanInv);
-				/*#endregion*/
-				/*#region CalculoDeCuadrillas_Instaladores*/
-				var oficinaSucursal = data[0].oficina;
-				var _arrayCotizacion = await viaticos.mainViaticos(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
-
-				//console.log('promedioDePropiedadesPeriodoGDMTH(data) says: ');
-				//console.log(_arrayCotizacion);
-
-				let _porcentajePerdida = calcularPorcentajeDePerdida(18);
-				power.mainPower(_arrayCotizacion, _porcentajePerdida, data);
-				/*#endregion*/
-			}
 			/*#endregion*/
 
 			/*#region blahblah*/
@@ -136,6 +114,57 @@ async function promedioDePropiedadesPeriodoGDMTH(data){
 
 			//console.log(averageBkWh+','+averageIkWh+','+averagePkWh+','+averageBkW+','+averageIkW+','+averagePkW);
 			/*#endregion*/
+		}
+
+		if(promedioConsumoTotalkWh > 0){
+			// console.log('Consumo anual: '+sumaConsumoTotalkWh);
+			// console.log('Promedio inicial: '+promedioConsumoTotalkWh);
+			promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
+			// console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
+			/*#region PotenciaNecesaria*/
+			//var municipio = data[0].direccionCliente;	//Programar metodo que formate y obtenga el municipio de la DIRECCION del Cliente, ya que se pretende obtener un string largo para este parametro
+			var municipio = 'Tuxpan';
+			var irradiacion_ = await getIrradiation(municipio);
+			var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
+			var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
+			/*#endregion*/
+			// console.log('_irradiacion: '+irradiacion_);
+			// console.log('_potenciaNecesaria: '+_potenciaNecesaria);
+			// console.log('Consumo promedio 365: '+_consumoPromedio365)
+			/*#region Paneles_cotizacion*/
+			_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
+			//console.log('_arrayNoDePaneles says: ');
+			//console.log(_arrayNoDePaneles);
+			/*#endregion*/
+			/*#region Inversores_cotizacion*/
+			
+			responseEneryPanelsRequired = {
+				energiaRequerida: {
+					consumoAnual: sumaConsumoTotalkWh,
+					promedioDelConsumo: promedioConsumoTotalkWh,
+					potenciaNecesaria: _potenciaNecesaria
+				}
+			};
+
+			arrayResponse.push(responseEneryPanelsRequired);
+
+			for(var i=0; i<_arrayNoDePaneles.length; i++){
+				responseEneryPanelsRequired = {
+					panel: {
+						nombre: _arrayNoDePaneles[i].nombre,
+						marca: _arrayNoDePaneles[i].marca,
+						potencia: _arrayNoDePaneles[i].potencia,
+						potenciaReal: _arrayNoDePaneles[i].potenciaReal,
+						noModulos: _arrayNoDePaneles[i].noModulos,
+						precioPorPanel: _arrayNoDePaneles[i].precioPorPanel,
+						costoDeEstructuras: _arrayNoDePaneles[i].costoDeEstructuras
+					}
+				};
+
+				arrayResponse.push(responseEneryPanelsRequired);
+			}
+			
+			return arrayResponse;
 		}
 	}
 	else{
@@ -238,9 +267,29 @@ function obtenerEspaciosFaltantesDelArray(data){
 	}
 }
 
-module.exports.cotizarGDMTH = async function(data){
+/*module.exports.cotizarGDMTH = async function(data){
     await cotizacionGDMTH(data);
+}*/
+//1er. Paso
+module.exports.obtenerEnergiaReqPanelesReq = async function(data){
+	return result = await obtenerEnergiaPaneles_Requeridos(data);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports.promedioArray = async function (array, response) {
 	const result = await promediarArray(array);

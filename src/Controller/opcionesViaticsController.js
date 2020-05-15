@@ -25,104 +25,114 @@ async function main_calcularViaticos(_arrayCotizacion, _oficina, _direccionClien
 async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
     var _cotizacion = [];
     var _configFile = await configFile.getArrayOfConfigFile();
+    var distanciaEnKm = parseFloat(_distanciaEnKm);
 
-    for(var x = 0; x < _arrayCotizacion.length; x++)
+    if(distanciaEnKm > 30)
     {
-        /*#region iteracionArray*/
-        __no = _arrayCotizacion[x].no;
-        __nombrePanel = _arrayCotizacion[x].panel.nombrePanel;
-        __marcaPanel = _arrayCotizacion[x].panel.marcaPanel;
-        __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel;
-        __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles; //numeroDeModulos
-        __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal;
-        __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
-        __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
-        __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
-        costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
+        for(var x = 0; x < _arrayCotizacion.length; x++)
+        {
+            /*#region iteracionArray*/
+            __no = _arrayCotizacion[x].no || 0;
+            __nombrePanel = _arrayCotizacion[x].panel.nombrePanel;
+            __marcaPanel = _arrayCotizacion[x].panel.marcaPanel;
+            __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel;
+            __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles; //numeroDeModulos
+            __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal;
+            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
+            __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
+            __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
+            costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
 
-        __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor;
-        __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor;
-        __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor;
-        __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor;
-        __precioInversor = _arrayCotizacion[x].inversor.precioInversor;
-        __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor;
-        __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores;
-        __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor;
-        __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens;
-        costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor);
-        /*#endregion*/
-        numeroPanelesAInstalar = _arrayCotizacion[x].panel.cantidadPaneles;
-        _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar);
-        numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas;
-        numeroDias = getDays(numeroPanelesAInstalar);
-        numeroDiasReales = getRealDays(numeroPanelesAInstalar);
-        pagoPasaje = getBusPayment(_distanciaEnKm);
-        pagoPasajeTotal = pagoPasaje * numeroDePersonasRequeridas;
-        pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
-        pagoComidaTotal = comida * numeroDePersonasRequeridas * numeroDiasReales;
-        pagoHospedajeTotal = hospedaje * numeroDePersonasRequeridas * numeroDiasReales;
-        totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
-        costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras;
-        costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes);
-        costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
-        subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
-        margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
-        totalDeTodo = subtotOtrFletManObrTPIE + margen;
-        precio = totalDeTodo * (1 - descuento);
-        precioMasIVA = precio * _configFile.costos.precio_mas_iva;
-        costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
+            __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor;
+            __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor;
+            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor;
+            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor;
+            __precioInversor = _arrayCotizacion[x].inversor.precioInversor;
+            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor;
+            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores;
+            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor;
+            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens;
+            costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor);
+            /*#endregion*/
+            numeroPanelesAInstalar = _arrayCotizacion[x].panel.cantidadPaneles;
+            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar);
+            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas;
+            numeroDias = getDays(numeroPanelesAInstalar);
+            numeroDiasReales = getRealDays(numeroPanelesAInstalar);
+            pagoPasaje = getBusPayment(distanciaEnKm);
+            pagoPasajeTotal = pagoPasaje * numeroDePersonasRequeridas;
+            pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
+            pagoComidaTotal = comida * numeroDePersonasRequeridas * numeroDiasReales;
+            pagoHospedajeTotal = hospedaje * numeroDePersonasRequeridas * numeroDiasReales;
+            totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
+            costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras;
+            costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes);
+            costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
+            subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
+            margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
+            totalDeTodo = subtotOtrFletManObrTPIE + margen;
+            precio = totalDeTodo * (1 - descuento);
+            precioMasIVA = precio * _configFile.costos.precio_mas_iva;
+            costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
 
-        cotizacion = {
-            no: _arrayCotizacion[x].no,
-            paneles: {
-                nombrePanel: __nombrePanel,
-                marcaPanel: __marcaPanel,
-                potenciaPanel: __potenciaPanel,
-                cantidadPaneles: __cantidadPaneles, //numeroDeModulos
-                potenciaReal: __potenciaReal,
-                precioPorModulo: __precioPorModulo,
-                costoTotalPaneles: costoTotalPaneles
-            },
-            inversores: {
-                nombreInversor:  __nombreInversor,
-                marcaInversor: __marcaInversor,
-                potenciaInversor: __potenciaInversor,
-                potenciaNominalInversor: __potenciaNominalInversor,
-                potenciaPicoPorInversor: __potenciaPicoInversor,
-                precioInversor: __precioInversor,
-                potenciaMaximaInversor:  __potenciaMaximaInversor,
-                numeroDeInversores: __numeroDeInversores,
-                porcentajeSobreDimens: __porcentajeSobreDimens,
-                costoTotalInversores: costoTotalInversores
-            },
-            viaticos_costos: {
-                noCuadrillas: _numeroCuadrillas,
-                noPersonasRequeridas: numeroDePersonasRequeridas,
-                noDias: numeroDias,
-                noDiasReales: numeroDiasReales,
-                costoDeEstructuras:  __costoDeEstructuras,
-                pagoPasaje: pagoPasaje,
-                pagoTotalPasaje: pagoPasajeTotal,
-                pagoTotalComida: pagoComidaTotal,
-                pagoTotalHospedaje: pagoHospedajeTotal,
-                totalViaticosMT: totalViaticosMT
-            },
-            totales: {
-                manoDeObra: costoManoDeObra[0],
-                otrosTotal: costoManoDeObra[1],
-                costoTotalFletes: costoTotalFletes,
-                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-                subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
-                margen: margen,
-                totalDeTodo: totalDeTodo,
-                precio: precio,
-                precioMasIVA: precioMasIVA,
-                costForWatt: costForWatt
+            cotizacion = {
+                no: _arrayCotizacion[x].no,
+                paneles: {
+                    nombrePanel: __nombrePanel,
+                    marcaPanel: __marcaPanel,
+                    potenciaPanel: __potenciaPanel,
+                    cantidadPaneles: __cantidadPaneles, //numeroDeModulos
+                    potenciaReal: __potenciaReal,
+                    precioPorModulo: __precioPorModulo,
+                    costoTotalPaneles: costoTotalPaneles
+                },
+                inversores: {
+                    nombreInversor:  __nombreInversor,
+                    marcaInversor: __marcaInversor,
+                    potenciaInversor: __potenciaInversor,
+                    potenciaNominalInversor: __potenciaNominalInversor,
+                    potenciaPicoPorInversor: __potenciaPicoInversor,
+                    precioInversor: __precioInversor,
+                    potenciaMaximaInversor:  __potenciaMaximaInversor,
+                    numeroDeInversores: __numeroDeInversores,
+                    porcentajeSobreDimens: __porcentajeSobreDimens,
+                    costoTotalInversores: costoTotalInversores
+                },
+                viaticos_costos: {
+                    noCuadrillas: _numeroCuadrillas,
+                    noPersonasRequeridas: numeroDePersonasRequeridas,
+                    noDias: numeroDias,
+                    noDiasReales: numeroDiasReales,
+                    costoDeEstructuras:  __costoDeEstructuras,
+                    pagoPasaje: pagoPasaje,
+                    pagoTotalPasaje: pagoPasajeTotal,
+                    pagoTotalComida: pagoComidaTotal,
+                    pagoTotalHospedaje: pagoHospedajeTotal,
+                    totalViaticosMT: totalViaticosMT
+                },
+                totales: {
+                    manoDeObra: costoManoDeObra[0],
+                    otrosTotal: costoManoDeObra[1],
+                    costoTotalFletes: costoTotalFletes,
+                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                    subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
+                    margen: margen,
+                    totalDeTodo: totalDeTodo,
+                    precio: precio,
+                    precioMasIVA: precioMasIVA,
+                    costForWatt: costForWatt
+                }
             }
-        }
 
-        _cotizacion.push(cotizacion);
+            _cotizacion.push(cotizacion);
+        }
     }
+    else{
+        /*Si la cotizacion es menor a 30 km de distancia, no se cobran viaticos. Solo MANO DE OBRA*/
+
+    }
+
+    
     return _cotizacion;
 }
 
