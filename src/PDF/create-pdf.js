@@ -331,15 +331,231 @@ module.exports.crear = async function (request, response) {
                     </div>
 
                     <div class="content-top">
-                        <div class="top-left"></div>
+                        <div class="top-left">
+                            <div class="section-title">
+                                <p>(Propuesta Optima Canadian 350 + Abb)</p>
+                            </div>
 
-                        <div class="top-right"></div>
+                            <div class="section-subtitle">
+                                <p>Propuesta Elite Micro - Inverter</p>
+                            </div>
+
+                            <div class="section-img-proposal">
+                                <div class="img-proposal-left">
+                                    <img src="img/panel.png">
+                                </div>
+
+                                <div class="img-proposal-right">
+                                    <img src="img/inversor.png">
+                                </div>
+                            </div>
+
+                            <div class="bottom-left-info">
+                                <div class="bottom-left-info-left">
+                                    <h4>JA SOLAR de 370w</h4>
+
+                                    <ul>
+                                        <li>1. Más alta tecnología</li>
+                                        <li>2. 30 años en mercado</li>
+                                        <li>3. Panel inteligente</li>
+                                        <li>4. Panel Tier 1</li>
+                                        <li>5. Top 1-3 mundial</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bottom-left-info-right">
+                                    <h4>Modelo IQ 7+</h4>
+
+                                    <ul>
+                                        <li>1. Calidad Americana</li>
+                                        <li>2. 10 años de garantía</li>
+                                        <li>3. #5 a nivel mundial</li>
+                                        <li>4. Monitoreo individual</li>
+                                        <li>5. Monitoreo consumo</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="section-price">
+                                <div class="price">
+                                    <p>Precio sistema</p>
+                                </div>
+
+                                <div class="price-total">
+                                    <b>$</b> <p>102,280.71</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="top-right">
+                            <div class="section-title-2">
+                                <p>(Propuesta Optima Canadian 350 + Abb)</p>
+                            </div>
+
+                            <div class="section-subtitle-2">
+                                <p>Propuesta Elite Micro - Inverter</p>
+                            </div>
+
+                            <div class="section-img-proposal-2">
+                                <div class="img-proposal-left-2">
+                                    <img src="img/panel.png">
+                                </div>
+
+                                <div class="img-proposal-right-2">
+                                    <img src="img/inversor-2.png">
+                                </div>
+                            </div>
+
+                            <div class="bottom-right-info">
+                                <div class="bottom-right-info-left">
+                                    <h4>JA SOLAR de 370w</h4>
+
+                                    <ul>
+                                        <li>1. Más alta tecnología</li>
+                                        <li>2. 30 años en mercado</li>
+                                        <li>3. Panel inteligente</li>
+                                        <li>4. Panel Tier 1</li>
+                                        <li>5. Top 1-3 mundial</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bottom-right-info-right">
+                                    <h4>Modelo IQ 7+</h4>
+
+                                    <ul>
+                                        <li>1. Calidad Americana</li>
+                                        <li>2. 10 años de garantía</li>
+                                        <li>3. #5 a nivel mundial</li>
+                                        <li>4. Monitoreo individual</li>
+                                        <li>5. Monitoreo consumo</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="section-price-2">
+                                <div class="price-2">
+                                    <p>Precio sistema</p>
+                                </div>
+
+                                <div class="price-total-2">
+                                    <b>$</b> <p>102,280.71</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="content-bottom">
-                        <div class="bottom-left"></div>
+                        <div class="bottom-left">
+                            <div class="section-title-3">
+                                <p>(Propuesta Optima Canadian 350 + Abb)</p>
+                            </div>
 
-                        <div class="bottom-right"></div>
+                            <div class="section-subtitle-3">
+                                <p>Propuesta Elite Micro - Inverter</p>
+                            </div>
+
+                            <div class="section-img-proposal-3">
+                                <div class="img-proposal-left-3">
+                                    <img src="img/panel.png">
+                                </div>
+
+                                <div class="img-proposal-right-3">
+                                    <img src="img/inversor.png">
+                                </div>
+                            </div>
+
+                            <div class="bottom-left-info-3">
+                                <div class="bottom-left-info-left-3">
+                                    <h4>JA SOLAR de 370w</h4>
+
+                                    <ul>
+                                        <li>1. Más alta tecnología</li>
+                                        <li>2. 30 años en mercado</li>
+                                        <li>3. Panel inteligente</li>
+                                        <li>4. Panel Tier 1</li>
+                                        <li>5. Top 1-3 mundial</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bottom-left-info-right-3">
+                                    <h4>Modelo IQ 7+</h4>
+
+                                    <ul>
+                                        <li>1. Calidad Americana</li>
+                                        <li>2. 10 años de garantía</li>
+                                        <li>3. #5 a nivel mundial</li>
+                                        <li>4. Monitoreo individual</li>
+                                        <li>5. Monitoreo consumo</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="section-price-3">
+                                <div class="price-3">
+                                    <p>Precio sistema</p>
+                                </div>
+
+                                <div class="price-total-3">
+                                    <b>$</b> <p>102,280.71</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bottom-right">
+                            <div class="section-title-4">
+                                <p>(Propuesta Optima Canadian 350 + Abb)</p>
+                            </div>
+
+                            <div class="section-subtitle-4">
+                                <p>Propuesta Elite Micro - Inverter</p>
+                            </div>
+
+                            <div class="section-img-proposal-4">
+                                <div class="img-proposal-left-4">
+                                    <img src="img/panel.png">
+                                </div>
+
+                                <div class="img-proposal-right-4">
+                                    <img src="img/inversor-2.png">
+                                </div>
+                            </div>
+
+                            <div class="bottom-right-info-2">
+                                <div class="bottom-right-info-left-2">
+                                    <h4>JA SOLAR de 370w</h4>
+
+                                    <ul>
+                                        <li>1. Más alta tecnología</li>
+                                        <li>2. 30 años en mercado</li>
+                                        <li>3. Panel inteligente</li>
+                                        <li>4. Panel Tier 1</li>
+                                        <li>5. Top 1-3 mundial</li>
+                                    </ul>
+                                </div>
+
+                                <div class="bottom-right-info-right-2">
+                                    <h4>Modelo IQ 7+</h4>
+
+                                    <ul>
+                                        <li>1. Calidad Americana</li>
+                                        <li>2. 10 años de garantía</li>
+                                        <li>3. #5 a nivel mundial</li>
+                                        <li>4. Monitoreo individual</li>
+                                        <li>5. Monitoreo consumo</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="section-price-4">
+                                <div class="price-4">
+                                    <p>Precio sistema</p>
+                                </div>
+
+                                <div class="price-total-4">
+                                    <b>$</b> <p>102,280.71</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
