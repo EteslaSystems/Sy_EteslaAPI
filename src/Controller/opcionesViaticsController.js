@@ -14,8 +14,11 @@ var descuento = 0.00; //Este valor tiene que ser dinamico y pasado por parametro
 
 async function main_calcularViaticos(_arrayCotizacion, _oficina, _direccionCliente){
     distanciaEnKm = await obtenerDistanciaEnKm(_oficina, _direccionCliente);
-    //distanciaEnKm = distanciaEnKm.message;
-    distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
+    distanciaEnKm = distanciaEnKm.message;
+    //distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
+    
+    console.log('Distancia en km, de la cotizacion: '+distanciaEnKm);
+
     _arrayCotizacion = await calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm);
     
     return _arrayCotizacion;
@@ -43,8 +46,8 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
             costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
 
-            __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor;
-            __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor;
+            __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
+            __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
             __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor;
             __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor;
             __precioInversor = _arrayCotizacion[x].inversor.precioInversor;
@@ -76,51 +79,51 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
 
             cotizacion = {
-                no: _arrayCotizacion[x].no,
+                no: _arrayCotizacion[x].no || 0,
                 paneles: {
-                    nombrePanel: __nombrePanel,
-                    marcaPanel: __marcaPanel,
-                    potenciaPanel: __potenciaPanel,
-                    cantidadPaneles: __cantidadPaneles, //numeroDeModulos
-                    potenciaReal: __potenciaReal,
-                    precioPorModulo: __precioPorModulo,
-                    costoTotalPaneles: costoTotalPaneles
+                    nombrePanel: __nombrePanel || null,
+                    marcaPanel: __marcaPanel || null,
+                    potenciaPanel: __potenciaPanel || null,
+                    cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
+                    potenciaReal: __potenciaReal || null,
+                    precioPorModulo: __precioPorModulo || null,
+                    costoTotalPaneles: costoTotalPaneles || null
                 },
                 inversores: {
-                    nombreInversor:  __nombreInversor,
-                    marcaInversor: __marcaInversor,
-                    potenciaInversor: __potenciaInversor,
-                    potenciaNominalInversor: __potenciaNominalInversor,
-                    potenciaPicoPorInversor: __potenciaPicoInversor,
-                    precioInversor: __precioInversor,
-                    potenciaMaximaInversor:  __potenciaMaximaInversor,
-                    numeroDeInversores: __numeroDeInversores,
-                    porcentajeSobreDimens: __porcentajeSobreDimens,
-                    costoTotalInversores: costoTotalInversores
+                    nombreInversor:  __nombreInversor || null,
+                    marcaInversor: __marcaInversor || null,
+                    potenciaInversor: __potenciaInversor || null,
+                    potenciaNominalInversor: __potenciaNominalInversor || null,
+                    potenciaPicoPorInversor: __potenciaPicoInversor || null,
+                    precioInversor: __precioInversor || null,
+                    potenciaMaximaInversor:  __potenciaMaximaInversor || null,
+                    numeroDeInversores: __numeroDeInversores || null,
+                    porcentajeSobreDimens: __porcentajeSobreDimens || null,
+                    costoTotalInversores: costoTotalInversores || null
                 },
                 viaticos_costos: {
-                    noCuadrillas: _numeroCuadrillas,
-                    noPersonasRequeridas: numeroDePersonasRequeridas,
-                    noDias: numeroDias,
-                    noDiasReales: numeroDiasReales,
-                    costoDeEstructuras:  __costoDeEstructuras,
-                    pagoPasaje: pagoPasaje,
-                    pagoTotalPasaje: pagoPasajeTotal,
-                    pagoTotalComida: pagoComidaTotal,
-                    pagoTotalHospedaje: pagoHospedajeTotal,
-                    totalViaticosMT: totalViaticosMT
+                    noCuadrillas: _numeroCuadrillas || null,
+                    noPersonasRequeridas: numeroDePersonasRequeridas || null,
+                    noDias: numeroDias || null,
+                    noDiasReales: numeroDiasReales || null,
+                    costoDeEstructuras:  __costoDeEstructuras || null,
+                    pagoPasaje: pagoPasaje || null,
+                    pagoTotalPasaje: pagoPasajeTotal || null,
+                    pagoTotalComida: pagoComidaTotal || null,
+                    pagoTotalHospedaje: pagoHospedajeTotal || null,
+                    totalViaticosMT: totalViaticosMT || null
                 },
                 totales: {
-                    manoDeObra: costoManoDeObra[0],
-                    otrosTotal: costoManoDeObra[1],
-                    costoTotalFletes: costoTotalFletes,
-                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-                    subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
-                    margen: margen,
-                    totalDeTodo: totalDeTodo,
-                    precio: precio,
-                    precioMasIVA: precioMasIVA,
-                    costForWatt: costForWatt
+                    manoDeObra: costoManoDeObra[0] || null,
+                    otrosTotal: costoManoDeObra[1] || null,
+                    costoTotalFletes: costoTotalFletes || null,
+                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr || null,
+                    subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE || null,
+                    margen: margen || null,
+                    totalDeTodo: totalDeTodo || null,
+                    precio: precio || null,
+                    precioMasIVA: precioMasIVA || null,
+                    costForWatt: costForWatt || null
                 }
             }
 
@@ -129,21 +132,121 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
     }
     else{
         /*Si la cotizacion es menor a 30 km de distancia, no se cobran viaticos. Solo MANO DE OBRA*/
+        // F A LT A   T E S T E A R
+        for(var x = 0; x < _arrayCotizacion.length; x++)
+        {
+            /*#region Panel_info*/
+            __no = _arrayCotizacion[x].no || 0;
+            __nombrePanel = _arrayCotizacion[x].panel.nombrePanel  || null;
+            __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
+            __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel;
+            __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles; //numeroDeModulos
+            __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal;
+            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
+            __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
+            __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
+            costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
+            /*#endregion*/
+            /*#region Inversores_info*/
+            __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
+            __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
+            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor;
+            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor;
+            __precioInversor = _arrayCotizacion[x].inversor.precioInversor;
+            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor;
+            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores;
+            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor;
+            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens;
+            costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor);
+            /*#endregion*/
+            numeroPanelesAInstalar = parseFloat(_arrayCotizacion[x].panel.cantidadPaneles);
+            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar);
+            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas;
+            numeroDias = getDays(numeroPanelesAInstalar);
+            numeroDiasReales = getRealDays(numeroPanelesAInstalar);
+            costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras;
+            costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes);
+            costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
+            subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
+            margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
+            totalDeTodo = subtotOtrFletManObrTPIE + margen;
+            precio = totalDeTodo * (1 - descuento);
+            precioMasIVA = precio * _configFile.costos.precio_mas_iva;
+            costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
 
+            cotizacion = {
+                no: _arrayCotizacion[x].no || 0,
+                paneles: {
+                    nombrePanel: __nombrePanel || null,
+                    marcaPanel: __marcaPanel || null,
+                    potenciaPanel: __potenciaPanel || null,
+                    cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
+                    potenciaReal: __potenciaReal || null,
+                    precioPorModulo: __precioPorModulo || null,
+                    costoTotalPaneles: costoTotalPaneles || null
+                },
+                inversores: {
+                    nombreInversor:  __nombreInversor || null,
+                    marcaInversor: __marcaInversor || null,
+                    potenciaInversor: __potenciaInversor || null,
+                    potenciaNominalInversor: __potenciaNominalInversor || null,
+                    potenciaPicoPorInversor: __potenciaPicoInversor || null,
+                    precioInversor: __precioInversor || null,
+                    potenciaMaximaInversor:  __potenciaMaximaInversor || null,
+                    numeroDeInversores: __numeroDeInversores || null,
+                    porcentajeSobreDimens: __porcentajeSobreDimens || null,
+                    costoTotalInversores: costoTotalInversores || null
+                },
+                viaticos_costos: {
+                    noCuadrillas: _numeroCuadrillas || null,
+                    noPersonasRequeridas: numeroDePersonasRequeridas || null,
+                    noDias: numeroDias || null,
+                    noDiasReales: numeroDiasReales || null,
+                    costoDeEstructuras:  __costoDeEstructuras || null
+                },
+                totales: {
+                    manoDeObra: costoManoDeObra[0] || null,
+                    otrosTotal: costoManoDeObra[1] || null,
+                    costoTotalFletes: costoTotalFletes || null,
+                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr || null,
+                    subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE || null,
+                    margen: margen || null,
+                    totalDeTodo: totalDeTodo || null,
+                    precio: precio || null,
+                    precioMasIVA: precioMasIVA || null,
+                    costForWatt: costForWatt || null
+                }
+            }
+
+            _cotizacion.push(cotizacion);
+        }
     }
 
-    
     return _cotizacion;
 }
 
 function getNumberOfCrews(_numeroPanelesAInstalar){
-    numberOfCrews = _numeroPanelesAInstalar >= 0 || _numeroPanelesAInstalar <= 99 ? 1 : -1;
-    numberOfCrews = _numeroPanelesAInstalar >= 100 || _numeroPanelesAInstalar <= 299 ? 2 : -1;
-    numberOfCrews = _numeroPanelesAInstalar >= 300 || _numeroPanelesAInstalar <= 499 ? 3 : -1;
-    numberOfCrews = _numeroPanelesAInstalar >= 500 || _numeroPanelesAInstalar <= 799 ? 5 : -1;
-    numberOfCrews = _numeroPanelesAInstalar >=800 || _numeroPanelesAInstalar <= 1199 ? 7 : -1;
-    numberOfCrews = _numeroPanelesAInstalar >= 1200 /*|| _numeroPanelesAInstalar >= 2000*/ ? 11 : -1;
-    return numberOfCrews;
+    if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
+        return 1;
+    }
+    else if(_numeroPanelesAInstalar >= 100 && _numeroPanelesAInstalar <= 299){
+        return 2;
+    }
+    else if(_numeroPanelesAInstalar >= 300 && _numeroPanelesAInstalar <= 499){
+        return 3;
+    }
+    else if(_numeroPanelesAInstalar >= 500 && _numeroPanelesAInstalar <= 799){
+        return 5;
+    }
+    else if(_numeroPanelesAInstalar >=800 && _numeroPanelesAInstalar <= 1199){
+        return 7;
+    }
+    else if(_numeroPanelesAInstalar >= 1200){
+        return 11;
+    }
+    else{
+        return -1;
+    }
 }
 
 function getPrecioDeManoDeObra(__cantidadPaneles, _costoTotalPanInvEstr){
@@ -305,23 +408,51 @@ function getPrecioDeManoDeObra(__cantidadPaneles, _costoTotalPanInvEstr){
 /*#endregion*/
 
 function getDays(_numeroPanelesAInstalar){
-    numberOfDays = _numeroPanelesAInstalar >= 0 || _numeroPanelesAInstalar <= 99 ? 20 : -1;
-    numberOfDays = _numeroPanelesAInstalar >= 100 || _numeroPanelesAInstalar <= 299 ? 30 : -1;
-    numberOfDays = _numeroPanelesAInstalar >= 300 || _numeroPanelesAInstalar <= 499 ? 33 : -1;
-    numberOfDays = _numeroPanelesAInstalar >= 500 || _numeroPanelesAInstalar <= 799 ? 32 : -1;
-    numberOfDays = _numeroPanelesAInstalar >=800 || _numeroPanelesAInstalar <= 1199 ? 30 : -1;
-    numberOfDays = _numeroPanelesAInstalar >= 1200 /*|| _numeroPanelesAInstalar >= 2000*/ ? 36 : -1;
-    return numberOfDays;
+    if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
+        return 20;
+    }
+    else if(_numeroPanelesAInstalar >= 100 && _numeroPanelesAInstalar <= 299){
+        return 30;
+    }
+    else if(_numeroPanelesAInstalar >= 300 && _numeroPanelesAInstalar <= 499){
+        return 33;
+    }
+    else if(_numeroPanelesAInstalar >= 500 && _numeroPanelesAInstalar <= 799){
+        return 32;
+    }
+    else if(_numeroPanelesAInstalar >=800 && _numeroPanelesAInstalar <= 1199){
+        return 30;
+    }
+    else if(_numeroPanelesAInstalar >= 1200){
+        return 36;
+    }
+    else{
+        return -1;
+    }
 }
 
 function getRealDays(_numeroPanelesAInstalar){
-    numberOfRealDays = _numeroPanelesAInstalar >= 0 || _numeroPanelesAInstalar <= 99 ? 244 : -1;
-    numberOfRealDays = _numeroPanelesAInstalar >= 100 || _numeroPanelesAInstalar <= 299 ? 122 : -1;
-    numberOfRealDays = _numeroPanelesAInstalar >= 300 || _numeroPanelesAInstalar <= 499 ? 82 : -1;
-    numberOfRealDays = _numeroPanelesAInstalar >= 500 || _numeroPanelesAInstalar <= 799 ? 49 : -1;
-    numberOfRealDays = _numeroPanelesAInstalar >=800 || _numeroPanelesAInstalar <= 1199 ? 31 : -1;
-    numberOfRealDays = _numeroPanelesAInstalar >= 1200 /*|| _numeroPanelesAInstalar >= 2000*/ ? 23 : -1;
-    return numberOfRealDays;
+    if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
+        return 244;
+    }
+    else if(_numeroPanelesAInstalar >= 100 && _numeroPanelesAInstalar <= 299){
+        return 122;
+    }
+    else if(_numeroPanelesAInstalar >= 300 && _numeroPanelesAInstalar <= 499){
+        return 82;
+    }
+    else if(_numeroPanelesAInstalar >= 500 && _numeroPanelesAInstalar <= 799){
+        return 49;
+    }
+    else if(_numeroPanelesAInstalar >=800 && _numeroPanelesAInstalar <= 1199){
+        return 31;
+    }
+    else if(_numeroPanelesAInstalar >= 1200){
+        return 23;
+    }
+    else{
+        return -1;
+    }
 }
 
 function getBusPayment(_distanciaEnKm){

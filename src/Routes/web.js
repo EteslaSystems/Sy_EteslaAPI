@@ -30,8 +30,21 @@ const mediaTensionController = require('../Controller/mediaTensionController');
 /*#region cotizacion_producto(sin ingresar datos de consumo)*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
 
-router.post('/cotizacionIndividual', function(request){
-	cotizIndiv.cotizacion_individual(request.body);
+router.post('/cotizacionIndividual', function(request, response){
+	cotizIndiv.cotizacion_individual(request.body)
+	.then(cotizacion_individual => {
+		response.json({
+			status: 200,
+			message: cotizacion_individual
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+	
 });
 /*#endregion*/
 /*#region GDMTO*/
