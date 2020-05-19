@@ -71,6 +71,5 @@ async function cotizacionIndividual(data){
 
 module.exports.cotizacion_individual = async function(data){
     const result = await cotizacionIndividual(data);
-
     return result;
 }
