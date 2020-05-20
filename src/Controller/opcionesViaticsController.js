@@ -43,7 +43,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal;
             __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
             __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
-            __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
+            __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100;
             costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
 
             __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
@@ -148,6 +148,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
             __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
             __precioPorModulo = __potenciaPanel * __precioPorWattPanel;
+            __precioPorModulo = Math.round(__precioPorModulo * 100) / 100;
             costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
             /*#endregion*/
             /*#region Inversores_info*/
