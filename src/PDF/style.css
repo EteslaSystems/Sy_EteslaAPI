@@ -1147,3 +1147,281 @@ body .document-page-4 {
     left: 25px;
     top: 3070px;
 }
+    /* SECCIÓN DEL LOGOTIPO DE LA EMPRESA. */
+    .document-page-4 .content-logo {
+        width: 1200px;
+        height: 90px;
+        position: absolute;
+        top: 10px;
+        left: 22.5px;
+    }
+        .document-page-4 .content-logo img {
+            width: 190px;
+            height: 90px;
+            position: absolute;
+            right: 10px;
+        }
+    .table-content {
+        width: 1205px;
+        height: 840px;
+        position: absolute;
+        top: 100px;
+        left: 15px;
+    }
+        .table-content .table-1 {
+            width: 1105px;
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            border-radius: 50px;
+        }
+            .table-1 tr {
+                height: 55px;
+                font-size: 20px;
+            }
+                .table-1 tr .t1 {
+                    width: 15%;
+                    color: #FFF;
+                    font-weight: lighter;
+                    background: #3C4F59;
+                    border-radius: 50px 0px 0px 50px;
+                }
+                .table-1 tr .t2 {
+                    width: 20%;
+                    color: #FFF;
+                    font-size: 25px;
+                    font-weight: bold;
+                    background: #3C4F59;
+                }
+                .table-1 tr .t3 {
+                    width: 12.5%;
+                    color: #FFF;
+                    font-weight: lighter;
+                    background: #249B95;
+                }
+                .table-1 tr .t4 {
+                    width: 22.5%;
+                    color: #FFF;
+                    font-size: 25px;
+                    font-weight: bold;
+                    background: #249B95;
+                }
+                .table-1 tr .t5 {
+                    width: 10%;
+                    color: #FFF;
+                    font-weight: lighter;
+                    background: #59737B;
+                }
+                .table-1 tr .t6 {
+                    width: 20%;
+                    color: #FFF;
+                    font-size: 25px;
+                    font-weight: bold;
+                    background: #59737B;
+                    border-radius: 0px 50px 50px 0px;
+                }
+        .table-content .table-2 {
+            width: 1105px;
+            position: absolute;
+            top: 125px;
+            left: 50px;
+            border-radius: 50px;
+        }
+            .table-2 tr {
+                height: 55px;
+                font-size: 20px;
+            }
+                .table-2 tr .t1 {
+                    width: 35%;
+                    color: #FFF;
+                    font-size: 20px;
+                    font-weight: lighter;
+                    background: #59737B;
+                    border-radius: 50px 0px 0px 0px;
+                }
+                .table-2 tr .t2 {
+                    width: 13%;
+                    color: #FFF;
+                    font-size: 20px;
+                    font-weight: lighter;
+                    background: #59737B;
+                }
+                .table-2 tr .t3 {
+                    width: 13%;
+                    color: #FFF;
+                    font-size: 20px;
+                    font-weight: lighter;
+                    background: #59737B;
+                }
+                .table-2 tr .t4 {
+                    width: 13%;
+                    color: #FFF;
+                    font-size: 20px;
+                    font-weight: lighter;
+                    background: #59737B;
+                }
+                .table-2 tr .t5 {
+                    width: 13%;
+                    color: #FFF;
+                    font-size: 20px;
+                    font-weight: lighter;
+                    background: #59737B;
+                }
+                .table-2 tr .t6 {
+                    width: 13%;
+                    color: #FFF;
+                    font-size: 20px;
+                    font-weight: lighter;
+                    background: #59737B;
+                    border-radius: 0px 50px 0px 0px;
+                }
+                    .table-2 tr .t1-1 {
+                        width: 35%;
+                        color: #FFF;
+                        font-size: 20px;
+                        font-weight: lighter;
+                        background: #59737B;
+                        border-radius: 0px 0px 0px 50px;
+                    }
+                    .table-2 tr .t2-1 {
+                        width: 13%;
+                        color: #FFF;
+                        font-size: 25px;
+                        font-weight: bold;
+                        background: #59737B;
+                    }
+                    .table-2 tr .t3-1 {
+                        width: 13%;
+                        color: #FFF;
+                        font-size: 25px;
+                        font-weight: bold;
+                        background: #59737B;
+                    }
+                    .table-2 tr .t4-1 {
+                        width: 13%;
+                        color: #FFF;
+                        font-size: 25px;
+                        font-weight: bold;
+                        background: #59737B;
+                    }
+                    .table-2 tr .t5-1 {
+                        width: 13%;
+                        color: #FFF;
+                        font-size: 25px;
+                        font-weight: bold;
+                        background: #59737B;
+                    }
+                    .table-2 tr .t6-1 {
+                        width: 13%;
+                        color: #FFF;
+                        font-size: 25px;
+                        font-weight: bold;
+                        background: #59737B;
+                        border-radius: 0px 0px 50px 0px;
+                    }
+        .table-content .table-3 {
+            width: 1105px;
+            position: absolute;
+            top: 250px;
+            left: 50px;
+            border-radius: 50px;
+        }
+            .table-3 tr {
+                height: 55px;
+                font-size: 20px;
+            }
+                .table-3 tr .t1 {
+                    width: 40%;
+                    color: #FFF;
+                    font-size: 22.5px;
+                    font-weight: lighter;
+                    background: #486069;
+                    border-radius: 50px 0px 0px 0px;
+                }
+                .table-3 tr .t2 {
+                    width: 20%;
+                    color: #FFF;
+                    font-size: 22.5px;
+                    font-weight: lighter;
+                    background: #486069;
+                }
+                .table-3 tr .t3 {
+                    width: 20%;
+                    color: #FFF;
+                    font-size: 22.5px;
+                    font-weight: lighter;
+                    background: #486069;
+                }
+                .table-3 tr .t4 {
+                    width: 20%;
+                    color: #FFF;
+                    font-size: 22.5px;
+                    font-weight: lighter;
+                    background: #486069;
+                    border-radius: 0px 50px 0px 0px;
+                }
+                    .table-3 tr .t1-1 {
+                        width: 40%;
+                        color: #FFF;
+                        font-size: 22.5px;
+                        font-weight: lighter;
+                        background: #486069;
+                    }
+                    .table-3 tr .t2-1 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 22.5px;
+                        font-weight: bold;
+                        background: #486069;
+                    }
+                    .table-3 tr .t3-1 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 22.5px;
+                        font-weight: bold;
+                        background: #486069;
+                    }
+                    .table-3 tr .t4-1 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 22.5px;
+                        font-weight: bold;
+                        background: #486069;
+                    }
+                    .table-3 tr .t1-2 {
+                        width: 40%;
+                        color: #FFF;
+                        font-size: 22.5px;
+                        font-weight: lighter;
+                        background: #486069;
+                        border-radius: 0px 0px 0px 50px;
+                    }
+                    .table-3 tr .t2-2 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 20px;
+                        font-weight: bold;
+                        background: #B9D04D;
+                    }
+                    .table-3 tr .t3-2 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 20px;
+                        font-weight: bold;
+                        background: #36AB4E;
+                    }
+                    .table-3 tr .t4-2 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 20px;
+                        font-weight: bold;
+                        background: #36AB4E;
+                    }
+                    .table-3 tr .t4-3 {
+                        width: 20%;
+                        color: #FFF;
+                        font-size: 20px;
+                        font-weight: bold;
+                        background: #36AB4E;
+                        border-radius: 0px 0px 50px 0px;
+                    }
