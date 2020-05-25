@@ -568,7 +568,124 @@ module.exports.crear = async function (request, response) {
                 <div style="page-break-after:always;"></div>
 
                 <div class="document-page-4">
-                    <h1>Hola</h1>
+                    <div class="content-logo">
+                        <img src="img/etesla.png">
+                    </div>
+
+                    <div class="table-content">
+                        <table class="table-1">
+                            <thead>
+                                <tr>
+                                    <th class="t1">Pago contado</th>
+                                    <th class="t2">$236,193</th>
+                                    <th class="t3">Ahorro Mensual de luz</th>
+                                    <th class="t4"> $4,194</th>
+                                    <th class="t5">Retorno de inversión</th>
+                                    <th class="t6">3 años</th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                        <table class="table-2">
+                            <thead>
+                                <tr>
+                                    <th class="t1">Tarjeta de Crédito</th>
+                                    <th class="t2">3 meses</th>
+                                    <th class="t3">6 meses</th>
+                                    <th class="t4">9 meses </th>
+                                    <th class="t5">12 meses</th>
+                                    <th class="t6">18 meses</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <th class="t1-1">Pago Mensual</th>
+                                    <th class="t2-1">$81,094</th>
+                                    <th class="t3-1">$41,728</th>
+                                    <th class="t4-1">$28,606</th>
+                                    <th class="t5-1">$22,045</th>
+                                    <th class="t6-1">$15,484</th>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table-3">
+                            <thead>
+                                <tr>
+                                    <th class="t1">Financiamiento</th>
+                                    <th class="t2">15%</th>
+                                    <th class="t3">35%</th>
+                                    <th class="t4">50%</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <th class="t1-1">Enganche</th>
+                                    <th class="t2-1">$35,429</th>
+                                    <th class="t3-1">$82,668</th>
+                                    <th class="t4-1">$118,097</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">Pagos mensuales por plazo</th>
+                                    <th class="t2-1">15%</th>
+                                    <th class="t3-1">35%</th>
+                                    <th class="t4-1">50%</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">A 12 meses</th>
+                                    <th class="t2-1">$19,274</th>
+                                    <th class="t3-1">$15,046</th>
+                                    <th class="t4-1">$11,220</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">A 24 meses</th>
+                                    <th class="t2-1">$10,641</th>
+                                    <th class="t3-1">$8,291</th>
+                                    <th class="t4-1">$6,260</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">A 36 meses</th>
+                                    <th class="t2-1">$7,830</th>
+                                    <th class="t3-1">$5,988</th>
+                                    <th class="t4-1">$4,488</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">A 48 meses</th>
+                                    <th class="t2-1">$6,425</th>
+                                    <th class="t3-1">$4,913</th>
+                                    <th class="t4-2">$3,661</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">A 60 meses</th>
+                                    <th class="t2-1">$5,622</th>
+                                    <th class="t2-2">$4,299</th>
+                                    <th class="t4-2">$3,189</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-1">A 72 meses</th>
+                                    <th class="t2-1">$5,020</th>
+                                    <th class="t2-2">$3,839</th>
+                                    <th class="t4-2">$2,953</th>
+                                </tr>
+
+                                <tr>
+                                    <th class="t1-2">A 84 meses</th>
+                                    <th class="t2-2">$4,618</th>
+                                    <th class="t3-2">$3,532</th>
+                                    <th class="t4-3">$2,717</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </body>
 	    </html>
