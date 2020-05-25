@@ -100,9 +100,7 @@ function consultaBD () {
   	});
 }
 
-function buscarBD (datas) {
-	const { idPanel } = datas;
-
+function buscarBD (idPanel) {
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
@@ -135,9 +133,9 @@ var objNoDeModulosPorPotenciaDelPanel = {};
 
 async function numberOfModuls(powerNeeded, irradiation, efficiency){
 	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(powerNeeded, irradiation, efficiency);
-	console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
+	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
 	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
-	console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
+	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
 	var _arrayTodosPaneles = await getAllPanelsArray();
 	_arrayObjectsNoOfModuls = getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
 
@@ -210,8 +208,8 @@ module.exports.eliminar = async function (datas, response) {
 	return result;
 }
 
-module.exports.buscar = async function (datas, response) {
-	const result = await buscarBD(datas);
+module.exports.buscar = async function (idPanel) {
+	const result = await buscarBD(idPanel);
 
 	return result;
 }
