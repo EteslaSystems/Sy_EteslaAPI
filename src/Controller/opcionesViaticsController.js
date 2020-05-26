@@ -1,6 +1,6 @@
 /*
 - @description: 		Archivo correspondiente a las funciones del calculo de viaticos
-- @author: 				LH420 & Jesús Daniel Carrera Falcón
+- @author: 				LH420
 - @date: 				09/04/2020
 */
 const request = require('request');
@@ -34,32 +34,49 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
     {
         for(var x = 0; x < _arrayCotizacion.length; x++)
         {
-            /*#region iteracionArray*/
-            __no = _arrayCotizacion[x].no || 0;
-            __nombrePanel = _arrayCotizacion[x].panel.nombrePanel;
-            __marcaPanel = _arrayCotizacion[x].panel.marcaPanel;
-            __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel;
-            __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles; //numeroDeModulos
-            __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal;
-            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt;
-            __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
-            __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100;
-            costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
+            if(_arrayCotizacion[x].hasOwnProperty('panel'))
+            {
+                console.log('propiedad panel, si existe');
+            }
 
+            if(_arrayCotizacion[x].hasOwnProperty('inversor'))
+            {
+                console.log('propiedad panel, si existe');
+            }
+
+
+
+
+            /*#region iteracionArray_panel*/
+            __no = _arrayCotizacion[x].no || 0;
+            __nombrePanel = _arrayCotizacion[x].panel.nombrePanel || null;
+            __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
+            __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
+            __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles || 0; //numeroDeModulos
+            __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
+            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
+            __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras || 0;
+            __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
+            costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo) || 0;
+
+            numeroPanelesAInstalar = _arrayCotizacion[x].panel.cantidadPaneles || 0;
+            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar) || 0;
+            /*#endregion*/
+
+            /*#region iteracionArray_inversor*/
             __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
             __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor;
-            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor;
-            __precioInversor = _arrayCotizacion[x].inversor.precioInversor;
-            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor;
-            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores;
-            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor;
-            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens;
-            costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor);
+            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor || 0;
+            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor || 0;
+            __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
+            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
+            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
+            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor || 0;
+            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
+            costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor) || 0;
             /*#endregion*/
-            numeroPanelesAInstalar = _arrayCotizacion[x].panel.cantidadPaneles;
-            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar);
-            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas;
+            
+            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
             numeroDias = getDays(numeroPanelesAInstalar);
             numeroDiasReales = getRealDays(numeroPanelesAInstalar);
             pagoPasaje = getBusPayment(distanciaEnKm);
@@ -113,8 +130,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     pagoPasaje: pagoPasaje || null,
                     pagoTotalPasaje: pagoPasajeTotal || null,
                     pagoTotalComida: pagoComidaTotal || null,
-                    pagoTotalHospedaje: pagoHospedajeTotal || null,
-                    totalViaticosMT: totalViaticosMT || null
+                    pagoTotalHospedaje: pagoHospedajeTotal || null
                 },
                 totales: {
                     manoDeObra: costoManoDeObra[0] || null,
@@ -126,7 +142,8 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     totalDeTodo: totalDeTodo || null,
                     precio: precio || null,
                     precioMasIVA: precioMasIVA || null,
-                    costForWatt: costForWatt || null
+                    costForWatt: costForWatt || null,
+                    totalViaticosMT: totalViaticosMT || null
                 }
             }
 
@@ -154,32 +171,32 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             /*#region Inversores_info*/
             __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
             __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor;
-            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor;
-            __precioInversor = _arrayCotizacion[x].inversor.precioInversor;
-            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor;
-            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores;
-            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor;
-            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens;
-            costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor);
+            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor || 0;
+            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor || 0;
+            __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
+            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
+            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
+            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor || 0;
+            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
+            costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor) || 0;
             /*#endregion*/
-            numeroPanelesAInstalar = parseFloat(_arrayCotizacion[x].panel.cantidadPaneles);
-            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar);
-            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas;
-            numeroDias = getDays(numeroPanelesAInstalar);
-            numeroDiasReales = getRealDays(numeroPanelesAInstalar);
-            costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras;
-            costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes);
-            costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
-            subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
-            margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
-            margen = Math.round(margen * 100) / 100;
-            totalDeTodo = subtotOtrFletManObrTPIE + margen;
-            precio = totalDeTodo * (1 - descuento);
-            precio = Math.round(precio * 100) / 100;
-            precioMasIVA = precio * _configFile.costos.precio_mas_iva;
-            precioMasIVA = Math.round(precioMasIVA * 100) / 100;
-            costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
+            numeroPanelesAInstalar = parseFloat(_arrayCotizacion[x].panel.cantidadPaneles) || 0;
+            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar) || 0;
+            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
+            numeroDias = getDays(numeroPanelesAInstalar) || 0;
+            numeroDiasReales = getRealDays(numeroPanelesAInstalar) || 0;
+            costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras || 0;
+            costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes) || 0;
+            costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr) || 0;
+            subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr || 0; //TPIE = Total Paneles Inversores Estructuras
+            margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE || 0;
+            margen = Math.round(margen * 100) / 100 || 0;
+            totalDeTodo = subtotOtrFletManObrTPIE + margen || 0;
+            precio = totalDeTodo * (1 - descuento) || 0;
+            precio = Math.round(precio * 100) / 100 || 0;
+            precioMasIVA = precio * _configFile.costos.precio_mas_iva || 0;
+            precioMasIVA = Math.round(precioMasIVA * 100) / 100 || 0;
+            costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100 || 0;
 
             cotizacion = {
                 no: _arrayCotizacion[x].no || 0,

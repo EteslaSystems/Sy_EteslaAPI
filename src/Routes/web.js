@@ -50,22 +50,34 @@ router.post('/cotizacionIndividual', function(request, response){
 /*#region GDMTO*/
 /*#endregion*/
 /*#region GDMTH*/
-//1er. Paso:
-router.post('/sendPeriods', function(request, response){
-	mediaTensionController.obtenerEnergiaReqPanelesReq(request.body)
-	.then(convinacionPaneles => {
-		response.json({
-			status: 200,
-			message: convinacionPaneles
-		});
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error
-		});
-	});
+router.post('/sendPeriods', function(request){
+	mediaTensionController.cotizarGDMTH(request.body);
 });
+
+
+
+
+
+
+
+
+
+//1er. Paso:
+// router.post('/sendPeriods', function(request, response){
+// 	mediaTensionController.obtenerEnergiaReqPanelesReq(request.body)
+// 	.then(convinacionPaneles => {
+// 		response.json({
+// 			status: 200,
+// 			message: convinacionPaneles
+// 		});
+// 	})
+// 	.catch(error => {
+// 		response.json({
+// 			status: 500,
+// 			message: error
+// 		});
+// 	});
+// });
 
 
 
