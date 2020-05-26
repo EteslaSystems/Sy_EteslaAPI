@@ -61,6 +61,9 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
 
             numeroPanelesAInstalar = _arrayCotizacion[x].panel.cantidadPaneles || 0;
             _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar) || 0;
+            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
+            numeroDias = getDays(numeroPanelesAInstalar);
+            numeroDiasReales = getRealDays(numeroPanelesAInstalar);
             /*#endregion*/
 
             /*#region iteracionArray_inversor*/
@@ -76,9 +79,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor) || 0;
             /*#endregion*/
             
-            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
-            numeroDias = getDays(numeroPanelesAInstalar);
-            numeroDiasReales = getRealDays(numeroPanelesAInstalar);
+            
             pagoPasaje = getBusPayment(distanciaEnKm);
             pagoPasajeTotal = pagoPasaje * numeroDePersonasRequeridas;
             pagoPasajeTotal = Math.ceil(pagoPasajeTotal);

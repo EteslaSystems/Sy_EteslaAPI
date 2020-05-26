@@ -80,6 +80,13 @@ async function cotizacionIndividual(data){
         objCotiIndividual.inversor.numeroDeInversores = cantidadInversores || 0;
         objCotiIndividual.inversor.potenciaPicoInversor = _potenciaPicoInversor;
         objCotiIndividual.inversor.porcentajeSobreDimens = _porcentajeSobreDimens || 0;
+
+        if(_arrayCotizacion[x].hasOwnProperty('panel') != true && _arrayCotizacion[x].hasOwnProperty('inversor') != true){
+            var _arraySoloInversor = [];
+
+            _arraySoloInversor.push(objCotiIndividual);
+            return _arraySoloInversor;
+        }
     }
 
     arrayCotizacionInd.push(objCotiIndividual);
