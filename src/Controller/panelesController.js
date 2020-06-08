@@ -153,6 +153,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
 	for(var i = 0; i < arrayAllOfPanels.length; i++){
+		// _id = arrayAllOfPanels[i].
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
 		_marca = arrayAllOfPanels[i].vMarca
 		_precio = arrayAllOfPanels[i].fPrecio;

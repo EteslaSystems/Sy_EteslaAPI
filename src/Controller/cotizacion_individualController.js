@@ -25,7 +25,8 @@ var objCotiIndividual = {
         potenciaMaximaInversor: 0,
         numeroDeInversores: 0,
         potenciaPicoInversor: 0,
-        porcentajeSobreDimens: 0
+        porcentajeSobreDimens: 0,
+        costoTotalInversores: 0
     }
 };
 
@@ -68,24 +69,30 @@ async function cotizacionIndividual(data){
         _potenciaInversor = inversor[0].fPotencia;
         _potenciaNominalInversor = cantidadInversores * _potenciaInversor;
         _potenciaMaximaInversor = _potenciaInversor * 1.25;
-        _potenciaPicoInversor = _potenciaReal / cantidadInversores;
-        _porcentajeSobreDimens = _potenciaPicoInversor / _potenciaInversor;
         precioInversor = parseFloat(inversor[0].fPrecio);
         precioTotalInversores = precioInversor * cantidadInversores;
+
+        if(objCotiIndividual.panel.potenciaPanel != 0){
+            _potenciaPicoInversor = _potenciaReal / cantidadInversores;
+            _porcentajeSobreDimens = _potenciaPicoInversor / _potenciaInversor;
+
+            objCotiIndividual.inversor.potenciaPicoInversor = _potenciaPicoInversor;
+            objCotiIndividual.inversor.porcentajeSobreDimens = _porcentajeSobreDimens || 0;
+        }
 
         objCotiIndividual.inversor.potenciaInversor = _potenciaInversor || 0;
         objCotiIndividual.inversor.potenciaNominalInversor = _potenciaNominalInversor || 0;
         objCotiIndividual.inversor.precioInversor = precioInversor || 0;
         objCotiIndividual.inversor.potenciaMaximaInversor = _potenciaMaximaInversor || 0;
         objCotiIndividual.inversor.numeroDeInversores = cantidadInversores || 0;
-        objCotiIndividual.inversor.potenciaPicoInversor = _potenciaPicoInversor;
-        objCotiIndividual.inversor.porcentajeSobreDimens = _porcentajeSobreDimens || 0;
+        objCotiIndividual.inversor.costoTotalInversores = precioTotalInversores || 0;
+        
+        if(objCotiIndividual.panel.potenciaPanel == 0 && objCotiIndividual.inversor.potenciaInversor != 0){
+            var _cotizacionUnicamenteInversor = [];
 
-        if(_arrayCotizacion[x].hasOwnProperty('panel') != true && _arrayCotizacion[x].hasOwnProperty('inversor') != true){
-            var _arraySoloInversor = [];
-
-            _arraySoloInversor.push(objCotiIndividual);
-            return _arraySoloInversor;
+            _cotizacionUnicamenteInversor.push(objCotiIndividual);
+            //console.log(_cotizacionUnicamenteInversor);
+            return _cotizacionUnicamenteInversor;
         }
     }
 

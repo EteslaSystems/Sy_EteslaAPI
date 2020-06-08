@@ -34,15 +34,15 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
     {
         for(var x = 0; x < _arrayCotizacion.length; x++)
         {
-            if(_arrayCotizacion[x].hasOwnProperty('panel'))
-            {
-                console.log('propiedad panel, si existe');
-            }
+            // if(_arrayCotizacion[x].hasOwnProperty('panel'))
+            // {
+            //     console.log('propiedad panel, si existe');
+            // }
 
-            if(_arrayCotizacion[x].hasOwnProperty('inversor'))
-            {
-                console.log('propiedad panel, si existe');
-            }
+            // if(_arrayCotizacion[x].hasOwnProperty('inversor'))
+            // {
+            //     console.log('propiedad panel, si existe');
+            // }
 
 
 

@@ -131,28 +131,76 @@ function buscarBD (idInversor) {
 - @author: 				LH420
 - @date: 				07/04/2020
 */
-var objNoDeInversores = {
-	no: 0,
-	panel: {
-		nombrePanel: '',
-		potenciaPicoInversor: 0,
-		cantidadPaneles: 0,
-	},
-	inversor: {
-		nombreInversor: '',
-		potenciaInversor: 0,
-		precioInversor: 0,
-		potenciaNominalInversor: 0,
-		potenciaMaximaInversor: 0,
-		numeroDeInversores: 0
-	}
+var objInversores = {
+	nombreInversor: '',
+	potenciaInversor: 0,
+	precioInversor: 0,
+	potenciaNominalInversor: 0,
+	potenciaMaximaInversor: 0,
+	numeroDeInversores: 0
 };
 
-async function numberOfInvestors(NumberOfPanelesArray){
-	var result = await getMaximumPower(NumberOfPanelesArray);
-	return result;
-}
+// async function numberOfInvestors(NumberOfPanelesArray){
+// 	var result = await getMaximumPower(NumberOfPanelesArray);
+// 	return result;
+// }
 
+// async function getMaximumPower(NumberOfPanelesArray){
+// 	var arrayInversoresWPmx = [];
+
+// 	for(var j = 0; j < NumberOfPanelesArray.length; j++)
+// 	{
+// 		_nombrePanel = NumberOfPanelesArray[j].nombre;
+// 		_marcaPanel = NumberOfPanelesArray[j].marca;
+// 		_potenciaPanel = NumberOfPanelesArray[j].potencia;
+// 		_potenciaReal = NumberOfPanelesArray[j].potenciaReal;
+// 		_cantidadPaneles = NumberOfPanelesArray[j].noModulos;
+// 		_precioPorWatt = NumberOfPanelesArray[j].precioPorPanel;
+// 		_costoDeEstructuras = NumberOfPanelesArray[j].costoDeEstructuras;
+		
+// 		objInversores {
+// 			no: j,
+// 			panel: {
+// 				nombrePanel: _nombrePanel,
+// 				marcaPanel: _marcaPanel,
+// 				potenciaPanel: _potenciaPanel,
+// 				cantidadPaneles: _cantidadPaneles, //numeroDeModulos
+// 				potenciaReal: _potenciaReal,
+// 				precioPorWatt: _precioPorWatt,
+// 				costoDeEstructuras: _costoDeEstructuras
+// 			}
+// 		};
+		
+// 		await putInvestorsToObject(_potenciaReal);
+// 		arrayInversoresWPmx.push(objInversores
+// 	}
+// 	return arrayInversoresWPmx;
+// }
+
+// module.exports.numeroDeInversores = async function(arrayNoDePaneles){
+// 	const result = await numberOfInvestors(arrayNoDePaneles);
+// 	return result;
+// }
+/*#endregion*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*#region SI_SIRVE*/
 async function getFilteredInvestor(idInversor){
 	consultaFiltradaInversor = await buscarBD(idInversor);
 	consultaFiltradaInversor = consultaFiltradaInversor.message;
@@ -160,48 +208,24 @@ async function getFilteredInvestor(idInversor){
 	return arrayInversores;
 }
 
-async function getMaximumPower(NumberOfPanelesArray){
-	var arrayInversoresWPmx = [];
+async function getInversores_cotizacion(data){
+	//idInvestor = '30653962386633302D373930342D3131'; //Este id del inversor tiene que ser dinamico e ingresado por el usuario
+	
+	
+	
+	
+	
+	var arrayInversor = [];
+	//idInversor = data[].idInversor;
+	//potenciaReal_ = data[].potenciaReal;
+	inversorFiltrado = await getFilteredInvestor(idInversor);
 
-	for(var j = 0; j < NumberOfPanelesArray.length; j++)
+	for(var i = 0; i < inversorFiltrado.length; i++)
 	{
-		_nombrePanel = NumberOfPanelesArray[j].nombre;
-		_marcaPanel = NumberOfPanelesArray[j].marca;
-		_potenciaPanel = NumberOfPanelesArray[j].potencia;
-		_potenciaReal = NumberOfPanelesArray[j].potenciaReal;
-		_cantidadPaneles = NumberOfPanelesArray[j].noModulos;
-		_precioPorWatt = NumberOfPanelesArray[j].precioPorPanel;
-		_costoDeEstructuras = NumberOfPanelesArray[j].costoDeEstructuras;
-		
-		objNoDeInversores = {
-			no: j,
-			panel: {
-				nombrePanel: _nombrePanel,
-				marcaPanel: _marcaPanel,
-				potenciaPanel: _potenciaPanel,
-				cantidadPaneles: _cantidadPaneles, //numeroDeModulos
-				potenciaReal: _potenciaReal,
-				precioPorWatt: _precioPorWatt,
-				costoDeEstructuras: _costoDeEstructuras
-			}
-		};
-		
-		await putInvestorsToObject(_potenciaReal);
-		arrayInversoresWPmx.push(objNoDeInversores);
-	}
-	return arrayInversoresWPmx;
-}
-
-async function putInvestorsToObject(potenciaReal_){
-	idInvestor = '30653962386633302D373930342D3131'; //Este id del inversor tiene que ser dinamico e ingresado por el usuario
-	arrayAllInvestors = await getFilteredInvestor(idInvestor);
-
-	for(var i = 0; i < arrayAllInvestors.length; i++)
-	{
-		_nombreInversor = arrayAllInvestors[i].vNombreMaterialFot;
-		_potencia = arrayAllInvestors[i].fPotencia;
-		_precio = arrayAllInvestors[i].fPrecio;
-		_marca = arrayAllInvestors[i].vMarca;
+		_nombreInversor = inversorFiltrado[i].vNombreMaterialFot;
+		_potencia = inversorFiltrado[i].fPotencia;
+		_precio = inversorFiltrado[i].fPrecio;
+		_marca = inversorFiltrado[i].vMarca;
 		_potenciaMaximaInversor = _potencia * 1.25;
 		NoOfInvestors = potenciaReal_ / _potenciaMaximaInversor;
 		NoOfInvestors = NoOfInvestors * 1000;
@@ -211,10 +235,9 @@ async function putInvestorsToObject(potenciaReal_){
 		_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
 		_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
 		_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
-		_porcentajeSobreDimensionamiento = parseFloat(_porcentajeSobreDimensionamiento);
 		potenciaNominal = NoOfInvestors * _potencia;
 
-		objNoDeInversores.inversor = {
+		objInversores = {
 			nombreInversor: _nombreInversor,
 			marcaInversor: _marca,
 			potenciaInversor: _potencia,
@@ -225,43 +248,65 @@ async function putInvestorsToObject(potenciaReal_){
 			potenciaPicoInversor: _potenciaPicoInversor,
 			porcentajeSobreDimens: _porcentajeSobreDimensionamiento
 		};
+		
+		arrayInversor.push(objInversores);
 	}
+	
+	return arrayInversore;
 }
 
-
-module.exports.numeroDeInversores = async function(arrayNoDePaneles){
-	const result = await numberOfInvestors(arrayNoDePaneles);
+module.exports.obtenerInversores_cotizacion = async function(data){
+	const result = await getInversores_cotizacion(data);
 	return result;
 }
 /*#endregion*/
 
-module.exports.insertar = async function (datas, response) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports.insertar = async function (datas) {
 	const result = await insertarBD(datas);
-
 	return result;
 }
 
-module.exports.eliminar = async function (datas, response) {
+module.exports.eliminar = async function (datas) {
 	const result = await eliminarBD(datas);
-
 	return result;
 }
 
-module.exports.buscar = async function (datas, response) {
-	const result = await buscarBD(datas);
-
+module.exports.buscar = async function (idInversor) {
+	const result = await buscarBD(idInversor);
 	return result;
 }
 
-module.exports.editar = async function (datas, response) {
+module.exports.editar = async function (datas) {
 	const result = await editarBD(datas);
-
 	return result;
 }
 
-module.exports.consultar = async function (response) {
+module.exports.consultar = async function () {
 	const result = await consultaBD();
-
 	return result;
 }
 

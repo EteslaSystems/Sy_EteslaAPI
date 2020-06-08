@@ -37,6 +37,7 @@ router.post('/cotizacionIndividual', function(request, response){
 			status: 200,
 			message: cotizacion_individual
 		});
+		// console.log(cotizacion_individual);
 	})
 	.catch(error => {
 		response.json({
@@ -50,15 +51,24 @@ router.post('/cotizacionIndividual', function(request, response){
 /*#region GDMTO*/
 /*#endregion*/
 /*#region GDMTH*/
-router.post('/sendPeriods', function(request){
-	mediaTensionController.cotizarGDMTH(request.body);
+//1st. Step
+router.post('/sendPeriods', function(request, response){
+	console.log(request.body);
+	mediaTensionController.firstStepGDMTH(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
 });
-
-
-
-
-
-
+//2nd. Step
 
 
 
