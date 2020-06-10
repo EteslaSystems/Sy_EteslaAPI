@@ -209,15 +209,9 @@ async function getFilteredInvestor(idInversor){
 }
 
 async function getInversores_cotizacion(data){
-	//idInvestor = '30653962386633302D373930342D3131'; //Este id del inversor tiene que ser dinamico e ingresado por el usuario
-	
-	
-	
-	
-	
 	var arrayInversor = [];
-	//idInversor = data[].idInversor;
-	//potenciaReal_ = data[].potenciaReal;
+	var idInversor = data.idInversor;
+	var potenciaReal_ = data.potenciaReal;
 	inversorFiltrado = await getFilteredInvestor(idInversor);
 
 	for(var i = 0; i < inversorFiltrado.length; i++)
@@ -252,7 +246,7 @@ async function getInversores_cotizacion(data){
 		arrayInversor.push(objInversores);
 	}
 	
-	return arrayInversore;
+	return arrayInversor;
 }
 
 module.exports.obtenerInversores_cotizacion = async function(data){

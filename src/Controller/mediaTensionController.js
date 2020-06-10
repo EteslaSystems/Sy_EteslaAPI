@@ -59,7 +59,8 @@ async function obtenerEnergiaPaneles_Requeridos(data){
 	//Obtener Inversor filtrado
 	//Enviar "_potenciaReal" (panel)
 async function obtenerInversores_Requeridos(data){
-	//const resultStep = await inversores.obtenerInversores_cotizacion(data);
+	const resultStep = await inversores.obtenerInversores_cotizacion(data);
+	return resultStep;
 }
 
 //4th. Step (Viaticos):
