@@ -12,8 +12,11 @@ var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var descuento = 0.00; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
 
-async function main_calcularViaticos(_arrayCotizacion, _oficina, _direccionCliente){
-    distanciaEnKm = await obtenerDistanciaEnKm(_oficina, _direccionCliente);
+async function main_calcularViaticos(data){
+    var _arrayCotizacion = data.arrayPeriodosGDMTH;
+    var origen = data.origen;
+    var destino = data.destino;
+    var distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
     //distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
     
@@ -59,11 +62,10 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
             costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo) || 0;
 
-            numeroPanelesAInstalar = _arrayCotizacion[x].panel.cantidadPaneles || 0;
-            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar) || 0;
+            _numeroCuadrillas = getNumberOfCrews(__cantidadPaneles) || 0;
             numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
-            numeroDias = getDays(numeroPanelesAInstalar);
-            numeroDiasReales = getRealDays(numeroPanelesAInstalar);
+            numeroDias = getDays(__cantidadPaneles);
+            numeroDiasReales = getRealDays(__cantidadPaneles);
             /*#endregion*/
 
             /*#region iteracionArray_inversor*/
@@ -181,11 +183,10 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
             costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor) || 0;
             /*#endregion*/
-            numeroPanelesAInstalar = parseFloat(_arrayCotizacion[x].panel.cantidadPaneles) || 0;
-            _numeroCuadrillas = getNumberOfCrews(numeroPanelesAInstalar) || 0;
+            _numeroCuadrillas = getNumberOfCrews(__cantidadPaneles) || 0;
             numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
-            numeroDias = getDays(numeroPanelesAInstalar) || 0;
-            numeroDiasReales = getRealDays(numeroPanelesAInstalar) || 0;
+            numeroDias = getDays(__cantidadPaneles) || 0;
+            numeroDiasReales = getRealDays(__cantidadPaneles) || 0;
             costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras || 0;
             costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes) || 0;
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr) || 0;
@@ -530,8 +531,8 @@ function obtenerDistanciaEnKm(origen, destino){
 }
 /*#endregion */
 
-module.exports.mainViaticos = async function(arrayCotizacion, oficina, direccionCliente){
-    const result = await main_calcularViaticos(arrayCotizacion, oficina, direccionCliente);
+module.exports.mainViaticos = async function(data){
+    const result = await main_calcularViaticos(data);
     return result;
 }
 

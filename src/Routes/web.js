@@ -69,7 +69,6 @@ router.post('/sendPeriods', function(request, response){
 });
 //2nd. Step
 router.post('/sendInversorSelected', function(request, response){
-	console.log(request.body);
 	mediaTensionController.secondStepGDMTH(request.body)
 	.then(result => {
 		response.json({
@@ -84,6 +83,30 @@ router.post('/sendInversorSelected', function(request, response){
 		});
 	});
 });
+
+//3rd. Step
+///Calcular Viaticos y Totales
+router.post('/calcularVT', function(request, response){
+	mediaTensionController.thirdStepGDMTH(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
+
+
+
+
+
 
 
 //1er. Paso:

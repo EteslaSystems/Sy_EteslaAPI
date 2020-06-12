@@ -64,8 +64,9 @@ async function obtenerInversores_Requeridos(data){
 }
 
 //4th. Step (Viaticos):
-function obtenerViaticos_Totales(data){
-
+async function obtenerViaticos_Totales(data){
+	const resultStep = await viaticos.mainViaticos(data);
+	return resultStep;
 }
 
 
@@ -578,7 +579,10 @@ module.exports.secondStepGDMTH = async function(data){
 	return result;
 }
 
-
+module.exports.thirdStepGDMTH = async function(data){
+	const result = await obtenerViaticos_Totales(data);
+	return result;
+}
 
 
 
