@@ -20,6 +20,10 @@ async function main_calcularViaticos(data){
     distanciaEnKm = distanciaEnKm.message;
     //distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
     
+    if(Array.isArray(_arrayCotizacion) != true){
+        _arrayCotizacion = Object.values(_arrayCotizacion);
+    }
+
     console.log('Distancia en km, de la cotizacion: '+distanciaEnKm);
 
     _arrayCotizacion = await calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm);
@@ -77,6 +81,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
             __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
             __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor || 0;
+            __potenciaPicoInversor = Math.round(__potenciaPicoInversor * 100) / 100;
             __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
             costoTotalInversores = Math.ceil(__numeroDeInversores * __precioInversor) || 0;
             /*#endregion*/
@@ -93,10 +98,11 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
             subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
             margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
-            margen = Math.round(margen * 100) / 100;
+            margen = parseFloat(Math.round(margen * 100) / 100).toFixed(2);
             totalDeTodo = subtotOtrFletManObrTPIE + margen;
+            totalDeTodo = parseFloat(Math.round(totalDeTodo * 100) / 100).toFixed(2);
             precio = totalDeTodo * (1 - descuento);
-            precio = Math.round(precio * 100) / 100;
+            precio = parseFloat(Math.round(precio * 100) / 100).toFixed(2);
             precioMasIVA = precio * _configFile.costos.precio_mas_iva;
             precioMasIVA = Math.round(precioMasIVA * 100) / 100;
             costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
@@ -198,7 +204,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             precio = Math.round(precio * 100) / 100 || 0;
             precioMasIVA = precio * _configFile.costos.precio_mas_iva || 0;
             precioMasIVA = Math.round(precioMasIVA * 100) / 100 || 0;
-            costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100 || 0;
+            costForWatt = Math.round((precio / (__potenciaReal * 1000) * 100)) / 100 || 0;
 
             cotizacion = {
                 no: _arrayCotizacion[x].no || 0,

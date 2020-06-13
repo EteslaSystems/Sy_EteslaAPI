@@ -19,10 +19,10 @@ const message = {
 // Función de validación. Se establecen las reglas que se requieren por campo, utilizando la librería "yup"
 function inversorValidation (data) {
     const schema = yup.object().shape({
-        nombrematerial: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
+        // nombrematerial: yup
+        //     .string(message.string)
+        //     .matches(/^[A-Za-z\s]+$/g, message.letter)
+        //     .required(message.required),
         marca: yup
             .string(message.string)
             .matches(/^[A-Za-z\s]+$/g, message.letter)

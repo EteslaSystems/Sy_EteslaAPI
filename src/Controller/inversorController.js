@@ -226,6 +226,9 @@ async function getInversores_cotizacion(data){
 		NoOfInvestors = Math.ceil(NoOfInvestors);
 		_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
 		_potenciaPicoInversor = _potenciaPicoInversor * 1000;
+		
+
+
 		_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
 		_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
 		_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
