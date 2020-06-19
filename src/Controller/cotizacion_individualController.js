@@ -11,27 +11,26 @@ const otrosMateriales = require('./otrosMaterialesController');
 
 var origen = '';
 var destino = '';
-var arrayCotizacionInd = [];
+var arrayPeriodosGDMTH = [];
 var objCotiIndividual = {
-    arrayPeriodosGDMTH: {
-        panel: {
-            potenciaPanel: 0,
-            cantidadPaneles: 0,
-            potenciaReal: 0,
-            precioPorWatt: 0,
-            costoDeEstructuras: 0
-        },
-        inversor: {
-            potenciaInversor: 0,
-            potenciaNominalInversor: 0,
-            precioInversor: 0,
-            potenciaMaximaInversor: 0,
-            numeroDeInversores: 0,
-            potenciaPicoInversor: 0,
-            porcentajeSobreDimens: 0,
-            costoTotalInversores: 0
-        },
-    }
+    panel: {
+        potenciaPanel: 0,
+        cantidadPaneles: 0,
+        potenciaReal: 0,
+        precioPorWatt: 0,
+        costoDeEstructuras: 0,
+        costoTotalPaneles: 0
+    },
+    inversor: {
+        potenciaInversor: 0,
+        potenciaNominalInversor: 0,
+        precioInversor: 0,
+        potenciaMaximaInversor: 0,
+        numeroDeInversores: 0,
+        potenciaPicoInversor: 0,
+        porcentajeSobreDimens: 0,
+        costoTotalInversores: 0
+    },
 };
 
 async function cotizacionIndividual(data){
@@ -42,12 +41,15 @@ async function cotizacionIndividual(data){
     var bEstructuras = data.bEstructuras;
     var origen = data.origen;
     var destino = data.destino;
-    
     var _costoEstructuras = 0;
     var _potenciaReal = 0;
-    
+
+    origen = origen.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
     if(idPanel != "-1"){
-        panel = await paneles.buscar(idPanel);
+        const datas = { idPanel: idPanel};
+        panel = await paneles.buscar(datas);
         panel = panel.message;
 
         _potenciaPanel = panel[0].fPotencia;
@@ -55,15 +57,16 @@ async function cotizacionIndividual(data){
         precioPanel = parseFloat(panel[0].fPrecio);
         precioTotalPaneles = precioPanel * cantidadPaneles;
 
-        if(bEstructuras == true){
-            _costoEstructuras = otrosMateriales.obtenerCostoDeEstructuras(cantidadPaneles);
+        if(bEstructuras == "true" || bEstructuras == true){
+            _costoEstructuras = await otrosMateriales.obtenerCostoDeEstructuras(cantidadPaneles);
         }
 
-        objCotiIndividual.arrayPeriodosGDMTH.panel.potenciaPanel = _potenciaPanel || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.panel.cantidadPaneles = cantidadPaneles || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.panel.potenciaReal = _potenciaReal || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.panel.precioPorWatt = precioPanel || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.panel.costoDeEstructuras = _costoEstructuras;
+        objCotiIndividual.panel.potenciaPanel = _potenciaPanel || 0;
+        objCotiIndividual.panel.cantidadPaneles = cantidadPaneles || 0;
+        objCotiIndividual.panel.potenciaReal = _potenciaReal || 0;
+        objCotiIndividual.panel.precioPorWatt = precioPanel || 0;
+        objCotiIndividual.panel.costoDeEstructuras = _costoEstructuras;
+        objCotiIndividual.panel.costoTotalPaneles = precioTotalPaneles;
     }
 
     if(idInversor != "-1"){
@@ -76,7 +79,7 @@ async function cotizacionIndividual(data){
         precioInversor = parseFloat(inversor[0].fPrecio);
         precioTotalInversores = precioInversor * cantidadInversores;
 
-        if(objCotiIndividual.arrayPeriodosGDMTH.panel.potenciaPanel != 0){
+        if(objCotiIndividual.panel.potenciaPanel != 0){
             _potenciaPicoInversor = _potenciaReal / cantidadInversores;
             _porcentajeSobreDimens = _potenciaPicoInversor / _potenciaInversor;
 
@@ -84,14 +87,14 @@ async function cotizacionIndividual(data){
             objCotiIndividual.inversor.porcentajeSobreDimens = _porcentajeSobreDimens || 0;
         }
 
-        objCotiIndividual.arrayPeriodosGDMTH.inversor.potenciaInversor = _potenciaInversor || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.inversor.potenciaNominalInversor = _potenciaNominalInversor || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.inversor.precioInversor = precioInversor || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.inversor.potenciaMaximaInversor = _potenciaMaximaInversor || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.inversor.numeroDeInversores = cantidadInversores || 0;
-        objCotiIndividual.arrayPeriodosGDMTH.inversor.costoTotalInversores = precioTotalInversores || 0;
+        objCotiIndividual.inversor.potenciaInversor = _potenciaInversor || 0;
+        objCotiIndividual.inversor.potenciaNominalInversor = _potenciaNominalInversor || 0;
+        objCotiIndividual.inversor.precioInversor = precioInversor || 0;
+        objCotiIndividual.inversor.potenciaMaximaInversor = _potenciaMaximaInversor || 0;
+        objCotiIndividual.inversor.numeroDeInversores = cantidadInversores || 0;
+        objCotiIndividual.inversor.costoTotalInversores = precioTotalInversores || 0;
 
-        if(objCotiIndividual.arrayPeriodosGDMTH.panel.potenciaPanel == 0 && objCotiIndividual.inversor.potenciaInversor != 0){
+        if(objCotiIndividual.panel.potenciaPanel == 0 && objCotiIndividual.inversor.potenciaInversor != 0){
             var _cotizacionUnicamenteInversor = [];
 
             _cotizacionUnicamenteInversor.push(objCotiIndividual);
@@ -100,12 +103,15 @@ async function cotizacionIndividual(data){
         }
     }
 
-    objCotiIndividual.origen = origen;
-    objCotiIndividual.destino = destino;
+    arrayPeriodosGDMTH.push(objCotiIndividual);
+    
+    objeto = {
+        arrayPeriodosGDMTH: arrayPeriodosGDMTH,
+        origen: origen,
+        destino: destino
+    };
 
-    // arrayCotizacionInd.push(objCotiIndividual);
-
-    cotiIndv = await viaticos.mainViaticos(objCotiIndividual);
+    cotiIndv = await viaticos.mainViaticos(objeto);
 
     return cotiIndv;
 }

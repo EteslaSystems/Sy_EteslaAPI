@@ -43,9 +43,35 @@ function getRadiacion(){
     return radiacion;
 }
 
-/*#region Consumos Despues de Solar*/
-var objConsumosDespuesDeSolar = { consumosDespuesDeSolar: { B: 0, I: 0, P: 0, C: 0, D: 0 } };
-var arrayConsumosDespuesDeSolar = [];
+/*#region Datos_Consumo*/
+module.exports.getCD_DatosConsumo = function(data){
+    getCD_DatosConsumo(data);
+}
+
+function getCD_DatosConsumo(data){
+    var C = 0;
+    var D = 0;
+    arrayMeses_ = getIrradiacionDiasDeMesesDelAnio();
+
+    for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
+    {
+        var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh);
+        var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh);
+        var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh);
+        var bkw = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkw);
+        var ikw = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikw);
+        var pkw = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkw);
+        var dias = arrayMeses_[i].dias;
+        
+        C = Math.min(pkw, ((bkwh + ikwh + pkwh)/(24 * dias * 0.52)), ((bkwh + ikwh + pkwh)/(24 * dias * 0.52)));
+        D = Math.min(Math.max(bkw, ikw, pkw),((bkwh + ikwh + pkwh)/(24 * dias * 0.52)));
+
+        console.log('C: '+C+'\nD: '+D);
+        console.log('-----------------------------');
+    }
+}
+/*#endregion*/
+
 /*#region Produccion Solar*/
 function getProduccionSolarIntermedia(_arrayCotizacion, _porcentajePerdida, data){
     for(var i=0; i<_arrayCotizacion.length; i++){
@@ -99,6 +125,10 @@ function getProduccionPunta(){
     return produccionPunta;
 }
 /*#endregion*/
+
+/*#region Consumos Despues de Solar*/
+var objConsumosDespuesDeSolar = { consumosDespuesDeSolar: { B: 0, I: 0, P: 0, C: 0, D: 0 } };
+var arrayConsumosDespuesDeSolar = [];
 
 function getBIP(_data){
     for(var i=1; i<_data.length; i++){
@@ -167,6 +197,11 @@ function getCD(arrayBIP_, data_){
 }
 /*#endregion*/
 
+/*#region Pagos_totales*/
+/*#endregion*/
+
+/*#region tarifas_CFE*/
+/*#endregion*/
 module.exports.obtenerIrradiacionDiasMeses = function(){
     getRadiacion();
 }

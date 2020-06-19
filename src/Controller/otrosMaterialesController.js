@@ -8,9 +8,13 @@
 const mysqlConnection = require('../../config/database');
 
 /*#region Paneles*/
-var costoEstructura = 45; //Este dato tiene que ser dinamico y extraido de una tabla de BD (Nota: agregar tabla "otros_materiales" a la Bd)
 
-function getCostPanelsStructures(numberOfPanels){
+async function getCostPanelsStructures(numberOfPanels){
+	const datas = { idOtrosMateriales: '62303839616566642D616538652D3131' };
+	var costoEstructura = await buscarOtroMaterialBD(datas);
+	costoEstructura = costoEstructura.message;
+	costoEstructura = costoEstructura[0].fPrecioUnitario;
+	
     structuresCost = numberOfPanels * costoEstructura;
     return structuresCost;
 }
@@ -18,8 +22,8 @@ function getCostPanelsStructures(numberOfPanels){
 /*#region Inversores*/
 /*#endregion*/
 
-module.exports.obtenerCostoDeEstructuras = function (numeroDePaneles){
-    const result = getCostPanelsStructures(numeroDePaneles);
+module.exports.obtenerCostoDeEstructuras = async function (numeroDePaneles){
+    const result = await getCostPanelsStructures(numeroDePaneles);
     return result;
 }
 

@@ -137,7 +137,8 @@ var objInversores = {
 	precioInversor: 0,
 	potenciaNominalInversor: 0,
 	potenciaMaximaInversor: 0,
-	numeroDeInversores: 0
+	numeroDeInversores: 0,
+	precioTotalInversores: 0
 };
 
 // async function numberOfInvestors(NumberOfPanelesArray){
@@ -233,6 +234,7 @@ async function getInversores_cotizacion(data){
 		_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
 		_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
 		potenciaNominal = NoOfInvestors * _potencia;
+		precioTotalInversores = _precio * NoOfInvestors;
 
 		objInversores = {
 			nombreInversor: _nombreInversor,
@@ -243,7 +245,8 @@ async function getInversores_cotizacion(data){
 			potenciaMaximaInversor: _potenciaMaximaInversor,
 			numeroDeInversores: NoOfInvestors,
 			potenciaPicoInversor: _potenciaPicoInversor,
-			porcentajeSobreDimens: _porcentajeSobreDimensionamiento
+			porcentajeSobreDimens: _porcentajeSobreDimensionamiento,
+			precioTotalInversores: precioTotalInversores
 		};
 		
 		arrayInversor.push(objInversores);

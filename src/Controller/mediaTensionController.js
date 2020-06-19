@@ -107,7 +107,8 @@ var _objresulProm = {
 		potenciaReal: 0,
 		noModulos: 0,
 		precioPanel: 0,
-		costoDeEstructuras: 0
+		costoDeEstructuras: 0,
+		costoTotalPaneles: 0
 	}
 };
 
@@ -139,7 +140,8 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 		// console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
 		/*#region PotenciaNecesaria*/
 		var municipio = data.destino; //Direccion del cliente
-		var irradiacion_ = await getIrradiation(municipio);
+		// var irradiacion_ = await getIrradiation(municipio);
+		var irradiacion_ = 4.60;
 		var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
 		var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
 		/*#endregion*/
@@ -166,6 +168,7 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 			noModulosP = _arrayNoDePaneles[x].noModulos;
 			precioPanel = _arrayNoDePaneles[x].precioPorPanel;
 			costoEstructuras = _arrayNoDePaneles[x].costoDeEstructuras;
+			costoTotalPaneles = precioPanel * noModulosP;
 
 			_objresulProm = { 
 				panel: {
@@ -175,7 +178,8 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 					potenciaReal: potenciaRealPanel,
 					noModulos: noModulosP,
 					precioPanel: precioPanel,
-					costoDeEstructuras: costoEstructuras
+					costoDeEstructuras: costoEstructuras,
+					costoTotalPaneles: costoTotalPaneles
 				}
 			};
 			

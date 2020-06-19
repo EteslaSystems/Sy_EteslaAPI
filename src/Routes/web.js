@@ -36,14 +36,15 @@ router.post('/cotizacionIndividual', function(request, response){
 		response.json({
 			status: 200,
 			message: cotizacion_individual
-		});
+		}).end();
+		
 		// console.log(cotizacion_individual);
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		});
+		}).end();
 	});
 	
 });
@@ -58,13 +59,13 @@ router.post('/sendPeriods', function(request, response){
 		response.json({
 			status: 200,
 			message: result
-		});
+		}).end();
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		});
+		}).end();
 	});
 });
 //2nd. Step
@@ -74,13 +75,14 @@ router.post('/sendInversorSelected', function(request, response){
 		response.json({
 			status: 200,
 			message: result
-		});
+		}).end();
+		
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		});
+		}).end();
 	});
 });
 
@@ -92,13 +94,13 @@ router.post('/calcularVT', function(request, response){
 		response.json({
 			status: 200,
 			message: result
-		});
+		}).end();
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		});
+		}).end();
 	});
 });
 
@@ -136,16 +138,10 @@ router.post('/calcularVT', function(request, response){
 /*#endregion GDMTH*/
 /*#endregion*/
 
-const v = require('../Controller/opcionesViaticsController');
-
-router.get('/test', function(){
-	v.main();
-});
-
 const y = require('../Controller/powerController');
 
-router.get('/y', function(){
-	y.obtenerIrradiacionDiasMeses();
+router.post('/y', function(request){
+	y.getCD_DatosConsumo(request.body);
 });
 
 /*#endregion*/
