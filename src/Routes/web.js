@@ -25,6 +25,7 @@ router.use(express.json());
 
 /*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
 const mediaTensionController = require('../Controller/mediaTensionController');
+const powerController = require('../Controller/powerController');
 /*#region Cotización*/
 
 /*#region cotizacion_producto(sin ingresar datos de consumo)*/
@@ -67,6 +68,18 @@ router.post('/sendPeriods', function(request, response){
 			message: error
 		}).end();
 	});
+
+	/* powerController.getCD_DatosConsumo_(request.body)
+	.then(result => {
+		console.log('entro');
+		console.log(result);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		}).end();
+	}); */
 });
 //2nd. Step
 router.post('/sendInversorSelected', function(request, response){
@@ -77,6 +90,17 @@ router.post('/sendInversorSelected', function(request, response){
 			message: result
 		}).end();
 		
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		}).end();
+	});
+
+	powerController.getProduccionIntermedia_(request.body)
+	.then(result => {
+		console.log(result);
 	})
 	.catch(error => {
 		response.json({

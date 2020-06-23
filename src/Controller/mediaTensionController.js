@@ -25,6 +25,25 @@ var averagePmxn = 0.0;
 var averagePagoTransmi = 0.0;
 var averageCmxn = 0.0;
 var averageDmxn = 0.0;
+var sumaConsumoTotalkWh = 0;
+var promedioConsumoTotalkWh = 0;
+var _objresulProm = {
+	consumo:{
+		consumoAnual: 0,
+		promedioConsumo: 0,
+		potenciaNecesaria: 0
+	},
+	panel:{
+		nombre: '',
+		marca: '',
+		potencia: 0,
+		potenciaReal: 0,
+		noModulos: 0,
+		precioPanel: 0,
+		costoDeEstructuras: 0,
+		costoTotalPaneles: 0
+	}
+};
 
 /*1.-Comprobar el tamanio de la data (>12 o ==12)*/
 /*2.-Sacar en base al consumo la ENERGIA REQUERIDA y retornar -LA CONVINACION DE PANELES REQ.-
@@ -92,25 +111,7 @@ async function obtenerViaticos_Totales(data){
 
 // }
 
-var sumaConsumoTotalkWh = 0;
-var promedioConsumoTotalkWh = 0;
-var _objresulProm = {
-	consumo:{
-		consumoAnual: 0,
-		promedioConsumo: 0,
-		potenciaNecesaria: 0
-	},
-	panel:{
-		nombre: '',
-		marca: '',
-		potencia: 0,
-		potenciaReal: 0,
-		noModulos: 0,
-		precioPanel: 0,
-		costoDeEstructuras: 0,
-		costoTotalPaneles: 0
-	}
-};
+
 
 async function promedioDePropiedadesPeriodoGDMTH(data)
 {
