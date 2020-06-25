@@ -81,6 +81,24 @@ router.post('/sendPeriods', function(request, response){
 		}).end();
 	}); */
 });
+
+router.post('/firstStepPower', function(request, response){
+	console.log(request.body);
+	powerController.getCD_DatosConsumo_(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		}).end();
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		}).end();
+	});
+});
+
 //2nd. Step
 router.post('/sendInversorSelected', function(request, response){
 	mediaTensionController.secondStepGDMTH(request.body)
@@ -89,7 +107,6 @@ router.post('/sendInversorSelected', function(request, response){
 			status: 200,
 			message: result
 		}).end();
-		
 	})
 	.catch(error => {
 		response.json({
@@ -97,7 +114,7 @@ router.post('/sendInversorSelected', function(request, response){
 			message: error
 		}).end();
 	});
-
+/* 
 	powerController.getProduccionIntermedia_(request.body)
 	.then(result => {
 		console.log(result);
@@ -107,7 +124,7 @@ router.post('/sendInversorSelected', function(request, response){
 			status: 500,
 			message: error
 		}).end();
-	});
+	}); */
 });
 
 //3rd. Step
