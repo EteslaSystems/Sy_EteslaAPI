@@ -104,6 +104,7 @@ async function getProduccionIntermedia(data, arrayCD){ //La data debera traer co
     console.log(__produccionIntermedia);
 
     getBIP_DespuesDeSolar(data, arrayCD, __produccionIntermedia);
+    getProduccionAnual_KwhMwh(__produccionIntermedia);
 }
 
 /*#endregion*/
@@ -221,6 +222,8 @@ function getBIPMXN_kWh(data, arrayCD, newBIP){
 function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
     var objPagosTotales = {};
     var _pagosTotales = [];
+    var sumaTodosLosEnergiaSinSolar = 0;
+    var sumaTodosLosPagoTransmi = 0;
 
     /*#region SIN_SOLAR*/
     for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
@@ -259,20 +262,15 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
     }
     /*#endregion*/
     /*#region CON_SOLAR*/
-    var sumaTodosLosEnergiaSinSolar = (_pagosTotales) => {
-        for(var n=0; n<_pagosTotales; n++)
-        {
-            sumaTodosLosEnergiaSinSolar += _pagosTotales[i].sinSolar.energia;
-        }
-        return sumaTodosLosEnergiaSinSolar;
-    };
-    var sumaTodosLosPagoTransmi = (data) => {
-        for(var x=0; x<data.arrayPeriodosGDMTH.length; x++)
-        {
-            sumaTodosLosPagoTransmi += parseFloat(data.arrayPeriodosGDMTH[x].pagoTransmi);
-        }
-        return sumaTodosLosPagoTransmi;
-    };
+    for(var n=0; n<_pagosTotales.length; n++)
+    {
+        sumaTodosLosEnergiaSinSolar += parseFloat(_pagosTotales[n].sinSolar.energia);
+    }
+
+    for(var x=0; x<data.arrayPeriodosGDMTH.length; x++)
+    {
+        sumaTodosLosPagoTransmi += parseFloat(data.arrayPeriodosGDMTH[x].pagoTransmi);
+    }
 
     for(var j=0; j<data.arrayPeriodosGDMTH.length; j++)
     {
@@ -289,7 +287,7 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
         var dmxn_kw = parseFloat(bipMXN_kWh[j].dmxn_kw);
 
         energia = newB * bmxn_kwh + newI * imxn_kwh + newP * pmxn_kwh;
-        transmision = (sumaTodosLosPagoTransmi / sumaTodosLosEnergiaSinSolar) * this.energia;
+        transmision = (sumaTodosLosPagoTransmi / sumaTodosLosEnergiaSinSolar) * energia;
         capacidad = newC * cmxn_kw;
         distribucion = newD * dmxn_kw;
         iva = this.transmision + this.capacidad + this.distribucion;
@@ -306,29 +304,70 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
             }
         };
 
-        _pagosTotales.push(objPagosTotales);
+        
+        _pagosTotales.splice(j+=1,j,objPagosTotales);
     }
     /*#endregion*/
 
     console.log('getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP) says: \n');
     console.log(_pagosTotales);
+    getTotales_Ahorro(_pagosTotales);
+
+    getRadiacion(); //Pensar si esta funcion ira aca...
 }
 /*#endregion*/
 
 /*#region Celdas_Arriba(Radiacion, Produccion_Anual(kWh), Produccion_Anual(mWh), Total, Total, Ahorro, Porcentaje)*/
 function getRadiacion(){
     var _arrayMeses = getIrradiacionDiasDeMesesDelAnio();
-    var promedio = 0;
-    var suma = 0;
+    var promedioIrradiaciones = 0;
+    var sumaDiasDelMes = 0;
 
-    for(var i=0; i<_arrayMeses.length; i++){
-        suma = suma + _arrayMeses[i].dias;
-        promedio = promedio + _arrayMeses[i].irradiacion;
-        promedio = i+1 === _arrayMeses.length ? promedio/_arrayMeses.length : promedio;
+    for(var i=0; i<_arrayMeses.length; i++)
+    {
+        promedioIrradiaciones += _arrayMeses[i].irradiacion;
+        sumaDiasDelMes += _arrayMeses[i].dias;
+        promedioIrradiaciones = _arrayMeses.length ? promedioIrradiaciones / _arrayMeses.length : promedioIrradiaciones;
     }
     
-    radiacion = Math.ceil(promedio * suma);
-    return radiacion;
+    radiacion = Math.ceil(promedioIrradiaciones * sumaDiasDelMes);
+
+    console.log('Radiacion: '+radiacion);
+    // return radiacion;
+}
+
+function getProduccionAnual_KwhMwh(_produccionIntermedia){
+    var produccionAnualKwh = 0;
+    var produccionAnualMwh = 0;
+
+    for(var i=0; i<_produccionIntermedia.length; i++)
+    {
+        produccionAnualKwh += _produccionIntermedia[i];
+    }
+
+    produccionAnualMwh = produccionAnualKwH / 1000
+
+    console.log('Produccion Anual Kwh: '+produccionAnualKwh+'\nProduccion Anual Mwh: '+produccionAnualMwh);
+}
+
+function getTotales_Ahorro(pagosTotales){
+    var pagosTotales_Ahorro = {};
+    var __pagosTotalesAhorro = [];
+    var totalSinSolar = 0;
+    var totalConSolar = 0;
+    var ahorroCifra = 0;
+    var ahorroPorcentaje = 0;
+
+    for(var i=0; i<pagosTotales.length; i++)
+    {
+        totalSinSolar += parseFloat(pagosTotales[i].sinSolar.total);
+        totalConSolar += parseFloat(pagosTotales[i].conSolar.total);
+    }
+
+    ahorroCifra = totalConSolar > 0 ? totalSinSolar - totalConSolar : totalSinSolar - 12000;
+    ahorroPorcentaje = ahorroCifra / totalSinSolar;
+
+    console.log('Total sin solar: '+totalSinSolar+'\nTotal con solar: '+totalConSolar+'\nAhorro: '+ahorroCifra+'\nAhorro: '+ahorroPorcentaje+'%');
 }
 /*#endregion*/
 
