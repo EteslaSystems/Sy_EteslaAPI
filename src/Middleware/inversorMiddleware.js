@@ -9,7 +9,7 @@ const yup = require('yup');
 
 // Variable constante, contendrá los mensajes personalizados para cada tipo de validación creada.
 const message = {
-    string: ' debe ser una cadena de caracteres.',
+    string: ' debe ser una cadena de caracteres, evite el uso de caracteres especiales. ',
     letter: ' debe contener solo caracteres alfabéticos.',
     required: ' es obligatorio.',
     number: ' debe contener solo caracteres numéricos.',

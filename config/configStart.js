@@ -1,6 +1,6 @@
 /**
  * En este archivo se definen las variables y constantes que instancian las librerias a utilizar y se crea el punto de inicio del servidor.
- * @author: Jesús Daniel Carrera Falcón
+ * @author: Eduardo Herrera Aldaraca
  * @version: 1.0.0
  * @date: 11/Febrero/2020
  */

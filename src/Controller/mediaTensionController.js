@@ -41,6 +41,7 @@ var _objresulProm = {
 		noModulos: 0,
 		precioPanel: 0,
 		costoDeEstructuras: 0,
+		costoPorWatt: 0,
 		costoTotalPaneles: 0
 	}
 };
@@ -164,12 +165,13 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 		{
 			nombrePanel = _arrayNoDePaneles[x].nombre;
 			marcaPanel = _arrayNoDePaneles[x].marca;
-			potenciaPanel = _arrayNoDePaneles[x].potencia;
-			potenciaRealPanel = _arrayNoDePaneles[x].potenciaReal;
-			noModulosP = _arrayNoDePaneles[x].noModulos;
-			precioPanel = _arrayNoDePaneles[x].precioPorPanel;
-			costoEstructuras = _arrayNoDePaneles[x].costoDeEstructuras;
-			costoTotalPaneles = precioPanel * noModulosP;
+			potenciaPanel = parseFloat(_arrayNoDePaneles[x].potencia);
+			potenciaRealPanel = parseFloat(_arrayNoDePaneles[x].potenciaReal);
+			noModulosP = parseFloat(_arrayNoDePaneles[x].noModulos);
+			precioPanel = parseFloat(_arrayNoDePaneles[x].precioPorPanel);
+			costoEstructuras = parseFloat(_arrayNoDePaneles[x].costoDeEstructuras);
+			costoPorWatt = precioPanel;
+			costoTotalPaneles = parseFloat((precioPanel * potenciaPanel) * noModulosP);
 
 			_objresulProm = { 
 				panel: {
@@ -178,8 +180,8 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 					potencia: potenciaPanel,
 					potenciaReal: potenciaRealPanel,
 					noModulos: noModulosP,
-					precioPanel: precioPanel,
 					costoDeEstructuras: costoEstructuras,
+					costoPorWatt: costoPorWatt,
 					costoTotalPaneles: costoTotalPaneles
 				}
 			};

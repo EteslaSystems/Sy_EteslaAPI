@@ -6,11 +6,13 @@
 const request = require('request');
 const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
+const dolar = require('../Controller/dolar_tipoCambio');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
-var descuento = 0.00; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
+var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
+var precioDolar = 0;
 
 async function main_calcularViaticos(data){
     var _arrayCotizacion = data.arrayPeriodosGDMTH;
@@ -20,6 +22,8 @@ async function main_calcularViaticos(data){
     distanciaEnKm = distanciaEnKm.message;
     // distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
     
+    precioDolar = parseFloat(dolar.obtenerPrecioDolar());
+
     // if(Array.isArray(_arrayCotizacion) != true){
     //     _arrayCotizacion = Object.values(_arrayCotizacion);
     // }
@@ -48,11 +52,12 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
             __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles || 0; //numeroDeModulos
             __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
-            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
             __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras || 0;
-            
-            __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-            costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo) || 0;
+            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
+            // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
+            // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
+            // costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
+            costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
             /*#endregion*/
 
             /*#region iteracionArray_inversor*/
@@ -63,36 +68,37 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
             __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
             __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
-            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor || 0;
-            __potenciaPicoInversor = Math.round(__potenciaPicoInversor * 100) / 100;
+            __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
             __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
             costoTotalInversores = _arrayCotizacion[x].inversor.costoTotalInversores || 0;
-            //
             /*#endregion*/
-
-            _numeroCuadrillas = getNumberOfCrews(__cantidadPaneles) || 0;
-            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
+            _numeroCuadrillas = parseInt(getNumberOfCrews(__cantidadPaneles)) || 0;
+            numeroDePersonasRequeridas = _numeroCuadrillas * parseInt(_configFile.cuadrilla.numeroDePersonas) || 0;
             numeroDias = getDays(__cantidadPaneles, _numeroCuadrillas);
             numeroDiasReales = getRealDays(__cantidadPaneles, numeroDias);
-            pagoPasaje = getBusPayment(distanciaEnKm); //Pasarlo a dolares
-            pagoPasajeTotal = pagoPasaje * numeroDePersonasRequeridas;
-            pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
-            pagoComidaTotal = comida * numeroDePersonasRequeridas * numeroDiasReales;
-            pagoHospedajeTotal = hospedaje * numeroDePersonasRequeridas * numeroDiasReales;
-            totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
-            costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras;
-            costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes);
+            pagoPasaje = parseFloat(getBusPayment(distanciaEnKm)).toFixed(2) / precioDolar; //Pasarlo a dolares
+            pagoPasajeTotal = Math.ceil(parseFloat(pagoPasaje * numeroDePersonasRequeridas));
+            // pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
+            pagoComidaTotal = parseFloat(comida * numeroDePersonasRequeridas * numeroDiasReales).toFixed(2) / precioDolar;
+            pagoHospedajeTotal = parseFloat(hospedaje * numeroDePersonasRequeridas * numeroDiasReales).toFixed(2) / precioDolar;
+            totalViaticosMT = parseFloat(pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal); //MT = MediaTension
+
+
+
+
+            costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
+            costoTotalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
-            subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr; //TPIE = Total Paneles Inversores Estructuras
-            margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
+            subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
+            margen = (subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
             margen = parseFloat(Math.round(margen * 100) / 100).toFixed(2);
             totalDeTodo = subtotOtrFletManObrTPIE + margen;
             totalDeTodo = parseFloat(Math.round(totalDeTodo * 100) / 100).toFixed(2);
-            precio = totalDeTodo * (1 - descuento);
-            precio = parseFloat(Math.round(precio * 100) / 100).toFixed(2);
-            precioMasIVA = precio * _configFile.costos.precio_mas_iva;
+            precio = parseFloat(Math.round(totalDeTodo * (1 - descuento) * 100) / 100).toFixed(2);
+            precioMasIVA = precio * parseFloat(_configFile.costos.precio_mas_iva);
             precioMasIVA = Math.round(precioMasIVA * 100) / 100;
-            costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
+            // costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
+            // costForWatt = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
 
             cotizacion = {
                 no: _arrayCotizacion[x].no || 0,
@@ -102,7 +108,9 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     potenciaPanel: __potenciaPanel || null,
                     cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
                     potenciaReal: __potenciaReal || null,
-                    precioPorModulo: __precioPorModulo || null,
+                    costoDeEstructuras:  __costoDeEstructuras || null,
+                    precioPorWatt: __precioPorWattPanel || null,
+                    // precioPorModulo: __precioPorModulo || null,
                     costoTotalPaneles: costoTotalPaneles || null
                 },
                 inversores: {
@@ -122,7 +130,6 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     noPersonasRequeridas: numeroDePersonasRequeridas || null,
                     noDias: numeroDias || null,
                     noDiasReales: numeroDiasReales || null,
-                    costoDeEstructuras:  __costoDeEstructuras || null,
                     pagoPasaje: pagoPasaje || null,
                     pagoTotalPasaje: pagoPasajeTotal || null,
                     pagoTotalComida: pagoComidaTotal || null,
@@ -138,7 +145,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     totalDeTodo: totalDeTodo || null,
                     precio: precio || null,
                     precioMasIVA: precioMasIVA || null,
-                    costForWatt: costForWatt || null,
+                    // costForWatt: costForWatt || null,
                     totalViaticosMT: totalViaticosMT || null
                 }
             }
@@ -160,8 +167,9 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
             __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
             __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras || 0;
-            __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-            costoTotalPaneles = Math.floor(__cantidadPaneles * __precioPorModulo);
+            // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
+            // __precioPorModulo = _arrayCotizacion[x].panel.
+            costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
             /*#endregion*/
             /*#region Inversores_info*/
             __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
@@ -171,28 +179,28 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
             __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
             __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
-            __potenciaPicoInversor = _arrayCotizacion[x].inversor.potenciaPicoInversor || 0;
-            __potenciaPicoInversor = Math.round(__potenciaPicoInversor * 100) / 100;
+            __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
             __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
             costoTotalInversores = _arrayCotizacion[x].inversor.costoTotalInversores || 0;
 
             /*#endregion*/
             _numeroCuadrillas = getNumberOfCrews(__cantidadPaneles) || 0;
-            numeroDePersonasRequeridas = _numeroCuadrillas * _configFile.cuadrilla.numeroDePersonas || 0;
+            numeroDePersonasRequeridas = _numeroCuadrillas * parseInt(_configFile.cuadrilla.numeroDePersonas) || 0;
             numeroDias = getDays(__cantidadPaneles, _numeroCuadrillas) || 0;
             numeroDiasReales = getRealDays(__cantidadPaneles, numeroDias) || 0;
-            costoTotalPanInvEstr = costoTotalPaneles + costoTotalInversores + __costoDeEstructuras || 0;
-            costoTotalFletes = Math.floor(costoTotalPanInvEstr * _configFile.costos.porcentaje_fletes) || 0;
+            costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras) || 0;
+            costoTotalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes)) || 0;
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr) || 0;
-            subtotOtrFletManObrTPIE = costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr || 0; //TPIE = Total Paneles Inversores Estructuras
+            subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1]) + costoTotalFletes + parseFloat(costoManoDeObra[0]) + costoTotalPanInvEstr || 0; //TPIE = Total Paneles Inversores Estructuras
             margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE || 0;
-            margen = Math.round(margen * 100) / 100 || 0;
+            margen = parseFloat(Math.round(margen * 100) / 100).toFixed(2) || 0;
             totalDeTodo = subtotOtrFletManObrTPIE + margen || 0;
             precio = totalDeTodo * (1 - descuento) || 0;
-            precio = Math.round(precio * 100) / 100 || 0;
+            precio = parseFloat(Math.round(precio * 100) / 100).toFixed(2) || 0;
             precioMasIVA = precio * _configFile.costos.precio_mas_iva || 0;
             precioMasIVA = Math.round(precioMasIVA * 100) / 100 || 0;
-            costForWatt = Math.round((precio / (__potenciaReal * 1000) * 100)) / 100 || 0;
+            // costForWatt = Math.round((precio / (__potenciaReal * 1000) * 100)) / 100 || 0;
+            // costForWatt = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
 
             cotizacion = {
                 no: _arrayCotizacion[x].no || 0,
@@ -516,7 +524,9 @@ function getBusPayment(_distanciaEnKm){
 function obtenerDistanciaEnKm(origen, destino){
     var apikey = 'AIzaSyD0cJDO0IwwolWkvCCnzVFTmbsvQjsdOyo';
     var distanciaEnKm = 0;
+    origen = origen.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     origen = origen.replace(/\s/g,"+");
+    destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     destino = destino.replace(/\s/g,"+");
 
     return new Promise((resolve, reject) => {
@@ -540,7 +550,7 @@ function obtenerDistanciaEnKm(origen, destino){
             else{
                 response = {
                     status: false,
-                    message: error
+                    message: 'Hubo un error al intentar cargar la distancia en la ubicacion proporcionada'
                 };
                 resolve(response);
             }

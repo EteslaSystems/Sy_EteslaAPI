@@ -9,8 +9,6 @@ const inversores = require('../Controller/inversorController');
 const viaticos = require('../Controller/opcionesViaticsController');
 const otrosMateriales = require('./otrosMaterialesController');
 
-var origen = '';
-var destino = '';
 var arrayPeriodosGDMTH = [];
 var objCotiIndividual = {
     panel: {
@@ -44,8 +42,7 @@ async function cotizacionIndividual(data){
     var _costoEstructuras = 0;
     var _potenciaReal = 0;
 
-    origen = origen.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
 
     if(idPanel != "-1"){
         const datas = { idPanel: idPanel};
@@ -53,9 +50,11 @@ async function cotizacionIndividual(data){
         panel = panel.message;
 
         _potenciaPanel = panel[0].fPotencia;
+        precioPanel = panel[0].fPrecio;
         _potenciaReal = (_potenciaPanel * cantidadPaneles)/1000;
-        precioPanel = parseFloat(panel[0].fPrecio);
-        precioTotalPaneles = precioPanel * cantidadPaneles;
+
+        precioPorWatt = parseFloat(panel[0].fPrecio);
+		costoTotalPaneles = Math.round(parseFloat((precioPanel * _potenciaPanel) * cantidadPaneles));
 
         if(bEstructuras == "true" || bEstructuras == true){
             _costoEstructuras = await otrosMateriales.obtenerCostoDeEstructuras(cantidadPaneles);
@@ -64,9 +63,9 @@ async function cotizacionIndividual(data){
         objCotiIndividual.panel.potenciaPanel = _potenciaPanel || 0;
         objCotiIndividual.panel.cantidadPaneles = cantidadPaneles || 0;
         objCotiIndividual.panel.potenciaReal = _potenciaReal || 0;
-        objCotiIndividual.panel.precioPorWatt = precioPanel || 0;
-        objCotiIndividual.panel.costoDeEstructuras = _costoEstructuras;
-        objCotiIndividual.panel.costoTotalPaneles = precioTotalPaneles;
+        objCotiIndividual.panel.costoDeEstructuras = _costoEstructuras  || 0;
+        objCotiIndividual.panel.precioPorWatt = precioPorWatt || 0;
+        objCotiIndividual.panel.costoTotalPaneles = costoTotalPaneles || 0;
     }
 
     if(idInversor != "-1"){
