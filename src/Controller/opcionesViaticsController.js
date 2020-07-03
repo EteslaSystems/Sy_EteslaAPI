@@ -52,7 +52,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
             __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles || 0; //numeroDeModulos
             __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
-            __costoDeEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras || 0;
+            __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
             __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
             // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
             // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
@@ -84,10 +84,10 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
 
 
-
-
             costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
+
             costoTotalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
+            
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
             margen = (subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
