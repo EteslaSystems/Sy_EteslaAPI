@@ -76,12 +76,12 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             numeroDePersonasRequeridas = _numeroCuadrillas * parseInt(_configFile.cuadrilla.numeroDePersonas) || 0;
             numeroDias = getDays(__cantidadPaneles, _numeroCuadrillas);
             numeroDiasReales = getRealDays(__cantidadPaneles, numeroDias);
-            pagoPasaje = parseFloat(getBusPayment(distanciaEnKm)).toFixed(2) / precioDolar; //Pasarlo a dolares
-            pagoPasajeTotal = Math.ceil(parseFloat(pagoPasaje * numeroDePersonasRequeridas));
+            pagoPasaje = Math.round((getBusPayment(distanciaEnKm) / precioDolar) * 100) / 100; //Pasarlo a dolares
+            pagoPasajeTotal = Math.ceil(pagoPasaje * numeroDePersonasRequeridas);
             // pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
-            pagoComidaTotal = parseFloat(comida * numeroDePersonasRequeridas * numeroDiasReales).toFixed(2) / precioDolar;
-            pagoHospedajeTotal = parseFloat(hospedaje * numeroDePersonasRequeridas * numeroDiasReales).toFixed(2) / precioDolar;
-            totalViaticosMT = parseFloat(pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal); //MT = MediaTension
+            pagoComidaTotal = Math.round((((comida * numeroDePersonasRequeridas * numeroDiasReales) / precioDolar) * 100) / 100);
+            pagoHospedajeTotal = Math.round((((hospedaje * numeroDePersonasRequeridas * numeroDiasReales) / precioDolar) * 100) / 100);
+            totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
 
 
 
@@ -210,7 +210,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     potenciaPanel: __potenciaPanel || null,
                     cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
                     potenciaReal: __potenciaReal || null,
-                    precioPorModulo: __precioPorModulo || null,
+                    // precioPorModulo: __precioPorModulo || null,
                     costoTotalPaneles: costoTotalPaneles || null
                 },
                 inversores: {
@@ -509,13 +509,13 @@ function getRealDays(_numeroPanelesAInstalar, _numeroDias){
 
 function getBusPayment(_distanciaEnKm){
     if(_distanciaEnKm < 600){
-        _distanciaEnKm = _distanciaEnKm * 1.2;
+        _distanciaEnKm = parseFloat(_distanciaEnKm * 1.2);
     }
     else{
-        _distanciaEnKm = _distanciaEnKm * 2.1; 
+        _distanciaEnKm = parseFloat(_distanciaEnKm * 2.1); 
     }
     
-    _distanciaEnKm = _distanciaEnKm * 2;
+    _distanciaEnKm = parseFloat(_distanciaEnKm * 2);
 
     return _distanciaEnKm;
 }
