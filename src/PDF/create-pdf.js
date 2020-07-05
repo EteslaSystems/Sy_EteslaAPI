@@ -4,7 +4,7 @@
 - @date: 				01/04/2020
 */
 
-//var pdf = require('html-pdf');
+var pdf = require('html-pdf');
 var moment = require('moment-timezone');
 
 module.exports.crear = async function (request, response) {
