@@ -9,7 +9,7 @@ const yup = require('yup');
 
 // Variable constante, contendrá los mensajes personalizados para cada tipo de validación creada.
 const message = {
-    string: ' debe ser una cadena de caracteres.',
+    string: ' debe ser una cadena de caracteres, evite el uso de caracteres especiales. ',
     letter: ' debe contener solo caracteres alfabéticos.',
     required: ' es obligatorio.',
     number: ' debe contener solo caracteres numéricos.',
@@ -19,10 +19,10 @@ const message = {
 // Función de validación. Se establecen las reglas que se requieren por campo, utilizando la librería "yup"
 function inversorValidation (data) {
     const schema = yup.object().shape({
-        nombrematerial: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
+        // nombrematerial: yup
+        //     .string(message.string)
+        //     .matches(/^[A-Za-z\s]+$/g, message.letter)
+        //     .required(message.required),
         marca: yup
             .string(message.string)
             .matches(/^[A-Za-z\s]+$/g, message.letter)

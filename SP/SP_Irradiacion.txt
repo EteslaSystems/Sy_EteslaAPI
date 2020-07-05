@@ -1,8 +1,8 @@
+DELIMITER $$
 CREATE PROCEDURE SP_Irradiacion(
 	IN Opcion INT,
 	IN xIdIrradiacion VARCHAR(255),
-	IN CP VARCHAR(9),
-	IN Muncipio (30),
+	IN Municipio VARCHAR(30),
 	IN Irradiacion FLOAT,
 	IN created TIMESTAMP,
 	IN updated TIMESTAMP,
@@ -11,28 +11,39 @@ CREATE PROCEDURE SP_Irradiacion(
 BEGIN
 	IF(Opcion = 0) THEN
 	/*Insertar*/
-	   INSERT INTO Irradiacion
-	   VALUES(UUID(), CP, Municipio, Irradiacion, created, NULL, NULL);
-	ELSEIF(Opcion = 1) THEN
+	   INSERT INTO irradiacion
+	   VALUES(UUID(), Municipio, Irradiacion, created, NULL, NULL);
+	END IF;
+    IF(Opcion = 1) THEN
 	/*Eliminar*/
-	   UPDATE Irradiacion
+	   UPDATE irradiacion
 	   SET deleted_at = deleted
 	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
-	ELSEIF(Opcion = 2) THEN
+	END IF;
+    IF(Opcion = 2) THEN
 	/*Actualizar*/
-	   UPDATE Irradiacion
-	   SET vCP = CP, vMunicipio = Municipio, fIrradiacion = Irradiacion, updated_at = updated
-	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
-	ELSEIF(Opcion = 3) THEN
-	/*Leer*/
-	   SELECT HEX(idIrradiacion) AS idIrradiacion, vCP, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
-	   FROM Irradiacion
-	   WHERE deleted_at IS NULL	
-	   ORDER BY created_at DESC;
-	ELSEIF(Opcion = 4) THEN
-	/*Leer - filtrado*/
-	   SELECT HEX(idIrradiacion) AS idIrradiacion, vCP, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
-	   FROM Irradiacion
+	   UPDATE irradiacion
+	   SET vMunicipio = Municipio, fIrradiacion = Irradiacion, updated_at = updated
 	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
 	END IF;
+    IF(Opcion = 3) THEN
+	/*Leer*/
+	   SELECT HEX(idIrradiacion) AS idIrradiacion, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
+	   FROM irradiacion
+	   WHERE deleted_at IS NULL	
+	   ORDER BY created_at DESC;
+	END IF;
+    IF(Opcion = 4) THEN
+	/*Leer - filtrado por Id*/
+	   SELECT HEX(idIrradiacion) AS idIrradiacion, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
+	   FROM irradiacion
+	   WHERE idIrradiacion = UNHEX(xIdIrradiacion);
+	END IF;
+    IF(Opcion = 5) THEN
+	/*Leer - filtrado por Municipio*/
+	   SELECT HEX(idIrradiacion) AS idIrradiacion, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at
+	   FROM irradiacion
+	   WHERE vMunicipio LIKE Municipio;
+	END IF;
 END
+$$ DELIMITER;

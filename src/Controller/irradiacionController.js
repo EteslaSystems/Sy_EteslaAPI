@@ -6,14 +6,15 @@
 const mysqlConnection = require('../../config/database');
 
 function irradiacionFiltered(vMunicipio){
+    var vMunicipio = vMunicipio;
     return new Promise((resolve, reject) => {
-        mysqlConnection.query('CALL SP_Irradiacion(?, ?, ?, ?, ?, ?, ?)', [4,null,vMunicipio,null,null,null,null], (error, rows) => {
+        mysqlConnection.query('SELECT HEX(idIrradiacion) AS idIrradiacion, vMunicipio, fIrradiacion, created_at, updated_at, deleted_at FROM irradiacion WHERE vMunicipio LIKE ?;', [vMunicipio], (error, rows) => {
             if(error){
                 const response = {
                     status: false,
                     message: error
                 }
-                reject(response);
+                resolve(response);
             }
             else{
                 const response = {

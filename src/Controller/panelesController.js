@@ -102,7 +102,6 @@ function consultaBD () {
 
 function buscarBD (datas) {
 	const { idPanel } = datas;
-
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
@@ -135,11 +134,11 @@ var objNoDeModulosPorPotenciaDelPanel = {};
 
 async function numberOfModuls(powerNeeded, irradiation, efficiency){
 	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(powerNeeded, irradiation, efficiency);
-	console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
+	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
 	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
-	console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
+	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
 	var _arrayTodosPaneles = await getAllPanelsArray();
-	_arrayObjectsNoOfModuls = getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
+	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
 
 	return _arrayObjectsNoOfModuls;
 }
@@ -151,16 +150,17 @@ async function getAllPanelsArray(){
 	return arrayPaneles;
 }
 
-function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
+async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
 	for(var i = 0; i < arrayAllOfPanels.length; i++){
+		// _id = arrayAllOfPanels[i].
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
 		_marca = arrayAllOfPanels[i].vMarca
 		_precio = arrayAllOfPanels[i].fPrecio;
 		potenciaDelPanel = arrayAllOfPanels[i].fPotencia;
 		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
-		structuresCost = otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
+		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
 		_potenciaReal = (potenciaDelPanel * NoOfModuls)/1000;
 
 		objNoDeModulosPorPotenciaDelPanel = {
@@ -210,7 +210,7 @@ module.exports.eliminar = async function (datas, response) {
 	return result;
 }
 
-module.exports.buscar = async function (datas, response) {
+module.exports.buscar = async function (datas) {
 	const result = await buscarBD(datas);
 
 	return result;
