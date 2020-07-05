@@ -32,8 +32,6 @@ module.exports.crear = async function (request, response) {
 		nuevo_consumo: request.new_consumption
 	};
 
-    console.log(datas);
-
 	options = {
 		// Opciones de tamaño de papel: http://phantomjs.org/api/webpage/property/paper-size.html
 
@@ -59,7 +57,7 @@ module.exports.crear = async function (request, response) {
 
 		// Opciones de rendering
 		//"base": "file:///xampp/htdocs/Sy_EteslaAPI/PDF",
-		"base": "file:///xampp/htdocs/Sy_EteslaAPI(2)/src/PDF/", // Directorio base que se usa para cargar ficheros (imágenes, css, js) cuando no están referenciados usando un servidor
+		"base": "file:///xampp/htdocs/Sy_EteslaAPI/src/PDF/", // Directorio base que se usa para cargar ficheros (imágenes, css, js) cuando no están referenciados usando un servidor
 
 		// Opción de zoom, se puede usar para escalarimágenes si `options.type` no es pdf
 		"zoomFactor": "1", // por defecto es 1
@@ -562,7 +560,709 @@ module.exports.crear = async function (request, response) {
                 <div style="page-break-after:always;"></div>
 
                 <div class="document-page-3">
-                    <h1>Hola</h1>
+                    <div class="content-logo">
+                        <img src="img/etesla.png">
+                    </div>
+
+                    <div class="table-content-3">
+                        <div class="section-3-top">
+                            <div class="top-left">
+                                <div class="table-top-left">
+                                    <table>
+                                        <thead>
+                                            <tr style="color: #00b050;">
+                                                <th colspan="5">¿Como se verán mis consumos de energía en kWh?</th>
+                                            </tr>
+
+                                            <tr>
+                                                <th style="width: 20%;"></th>
+                                                <th style="width: 20%;">Consumo Actual</th>
+                                                <th style="width: 20%;">Producción</th>
+                                                <th style="width: 20%;">Consumo Nuevo</th>
+                                                <th style="width: 20%;"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>Enero</th>
+                                                <td>722.00</td>
+                                                <td>395.21</td>
+                                                <td>343.26</td>
+                                                <td>$ 726.80</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Febrero</th>
+                                                <td>722.00</td>
+                                                <td>453.16</td>
+                                                <td>287.73</td>
+                                                <td>$ 546.29</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Marzo</th>
+                                                <td>160.50</td>
+                                                <td>530.11</td>
+                                                <td>-347.52</td>
+                                                <td>$ -</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Abril</th>
+                                                <td>160.50</td>
+                                                <td>566.21</td>
+                                                <td>-382.11</td>
+                                                <td>$ -</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Mayo</th>
+                                                <td>750.50</td>
+                                                <td>592.82</td>
+                                                <td>182.40</td>
+                                                <td>$ 203.93</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Junio</th>
+                                                <td>750.50</td>
+                                                <td>554.81</td>
+                                                <td>218.81</td>
+                                                <td>$ 264.31</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Julio</th>
+                                                <td>874.00</td>
+                                                <td>509.21</td>
+                                                <td>386.01</td>
+                                                <td>$ 447.01</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Agosto</th>
+                                                <td>874.00</td>
+                                                <td>511.11</td>
+                                                <td>384.19</td>
+                                                <td>$ 447.01</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Septiembre</th>
+                                                <td>541.00</td>
+                                                <td>438.91</td>
+                                                <td>120.39</td>
+                                                <td>$ 97.33</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Octubre</th>
+                                                <td>541.00</td>
+                                                <td>418.01</td>
+                                                <td>140.41</td>
+                                                <td>$ 179.89</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Noviembre</th>
+                                                <td>283.00</td>
+                                                <td>383.81</td>
+                                                <td>-84.81</td>
+                                                <td>$ -</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Diciembre</th>
+                                                <td>283.00</td>
+                                                <td>369.56</td>
+                                                <td>-71.15</td>
+                                                <td>$ -</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>Total anual</th>
+                                                <td>6,662.00</td>
+                                                <td>5,722.95</td>
+                                                <td>1177.62</td>
+                                                <td>$ 2,912.56</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th></th>
+                                                <td>kWh</td>
+                                                <td>kWh</td>
+                                                <td>kWh</td>
+                                                <td>$$</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="table-top-rigth">
+                                    <p>
+                                        <b>86%</b> <br><br>
+                                        Energía limpia generada <br><br>
+                                        Nos da ahorros en MXN de <br><br>
+                                        <b>81.61.%</b>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="top-rigth">
+                                <!-- SECCIÓN A LLENAR CON UNA GRAQFICA -->
+                            </div>
+                        </div>
+
+                        <div class="section-3-bottom">
+                            <div class="table-details">
+                                <div class="section-table-1">
+                                    <div class="s1">
+                                        <p>Sin paneles solares</p>
+                                    </div>
+
+                                    <div class="s2">
+                                        <div class="s2-title">
+                                            <div class="s2-title-sub1">
+                                                <p>Mes</p>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>Consumo kw</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>Facturación sin iva</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>Tarifa</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-1">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Agosto</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Septiembre</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>2084</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 12,898</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-2">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Octubre</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Noviembre</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1878</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 8,639</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-3">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Diciembre</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Enero</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>2378</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 10,939</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-4">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Febrero</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Marzo</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1918</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 8,823</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-5">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Abril</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Mayo</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1656</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 7,618</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-6">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Junio</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Julio</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>2782</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 12,797</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="s3">
+                                        <div class="s3-part1">
+                                            <p>Pago total anual</p>
+                                        </div>
+
+                                        <div class="s3-part2">
+                                            <p>$ 77,390</p>
+                                        </div>
+
+                                        <div class="s3-part3"></div>
+                                    </div>
+                                </div>
+
+                                <div class="section-table-2">
+                                    <div class="s1">
+                                        <p>Con 18 paneles de 330w paneles solares año 1</p>
+                                    </div>
+
+                                    <div class="s2">
+                                        <div class="s2-title">
+                                            <div class="s2-title-sub1">
+                                                <p>Mes</p>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>Consumo kw</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>Facturación sin iva</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>Tarifa</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-1">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Agosto</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Septiembre</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1336</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 6,147</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-2">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Octubre</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Noviembre</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>673</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 3,096</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-3">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Diciembre</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Enero</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1346</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 4,671</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>DAC</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-4">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Febrero</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Marzo</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>552</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 889</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-5">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Abril</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Mayo</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>34</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 64</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-6">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Junio</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Julio</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1080</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 1,275</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="s3">
+                                        <div class="s3-part1">
+                                            <p>Pago total anual</p>
+                                        </div>
+
+                                        <div class="s3-part2">
+                                            <p style="color: #FFFFFF !important;">$ 16,142</p>
+                                        </div>
+
+                                        <div class="s3-part3"></div>
+                                    </div>
+                                </div>
+
+                                <div class="section-table-3">
+                                    <div class="s1">
+                                        <p>Con 18 paneles de 330w paneles solares año 1</p>
+                                    </div>
+
+                                    <div class="s2">
+                                        <div class="s2-title">
+                                            <div class="s2-title-sub1">
+                                                <p>Mes</p>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>Consumo kw</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>Facturación sin iva</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4">
+                                                <p>Tarifa</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-1">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Agosto</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Septiembre</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1336</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 1,994</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-2">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Octubre</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Noviembre</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>673</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 1,216</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-3">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Diciembre</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Enero</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1346</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 3,102</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-4">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Febrero</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Marzo</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>552</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 889</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-5">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Abril</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Mayo</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>34</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 64</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="s2-content-6">
+                                            <div class="s2-title-sub1">
+                                                <div class="sub1-p1">
+                                                    <p>Junio</p>
+                                                </div>
+
+                                                <div class="sub1-p2">
+                                                    <p>Julio</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="s2-title-sub2">
+                                                <p>1080</p>
+                                            </div>
+
+                                            <div class="s2-title-sub3">
+                                                <p>$ 1,275</p>
+                                            </div>
+
+                                            <div class="s2-title-sub4" style="background: #00b050 !important;">
+                                                <p>1C</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="s3">
+                                        <div class="s3-part1">
+                                            <p>Pago total anual</p>
+                                        </div>
+
+                                        <div class="s3-part2">
+                                            <p style="color: #FFFFFF !important;">$ 8,540</p>
+                                        </div>
+
+                                        <div class="s3-part3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="page-break-after:always;"></div>
