@@ -194,52 +194,6 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 		return arrayResult;
 
 		/*#endregion*/
-		/*#region Inversores_cotizacion*/
-		//Agregar SELECT * FROM Inversores junto con la convinacion de paneles
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//Mandar el ID del Inversor seleccionado, para que este pueda ser filtrado
-
-
-
-		//_arrayConvinacionesPanInv = await inversores.numeroDeInversores(_arrayNoDePaneles);
-		
-		//console.log('promedioDePropiedadesPeriodoGDMTH(data) says: ');
-		//console.log(_arrayConvinacionesPanInv);
-		/*#endregion*/
-		/*#region CalculoDeCuadrillas_Instaladores*/
-		// var oficinaSucursal = data[0].oficina;
-		// var _arrayCotizacion = await viaticos.mainViaticos(_arrayConvinacionesPanInv, oficinaSucursal, municipio);
-
-		// console.log('promedioDePropiedadesPeriodoGDMTH(data) says: ');
-		// console.log(_arrayCotizacion);
 		/*#endregion*/
 	}
 }

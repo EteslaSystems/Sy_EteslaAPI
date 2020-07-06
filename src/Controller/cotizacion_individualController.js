@@ -76,7 +76,7 @@ async function cotizacionIndividual(data){
         _potenciaNominalInversor = cantidadInversores * _potenciaInversor;
         _potenciaMaximaInversor = _potenciaInversor * 1.25;
         precioInversor = parseFloat(inversor[0].fPrecio);
-        precioTotalInversores = precioInversor * cantidadInversores;
+        precioTotalInversores = Math.round((precioInversor * cantidadInversores) * 100) / 100;
 
         if(objCotiIndividual.panel.potenciaPanel != 0){
             _potenciaPicoInversor = _potenciaReal / cantidadInversores;

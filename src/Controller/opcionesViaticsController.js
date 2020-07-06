@@ -90,15 +90,11 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
-            margen = (subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE;
-            margen = parseFloat(Math.round(margen * 100) / 100).toFixed(2);
+            margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100;
             totalDeTodo = subtotOtrFletManObrTPIE + margen;
-            totalDeTodo = parseFloat(Math.round(totalDeTodo * 100) / 100).toFixed(2);
-            precio = parseFloat(Math.round(totalDeTodo * (1 - descuento) * 100) / 100).toFixed(2);
-            precioMasIVA = precio * parseFloat(_configFile.costos.precio_mas_iva);
-            precioMasIVA = Math.round(precioMasIVA * 100) / 100;
-            // costForWatt = Math.round((precio / (__potenciaReal * 1000)) * 100) / 100;
-            // costForWatt = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
+            precio = Math.round(totalDeTodo * (1 - descuento) * 100)/100;
+            precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
+            precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
 
             cotizacion = {
                 no: _arrayCotizacion[x].no || 0,
@@ -146,7 +142,8 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
                     precio: precio || null,
                     precioMasIVA: precioMasIVA || null,
                     // costForWatt: costForWatt || null,
-                    totalViaticosMT: totalViaticosMT || null
+                    totalViaticosMT: totalViaticosMT || null,
+                    precioTotalMXN: precioTotalMXN || null
                 }
             }
 
@@ -192,15 +189,10 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             costoTotalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes)) || 0;
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr) || 0;
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1]) + costoTotalFletes + parseFloat(costoManoDeObra[0]) + costoTotalPanInvEstr || 0; //TPIE = Total Paneles Inversores Estructuras
-            margen = (subtotOtrFletManObrTPIE/(1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE || 0;
-            margen = parseFloat(Math.round(margen * 100) / 100).toFixed(2) || 0;
+            margen = parseFloat(Math.round(subtotOtrFletManObrTPIE/(1 - parseFloat(_configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE * 100) / 100).toFixed(2) || 0;
             totalDeTodo = subtotOtrFletManObrTPIE + margen || 0;
-            precio = totalDeTodo * (1 - descuento) || 0;
-            precio = parseFloat(Math.round(precio * 100) / 100).toFixed(2) || 0;
-            precioMasIVA = precio * _configFile.costos.precio_mas_iva || 0;
-            precioMasIVA = Math.round(precioMasIVA * 100) / 100 || 0;
-            // costForWatt = Math.round((precio / (__potenciaReal * 1000) * 100)) / 100 || 0;
-            // costForWatt = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
+            precio = parseFloat(Math.round(totalDeTodo * (1 - descuento) * 100) / 100).toFixed(2) || 0;
+            precioMasIVA = Math.round(precio * parseFloat(_configFile.costos.precio_mas_iva)) || 0;
 
             cotizacion = {
                 no: _arrayCotizacion[x].no || 0,
