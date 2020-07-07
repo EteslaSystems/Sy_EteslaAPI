@@ -516,10 +516,31 @@ function getBusPayment(_distanciaEnKm){
 function obtenerDistanciaEnKm(origen, destino){
     var apikey = 'AIzaSyD0cJDO0IwwolWkvCCnzVFTmbsvQjsdOyo';
     var distanciaEnKm = 0;
+    
+    console.log('Origen1: '+origen+' Destino1: '+destino);
+
+    switch(origen)
+    {
+        case 'Veracruz':
+            origen = 'Avenida Ricardo Flores Magón, Ignacio Zaragoza, Veracruz, Ver.';
+        break;
+        case 'CDMX':
+            origen = 'Oso, Col del Valle Sur, Benito Juárez, 03100 Ciudad de México, CDMX';
+        break;
+        case 'Puebla':
+            origen = 'Avenida 25 Oriente, Bella Vista, Puebla, Pue.';
+        break;
+        default: 
+            -1
+        break;
+    }
+
     origen = origen.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     origen = origen.replace(/\s/g,"+");
     destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     destino = destino.replace(/\s/g,"+");
+
+    console.log('Origen2: '+origen+' Destino2: '+destino);
 
     return new Promise((resolve, reject) => {
         request.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origen+"&destinations="+destino+"&key="+apikey, (error, response, body) => {
@@ -540,11 +561,12 @@ function obtenerDistanciaEnKm(origen, destino){
                 resolve(response);
             }
             else{
-                response = {
+                /* response = {
                     status: false,
                     message: 'Hubo un error al intentar cargar la distancia en la ubicacion proporcionada'
                 };
-                resolve(response);
+                resolve(response); */
+                console.log('Hubo un error al calcular los kilometros de los viaticos');
             }
         });   
     });
