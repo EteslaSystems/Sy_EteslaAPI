@@ -38,8 +38,6 @@ router.post('/cotizacionIndividual', function(request, response){
 			status: 200,
 			message: cotizacion_individual
 		}).end();
-		
-		// console.log(cotizacion_individual);
 	})
 	.catch(error => {
 		response.json({
@@ -68,22 +66,9 @@ router.post('/sendPeriods', function(request, response){
 			message: error
 		}).end();
 	});
-
-	/* powerController.getCD_DatosConsumo_(request.body)
-	.then(result => {
-		console.log('entro');
-		console.log(result);
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error
-		}).end();
-	}); */
 });
 
 router.post('/firstStepPower', function(request, response){
-	console.log(request.body);
 	powerController.getCD_DatosConsumo_(request.body)
 	.then(result => {
 		response.json({
@@ -152,13 +137,6 @@ router.post('/calcularVT', function(request, response){
 
 /*#endregion GDMTH*/
 /*#endregion*/
-
-const y = require('../Controller/powerController');
-
-router.post('/y', function(request){
-	y.getCD_DatosConsumo(request.body);
-});
-
 /*#endregion*/
 
 
