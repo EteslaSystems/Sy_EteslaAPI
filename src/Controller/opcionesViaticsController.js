@@ -75,11 +75,11 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             numeroDePersonasRequeridas = _numeroCuadrillas * parseInt(_configFile.cuadrilla.numeroDePersonas) || 0;
             numeroDias = getDays(__cantidadPaneles, _numeroCuadrillas);
             numeroDiasReales = getRealDays(__cantidadPaneles, numeroDias);
-            pagoPasaje = Math.round((getBusPayment(distanciaEnKm) / precioDolar) * 100) / 100; //Pasarlo a dolares
+            pagoPasaje = Math.round((getBusPayment(distanciaEnKm) / precioDolar) * 100) / 100;
             pagoPasajeTotal = Math.ceil(pagoPasaje * numeroDePersonasRequeridas);
             // pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
-            pagoComidaTotal = Math.round((((comida * numeroDePersonasRequeridas * numeroDiasReales) / precioDolar) * 100) / 100);
-            pagoHospedajeTotal = Math.round((((hospedaje * numeroDePersonasRequeridas * numeroDiasReales) / precioDolar) * 100) / 100);
+            pagoComidaTotal = Math.round(((((comida * numeroDePersonasRequeridas) * numeroDiasReales) / precioDolar) * 100) / 100);
+            pagoHospedajeTotal = Math.round(((((hospedaje * numeroDePersonasRequeridas) * numeroDiasReales) / precioDolar) * 100) / 100);
             totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
 
 
@@ -90,7 +90,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             costoManoDeObra = getPrecioDeManoDeObra(__cantidadPaneles, costoTotalPanInvEstr);
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
             margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100;
-            totalDeTodo = subtotOtrFletManObrTPIE + margen;
+            totalDeTodo = subtotOtrFletManObrTPIE + margen + totalViaticosMT;
             precio = Math.round(totalDeTodo * (1 - descuento) * 100)/100;
             precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
             precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;

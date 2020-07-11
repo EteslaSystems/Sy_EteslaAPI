@@ -9,7 +9,7 @@ const inversores = require('../Controller/inversorController');
 const viaticos = require('../Controller/opcionesViaticsController');
 const otrosMateriales = require('./otrosMaterialesController');
 
-var arrayPeriodosGDMTH = [];
+var cotizacionInd = [];
 var objCotiIndividual = {
     panel: {
         potenciaPanel: 0,
@@ -82,7 +82,7 @@ async function cotizacionIndividual(data){
             _potenciaPicoInversor = _potenciaReal / cantidadInversores;
             _porcentajeSobreDimens = _potenciaPicoInversor / _potenciaInversor;
 
-            objCotiIndividual.inversor.potenciaPicoInversor = _potenciaPicoInversor;
+            objCotiIndividual.inversor.potenciaPicoInversor = _potenciaPicoInversor || 0;
             objCotiIndividual.inversor.porcentajeSobreDimens = _porcentajeSobreDimens || 0;
         }
 
@@ -102,10 +102,10 @@ async function cotizacionIndividual(data){
         }
     }
 
-    arrayPeriodosGDMTH.push(objCotiIndividual);
+    cotizacionInd.push(objCotiIndividual);
     
     objeto = {
-        arrayPeriodosGDMTH: arrayPeriodosGDMTH,
+        arrayPeriodosGDMTH: cotizacionInd,
         origen: origen,
         destino: destino
     };
