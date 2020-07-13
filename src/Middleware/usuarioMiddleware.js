@@ -49,7 +49,7 @@ function usuarioValidation (data) {
     		.required(message.required),
         email: yup
     		.string(message.string)
-            .matches(/^[a-z0-9_.]+@[a-z0-9]+\.[a-z0-9_.]+$/, message.email)
+            .matches(/^[a-z0-9_.]+@(etesla)\.com\.[a-z0-9]+\.[a-z0-9_.]+$/, message.email)
             .required(message.required),
 	});
 
