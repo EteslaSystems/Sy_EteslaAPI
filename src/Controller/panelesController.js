@@ -102,7 +102,6 @@ function consultaBD () {
 
 function buscarBD (datas) {
 	const { idPanel } = datas;
-
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
@@ -123,6 +122,81 @@ function buscarBD (datas) {
 		});
   	});
 }
+/*#region LH420*/
+/*
+- @description: 		Funciones para la cotizacion de media tension
+- @author: 				LH420
+- @date: 				01/04/2020
+*/
+const otrosMateriales = require('./otrosMaterialesController');
+
+var objNoDeModulosPorPotenciaDelPanel = {};
+
+async function numberOfModuls(powerNeeded, irradiation, efficiency){
+	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(powerNeeded, irradiation, efficiency);
+	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
+	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
+	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
+	var _arrayTodosPaneles = await getAllPanelsArray();
+	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
+
+	return _arrayObjectsNoOfModuls;
+}
+
+async function getAllPanelsArray(){
+	consultaPaneles = await consultaBD();
+	consultaPaneles = consultaPaneles.message;
+	arrayPaneles = consultaPaneles;
+	return arrayPaneles;
+}
+
+async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
+	arrayNoDeModulosPorPotenciaDelPanel = [];
+
+	for(var i = 0; i < arrayAllOfPanels.length; i++){
+		// _id = arrayAllOfPanels[i].
+		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
+		_marca = arrayAllOfPanels[i].vMarca
+		_precio = arrayAllOfPanels[i].fPrecio;
+		potenciaDelPanel = arrayAllOfPanels[i].fPotencia;
+		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
+		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
+		_potenciaReal = (potenciaDelPanel * NoOfModuls)/1000;
+
+		objNoDeModulosPorPotenciaDelPanel = {
+			nombre: _nombre,
+			marca: _marca,
+			potencia: potenciaDelPanel,
+			potenciaReal: _potenciaReal,
+			noModulos: NoOfModuls,
+			precioPorPanel: _precio,
+			costoDeEstructuras: structuresCost
+		};
+
+		arrayNoDeModulosPorPotenciaDelPanel.push(objNoDeModulosPorPotenciaDelPanel);
+	}
+	return arrayNoDeModulosPorPotenciaDelPanel;
+}
+
+function getSystemPowerInWatts(powerRequired){
+	potenciaRequeridaEnW = powerRequired * 1000;
+	potenciaRequeridaEnW = parseFloat(Math.round(potenciaRequeridaEnW * 100) / 100).toFixed(2);
+	return potenciaRequeridaEnW;
+}
+
+function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency){
+	potenciaRequeridaEnKwp = monthlyAvarageConsumption / (irradiation * efficiency);
+	potenciaRequeridaEnKwp = parseFloat(Math.round(potenciaRequeridaEnKwp * 100) / 100).toFixed(2);
+	potenciaRequeridaEnKwp >= 500 ? potenciaRequeridaEnKwp = 499 : potenciaRequeridaEnKwp;
+	return potenciaRequeridaEnKwp;
+}
+
+module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficiencia){
+	const result = await numberOfModuls(potenciaNecesaria, irradiacion, eficiencia);
+
+	return result;
+}
+/*#endregion*/
 
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
@@ -136,7 +210,7 @@ module.exports.eliminar = async function (datas, response) {
 	return result;
 }
 
-module.exports.buscar = async function (datas, response) {
+module.exports.buscar = async function (datas) {
 	const result = await buscarBD(datas);
 
 	return result;
