@@ -1,6 +1,6 @@
 {
   "name": "api_etesla",
-  "version": "1.0.0",
+  "version": "0.0.1x",
   "description": "API del sistema de gestion eTesla",
   "main": "configStart.js",
   "scripts": {

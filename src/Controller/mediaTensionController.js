@@ -12,7 +12,6 @@ const power = require('../Controller/powerController');
 /*#region GDMTH*/
 var eficiencia = 0.82;
 var menosUno = 0;
-var averagePeriodsGDMTH = {};
 var averageBkWh = 0.0;
 var averageIkWh = 0.0;
 var averagePkWh = 0.0;
@@ -63,15 +62,13 @@ var _objresulProm = {
 //Datos de consumo
 //1st. and 2nd. Step (Energia y Paneles Requeridos):
 async function obtenerEnergiaPaneles_Requeridos(data){
-	if(validateLengthData(data) == null){
-		// console.log(' obtenerEnergiaPaneles_Requeridos(data) says: ');
-		// console.log(data);
+	_data = data.arrayPeriodosGDMTH;
+	if(_data.length === 12){
 		return resultStep = await promedioDePropiedadesPeriodoGDMTH(data);
 	}
 	else{
-		//En caso de que la data venga incompleta (menor a 12 periodos)
-		newData = validateLengthData(data);
-		await promedioDePropiedadesPeriodoGDMTH(newData);
+		newData = await validateLengthData(data);
+		return resultStep = await promedioDePropiedadesPeriodoGDMTH(newData);
 	}
 }
 
@@ -453,23 +450,29 @@ function calcularPorcentajeDePerdida(_setPorcentajePerdida){
 	return porcentajePerdida;
 }
 
+var newData = [];
+var newObjArrayGDMTH = {};
+
 async function llenarEspaciosVaciosData(data)
 {
-	for(var j = 1; j < data.length; j++)
+	
+	_data = data.arrayPeriodosGDMTH;
+
+	for(var j=0; j < _data.length; j++)
 	{
 		var _condicional = j == data.length - 1;
-		var bkwh = Number.parseFloat(data[j].bkwh);
-		var ikwh = Number.parseFloat(data[j].ikwh);
-		var pkwh = Number.parseFloat(data[j].pkwh);
-		var bkw = Number.parseFloat(data[j].bkw);
-		var ikw = Number.parseFloat(data[j].ikw);	
-		var pkw = Number.parseFloat(data[j].pkw);
-		var bmxn = Number.parseFloat(data[j].bmxn);
-		var imxn = Number.parseFloat(data[j].imxn);
-		var pmxn = Number.parseFloat(data[j].pmxn);
-		var pagoTransmision = Number.parseFloat(data[j].pagoTransmi);
-		var cmxn = Number.parseFloat(data[j].cmxn);
-		var dmxn = Number.parseFloat(data[j].dmxn);
+		var bkwh = Number.parseFloat(_data[j].bkwh);
+		var ikwh = Number.parseFloat(_data[j].ikwh);
+		var pkwh = Number.parseFloat(_data[j].pkwh);
+		var bkw = Number.parseFloat(_data[j].bkw);
+		var ikw = Number.parseFloat(_data[j].ikw);	
+		var pkw = Number.parseFloat(_data[j].pkw);
+		var bmxn = Number.parseFloat(_data[j].bmxn);
+		var imxn = Number.parseFloat(_data[j].imxn);
+		var pmxn = Number.parseFloat(_data[j].pmxn);
+		var pagoTransmision = Number.parseFloat(_data[j].pagoTransmi);
+		var cmxn = Number.parseFloat(_data[j].cmxn);
+		var dmxn = Number.parseFloat(_data[j].dmxn);
 
 		averageBkWh = Number.parseFloat(averageBkWh + bkwh);
 		averageIkWh = Number.parseFloat(averageIkWh + ikwh);
@@ -484,46 +487,78 @@ async function llenarEspaciosVaciosData(data)
 		averageCmxn = Number.parseFloat(averageCmxn + cmxn);
 		averageDmxn = Number.parseFloat(averageDmxn + dmxn);
 
-		_condicional ? averageBkWh = Number.parseFloat(averageBkWh / (data.length - 1)) : null;
-		_condicional ? averageIkWh = Number.parseFloat(averageIkWh / (data.length - 1)) : null;
-		_condicional ? averagePkWh = Number.parseFloat(averagePkWh / (data.length - 1)) : null;
-		_condicional ? averageBkW = Number.parseFloat(averageBkW / (data.length - 1)) : null;
-		_condicional ? averageIkW = Number.parseFloat(averageIkW / (data.length - 1)) : null;
-		_condicional ? averagePkW = Number.parseFloat(averagePkW / (data.length - 1)) : null;
-		_condicional ? averageBmxn = Number.parseFloat(averageBmxn / (data.length - 1)) : null;
-		_condicional ? averageImxn = Number.parseFloat(averageImxn / (data.length - 1)) : null;
-		_condicional ? averagePmxn = Number.parseFloat(averagePmxn / (data.length - 1)) : null;
-		_condicional ? averagePagoTransmi = Number.parseFloat(averagePagoTransmi / (data.length - 1)) : null;
-		_condicional ? averageCmxn = Number.parseFloat(averageCmxn / (data.length - 1)) : null;
-		_condicional ? averageDmxn = Number.parseFloat(averageDmxn / (data.length - 1)) : null;
+
+		newObjArrayGDMTH = {
+			bkwh: bkwh,
+			ikwh: ikwh,
+			pkwh: pkwh,
+			bkw: bkw,
+			ikw: ikw,
+			pkw: pkw,
+			bmxn: bmxn,
+			imxn: imxn,
+			pmxn: pmxn,
+			pagoTransmi: pagoTransmi,
+			cmxn: cmxn,
+			dmxn: dmxn
+		};
+
+		newData.push(newObjArrayGDMTH);
+
+		if(_condicional){
+			averageBkWh = Number.parseFloat(averageBkWh / (_data.length)) || null;
+			averageIkWh = Number.parseFloat(averageIkWh / (_data.length)) || null;
+			averagePkWh = Number.parseFloat(averagePkWh / (_data.length)) || null;
+			averageBkW = Number.parseFloat(averageBkW / (_data.length)) || null;
+			averageIkW = Number.parseFloat(averageIkW / (_data.length)) || null;
+			averagePkW = Number.parseFloat(averagePkW / (_data.length)) || null;
+			averageBmxn = Number.parseFloat(averageBmxn / (_data.length)) || null;
+			averageImxn = Number.parseFloat(averageImxn / (_data.length)) || null;
+			averagePmxn = Number.parseFloat(averagePmxn / (_data.length)) || null;
+			averagePagoTransmi = Number.parseFloat(averagePagoTransmi / (_data.length)) || null;
+			averageCmxn = Number.parseFloat(averageCmxn / (_data.length)) || null;
+			averageDmxn = Number.parseFloat(averageDmxn / (_data.length)) || null;
+
+			newObjArrayGDMTH = {
+				bkwh: averageBkWh,
+				ikwh: averageIkWh,
+				pkwh: averagePkWh,
+				bkw: averageBkW,
+				ikw: averageIkW,
+				pkw: averagePkW,
+				bmxn: averageBmxn,
+				imxn: averageImxn,
+				pmxn: averagePmxn,
+				pagoTransmi: averagePagoTransmi,
+				cmxn: averageCmxn,
+				dmxn: averageDmxn
+			};
+
+			for(var n=_data.length; n<=12; n++)
+			{
+				newData.push(newObjArrayGDMTH);
+				
+				if(n === 12){
+					destino = data.destino;
+					origen = data.origen;
+					newObjArrayGDMTH = {
+						arrayPeriodosGDMTH: newData,
+						destino: destino,
+						origen: origen
+					};	
+
+					return newObjArrayGDMTH;
+				}
+			}
+		}
 	}
-
-	averagePeriodsGDMTH = {
-		bkwh: averageBkWh,
-		ikwh: averageIkWh,
-		pkwh: averagePkWh,
-		bkw: averageBkW,
-		ikw: averageIkW,
-		pkw: averagePkW,
-		bmxn: averageBmxn,
-		imxn: averageImxn,
-		pmxn: averagePmxn,
-		pagoTransmi: averagePagoTransmi,
-		cmxn: averageCmxn,
-		dmxn: averageDmxn
-	};
-
-	for(var k = data.length; k <= 12; k++){
-		data.push(averagePeriodsGDMTH);
-	}
-
-	return data;
 }
 
-function validateLengthData(data){
-    if(data.length < 12){
-		resultado = llenarEspaciosVaciosData(data);
-		return resultado;
+async function validateLengthData(data){
+	_data = data.arrayPeriodosGDMTH;
+    if(_data.length < 12){
+		newData = await llenarEspaciosVaciosData(data);
+		return newData;
     }
     else if(data.length == 12){
         return null;
