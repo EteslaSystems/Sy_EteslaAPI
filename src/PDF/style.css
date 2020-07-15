@@ -1,6 +1,6 @@
 body {
-    width: 1295px;
-    height: 1000px;
+    width: 1795px;
+    height: 1500px;
     padding: 0;
     position: relative;
     display: flex;
@@ -8,8 +8,8 @@ body {
 
 /* ------------------------------------------------------------ ESTILOS PAGINA 1 ------------------------------------------------------------ */
 body .document-page {
-    width: 1245px;
-    height: 950px;
+    width: 1745px;
+    height: 1450px;
     border: solid #FFF;
     padding: 0;
     position: absolute;
@@ -250,7 +250,7 @@ body .document-page {
                     .row input {
                         width: 100%;
                         height: 100%;
-                        margin: auto auto;
+                        margin: auto 5px;
                         border-radius: 5px 5px;
                         border: none;
                         background: #CCC;
@@ -265,7 +265,7 @@ body .document-page {
                         border-left: 50px solid transparent;
                     }
                         .triangle {
-                            margin: auto auto;
+                            margin: auto 5px;
                         }
                         .triangle-1 {
                             margin: auto 5px;
@@ -273,7 +273,7 @@ body .document-page {
                     .row .colors {
                         width: 100%;
                         height: 60%;
-                        margin: auto auto;
+                        margin: auto 5px;
                         background: rgba(19,171,70,1);
                         background: linear-gradient(to right, rgba(19,171,70,1) 0%, rgba(19,171,70,1) 10%, rgba(189,207,72,1) 35%, rgba(189,207,72,1) 65%, rgba(242,22,22,1) 90%, rgba(242,22,22,1) 100%);
                         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#13ab46', endColorstr='#f21616', GradientType=1 );
@@ -1130,18 +1130,834 @@ body .document-page-2 {
 body .document-page-3 {
     width: 1245px;
     height: 950px;
-    border: solid #000;
+    border: solid #fff;
     padding: 0;
     position: absolute;
     left: 25px;
     top: 2055px;
 }
+    /* SECCIÓN DEL LOGOTIPO DE LA EMPRESA. */
+    .document-page-3 .content-logo {
+        width: 1200px;
+        height: 90px;
+        position: absolute;
+        top: 10px;
+        left: 22.5px;
+    }
+        .document-page-3 .content-logo img {
+            width: 190px;
+            height: 90px;
+            position: absolute;
+            right: 10px;
+        }
+    .document-page-3 .table-content-3 {
+        width: 1205px;
+        height: 840px;
+        position: absolute;
+        top: 100px;
+        left: 15px;
+        border: solid 2px #FFF;
+    }
+        .table-content-3 .section-3-top {
+            width: 1205px;
+            height: 420px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+            .section-3-top .top-left {
+                width: 745px;
+                height: 400px;
+                position: absolute;
+                top: 10px;
+                left: 5px;
+            }
+                .top-left .table-top-left {
+                    width: 590px;
+                    height: 400px;
+                    position: absolute;
+                    top: 0px;
+                    left: 0px;
+                }
+                    .table-top-left table {
+                        width: 100%;
+                        height: 100%;
+                    }
+                        .table-top-left table tbody {
+                            text-align: right;
+                        }
+                        .table-top-left table tbody th {
+                            color: #00b050;
+                            text-align: left;
+                        }
+                .top-left .table-top-rigth {
+                    width: 150px;
+                    height: 400px;
+                    position: absolute;
+                    top: 0px;
+                    right: 0px;
+                }
+                    .table-top-rigth p {
+                        margin: auto 5px;
+                        color: #58976b;
+                        text-align: center;
+                        vertical-align: middle;
+                        align-items: center;
+                        font-size: 20px;
+                    }
+            .section-3-top .top-rigth {
+                width: 445px;
+                height: 400px;
+                position: absolute;
+                top: 10px;
+                right: 5px;
+                background: #355875;
+            }
+        .table-content-3 .section-3-bottom {
+            width: 1205px;
+            height: 420px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+            .section-3-bottom .table-details {
+                width: 1110px;
+                height: 400px;
+                position: absolute;
+                left: 47.5px;
+                top: 10px;
+                background: #000000;
+            }
+                .table-details .section-table-1 {
+                    width: 368px;
+                    height: 400px;
+                    position: absolute;
+                    top: 0;
+                    left: 1px;
+                }
+                    .table-details .s1 {
+                        width: 72px;
+                        height: 358px;
+                        position: absolute;
+                        top: 2px;
+                        left: 2px;
+                        background: #305496;
+                        display: flex;
+                        text-align: center;
+                    }
+                        .s1 p {
+                            color: #FFFFFF;
+                            margin: auto 5px;
+                            font-size: 12.5px;
+                        }
+                    .table-details .s2 {
+                        width: 292px;
+                        height: 358px;
+                        position: absolute;
+                        top: 2px;
+                        left: 76px;
+                    }
+                        .s2 .s2-title {
+                            width: 292px;
+                            height: 56px;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                        }
+                            .s2-title .s2-title-sub1 {
+                                width: 79px;
+                                height: 56px;
+                                position: absolute;
+                                background: #305496;
+                                display: flex;
+                                top: 0;
+                                left: 0;
+                            }
+                                .s2-title-sub1 p {
+                                    color: #FFFFFF;
+                                    margin: auto 5px;
+                                    font-size: 11px;
+                                    text-align: center;
+                                }
+                            .s2-title .s2-title-sub2 {
+                                width: 79px;
+                                height: 56px;
+                                position: absolute;
+                                background: #305496;
+                                display: flex;
+                                top: 0;
+                                left: 81px;
+                            }
+                                .s2-title-sub2 p {
+                                    color: #FFFFFF;
+                                    margin: auto 5px;
+                                    font-size: 11px;
+                                    text-align: center;
+                                }
+                            .s2-title .s2-title-sub3 {
+                                width: 79px;
+                                height: 56px;
+                                position: absolute;
+                                background: #305496;
+                                display: flex;
+                                top: 0;
+                                right: 51px;
+                            }
+                                .s2-title-sub3 p {
+                                    color: #FFFFFF;
+                                    margin: auto 5px;
+                                    font-size: 11px;
+                                    text-align: center;
+                                }
+                            .s2-title .s2-title-sub4 {
+                                width: 49px;
+                                height: 56px;
+                                position: absolute;
+                                background: #305496;
+                                display: flex;
+                                top: 0;
+                                right: 0;
+                            }
+                                .s2-title-sub4 p {
+                                    color: #FFFFFF;
+                                    margin: auto 5px;
+                                    font-size: 11px;
+                                    text-align: center;
+                                }
+                        .s2 .s2-content-1 {
+                            width: 292px;
+                            height: 50px;
+                            position: absolute;
+                            top: 8px;
+                            left: 0;
+                        }
+                            .s2-content-1 .s2-title-sub1 {
+                                width: 79px;
+                                height: 50px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 0;
+                            }
+                                .s2-content-1 .s2-title-sub1 .sub1-p1 {
+                                    width: 100%;
+                                    height: 24px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-bottom: 1px solid #000;
+                                }
+                                    .s2-content-1 .s2-title-sub1 .sub1-p1 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                                .s2-content-1 .s2-title-sub1 .sub1-p2 {
+                                    width: 100%;
+                                    height: 24px;
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-top: 1px solid #000;
+                                }
+                                    .s2-content-1 .s2-title-sub1 .sub1-p2 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                            .s2-content-1 .s2-title-sub2 {
+                                width: 79px;
+                                height: 50px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 81px;
+                            }
+                                .s2-content-1 .s2-title-sub2 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-1 .s2-title-sub3 {
+                                width: 79px;
+                                height: 50px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                right: 51px;
+                            }
+                                .s2-content-1 .s2-title-sub3 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-1 .s2-title-sub4 {
+                                width: 49px;
+                                height: 50px;
+                                position: absolute;
+                                background: #FF0000;
+                                display: flex;
+                                top: 50px;
+                                right: 0;
+                            }
+                                .s2-content-1 .s2-title-sub4 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                        .s2 .s2-content-2 {
+                            width: 292px;
+                            height: 50px;
+                            position: absolute;
+                            top: 60px;
+                            left: 0;
+                        }
+                            .s2-content-2 .s2-title-sub1 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 0;
+                            }
+                                .s2-content-2 .s2-title-sub1 .sub1-p1 {
+                                    width: 100%;
+                                    height: 24px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-bottom: 1px solid #000;
+                                }
+                                    .s2-content-2 .s2-title-sub1 .sub1-p1 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                                .s2-content-2 .s2-title-sub1 .sub1-p2 {
+                                    width: 100%;
+                                    height: 24px;
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-top: 1px solid #000;
+                                }
+                                    .s2-content-2 .s2-title-sub1 .sub1-p2 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                            .s2-content-2 .s2-title-sub2 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 81px;
+                            }
+                                .s2-content-2 .s2-title-sub2 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-2 .s2-title-sub3 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                right: 51px;
+                            }
+                                .s2-content-2 .s2-title-sub3 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-2 .s2-title-sub4 {
+                                width: 49px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FF0000;
+                                display: flex;
+                                top: 50px;
+                                right: 0;
+                            }
+                                .s2-content-2 .s2-title-sub4 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                        .s2 .s2-content-3 {
+                            width: 292px;
+                            height: 50px;
+                            position: absolute;
+                            top: 110px;
+                            left: 0;
+                        }
+                            .s2-content-3 .s2-title-sub1 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 0;
+                            }
+                                .s2-content-3 .s2-title-sub1 .sub1-p1 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-bottom: 1px solid #000;
+                                }
+                                    .s2-content-3 .s2-title-sub1 .sub1-p1 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                                .s2-content-3 .s2-title-sub1 .sub1-p2 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-top: 1px solid #000;
+                                }
+                                    .s2-content-3 .s2-title-sub1 .sub1-p2 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                            .s2-content-3 .s2-title-sub2 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 81px;
+                            }
+                                .s2-content-3 .s2-title-sub2 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-3 .s2-title-sub3 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                right: 51px;
+                            }
+                                .s2-content-3 .s2-title-sub3 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-3 .s2-title-sub4 {
+                                width: 49px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FF0000;
+                                display: flex;
+                                top: 50px;
+                                right: 0;
+                            }
+                                .s2-content-3 .s2-title-sub4 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                        .s2 .s2-content-4 {
+                            width: 292px;
+                            height: 50px;
+                            position: absolute;
+                            top: 160px;
+                            left: 0;
+                        }
+                            .s2-content-4 .s2-title-sub1 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 0;
+                            }
+                                .s2-content-4 .s2-title-sub1 .sub1-p1 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-bottom: 1px solid #000;
+                                }
+                                    .s2-content-4 .s2-title-sub1 .sub1-p1 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                                .s2-content-4 .s2-title-sub1 .sub1-p2 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-top: 1px solid #000;
+                                }
+                                    .s2-content-4 .s2-title-sub1 .sub1-p2 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                            .s2-content-4 .s2-title-sub2 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 81px;
+                            }
+                                .s2-content-4 .s2-title-sub2 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-4 .s2-title-sub3 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                right: 51px;
+                            }
+                                .s2-content-4 .s2-title-sub3 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-4 .s2-title-sub4 {
+                                width: 49px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FF0000;
+                                display: flex;
+                                top: 50px;
+                                right: 0;
+                            }
+                                .s2-content-4 .s2-title-sub4 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                        .s2 .s2-content-5 {
+                            width: 292px;
+                            height: 50px;
+                            position: absolute;
+                            top: 210px;
+                            left: 0;
+                        }
+                            .s2-content-5 .s2-title-sub1 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 0;
+                            }
+                                .s2-content-5 .s2-title-sub1 .sub1-p1 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-bottom: 1px solid #000;
+                                }
+                                    .s2-content-5 .s2-title-sub1 .sub1-p1 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                                .s2-content-5 .s2-title-sub1 .sub1-p2 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-top: 1px solid #000;
+                                }
+                                    .s2-content-5 .s2-title-sub1 .sub1-p2 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                            .s2-content-5 .s2-title-sub2 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 81px;
+                            }
+                                .s2-content-5 .s2-title-sub2 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-5 .s2-title-sub3 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                right: 51px;
+                            }
+                                .s2-content-5 .s2-title-sub3 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-5 .s2-title-sub4 {
+                                width: 49px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FF0000;
+                                display: flex;
+                                top: 50px;
+                                right: 0;
+                            }
+                                .s2-content-5 .s2-title-sub4 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                        .s2 .s2-content-6 {
+                            width: 292px;
+                            height: 50px;
+                            position: absolute;
+                            top: 260px;
+                            left: 0;
+                        }
+                            .s2-content-6 .s2-title-sub1 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 0;
+                            }
+                                .s2-content-6 .s2-title-sub1 .sub1-p1 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-bottom: 1px solid #000;
+                                }
+                                    .s2-content-6 .s2-title-sub1 .sub1-p1 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                                .s2-content-6 .s2-title-sub1 .sub1-p2 {
+                                    width: 100%;
+                                    height: 23px;
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 0;
+                                    display: flex;
+                                    border-top: 1px solid #000;
+                                }
+                                    .s2-content-6 .s2-title-sub1 .sub1-p2 p {
+                                        color: #000000;
+                                        margin: auto 5px;
+                                        font-size: 11px;
+                                        text-align: center;
+                                    }
+                            .s2-content-6 .s2-title-sub2 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                left: 81px;
+                            }
+                                .s2-content-6 .s2-title-sub2 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-6 .s2-title-sub3 {
+                                width: 79px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FFFFFF;
+                                display: flex;
+                                top: 50px;
+                                right: 51px;
+                            }
+                                .s2-content-6 .s2-title-sub3 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                            .s2-content-6 .s2-title-sub4 {
+                                width: 49px;
+                                height: 48px;
+                                position: absolute;
+                                background: #FF0000;
+                                display: flex;
+                                top: 50px;
+                                right: 0;
+                            }
+                                .s2-content-6 .s2-title-sub4 p {
+                                    color: #000000;
+                                    margin: auto 5px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                                    text-align: center;
+                                }
+                    .table-details .s3 {
+                        width: 366px;
+                        height: 36px;
+                        position: absolute;
+                        bottom: 2px;
+                        left: 2px;
+                    }
+                        .table-details .s3 .s3-part1 {
+                            width: 234px;
+                            height: 36px;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            background: #00b050;
+                            display: flex;
+                        }
+                            .table-details .s3 .s3-part1 p {
+                                color: #FFFFFF;
+                                margin: auto 5px;
+                                font-size: 15px;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                        .table-details .s3 .s3-part2 {
+                            width: 79px;
+                            height: 36px;
+                            position: absolute;
+                            top: 0;
+                            left: 236px;
+                            background: #00b050;
+                            display: flex;
+                        }
+                            .table-details .s3 .s3-part2 p {
+                                color: #DE1D11;
+                                margin: auto 5px;
+                                font-size: 15px;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                        .table-details .s3 .s3-part3 {
+                            width: 49px;
+                            height: 36px;
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            background: #FFFFFF;
+                            display: flex;
+                        }
+                .table-details .section-table-2 {
+                    width: 370px;
+                    height: 400px;
+                    position: absolute;
+                    top: 0;
+                    left: 370px;
+                    background: #000000;
+                }
+                .table-details .section-table-3 {
+                    width: 370px;
+                    height: 400px;
+                    position: absolute;
+                    top: 0;
+                    left: 739px;
+                    background: #000000;
+                }
 
 /* ------------------------------------------------------------ ESTILOS PAGINA 4 ------------------------------------------------------------ */
 body .document-page-4 {
     width: 1245px;
     height: 950px;
-    border: solid #000;
+    border: solid #FFF;
     padding: 0;
     position: absolute;
     left: 25px;

@@ -5,3 +5,4 @@ src/Logs/*
 package-lock.json
 package.json
 LICENSE
+*.pdf

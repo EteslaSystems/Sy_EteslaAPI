@@ -18,7 +18,7 @@
 var precioDolar = 0;
 
 function getDollarPrice(){
-    precioDolar = 22.45;
+    precioDolar = 23.00;
     return precioDolar;
 }
 
