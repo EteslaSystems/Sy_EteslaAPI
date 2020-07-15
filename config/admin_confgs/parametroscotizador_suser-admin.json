@@ -1,0 +1,54 @@
+{
+    "costos": {
+        "porcentaje_fletes": 0.07,
+        "porcentaje_margen": 0.30,
+        "precio_mas_iva": 1.16
+    },
+    "cuadrilla": {
+        "numeroDeCuadrillas": 1,
+        "numeroDePersonas": 6,
+        "modulosInstaladosPorCuadrilla": 40,
+        "semana": 1
+    },
+    "viaticos_mediaTension": {
+        "viatico": {
+            "casa": {
+                "unidad": "pieza",
+                "precioUnitario": 40000
+            },
+            "colchon_inflable": {
+                "unidad": "pieza",
+                "precioUnitario": 300
+            },
+            "almohadas": {
+                "unidad": "pieza",
+                "precioUnitario": 100
+            },
+            "cobija": {
+                "unidad": "pieza",
+                "precioUnitario": 200
+            },
+            "comidas": {
+                "unidad": "pieza",
+                "precioUnitario": 11700
+            },
+            "hidratacion": {
+                "unidad": "pieza",
+                "precioUnitario": 1800
+            },
+            "transporte": {
+                "unidad": "pieza",
+                "precioUnitario": 400
+            },
+            "gasolina": {
+                "unidad": "pieza",
+                "precioUnitario": 1000
+            }
+        }
+    },
+    "notasDeArchivoConf": {
+        "nota1": "Este archivo es para cambiar la formulas del numero total de personas que integran una cuadrilla de instaladores",
+        "nota2": "Los parametros de este archivo, pueden ser modificados unicamente por un SuperUsuario o un Administrador",
+        "nota3": "Favor de no editar, al menos que sepas para que sirve :v y en que afecta si le mueves!!!"
+    }
+}
