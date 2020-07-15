@@ -1,6 +1,6 @@
 body {
-    width: 1295px;
-    height: 1000px;
+    width: 1795px;
+    height: 1500px;
     padding: 0;
     position: relative;
     display: flex;
@@ -8,8 +8,8 @@ body {
 
 /* ------------------------------------------------------------ ESTILOS PAGINA 1 ------------------------------------------------------------ */
 body .document-page {
-    width: 1245px;
-    height: 950px;
+    width: 1745px;
+    height: 1450px;
     border: solid #FFF;
     padding: 0;
     position: absolute;

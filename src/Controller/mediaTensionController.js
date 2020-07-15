@@ -11,7 +11,6 @@ const power = require('../Controller/powerController');
 
 /*#region GDMTH*/
 var eficiencia = 0.82;
-var menosUno = 0;
 var averageBkWh = 0.0;
 var averageIkWh = 0.0;
 var averagePkWh = 0.0;
@@ -45,6 +44,23 @@ var _objresulProm = {
 	}
 };
 
+/* var newData = [];
+var newObjArrayGDMTH = {
+	bkwh: 0,
+	ikwh: 0,
+	pkwh: 0,
+	bkw: 0,
+	ikw: 0,
+	pkw: 0,
+	bmxn: 0,
+	imxn: 0,
+	pmxn: 0,
+	pagoTransmi: 0,
+	cmxn: 0,
+	dmxn: 0
+}; */
+
+
 /*1.-Comprobar el tamanio de la data (>12 o ==12)*/
 /*2.-Sacar en base al consumo la ENERGIA REQUERIDA y retornar -LA CONVINACION DE PANELES REQ.-
 	-Filtrar Inversores, para que el usuario pueda seleccionar uno
@@ -64,11 +80,13 @@ var _objresulProm = {
 async function obtenerEnergiaPaneles_Requeridos(data){
 	_data = data.arrayPeriodosGDMTH;
 	if(_data.length === 12){
-		return resultStep = await promedioDePropiedadesPeriodoGDMTH(data);
+		const resultStep = await promedioDePropiedadesPeriodoGDMTH(data);
+		return resultStep;
 	}
 	else{
-		newData = await validateLengthData(data);
-		return resultStep = await promedioDePropiedadesPeriodoGDMTH(newData);
+		newData = llenarEspaciosVaciosData(data);
+		const resultStep = await promedioDePropiedadesPeriodoGDMTH(newData);
+		return resultStep;
 	}
 }
 
@@ -450,11 +468,9 @@ function calcularPorcentajeDePerdida(_setPorcentajePerdida){
 	return porcentajePerdida;
 }
 
-var newData = [];
-var newObjArrayGDMTH = {};
-
-async function llenarEspaciosVaciosData(data)
+function llenarEspaciosVaciosData(data)
 {
+	var newData = [];
 	
 	_data = data.arrayPeriodosGDMTH;
 
@@ -487,8 +503,7 @@ async function llenarEspaciosVaciosData(data)
 		averageCmxn = Number.parseFloat(averageCmxn + cmxn);
 		averageDmxn = Number.parseFloat(averageDmxn + dmxn);
 
-
-		newObjArrayGDMTH = {
+		nObjArrayGDMTH = {
 			bkwh: bkwh,
 			ikwh: ikwh,
 			pkwh: pkwh,
@@ -503,7 +518,7 @@ async function llenarEspaciosVaciosData(data)
 			dmxn: dmxn
 		};
 
-		newData.push(newObjArrayGDMTH);
+		newData.push(nObjArrayGDMTH);
 
 		if(_condicional){
 			averageBkWh = Number.parseFloat(averageBkWh / (_data.length)) || null;
@@ -519,7 +534,7 @@ async function llenarEspaciosVaciosData(data)
 			averageCmxn = Number.parseFloat(averageCmxn / (_data.length)) || null;
 			averageDmxn = Number.parseFloat(averageDmxn / (_data.length)) || null;
 
-			newObjArrayGDMTH = {
+			nObjArrayGDMTH = {
 				bkwh: averageBkWh,
 				ikwh: averageIkWh,
 				pkwh: averagePkWh,
@@ -536,32 +551,21 @@ async function llenarEspaciosVaciosData(data)
 
 			for(var n=_data.length; n<=12; n++)
 			{
-				newData.push(newObjArrayGDMTH);
+				newData.push(nObjArrayGDMTH);
 				
 				if(n === 12){
 					destino = data.destino;
 					origen = data.origen;
-					newObjArrayGDMTH = {
+					newObjeto = {
 						arrayPeriodosGDMTH: newData,
 						destino: destino,
 						origen: origen
 					};	
 
-					return newObjArrayGDMTH;
+					return newObjeto;
 				}
 			}
 		}
-	}
-}
-
-async function validateLengthData(data){
-	_data = data.arrayPeriodosGDMTH;
-    if(_data.length < 12){
-		newData = await llenarEspaciosVaciosData(data);
-		return newData;
-    }
-    else if(data.length == 12){
-        return null;
 	}
 }
 

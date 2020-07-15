@@ -39,11 +39,11 @@ module.exports.crear = async function (request, response) {
 		"directory": "/tmp", //El directorio en el que el fichero se escribe si no usas .toFile(filename, callback).por defecto es: ‘/tmp’
 
 		// Opciones de tamaño de papel: http://phantomjs.org/api/webpage/property/paper-size.html
-		"height": "216mm", // unidades permitidas: mm, cm, in, px
-		"width": "279mm", // unidades permitidas: mm, cm, in, px
+		// "height": "216mm", // unidades permitidas: mm, cm, in, px
+		// "width": "279mm", // unidades permitidas: mm, cm, in, px
 		// – o bien –
-		// "format": "Letter", // unidades permitidas: A3, A4, A5, Legal, Letter, Tabloid
-		// "orientation": "portrait", // portrait = vertical o landscape = horizontal
+		"format": "Letter", // unidades permitidas: A3, A4, A5, Legal, Letter, Tabloid
+		"orientation": "landscape", // portrait = vertical o landscape = horizontal
 
 		// Opciones de páginas
 		//"border": "0", // por defecto es 0, unidades: mm, cm, in, px
@@ -57,7 +57,7 @@ module.exports.crear = async function (request, response) {
 
 		// Opciones de rendering
 		//"base": "file:///xampp/htdocs/Sy_EteslaAPI/PDF",
-		"base": "file:///xampp/htdocs/Sy_EteslaAPI/src/PDF/", // Directorio base que se usa para cargar ficheros (imágenes, css, js) cuando no están referenciados usando un servidor
+		"base": "file:///C:/Sy_EteslaAPI/src/PDF/", // Directorio base que se usa para cargar ficheros (imágenes, css, js) cuando no están referenciados usando un servidor
 
 		// Opción de zoom, se puede usar para escalarimágenes si `options.type` no es pdf
 		"zoomFactor": "1", // por defecto es 1
