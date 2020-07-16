@@ -2,7 +2,7 @@
   "name": "api_etesla",
   "version": "0.0.1x",
   "description": "API del sistema de gestion eTesla",
-  "main": "configStart.js",
+  "main": "config/configStart.js",
   "scripts": {
     "start": "nodemon config/configStart.js",
     "start2": "pm2 start configStart.js",
