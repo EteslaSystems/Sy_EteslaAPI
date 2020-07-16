@@ -16,18 +16,7 @@ app.use(require('../src/Routes/web.js')); //Instancia del archivo de rutas del s
 app.set('port', process.env.PORT || 3000); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
 
 app.listen(app.get('port'), () => { //Se da inicio al servidor con los parametros antes declarados.
-<<<<<<< HEAD
     console.log('Servidor iniciado de manera exitosa en el puerto: ', app.get('port'));
 });
 
 const server = http.createServer(app);
-=======
-	console.log('Servidor iniciado de manera exitosa en el puerto: ', app.get('port'));
-
-	/* Geocode an address.
-	googleMapsClient.geocode({ address: '1600 Amphitheatre Parkway, Mountain View, CA' }, function(err, response) {
-        if (!err) console.log(response.json.results);
-        else console.log(err);
-    });*/
-});
->>>>>>> e266d07014c64cc6beaa1fab315807f2761f94db
