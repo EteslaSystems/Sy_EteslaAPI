@@ -1,6 +1,8 @@
 /config
 /node_modules
+/node_modules/*
 src/Logs/*
 package-lock.json
 package.json
 LICENSE
+*.pdf
