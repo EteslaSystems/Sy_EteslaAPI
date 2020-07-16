@@ -5,7 +5,7 @@
   "main": "config/configStart.js",
   "scripts": {
     "start": "nodemon config/configStart.js",
-    "start2": "pm2 start configStart.js",
+    "dev": "pm2 start config/configStart.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
