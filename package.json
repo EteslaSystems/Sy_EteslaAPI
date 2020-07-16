@@ -1,17 +1,15 @@
 {
   "name": "api_etesla",
-  "version": "1.0.0",
+  "version": "0.0.1x",
   "description": "API del sistema de gestion eTesla",
   "main": "configStart.js",
   "scripts": {
     "start": "nodemon config/configStart.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prod": "forever start config/database.js"
+    "start2": "pm2 start configStart.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "API-Rest",
     "API",
-    "Rest",
     "Etesla",
     "Paneles",
     "Solares",
@@ -21,15 +19,21 @@
   "author": "[Jesus Daniel Carrera Falcon (https://github.com/JesusDCF)] [Benny Yael Ramirez Herrerias] [Eduardo Herrera Aldaraca]",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "chalk": "^4.0.0",
     "express": "^4.17.1",
+    "html-pdf": "^2.2.0",
     "moment-timezone": "^0.5.28",
     "mysql": "^2.18.1",
+    "nodemailer": "^6.4.6",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "request": "^2.88.2",
+    "requests": "^0.3.0",
     "simple-node-logger": "^18.12.24",
-    "yup": "^0.28.3"
+    "yup": "^0.28.4"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.3"
   }
 }
