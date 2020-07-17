@@ -19,6 +19,13 @@ const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
 
 router.use(express.json());
 
+router.get('/', function(requeset, response){
+	response.json({
+		status: 200,
+		message: 'Hello Etesla!'
+	});
+});
+
 /*
 - @section: 		Rutas para la sección de usuarios.
 */
@@ -138,13 +145,6 @@ router.post('/calcularVT', function(request, response){
 /*#endregion GDMTH*/
 /*#endregion*/
 /*#endregion*/
-const path = require('path');
-const example = require('../../config/logConfig');
-
-router.get('/',function(request, response){
-	example.actividad();
-});
-
 
 router.post('/agregar-usuario', function (request, response) {
 	usuarioBL.insertar(request.body)
