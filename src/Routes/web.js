@@ -138,7 +138,12 @@ router.post('/calcularVT', function(request, response){
 /*#endregion GDMTH*/
 /*#endregion*/
 /*#endregion*/
+const path = require('path');
+const example = require('../../config/logConfig');
 
+router.get('/',function(request, response){
+	example.actividad();
+});
 
 
 router.post('/agregar-usuario', function (request, response) {
