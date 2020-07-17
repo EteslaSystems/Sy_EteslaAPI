@@ -4,8 +4,9 @@
   "description": "API del sistema de gestion eTesla",
   "main": "config/configStart.js",
   "scripts": {
-    "start": "nodemon config/configStart.js",
-    "dev": "pm2 start config/configStart.js",
+    "start": "node config/configStart.js",
+    "dev": "nodemon config/configStart.js",
+    "desarrollo": "pm2 start config/configStart.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -21,6 +22,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "chalk": "^4.0.0",
+    "compression": "^1.7.4",
     "express": "^4.17.1",
     "html-pdf": "^2.2.0",
     "moment-timezone": "^0.5.28",

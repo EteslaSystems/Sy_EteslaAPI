@@ -1,16 +1,17 @@
 /**
  * En este archivo se definen las variables y constantes que instancian las librerias a utilizar y se crea el punto de inicio del servidor.
  * @author: Eduardo Herrera Aldaraca
- * @version: 1.0.0
+ * @version: 0.0.1x
  * @date: 11/Febrero/2020
  */
 
+/* const compression = require('compression'); */ //Compression GZIP - Necesaria
 const express = require('express'); //Constante que instancia la libreria 'express'.
 const app = express(); //Constante encargada de crear el punto de partida del servidor.
 
 const http = require('http');
-const path = require('path');
 
+/* app.use(compression); */
 app.use(express.json()); //Se le indica al servidor que la salida de la comunicación sera a través de un objeto json.
 app.use(require('../src/Routes/web.js')); //Instancia del archivo de rutas del servidor.
 app.set('port', process.env.PORT || 3000); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
