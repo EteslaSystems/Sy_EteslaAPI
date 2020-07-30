@@ -33,9 +33,15 @@ router.get('/', function(requeset, response){
 /*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
 const mediaTensionController = require('../Controller/mediaTensionController');
 const powerController = require('../Controller/powerController');
+const dollar = require('../Controller/dolar_tipoCambio');
+
+router.get('/dolar', function(){
+	dollar.xyz();
+});
+
 /*#region Cotización*/
 
-/*#region cotizacion_producto(sin ingresar datos de consumo)*/
+/*#region cotizacion_individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
 
 router.post('/cotizacionIndividual', function(request, response){

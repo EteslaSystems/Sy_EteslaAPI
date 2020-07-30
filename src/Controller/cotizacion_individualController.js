@@ -41,7 +41,6 @@ async function cotizacionIndividual(data){
     var destino = data.destino;
     var _costoEstructuras = 0;
     var _potenciaReal = 0;
-
     
 
     if(idPanel != "-1"){
@@ -105,12 +104,13 @@ async function cotizacionIndividual(data){
     cotizacionInd.push(objCotiIndividual);
     
     objeto = {
-        arrayPeriodosGDMTH: cotizacionInd,
+        arrayBTI: cotizacionInd,
         origen: origen,
         destino: destino
     };
 
-    cotiIndv = await viaticos.mainViaticos(objeto);
+    // cotiIndv = await viaticos.mainViaticos(objeto);
+    cotiIndv = await viaticos.calcularViaticosBTI(objeto);
 
     return cotiIndv;
 }
