@@ -29,8 +29,8 @@ module.exports.getArrayOfConfigFile = function(){
     });
 }
 
-module.exports.getArrayJSONDollarPrice = function(fileDollarPrice){
-    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileDollarPrice+'.json';
+module.exports.getArrayJSONDollarPrice = function(fileName){
+    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName+'.json';
 
     return new Promise((resolve, reject) => {
         fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, $dollarPrice) => {
