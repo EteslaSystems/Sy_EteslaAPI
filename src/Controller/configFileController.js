@@ -29,8 +29,8 @@ module.exports.getArrayOfConfigFile = function(){
     });
 }
 
-module.exports.getArrayJSONDollarPrice = function(fileName){
-    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName+'.json';
+module.exports.getArrayJSONDollarPrice = async function(root, fileName){
+    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName;
 
     return new Promise((resolve, reject) => {
         fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, $dollarPrice) => {
@@ -51,5 +51,18 @@ module.exports.getArrayJSONDollarPrice = function(fileName){
                 resolve(response);
             }
         });
+    });
+}
+
+module.exports.ifExistConfigFile = function(root, fileName){
+    rootFile = root+fileName;
+
+    fs.open('./Sy_EteslaAPI/config/dirDollarPrice/'+fileName, function(err){
+        if(!err){
+            return true;
+        }
+        else if(err.code === 'ENOENT'){
+            return false;
+        }
     });
 }

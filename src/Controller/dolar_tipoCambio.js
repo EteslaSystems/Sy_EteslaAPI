@@ -21,6 +21,7 @@ const cronJob = require('node-cron');
 
 var moment = require('moment-timezone');
 const configFile = require('../Controller/configFileController');
+const { config } = require('process');
 
 /*                               -Tarea Programada_Obtener precio del dolar-
     1.-Dicha tarea programada debe de verificar o crear un directorio temporal
@@ -42,8 +43,10 @@ const configFile = require('../Controller/configFileController');
 //Salvar precio del dolar en un archivo local
 module.exports.xyz = async function saveDollarPrice(){
     var directoryRoute = path.dirname(require.main.filename || process.mainModule.filename) + '/dirDollarPrice';
+    const rutaArchivo = '\\Sy_EteslaAPI\\config\\dirDollarPrice\\'; //(ruta_absoluta)
     var objDolarPriceRegistered = {};
     var _dollarPrices = [];
+    
 
     precioDolar = await scrapDollarPrice();
 
@@ -63,16 +66,18 @@ module.exports.xyz = async function saveDollarPrice(){
             };
 
             now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-            fileName = 'pdl_'+now.toString(); ///pdl = precio dolar log
+            fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
 
-            /* json_dollarPrices = await configFile.getArrayJSONDollarPrice;
-            _dollarPrices = JSON.parse(json_dollarPrices); */
+            fileExist = await configFile.ifExistConfigFile(rutaArchivo, fileName);
+
+            json_dollarPrices = await configFile.getArrayJSONDollarPrice(rutaArchivo, fileName);
+            _dollarPrices = JSON.parse(json_dollarPrices);
 
             _dollarPrices.push(objDolarPriceRegistered);
-            json_dollarPrices = JSON.stringify(_dollarPrices);
+            json_dollarPrices = JSON.stringify(_dollarPrices, null, 2);
 
             //Creacion del archivo (log - pdl) : .JSON
-            fs.appendFile('\\Sy_EteslaAPI\\config\\dirDollarPrice\\'+fileName+'.json', json_dollarPrices, 'utf-8', function(err){
+            fs.appendFile(rutaArchivo+fileName, json_dollarPrices, 'utf-8', function(err){
                 if(!err){
                     console.log('Archivo creado de forma exitosa!');
                     return true;

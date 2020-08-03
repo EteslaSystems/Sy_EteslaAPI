@@ -136,9 +136,9 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 	for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
 	{
 		var condicional_ = i == data.arrayPeriodosGDMTH.length - 1;
-		var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh);
-		var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh);
-		var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh);
+		var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
+		var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
+		var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
 
 		/*#region Hipotesis ConsumoTotal*/
 		var periodo = bkwh + ikwh + pkwh;
@@ -159,8 +159,8 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 		var municipio = data.destino; //Direccion del cliente
 		// var irradiacion_ = await getIrradiation(municipio);
 		var irradiacion_ = 4.60;
-		var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
-		var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
+		var _potenciaNecesaria = parseFloat(await obtenerPotenciaNecesaria(irradiacion_));
+		var _consumoPromedio365 = parseFloat(consumoPromedio365(sumaConsumoTotalkWh));
 		/*#endregion*/
 		// console.log('_irradiacion: '+irradiacion_);
 		// console.log('_potenciaNecesaria: '+_potenciaNecesaria);
