@@ -1,6 +1,4 @@
-/* function mainPower(_arrayCotizacion, _porcentajePerdida, data){
-    getProduccionSolarIntermedia(_arrayCotizacion, _porcentajePerdida, data);
-} */
+const tarifa = require('../Controller/tarifaController');
 
 function getIrradiacionDiasDeMesesDelAnio(){
     var objMeses = {};
@@ -28,6 +26,7 @@ function getIrradiacionDiasDeMesesDelAnio(){
     return objMeses;
 }
 
+//MEDIA TENSION
 /*#region Datos_Consumo*/
 module.exports.getCD_DatosConsumo_ = async function(data){
     const res = await getCD_DatosConsumo(data);
@@ -442,5 +441,27 @@ function getTotales_Ahorro(pagosTotales){
     __pagosTotalesAhorro.push(pagosTotales_Ahorro);
 
     return __pagosTotalesAhorro;
+}
+/*#endregion*/
+
+//BAJA TENSION
+/*#region Power_BajaTenison*/
+async function Xx_consumoPesos(data){ /*Modificar el nombre*/ //TESTEAR -NO_SE HA TESTEADO-
+    const tarifas = await tarifa.obtenerTodasLasTarifas();
+    var tarifaSelected = data.tarifa;
+    var meses = [];
+
+    var no_verano = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 0 && tarifas.siNivel != 0);
+    var verano = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 1 && tarifas.siNivel != 0);
+    var demanda = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 0 && tarifas.siNivel === 0);
+
+    costo_demanda = demanda.length != 0 ? demanda.precio : 0;
+    meses = verano.length != 0 ? meses[0,1,2,9,10,11] : meses[0,1,2,3,4,5,6,7,8,9,10,11];
+    factor = verano.length != 0 ? 0.824 : 1;
+
+    for(var i=0; i<12; i++)
+    {
+        
+    }
 }
 /*#endregion*/

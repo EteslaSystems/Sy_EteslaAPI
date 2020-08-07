@@ -7,13 +7,28 @@ const irradiacionBT = require('../Controller/irradiacionController'); //BT = Baj
 const inversor = require('../Controller/inversorController');
 const panel = require('../Controller/panelesController');
 
+var eficiencia = 0.82;
 var limite = 0;
 var objetivoDAC = 0;
 var limitePotencia = 0;
 
 var potencia = 0;
 
-async function promedio_consumos(consumos){
+async function main_BT(data){ //BT = Baja_Tensino
+    var irradiacion = await irradiacionBT.irradiacion_BT(origen);
+    var consumos = /*data.consumos*/'';
+    var tarifa = /*data.tarifa*/'';
+
+    __promedioConsumos = await promedio_consumos(consumos);
+    potencia_req = await calcular_potencia(__promedioConsumos, tarifa, origen);
+
+    _paneles = await panel.paneles.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia);
+    
+
+    ///calcular_potencia(__promedioConsumos, tarifa, origen
+}
+
+async function promedio_consumos(consumos){ //1er. Paso
     var m = consumos.length === 12 ? 2 : 1;
     var _promedioConsumos = [];
 
@@ -29,11 +44,11 @@ async function promedio_consumos(consumos){
     return _promedioConsumos;
 }
 
-async function calcular_potencia(data){ /*OBSERVAR*/
-    var _promedioConsumos = await promedio_consumos(consumos);
-    irradiacion = await irradiacionBT.irradiacion_BT(origen);
-    origen = data.origen;
-    porcentaje = parseFloat(data.porcentaje) / 100;
+async function calcular_potencia(__promedioConsumos, tarifa, origen){ //2 /*OBSERVAR*/
+    var irradiacion = await irradiacionBT.irradiacion_BT(origen);
+    var potencia_inversor = 0;
+
+    var porcentaje = parseFloat(data.porcentaje) / 100 || 0;
 
     switch(tarifa)
     {
@@ -109,27 +124,27 @@ async function calcular_potencia(data){ /*OBSERVAR*/
     var subsidio_diario = (objetivoDAC * 6)/365;
 
     if(origen === 'Veracruz'){
-        if(porcentaje == 1){
-            /*?potencia?*/ potencia = ((_promedioConsumos[0] - subsidio_diario / irradiacion) / 0.82) * 1000;
+        if(porcentaje === 0){
+            /*?potencia?*/ potencia = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.82) * 1000;
         }
         else{
-            /*?potencia?*/ potencia = (((_promedioConsumos[0] * porcentaje) / irradiacion) / 0.82) * 1000;
+            /*?potencia?*/ potencia = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.82) * 1000;
         }
     }
     else{
-        if(/*?porcentaje?*/ porcentaje == 1){
-            /*?potencia?*/ potencia = ((_promedioConsumos[0] - subsidio_diario / irradiacion) / 0.73) * 1000;
+        if(/*?porcentaje?*/ porcentaje === 0){
+            /*?potencia?*/ potencia = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.73) * 1000;
         }
         else{
-            /*?potencia?*/ potencia = (((_promedioConsumos[0] * porcentaje) / irradiacion) / 0.73) * 1000;
+            /*?potencia?*/ potencia = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.73) * 1000;
         }
     }
 
     if(limitePotencia < potencia){
-        var potencia_inversor = limitePotencia;
+        potencia = limitePotencia;
     }
 
-    var potenciao = potencia;
+    return potencia;
 }
 
 function calcular_strings(){
