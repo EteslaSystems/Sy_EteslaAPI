@@ -141,66 +141,6 @@ var objInversores = {
 	precioTotalInversores: 0
 };
 
-// async function numberOfInvestors(NumberOfPanelesArray){
-// 	var result = await getMaximumPower(NumberOfPanelesArray);
-// 	return result;
-// }
-
-// async function getMaximumPower(NumberOfPanelesArray){
-// 	var arrayInversoresWPmx = [];
-
-// 	for(var j = 0; j < NumberOfPanelesArray.length; j++)
-// 	{
-// 		_nombrePanel = NumberOfPanelesArray[j].nombre;
-// 		_marcaPanel = NumberOfPanelesArray[j].marca;
-// 		_potenciaPanel = NumberOfPanelesArray[j].potencia;
-// 		_potenciaReal = NumberOfPanelesArray[j].potenciaReal;
-// 		_cantidadPaneles = NumberOfPanelesArray[j].noModulos;
-// 		_precioPorWatt = NumberOfPanelesArray[j].precioPorPanel;
-// 		_costoDeEstructuras = NumberOfPanelesArray[j].costoDeEstructuras;
-		
-// 		objInversores {
-// 			no: j,
-// 			panel: {
-// 				nombrePanel: _nombrePanel,
-// 				marcaPanel: _marcaPanel,
-// 				potenciaPanel: _potenciaPanel,
-// 				cantidadPaneles: _cantidadPaneles, //numeroDeModulos
-// 				potenciaReal: _potenciaReal,
-// 				precioPorWatt: _precioPorWatt,
-// 				costoDeEstructuras: _costoDeEstructuras
-// 			}
-// 		};
-		
-// 		await putInvestorsToObject(_potenciaReal);
-// 		arrayInversoresWPmx.push(objInversores
-// 	}
-// 	return arrayInversoresWPmx;
-// }
-
-// module.exports.numeroDeInversores = async function(arrayNoDePaneles){
-// 	const result = await numberOfInvestors(arrayNoDePaneles);
-// 	return result;
-// }
-/*#endregion*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*#region SI_SIRVE*/
 async function getFilteredInvestor(idInversor){
 	consultaFiltradaInversor = await buscarBD(idInversor);

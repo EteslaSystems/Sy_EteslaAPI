@@ -449,7 +449,9 @@ function getTotales_Ahorro(pagosTotales){
 async function Xx_consumoPesos(data){ /*Modificar el nombre*/ //TESTEAR -NO_SE HA TESTEADO-
     const tarifas = await tarifa.obtenerTodasLasTarifas();
     var tarifaSelected = data.tarifa;
+    var consumoPromedio = data.consumoPromedio; //????
     var meses = [];
+    var pagos = [];
 
     var no_verano = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 0 && tarifas.siNivel != 0);
     var verano = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 1 && tarifas.siNivel != 0);
@@ -461,7 +463,45 @@ async function Xx_consumoPesos(data){ /*Modificar el nombre*/ //TESTEAR -NO_SE H
 
     for(var i=0; i<12; i++)
     {
-        
+        pagos[i] = 0;
+        var rango_alto = 0;
+        var rango_bajo = 0;
+
+        if(meses.indexOf(i)){
+            while(no_verano.length === ux)
+            {
+                rango_bajo = rango_alto;
+                rango_alto = rango_alto + no_verano.iRango;
+
+                if((consumoPromedio * factor) > rango_bajo){
+                    if((consumoPromedio * factor) > rango_alto && no_verano.iRango != 0){
+                        pagos[i] = pagos[i] + no_verano.iRango * no_verano.fPrecio;
+                    }
+                    else{
+                        pagos[i] = pagos[i] + ((consumoPromedio * factor - rango_bajo) * no_verano.fPrecio);
+                    }
+                }
+
+                ux++;
+            }
+        }
+        else{
+            while(verano.length === ux)
+            {
+                rango_bajo = rango_alto;
+                rango_alto = rango_alto + verano.iRango;
+
+                if((consumoPromedio * 1.172) > rango_bajo){
+                    if((consumoPromedio * 1.172) > rango_alto && verano.iRango != 0){
+                        pagos[i] = pagos[i] + verano.iRango * verano.fPrecio;
+                    }
+                    else{
+                        pagos[i] = pagos[i] + ((consumoPromedio * 1.172) - rango_bajo) * verano.fPrecio;
+                    }
+                }
+            }
+        }
     }
+
 }
 /*#endregion*/
