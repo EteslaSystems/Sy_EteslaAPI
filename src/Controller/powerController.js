@@ -486,7 +486,7 @@ async function Xx_consumoPesos(data){ /*Modificar el nombre*/ //TESTEAR -NO_SE H
             }
         }
         else{
-            while(verano.length === ux)
+            while(verano.length === uwu)
             {
                 rango_bajo = rango_alto;
                 rango_alto = rango_alto + verano.iRango;
@@ -499,6 +499,8 @@ async function Xx_consumoPesos(data){ /*Modificar el nombre*/ //TESTEAR -NO_SE H
                         pagos[i] = pagos[i] + ((consumoPromedio * 1.172) - rango_bajo) * verano.fPrecio;
                     }
                 }
+
+                uwu++;
             }
         }
     }

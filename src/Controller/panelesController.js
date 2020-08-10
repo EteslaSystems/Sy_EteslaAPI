@@ -192,7 +192,7 @@ async function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, effic
 	return potenciaRequeridaEnKwp;
 }
 
-module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficienci, topeProduccion){
+module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficiencia, topeProduccion){
 	const result = await numberOfModuls(potenciaNecesaria, irradiacion, eficiencia, topeProduccion);
 
 	return result;

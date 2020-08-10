@@ -31,6 +31,7 @@ router.get('/', function(requeset, response){
 */
 
 /*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
+const bajaTensionController = require('../Controller/bajaTensionController');
 const mediaTensionController = require('../Controller/mediaTensionController');
 const powerController = require('../Controller/powerController');
 const dollar = require('../Controller/dolar_tipoCambio');
@@ -40,8 +41,22 @@ router.get('/dolar', function(){
 });
 
 /*#region Cotización*/
-
-/*#region cotizacion_individual*/
+/*#region bajaTension*/
+//1st. Step
+router.post('/sendPeriodsBT', function(request, response){
+	bajaTensionController.firstStepBT(request.body)
+	.then(result => {
+		console.log(result);
+	})
+	.catch(error => {
+		end(response.json({
+			status: 500,
+			message: error
+		}));
+	});
+});
+/*#endregion*/
+/*#region individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
 
 router.post('/cotizacionIndividual', function(request, response){

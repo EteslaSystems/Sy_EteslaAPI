@@ -156,7 +156,7 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, origen){ /
             limitepotencia = 500000;
         break;
         default:
-            return -1;
+            0;
         break;
     }
 
@@ -184,7 +184,7 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, origen){ /
     }
 
     objCalcularPot = {
-        limite: limite,
+        limite: parseInt(limite/2),
         objetivoDAC: objetivoDAC,
         potenciaRequerida: potenciaRequerida
     };
@@ -192,6 +192,11 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, origen){ /
     _calcularPot.push(objCalcularPot);
 
     return _calcularPot;
+}
+
+module.exports.firstStepBT = async function(data){
+    const result = await obtenerEnergiaPaneles_Requeridos(data);
+    return result;
 }
 /*----------------------------------LO DE ABAJO NO SE A PROGRAMADO BIEN---------------------------------------------------*/
 
@@ -227,13 +232,13 @@ async function generacion(origen){
     return generacion;
 }
 
-function nuevos_consumos(consumos){
+async function nuevos_consumos(consumos){
     var consumos_nuevos = [];
     var _generacion = await generacion(origen);
 
     for(var x=0; x<consumos.length; x++)
     {
-        consumos_nuevos[x] = Math.floor(consumos[x] - generacion[x]);
+        consumos_nuevos[x] = Math.floor(consumos[x] - _generacion[x]);
     }
 
     return consumos_nuevos;

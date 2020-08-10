@@ -173,9 +173,7 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 
 		arrayResult.push(_objresulProm);
 
-		const topeProduccion = 499;
-
-		_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoDiario, irradiacion_, eficiencia, topeProduccion);
+		_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoDiario, irradiacion_, eficiencia, 499/*TopeProduccion*/);
 		// console.log('_arrayNoDePaneles says: ');
 		// console.log(_arrayNoDePaneles);
 		for(var x=0; x<_arrayNoDePaneles.length; x++)
