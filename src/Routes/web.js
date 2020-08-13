@@ -14,6 +14,7 @@ const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 //const mediaTensionBL = require('../BL/mediaTensionBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
+const dollar = require('../Controller/dolar_tipoCambio');
 
 const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
 
@@ -34,13 +35,21 @@ router.get('/', function(requeset, response){
 const bajaTensionController = require('../Controller/bajaTensionController');
 const mediaTensionController = require('../Controller/mediaTensionController');
 const powerController = require('../Controller/powerController');
-const dollar = require('../Controller/dolar_tipoCambio');
 
-router.get('/dolar', function(){
-	dollar.xyz();
+
+/*#region Cotizador*/
+router.get('/tipoCambioDolar', function(request, response){
+	dollar.obtenerPrecioDolar()
+	.then(result => {
+		response.json(result);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		}).end();
+	});
 });
-
-/*#region Cotización*/
 /*#region bajaTension*/
 //1st. Step
 router.post('/sendPeriodsBT', function(request, response){
@@ -49,10 +58,10 @@ router.post('/sendPeriodsBT', function(request, response){
 		console.log(result);
 	})
 	.catch(error => {
-		end(response.json({
+		response.json({
 			status: 500,
 			message: error
-		}));
+		}).end();
 	});
 });
 /*#endregion*/

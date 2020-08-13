@@ -10,7 +10,7 @@ const viaticos = require('../Controller/opcionesViaticsController');
 const power = require('../Controller/powerController');
 
 /*#region GDMTH*/
-var eficiencia = 0.82;
+const eficiencia = 0.82;
 var averageBkWh = 0.0;
 var averageIkWh = 0.0;
 var averagePkWh = 0.0;

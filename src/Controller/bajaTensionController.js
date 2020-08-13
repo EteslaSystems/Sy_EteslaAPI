@@ -11,18 +11,18 @@ const viaticosBT = require('../Controller/opcionesViaticsController');
 var eficiencia = 0.82;
 var limite = 0;
 var objetivoDAC = 0;
-var limitepotenciaRequerida = 0;
 
 var potenciaRequerida = 0;
 
 //1er paso.
-async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tensino
+async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
+    var origen = data.origen;
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
-    var consumos = /*data.consumos*/'';
-    var tarifa = /*data.tarifa*/'';
+    var consumos = data.consumos;
+    var tarifa = data.tarifa;
 
     __promedioConsumos = await promedio_consumos(consumos);
-    _potenciaRequerida = await calcular_potenciaRequerida(__promedioConsumos, tarifa, origen);
+    _potenciaRequerida = await calcular_potenciaRequerida(__promedioConsumos, tarifa, data);
     var limiteProduccion = _potenciaRequerida.limite[0].objCalcularPot.limite;
 
     _arrayNoDePaneles = await panel.paneles.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia, limiteProduccion);
@@ -74,20 +74,23 @@ async function obtenerViaticos_Totales(data){
 async function promedio_consumos(consumos){ 
     var m = consumos.length === 12 ? 2 : 1;
     var _promedioConsumos = [];
+    var sumaConsumos = 0;
 
-    consumos.each(function(value){
-        sumaConsumos += parseInt(value);
-    });
+    for(var i=0; i<consumos.length; i++)
+    {
+        sumaConsumos = parseFloat(consumos[i].consumos);
+    }
     
-    consumoDiario = ((sumaConsumos / consumos.length) * 6 * m) / 365;
-    consumoMensual = (consumoDiario * 365) / 12;
+    consumoDiario = parseFloat(((sumaConsumos / consumos.length) * 6 * m) / 365);
+    consumoMensual = parseFloat((consumoDiario * 365) / 12);
 
     _promedioConsumos.push(consumoDiario, consumoMensual);
 
     return _promedioConsumos;
 }
 
-async function calcular_potenciaRequerida(__promedioConsumos, tarifa, origen){ //2 /*OBSERVAR*/
+async function calcular_potenciaRequerida(__promedioConsumos, tarifa, data){ //2 /*OBSERVAR*/
+    var origen = data.origen;
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var porcentaje = parseFloat(data.porcentaje) / 100 || 0;
     var objCalcularPot = {};
@@ -159,10 +162,15 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, origen){ /
             0;
         break;
     }
+    
+    cuanto_menos = Math.abs(limite - (__promedioConsumos[1] * 2 * 0.10));
 
-    cuanto_menos = limite - (consumo_mensual * 2 * 0.10);
-    objetivoDAC = cuanto_menos < objetivoDAC ? cuanto_menos : -1;
-    objetivoDAC = objetivoDAC < 0 || objetivoDAC > (consumo_mensual * 2) ? 0 : -1; //????
+    if(cuanto_menos < objetivoDAC){
+        objetivoDAC = cuanto_menos;
+    }
+    else if(objetivoDAC < 0 || objetivoDAC > (__promedioConsumos[1] * 2)){
+        objetivoDAC = 0;
+    }
 
     var subsidio_diario = (objetivoDAC * 6)/365;
 

@@ -21,7 +21,6 @@ const cronJob = require('node-cron');
 
 var moment = require('moment-timezone');
 const configFile = require('../Controller/configFileController');
-const { config } = require('process');
 
 /*                               -Tarea Programada_Obtener precio del dolar-
     1.-Dicha tarea programada debe de verificar o crear un directorio temporal
@@ -36,12 +35,12 @@ const { config } = require('process');
     PD2. LOS ARCIHVOS DEBEN DE SER TEMPORALES, PARA NO REPRESENTAR CARGA/ALMACENAMIENTO EN EL SERVER
 */
 //Tarea programada
-/* cronJob.schedule("2 * * * * *", async function(){
+cronJob.schedule("* * 6 * * *", async function(){
     await saveDollarPrice();
-}); */
+});
 
 //Salvar precio del dolar en un archivo local
-module.exports.xyz = async function saveDollarPrice(){
+async function saveDollarPrice(){
     var directoryRoute = path.dirname(require.main.filename || process.mainModule.filename) + '/dirDollarPrice';
     const rutaArchivo = '\\Sy_EteslaAPI\\config\\dirDollarPrice\\'; //(ruta_absoluta)
     var objDolarPriceRegistered = {};
@@ -68,10 +67,15 @@ module.exports.xyz = async function saveDollarPrice(){
             now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
             fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
 
-            fileExist = await configFile.ifExistConfigFile(rutaArchivo, fileName);
+            /* fileExist = await configFile.ifExistConfigFile(rutaArchivo, fileName);
 
             json_dollarPrices = await configFile.getArrayJSONDollarPrice(rutaArchivo, fileName);
-            _dollarPrices = JSON.parse(json_dollarPrices);
+            _dollarPrices = JSON.parse(json_dollarPrices); 
+            
+            //Falta agregar la funcionalidad para que se pueda generar un historial de los precios
+            //del dolar descargados en el dia. (Se debe de generar un tipo *log*)
+
+            */
 
             _dollarPrices.push(objDolarPriceRegistered);
             json_dollarPrices = JSON.stringify(_dollarPrices, null, 2);
@@ -118,20 +122,19 @@ async function scrapDollarPrice(){
 
 //Obtener precio del dolar $local
 async function getDollarPrice(){
-    var dollarPrices = 
+    var dollarPrice = 0;
 
     now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-    dollarFileName = 'pdl_'+now.toString(); ///pdl = precio dolar log
+    fileName = 'pdl_'+now.toString(); ///pdl = precio dolar log
 
-    valor = await configFile.getArrayJSONDollarPrice(dollarFileName);
-    
-    // console.log(JSON.parse(valor));
+    dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
+    dollarPrice = JSON.parse(dollarPrice)
+
+    return dollarPrice;
 }
 
 module.exports.obtenerPrecioDolar = async function(){
-    /* const result = await getDollarPrice();
-    return result; */
-
-    return 23.00;
+    const result = await getDollarPrice();
+    return result;
 }
 
