@@ -1,0 +1,77 @@
+***CLIENTE_WEB:
+-*Cotizacion media_tension:
+  	  -Se tiene un bug al respecto del almacenamiento de los periodos. (Al llegar a 13 y editarlo, se logra editar y almacenar el 
+           periodo, cuando esto no deberia de basar... el periodo 13, deberia de estar bloqueado y no almacenado)
+
+-*Cotizacion individual:
+          -Cantidad peque;a (entre parentesis), indicadora de la cantidad de
+           elementos, REVISAR!! porque esta mal...
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+***API:
+-*Averiguar la manera de como extraer la irradiacion (API, WebServices - de terceros) para poder obtener el valor segun la
+  ubicacion que se le este pasando...
+    **(AVERIGUAR: La concurrencia de la fuente de datos, ya que esto puede concluir en un banneo; por uso "ilegal" de los 
+      datos.
+
+-*Hacer una tarea programada para extraer el precio del dolar de la pagina de Banorte, a traves de @Scraping.
+  Dicha tarea programada debe de hacer la funcion al menos 2 veces al dia (Dos actualizaciones del tipo de cambio al dia.
+  para evitar banneos de la pagina).
+
+-*Cotizacion media_tension:
+      -Array de periodos incompleto (FALTA: Hacer la funcionalidad de que
+       si el array va incompleto (*length* < 12), se saque un promedio de
+       sus valores y acomplete los espacios vacios
+            -**PRESTAR MUCHA ATENCION:
+               -*Porque cuando se hace esto... se tiene que regresar y cachear al clienteWeb
+                 el nuevo array completo de periodos, ya que el cliente lo ocupa en otro procedimiento
+                      -***(Hacer que la API en el JSON retorne una bandera donde se indique que el arrayPeriodos a sido
+                           reconstruido. Para que en el cliente al validar la bandera, pueda saber si va a guardar el array
+                           o no, para despues este ser procesado)***
+ 
+-*Cotizacion:
+      -Ligar funcionalidad de resultados de cotizacion a la creacion del PDF.
+              -*Se tiene que programar un switch o condiciones... que validen que tipo de cotizacion... O la cantidad de 
+                elementos e informacion que se colocara en el pdf (en el caso de traer mas de una conviancion de resultados, etc)
+                     -**Programar:
+                            *_*Procedimiento almacenado que guarda la cotizacion en la BD
+                            *_*Funcionalidad en la API que manda la informacion de la cotizacion hacia la BD
+                               *_*[CLIENTE] Funcion/Ruta que manda la cotizacion realizada hacia la API 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+(¿?¿?¿?)Averiguar si hay manera de hacer @Scraping pero a traves de POST, para poder enviar el RPU_CFE del cliente y poder
+ descargar informacion sobre el consumo del cliente.(¿?¿?¿?) 
+                     [_AVERIGUAR SI ESTO DEPENDE MUCHO DEL TIPO DE COTIZACIN QUE SE ESTA SOLICITANDO_]
+                         [_POR EL TEMA DE COMO SE TRASLAPAN Y MANEJAN LOS DATOS PARA CADA COTIZACION EN LA API_]
+
+
+
+-*Resultados_cotizaciones (posible_update): 
+  *******AVERIGUAR: Como generar codigos QR (en donde se encaptusle el PDF generado por la cotizacion. Este QR debe de descargar
+                    directamente el PDF. [[Hacer uso del concepto "contactles"?Pandemia]])

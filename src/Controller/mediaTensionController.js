@@ -10,7 +10,7 @@ const viaticos = require('../Controller/opcionesViaticsController');
 const power = require('../Controller/powerController');
 
 /*#region GDMTH*/
-var eficiencia = 0.82;
+const eficiencia = 0.82;
 var averageBkWh = 0.0;
 var averageIkWh = 0.0;
 var averagePkWh = 0.0;
@@ -136,9 +136,9 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 	for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
 	{
 		var condicional_ = i == data.arrayPeriodosGDMTH.length - 1;
-		var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh);
-		var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh);
-		var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh);
+		var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
+		var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
+		var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
 
 		/*#region Hipotesis ConsumoTotal*/
 		var periodo = bkwh + ikwh + pkwh;
@@ -159,12 +159,12 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 		var municipio = data.destino; //Direccion del cliente
 		// var irradiacion_ = await getIrradiation(municipio);
 		var irradiacion_ = 4.60;
-		var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
-		var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
+		var _potenciaNecesaria = parseFloat(await obtenerPotenciaNecesaria(irradiacion_));
+		var _consumoDiario = parseFloat(await consumoPromedio365(sumaConsumoTotalkWh));
 		/*#endregion*/
 		// console.log('_irradiacion: '+irradiacion_);
 		// console.log('_potenciaNecesaria: '+_potenciaNecesaria);
-		// console.log('Consumo promedio 365: '+_consumoPromedio365)
+		// console.log('Consumo promedio 365: '+_consumoDiario)
 		/*#region Paneles_cotizacion*/
 
 		_objresulProm.consumo.consumoAnual = sumaConsumoTotalkWh;
@@ -173,7 +173,7 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 
 		arrayResult.push(_objresulProm);
 
-		_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
+		_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoDiario, irradiacion_, eficiencia, 499/*TopeProduccion*/);
 		// console.log('_arrayNoDePaneles says: ');
 		// console.log(_arrayNoDePaneles);
 		for(var x=0; x<_arrayNoDePaneles.length; x++)
@@ -333,13 +333,13 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 // 			var municipio = 'Tuxpan';
 // 			var irradiacion_ = await getIrradiation(municipio);
 // 			var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
-// 			var _consumoPromedio365 = consumoPromedio365(sumaConsumoTotalkWh);
+// 			var _consumoDiario = consumoPromedio365(sumaConsumoTotalkWh);
 // 			/*#endregion*/
 // 			// console.log('_irradiacion: '+irradiacion_);
 // 			// console.log('_potenciaNecesaria: '+_potenciaNecesaria);
-// 			// console.log('Consumo promedio 365: '+_consumoPromedio365)
+// 			// console.log('Consumo promedio 365: '+_consumoDiario)
 // 			/*#region Paneles_cotizacion*/
-// 			_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoPromedio365, irradiacion_, eficiencia);
+// 			_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoDiario, irradiacion_, eficiencia);
 // 			//console.log('_arrayNoDePaneles says: ');
 // 			//console.log(_arrayNoDePaneles);
 // 			/*#endregion*/
@@ -457,7 +457,7 @@ async function getIrradiation(municipio){
 	return _irradiacion;
 }
 
-function consumoPromedio365(powerNeeded){
+async function consumoPromedio365(powerNeeded){
 	__consumoPromedioMensual = powerNeeded/365;
 	__consumoPromedioMensual = parseFloat(Math.round(__consumoPromedioMensual * 100) / 100).toFixed(2);
 	return __consumoPromedioMensual;

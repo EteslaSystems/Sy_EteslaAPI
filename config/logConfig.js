@@ -16,8 +16,10 @@ let fechaAmigable = '[[' + fecha.toLocaleDateString("es-ES", opciones) + ']]';
 //Se obtienen las rutas de los directorios donde se guardarán los log.
 let path = require('path');
 let dir = path.dirname(__dirname);
-let dirEventos = dir + '\\src\\Logs\\LogEventos';
-let dirErrores = dir + '\\src\\Logs\\LogErrores';
+/* let dirEventos = dir + '\\src\\Logs\\LogEventos';
+let dirErrores = dir + '\\src\\Logs\\LogErrores'; */
+let dirEventos = path.join(dir,'src','Logs','LogEventos');
+let dirErrores = path.join(dir,'src','Logs','LogErrores');
 
 //Creación de los log de registro continuo, ubicados cada uno en una carpeta en especifico y con la fecha actual.
 //Log de eventos.

@@ -14,21 +14,58 @@ const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 //const mediaTensionBL = require('../BL/mediaTensionBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
+const dollar = require('../Controller/dolar_tipoCambio');
 
 const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
 
 router.use(express.json());
+
+router.get('/', function(requeset, response){
+	response.json({
+		status: 200,
+		message: 'Hello Etesla!'
+	});
+});
 
 /*
 - @section: 		Rutas para la sección de usuarios.
 */
 
 /*#region Region de prueba : Favor de ignorar /borrar cuando sea necesario(Solo LH420)\*/
+const bajaTensionController = require('../Controller/bajaTensionController');
 const mediaTensionController = require('../Controller/mediaTensionController');
 const powerController = require('../Controller/powerController');
-/*#region Cotización*/
 
-/*#region cotizacion_producto(sin ingresar datos de consumo)*/
+
+/*#region Cotizador*/
+router.get('/tipoCambioDolar', function(request, response){
+	dollar.obtenerPrecioDolar()
+	.then(result => {
+		response.json(result);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		}).end();
+	});
+});
+/*#region bajaTension*/
+//1st. Step
+router.post('/sendPeriodsBT', function(request, response){
+	bajaTensionController.firstStepBT(request.body)
+	.then(result => {
+		console.log(result);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		}).end();
+	});
+});
+/*#endregion*/
+/*#region individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
 
 router.post('/cotizacionIndividual', function(request, response){
@@ -138,8 +175,6 @@ router.post('/calcularVT', function(request, response){
 /*#endregion GDMTH*/
 /*#endregion*/
 /*#endregion*/
-
-
 
 router.post('/agregar-usuario', function (request, response) {
 	usuarioBL.insertar(request.body)

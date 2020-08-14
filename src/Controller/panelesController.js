@@ -132,8 +132,8 @@ const otrosMateriales = require('./otrosMaterialesController');
 
 var objNoDeModulosPorPotenciaDelPanel = {};
 
-async function numberOfModuls(powerNeeded, irradiation, efficiency){
-	var _potenciaRequeridaEnKwp = getSystemPowerInKwp(powerNeeded, irradiation, efficiency);
+async function numberOfModuls(powerNeeded, irradiation, efficiency, topeProduccion){
+	var _potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
 	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
 	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
 	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
@@ -153,7 +153,8 @@ async function getAllPanelsArray(){
 async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
-	for(var i = 0; i < arrayAllOfPanels.length; i++){
+	for(var i = 0; i < arrayAllOfPanels.length; i++)
+	{
 		// _id = arrayAllOfPanels[i].
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
 		_marca = arrayAllOfPanels[i].vMarca
@@ -184,15 +185,15 @@ function getSystemPowerInWatts(powerRequired){
 	return potenciaRequeridaEnW;
 }
 
-function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency){
+async function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency, topeProduccion){
 	potenciaRequeridaEnKwp = monthlyAvarageConsumption / (irradiation * efficiency);
 	potenciaRequeridaEnKwp = parseFloat(Math.round(potenciaRequeridaEnKwp * 100) / 100).toFixed(2);
-	potenciaRequeridaEnKwp >= 500 ? potenciaRequeridaEnKwp = 499 : potenciaRequeridaEnKwp;
+	potenciaRequeridaEnKwp >= topeProduccion ? potenciaRequeridaEnKwp = topeProduccion : potenciaRequeridaEnKwp;
 	return potenciaRequeridaEnKwp;
 }
 
-module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficiencia){
-	const result = await numberOfModuls(potenciaNecesaria, irradiacion, eficiencia);
+module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficiencia, topeProduccion){
+	const result = await numberOfModuls(potenciaNecesaria, irradiacion, eficiencia, topeProduccion);
 
 	return result;
 }
