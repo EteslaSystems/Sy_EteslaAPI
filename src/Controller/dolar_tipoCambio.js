@@ -123,34 +123,21 @@ async function getDollarPrice(){
     var dollarPrice = 0;
 
     now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-    fileName = 'pdl_'+now.toString(); ///pdl = precio dolar log
+    fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
 
     dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
 
-    return new Promise((resolve, reject, dollarPrice) => {
-        if(dollarPrice.status != true)
-        {
-            dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
+    if(dollarPrice.status != true)
+    {
+        //Error
+        dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
+    }
+    else{
+        //Success
+        dollarPrice = dollarPrice.message;
+    }
 
-            response = {
-                status: 500,
-                message: 'ENOENT',
-                valueOfDollar: dollarPrice
-            };
-
-            resolve(response);
-        }
-        else{
-            dollarPrice = JSON.parse(dollarPrice);
-
-            response = {
-                status: 200,
-                message: dollarPrice
-            };
-
-            resolve(response);
-        }
-    });
+    return dollarPrice;
 }
 
 module.exports.obtenerPrecioDolar = async function(){

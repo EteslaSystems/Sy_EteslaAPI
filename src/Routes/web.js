@@ -42,7 +42,11 @@ const powerController = require('../Controller/powerController');
 router.get('/tipoCambioDolar', function(request, response){
 	dollar.obtenerPrecioDolar()
 	.then(result => {
-		response.json(result);
+		response.json({
+			status: 200,
+			message: result,
+			alert: 'Archivo respaldado y precio del dolar actualizado'
+		});
 	})
 	.catch(error => {
 		response.json({

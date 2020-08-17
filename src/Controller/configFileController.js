@@ -29,7 +29,7 @@ module.exports.getArrayOfConfigFile = function(){
     });
 }
 
-module.exports.getArrayJSONDollarPrice = async function(fileName){
+module.exports.getArrayJSONDollarPrice = function(fileName){
     var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName;
 
     return new Promise((resolve, reject) => {
