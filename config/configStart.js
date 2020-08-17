@@ -10,6 +10,7 @@ const express = require('express'); //Constante que instancia la libreria 'expre
 const http = require('http');
 
 const app = express(); //Constante encargada de crear el punto de partida del servidor.
+
 const server = http.createServer(app);
 
 /* app.use(compression); */
