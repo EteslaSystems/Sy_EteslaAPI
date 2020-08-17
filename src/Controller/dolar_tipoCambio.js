@@ -35,9 +35,9 @@ const configFile = require('../Controller/configFileController');
     PD2. LOS ARCIHVOS DEBEN DE SER TEMPORALES, PARA NO REPRESENTAR CARGA/ALMACENAMIENTO EN EL SERVER
 */
 //Tarea programada
-cronJob.schedule("* * 6 * * *", async function(){
+/* cronJob.schedule("* * 6 * * *", async function(){
     await saveDollarPrice();
-});
+}); */
 
 //Salvar precio del dolar en un archivo local
 async function saveDollarPrice(){
@@ -52,8 +52,6 @@ async function saveDollarPrice(){
     /*Se verifica/crea el directorio "__dirDollarPrice"*/
     fs.mkdir(path.join(directoryRoute), { recursive: true }, async (err) => {
         if(!err){
-            console.log('Directorio creado con exito!');
-
             //Objeto del -Registro Precio_Dolar-
             uri = 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx';
             now = moment().tz("America/Mexico_City").format();
@@ -83,11 +81,10 @@ async function saveDollarPrice(){
             //Creacion del archivo (log - pdl) : .JSON
             fs.appendFile(rutaArchivo+fileName, json_dollarPrices, 'utf-8', function(err){
                 if(!err){
-                    console.log('Archivo creado de forma exitosa!');
+                    console.log('Precio del dolar actualizado, correctamente.');
                     return true;
                 }
                 else{
-                    console.log(err);
                     return false;
                 }
             });
@@ -122,15 +119,38 @@ async function scrapDollarPrice(){
 
 //Obtener precio del dolar $local
 async function getDollarPrice(){
+    const response = {};
     var dollarPrice = 0;
 
     now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
     fileName = 'pdl_'+now.toString(); ///pdl = precio dolar log
 
     dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
-    dollarPrice = JSON.parse(dollarPrice)
 
-    return dollarPrice;
+    return new Promise((resolve, reject, dollarPrice) => {
+        if(dollarPrice.status != true)
+        {
+            dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
+
+            response = {
+                status: 500,
+                message: 'ENOENT',
+                valueOfDollar: dollarPrice
+            };
+
+            resolve(response);
+        }
+        else{
+            dollarPrice = JSON.parse(dollarPrice);
+
+            response = {
+                status: 200,
+                message: dollarPrice
+            };
+
+            resolve(response);
+        }
+    });
 }
 
 module.exports.obtenerPrecioDolar = async function(){
@@ -138,3 +158,8 @@ module.exports.obtenerPrecioDolar = async function(){
     return result;
 }
 
+/*CAUTION: SOLO OCUPAR EN CASO DE EMERGENCIA*/
+module.exports.actualizarManualPrecioDolar = async function(){
+    const result = await saveDollarPrice();
+    return result;
+}

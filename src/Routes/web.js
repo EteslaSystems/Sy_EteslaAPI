@@ -38,6 +38,7 @@ const powerController = require('../Controller/powerController');
 
 
 /*#region Cotizador*/
+/*#region PrecioDelDolar*/
 router.get('/tipoCambioDolar', function(request, response){
 	dollar.obtenerPrecioDolar()
 	.then(result => {
@@ -50,6 +51,19 @@ router.get('/tipoCambioDolar', function(request, response){
 		}).end();
 	});
 });
+
+router.get('/manualUpdateDolarPrice', function(request, response){
+	dollar.actualizarManualPrecioDolar()
+	.then(result => {
+		console.log(result);
+		/* response.json({
+		}).end(); */
+	})
+	.catch(error => {
+		response.json({ error });
+	}).end();
+});
+/*#endregion*/
 /*#region bajaTension*/
 //1st. Step
 router.post('/sendPeriodsBT', function(request, response){
@@ -67,6 +81,7 @@ router.post('/sendPeriodsBT', function(request, response){
 /*#endregion*/
 /*#region individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
+const { response } = require('express');
 
 router.post('/cotizacionIndividual', function(request, response){
 	cotizIndiv.cotizacion_individual(request.body)

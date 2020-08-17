@@ -30,22 +30,25 @@ module.exports.getArrayOfConfigFile = function(){
 }
 
 module.exports.getArrayJSONDollarPrice = async function(fileName){
-    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName+'.json';
+    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName;
 
     return new Promise((resolve, reject) => {
-        fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, $dollarPrice) => {
+        fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, dollarPrice) => {
             if(!err){
                 response = {
                     status: true,
-                    message: $dollarPrice
+                    message: dollarPrice
                 };
 
-                resolve(response.message);
+                resolve(response);
             }
             else{
+                dollarPrice = 23;
+
                 response = {
                     status: false,
-                    message: err
+                    message: err,
+                    valueOfDollar: dollarPrice
                 };
 
                 resolve(response);

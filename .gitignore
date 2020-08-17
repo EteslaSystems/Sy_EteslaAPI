@@ -5,3 +5,6 @@ package-lock.json
 package.json
 LICENSE
 *.pdf
+
+/config/dirDollarPrice
+/src/Controller/dolar_tipoCambio.js
