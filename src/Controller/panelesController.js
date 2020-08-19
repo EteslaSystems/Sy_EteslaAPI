@@ -3,7 +3,6 @@
 - @author: 				Yael Ramirez Herrerias
 - @date: 				19/02/2020
 */
-
 const mysqlConnection = require('../../config/database');
 
 function insertarBD (datas) {

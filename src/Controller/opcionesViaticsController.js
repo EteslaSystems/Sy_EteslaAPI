@@ -13,7 +13,7 @@ var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
-var precioDolar = 0;
+var precioDolar = await dolar.obtenerPrecioDolar();
 
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
 noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
@@ -33,7 +33,6 @@ async function calcularViaticosBTI(data){
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
-    precioDolar = 23.00;
 
     _arrayCotizacion = data.arrayBTI;
     
@@ -191,8 +190,6 @@ async function main_calcularViaticos(data){
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
     // distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
-    
-    precioDolar = 23.00;
 
     // if(Array.isArray(_arrayCotizacion) != true){
     //     _arrayCotizacion = Object.values(_arrayCotizacion);
@@ -445,8 +442,6 @@ function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr){
     var arrayLaborOtrosPrice = [];
     var laborPrice = 0;
     var otros = 0;
-
-    precioDolar = 23.00;
 
     if(__cantidadPaneles >= 1 && __cantidadPaneles < 8){
         laborPrice = 2000;

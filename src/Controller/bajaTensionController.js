@@ -20,12 +20,13 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var consumos = data.consumos;
     var tarifa = data.tarifa;
+    var arrayResult = [];
 
     __promedioConsumos = await promedio_consumos(consumos);
     _potenciaRequerida = await calcular_potenciaRequerida(__promedioConsumos, tarifa, data);
-    var limiteProduccion = _potenciaRequerida.limite[0].objCalcularPot.limite;
+    var limiteProduccion = _potenciaRequerida[0].limite;
 
-    _arrayNoDePaneles = await panel.paneles.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia, limiteProduccion);
+    _arrayNoDePaneles = await panel.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia, limiteProduccion);
     
     for(var x=0; x<_arrayNoDePaneles.length; x++)
     {
@@ -55,7 +56,8 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
         arrayResult.push(objPropuestaPaneles);
     }
 
-    return arrayResult;
+    console.log(arrayResult);
+    // return arrayResult;
 }
 
 //2ndo paso.
@@ -176,18 +178,18 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, data){ //2
 
     if(origen === 'Veracruz'){
         if(porcentaje === 0){
-            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.82) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.82/*Eficienia*/) * 1000;
         }
         else{
-            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.82) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.82)/*Eficienia*/ * 1000;
         }
     }
     else{
         if(/*?porcentaje?*/ porcentaje === 0){
-            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.73) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.73/*Eficienia*/) * 1000;
         }
         else{
-            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.73) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.73/*Eficienia*/) * 1000;
         }
     }
 
