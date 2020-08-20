@@ -73,7 +73,10 @@ router.get('/manualUpdateDolarPrice', function(request, response){
 router.post('/sendPeriodsBT', function(request, response){
 	bajaTensionController.firstStepBT(request.body)
 	.then(result => {
-		console.log(result);
+		response.json({
+			status: 200,
+			message: result
+		}).end();
 	})
 	.catch(error => {
 		response.json({
@@ -307,21 +310,7 @@ router.post('/verificar-email', function (request, response) {
 	});
 });
 
-router.post('/recuperar-password', function (request, response) {
-	usuarioBL.recuperarPassword(request.body)
-	.then(usuario => {
-		response.json({
-			status: 200,
-			message: usuario,
-		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message,
-		}).end();
-	});
-});
+
 
 /*
 - @section: 		Rutas para la sección de inversores.

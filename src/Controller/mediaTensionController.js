@@ -136,15 +136,15 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 	for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
 	{
 		var condicional_ = i == data.arrayPeriodosGDMTH.length - 1;
-		var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
-		var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
-		var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
+		var bkwh = parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
+		var ikwh = parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
+		var pkwh = parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
 
 		/*#region Hipotesis ConsumoTotal*/
 		var periodo = bkwh + ikwh + pkwh;
 		// console.log('Periodo: '+periodo);
 		sumaConsumoTotalkWh += periodo;
-		condicional_ ? promedioConsumoTotalkWh = Number.parseFloat(sumaConsumoTotalkWh / 12) : null;
+		condicional_ ? promedioConsumoTotalkWh = parseFloat(sumaConsumoTotalkWh / 12) : null;
 		
 		/*#endregion*/
 	}

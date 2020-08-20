@@ -34,7 +34,7 @@ BEGIN
 		/*-----------------------------*/
 		SET expireAt = DATE_ADD(NOW(),INTERVAL daysOfExpire DAY);
 		INSERT INTO Propuesta
-		VALUES(UUID(), UNHEX(xIdPanel), UNHEX(xIdInversor), UNHEX(xIdCliente), UNHEX(xIdUsuario), TipoCotizacion, Tarifa, CantidadPaneles, CantidadInversores, PotenciaPropuesta, GeneracionPaneles, NuevoConsumoCFE, Descuento, Subtotal, PrecioConIVA, Total, StatusProjectFV, now(), null, null, expireAt);
+		VALUES(UUID(), UNHEX(xIdInversorPanel), UNHEX(xIdInversor), UNHEX(xIdCliente), UNHEX(xIdUsuario), TipoCotizacion, Tarifa, CantidadPaneles, CantidadInversores, PotenciaPropuesta, GeneracionPaneles, NuevoConsumoCFE, Descuento, Subtotal, PrecioConIVA, Total, StatusProjectFV, now(), null, null, expireAt);
 	ELSEIF (Opcion = 1) THEN
 		/*Borrado logico*/
 		UPDATE cliente
@@ -43,7 +43,7 @@ BEGIN
 	ELSEIF (Opcion = 2) THEN
 		/*Editar / Actualizar*/
 		UPDATE Propuesta
-		SET id_Panel= HEX(xIdPanel), id_Inversor = HEX(xIdInversor), cTipoCotizacion = TipoCotizacion, cTarifa = Tarifa, iCantidadPaneles = CantidadPaneles, iCantidadInversores = CantidadInversores, fPotencialPropuesta = PotenciaPropuesta, fGeneracionPaneles = GeneracionPaneles, fNuevoConsumoCFE = NuevoConsumoCFE, iPorcentajeDescuento = Descuento, fSubtotal = Subtotal, fprecioConIVA = PrecioConIVA, fTotal = Total, updated_at = now();
+		SET id_Panel = HEX(xIdPanel), id_Inversor = HEX(xIdInversor), cTarifa = Tarifa, iCantidadPaneles = CantidadPaneles, iCantidadInversores = CantidadInversores, fPotencialPropuesta = PotenciaPropuesta, fGeneracionPaneles = GeneracionPaneles, fNuevoConsumoCFE = NuevoConsumoCFE, iPorcentajeDescuento = Descuento, fSubtotal = Subtotal, fprecioConIVA = PrecioConIVA, fTotal = Total, updated_at = now();
 	ELSEIF (Opcion = 3) THEN
 		/*Leer*/
 		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, cTarifa, iCantidadPaneles, iCantidadInversores, fPotencialPropuesta, fGeneracionPaneles, fNuevoConsumoCFE, Descuento, fSubtotal, fprecioConIVA, fTotal, siStatusProjejctFV, created_at, deleted_at, updated_at, expire_at

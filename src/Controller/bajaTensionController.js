@@ -21,10 +21,39 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     var consumos = data.consumos;
     var tarifa = data.tarifa;
     var arrayResult = [];
+    var objPropuestaPaneles = {};
 
     __promedioConsumos = await promedio_consumos(consumos);
     _potenciaRequerida = await calcular_potenciaRequerida(__promedioConsumos, tarifa, data);
     var limiteProduccion = _potenciaRequerida[0].limite;
+
+    var consumoAnual = (consums) => {
+        consumo_anual=0;
+
+        if(consums.length < 12){
+            for(var x=0; x<12; x++)
+            {
+                consumo_anual += parseFloat(consums[0].consumos);
+            }
+            return consumo_anual;
+        }
+    };
+
+    var promedioConsumoTotalkWh = (consumoAnual) => {
+        promedio_consumoTotalkWh = parseFloat(consumoAnual / 12);
+        return promedio_consumoTotalkWh;
+    };
+
+    nConsumoAnual = consumoAnual(consumos);
+    nPromedioConsumoTotalKwH = promedioConsumoTotalkWh(nConsumoAnual);
+
+    objPropuestaPaneles = {
+        consumoAnual: nConsumoAnual,
+        promedioConsumo: nPromedioConsumoTotalKwH,
+        potenciaNecesaria: _potenciaRequerida[0].potenciaRequerida
+    };
+
+    arrayResult.push(objPropuestaPaneles);
 
     _arrayNoDePaneles = await panel.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia, limiteProduccion);
     
@@ -56,8 +85,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
         arrayResult.push(objPropuestaPaneles);
     }
 
-    console.log(arrayResult);
-    // return arrayResult;
+    return arrayResult;
 }
 
 //2ndo paso.
