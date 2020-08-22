@@ -35,12 +35,16 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
             {
                 consumo_anual += parseFloat(consums[0].consumos);
             }
+
+            consumo_anual = Math.round(consumo_anual * 100) / 100;
+
             return consumo_anual;
         }
     };
 
     var promedioConsumoTotalkWh = (consumoAnual) => {
         promedio_consumoTotalkWh = parseFloat(consumoAnual / 12);
+        promedio_consumoTotalkWh = Math.round(promedio_consumoTotalkWh * 100) / 100;
         return promedio_consumoTotalkWh;
     };
 
@@ -48,9 +52,11 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     nPromedioConsumoTotalKwH = promedioConsumoTotalkWh(nConsumoAnual);
 
     objPropuestaPaneles = {
-        consumoAnual: nConsumoAnual,
-        promedioConsumo: nPromedioConsumoTotalKwH,
-        potenciaNecesaria: _potenciaRequerida[0].potenciaRequerida
+        consumo: {
+            consumoAnual: nConsumoAnual,
+            promedioConsumo: nPromedioConsumoTotalKwH,
+            potenciaNecesaria: _potenciaRequerida[0].potenciaRequerida
+        }
     };
 
     arrayResult.push(objPropuestaPaneles);
@@ -59,6 +65,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     
     for(var x=0; x<_arrayNoDePaneles.length; x++)
     {
+        idPanel = _arrayNoDePaneles[x].idPanel;
         nombrePanel = _arrayNoDePaneles[x].nombre;
         marcaPanel = _arrayNoDePaneles[x].marca;
         potenciaPanel = parseFloat(_arrayNoDePaneles[x].potencia);
@@ -71,6 +78,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
         objPropuestaPaneles = { 
             panel: {
+                idPanel: idPanel,
                 nombre: nombrePanel,
                 marca: marcaPanel,
                 potencia: potenciaPanel,

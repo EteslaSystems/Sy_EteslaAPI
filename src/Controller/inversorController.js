@@ -5,6 +5,7 @@
 */
 
 const mysqlConnection = require('../../config/database');
+const { all } = require('../Routes/web');
 
 function insertarBD(datas) {
 	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at } = datas;
@@ -100,12 +101,11 @@ function consultaBD() {
   	});
 }
 
-function buscarBD (idInversor) {
-	//const { idInversor } = datas;
-	var _idInversor = idInversor;
+function buscarBD (datas) {
+	const { idInversor } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, _idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -151,23 +151,23 @@ async function getFilteredInvestor(idInversor){
 
 async function getInversores_cotizacion(data){
 	var arrayInversor = [];
-	var idInversor = data.idInversor;
-	var potenciaReal_ = data.potenciaReal;
-	inversorFiltrado = await consultaBD();
+	var potenciaReal_ = parseFloat(data.potenciaReal);
+	allInversores = await consultaBD();
+	allInversores = allInversores.message;
 
-	for(var i = 0; i < inversorFiltrado.length; i++)
+	for(var i = 0; i < allInversores.length; i++)
 	{
-		_potencia = inversorFiltrado[i].fPotencia;
+		_potencia = allInversores[i].fPotencia;
 		_potenciaMaximaInversor = _potencia * 1.25;
 		NoOfInvestors = potenciaReal_ / _potenciaMaximaInversor;
 		NoOfInvestors = NoOfInvestors * 1000;
-		NoOfInvestors = NoOfInvestors < 0.9 ? Math.round(NoOfInvestors) : 0;
+		NoOfInvestors = NoOfInvestors < 0.9 ? 0 : Math.round(NoOfInvestors);
 
 		if(NoOfInvestors > 0){
-
-			_nombreInversor = inversorFiltrado[i].vNombreMaterialFot;
-			_precio = inversorFiltrado[i].fPrecio;
-			_marca = inversorFiltrado[i].vMarca;
+			idInversor = allInversores[i].idInversor;
+			_nombreInversor = allInversores[i].vNombreMaterialFot;
+			_precio = allInversores[i].fPrecio;
+			_marca = allInversores[i].vMarca;
 			_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
 			_potenciaPicoInversor = _potenciaPicoInversor * 1000;
 
@@ -178,6 +178,7 @@ async function getInversores_cotizacion(data){
 			precioTotalInversores = _precio * NoOfInvestors;
 
 			objInversores = {
+				idInversor: idInversor,
 				nombreInversor: _nombreInversor,
 				marcaInversor: _marca,
 				potenciaInversor: _potencia,

@@ -145,8 +145,7 @@ async function numberOfModuls(powerNeeded, irradiation, efficiency, topeProducci
 async function getAllPanelsArray(){
 	consultaPaneles = await consultaBD();
 	consultaPaneles = consultaPaneles.message;
-	arrayPaneles = consultaPaneles;
-	return arrayPaneles;
+	return consultaPaneles;
 }
 
 async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
@@ -154,7 +153,7 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 
 	for(var i = 0; i < arrayAllOfPanels.length; i++)
 	{
-		// _id = arrayAllOfPanels[i].
+		idPanel = arrayAllOfPanels[i].idPanel;
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
 		_marca = arrayAllOfPanels[i].vMarca
 		_precio = arrayAllOfPanels[i].fPrecio;
@@ -164,6 +163,7 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 		_potenciaReal = (potenciaDelPanel * NoOfModuls)/1000;
 
 		objNoDeModulosPorPotenciaDelPanel = {
+			idPanel: idPanel,
 			nombre: _nombre,
 			marca: _marca,
 			potencia: potenciaDelPanel,

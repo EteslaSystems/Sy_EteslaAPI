@@ -15,6 +15,7 @@ const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 const dollar = require('../Controller/dolar_tipoCambio');
+const viaticosController = require('../Controller/opcionesViaticsController.js');
 
 const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
 
@@ -83,6 +84,23 @@ router.post('/sendPeriodsBT', function(request, response){
 			status: 500,
 			message: error
 		}).end();
+	});
+});
+
+//Calcular viaticos BTI
+router.post('/calcularViaticosBTI',function(request, response){
+	viaticosController.calcularViaticosBTI(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
 	});
 });
 /*#endregion*/
@@ -315,6 +333,43 @@ router.post('/verificar-email', function (request, response) {
 /*
 - @section: 		Rutas para la sección de inversores.
 */
+/*#regionLH420_experimental*/
+const inversor = require('../Controller/inversorController');
+const cotizacion = require('../Controller/cotizacionController');
+
+router.post('/inversores-selectos', function(request, response){
+	inversor.obtenerInversores_cotizacion(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
+//Busqueda_inteligente
+router.post('/busqueda-inteligente', function(request, response){
+	cotizacion.mainBusqInteligente(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+/*#endregion*/
 
 router.get('/lista-inversores', function (request, response) {
 	inversorBL.consultar()
