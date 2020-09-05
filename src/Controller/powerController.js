@@ -73,7 +73,7 @@ async function getCD_DatosConsumo(data){
         arrayCD.push(objCD);
     }
     
-    arrayResult = getProduccionIntermedia(data, arrayCD);
+    arrayResult = await getProduccionIntermedia(data, arrayCD);
 
     console.log('respuesta: ');
     console.log(arrayResult);

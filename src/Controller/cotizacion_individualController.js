@@ -68,7 +68,8 @@ async function cotizacionIndividual(data){
     }
 
     if(idInversor != "-1"){
-        inversor = await inversores.buscar(idInversor);
+        data = {idInversor};
+        inversor = await inversores.buscar(data);
         inversor = inversor.message;
 
         _potenciaInversor = inversor[0].fPotencia;

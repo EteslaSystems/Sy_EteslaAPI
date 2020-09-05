@@ -96,19 +96,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     return arrayResult;
 }
 
-//2ndo paso.
-async function obtenerInversores_Requeridos(data){
-    const result = await inversor.obtenerInversores_cotizacion(data);
-    return result;
-}
-
-//3er. paso (last)
-async function obtenerViaticos_Totales(data){
-    const result = await viaticosBT.calcularViaticosBTI(data);
-    return result;
-}
-
-
+//2do. paso 
 async function promedio_consumos(consumos){ 
     var m = consumos.length === 12 ? 2 : 1;
     var _promedioConsumos = [];
@@ -242,6 +230,17 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, data){ //2
 
 module.exports.firstStepBT = async function(data){
     const result = await obtenerEnergiaPaneles_Requeridos(data);
+    return result;
+}
+
+module.exports.obtenerInversores_Requeridos = async function(data){
+    const result = await inversor.obtenerInversores_cotizacion(data);
+    return result;
+}
+
+//3er. paso (the last)
+module.exports.obtenerViaticos_Totales = async function(data){
+    const result = await viaticosBT.calcularViaticosBTI(data);
     return result;
 }
 /*----------------------------------LO DE ABAJO NO SE A PROGRAMADO BIEN---------------------------------------------------*/

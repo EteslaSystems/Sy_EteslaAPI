@@ -3,7 +3,7 @@
 - @author: 			Yael Ramirez Herrerias / Jesus Daniel Carrera Fálcon
 - @date: 			20/02/2020
 */
-
+//Requires
 const express = require('express');
 const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
@@ -16,11 +16,12 @@ const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 const dollar = require('../Controller/dolar_tipoCambio');
 const viaticosController = require('../Controller/opcionesViaticsController.js');
+const archivoPDF = require('../PDF/crearPdf');  // Ruta del PDF.
 
-const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
-
+//Initializations
 router.use(express.json());
 
+//Routes
 router.get('/', function(requeset, response){
 	response.json({
 		status: 200,
@@ -368,6 +369,11 @@ router.post('/busqueda-inteligente', function(request, response){
 			message: error
 		});
 	});
+});
+
+//RouteView Handlebars
+router.get('/cotizacionView', (request, response) => {
+	response.render('cotizacion');
 });
 /*#endregion*/
 
@@ -980,7 +986,7 @@ router.put('/buscar-opcionesViatics', function (request, response) {
 */
 
 router.post('/pdf', function (request, response) {
-	archivoPDF.crear(request.body)
+	archivoPDF.crearPDF(request.body)
 	.then(pdf => {
 		response.json({
 			status: 200,

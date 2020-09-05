@@ -101,7 +101,7 @@ function consultaBD() {
   	});
 }
 
-function buscarBD (datas) {
+function buscarBD(datas) {
 	const { idInversor } = datas;
 
   	return new Promise((resolve, reject) => {

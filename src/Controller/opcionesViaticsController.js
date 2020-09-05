@@ -16,14 +16,14 @@ var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a 
 var precioDolar = 0;
 
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
-noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
-km_hospedaje = 130;
-personas_panel = 2.5; //Cotizador - viejo (??)
-hospedaje_dia = 9.5; //Cotizador - viejo (??)
-km_pasaje = 40; //Cotizador - viejo (??)
-km = 0.094; //Cotizador - viejo (??)
-comida_dia = 9.5; //Cotizador - viejo (??)
-viaticos_otros = 0.05; //Cotizador - viejo (??)
+const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
+const km_hospedaje = 130;
+const personas_panel = 2.5; //Cotizador - viejo (??)
+const hospedaje_dia = 9.5; //Cotizador - viejo (??)
+const km_pasaje = 40; //Cotizador - viejo (??)
+const km = 0.094; //Cotizador - viejo (??)
+const comida_dia = 9.5; //Cotizador - viejo (??)
+const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
     var objCotizacionBTI = {};

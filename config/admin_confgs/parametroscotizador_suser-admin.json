@@ -1,4 +1,7 @@
 {
+    "busqueda_inteligente": {
+        "combinacionMediana_marcaEspecificaPanel": "Canadian"
+    },
     "propuesta_cotizacion": {
         "tiempoExpiracion": 30
     },

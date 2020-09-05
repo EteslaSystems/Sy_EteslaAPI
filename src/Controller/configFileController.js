@@ -69,3 +69,29 @@ module.exports.ifExistConfigFile = function(root, fileName){
         }
     });
 }
+
+/*---Lee Handlebars template*/
+module.exports.getHandlebarsTemplate = function(fileName){
+    var getFileRootOfTemplate = process.cwd()+'/src/PDF/templates/'+fileName;
+
+    return new Promise((resolve, reject) => {
+        fs.readFile(getFileRootOfTemplate, 'utf-8', (err, template) => {
+            if(!err){
+                response = {
+                    status: true,
+                    message: template
+                };
+
+                resolve(response);
+            }
+            else{
+                response = {
+                    status: false,
+                    message: template
+                };
+
+                resolve(response);
+            }
+        });
+    });
+}
