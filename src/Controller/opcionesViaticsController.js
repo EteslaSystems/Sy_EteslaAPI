@@ -88,7 +88,7 @@ async function calcularViaticosBTI(data){
             pasaje = 0;
         }
 
-        viaticos = (hospedaje + comida + pasaje) * (1 + viaticos_otros);
+        viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
         costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
         manoDeObra = await getPrecioDeManoDeObraBTI(__cantidadPaneles, costoTotalPanInvEstr);
         totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
@@ -97,7 +97,7 @@ async function calcularViaticosBTI(data){
         costoTotalProyecto = Math.ceil(subtotOtrFletManObrTPIE + margen) + (descuento * (subtotOtrFletManObrTPIE + margen));
         precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100;
         precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
-        precioTotalMXN = precioMasIVA * precioDolar;
+        precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
 
         /*????*/precio_watt = parseFloat(costoTotalProyecto / (__cantidadPaneles * __potenciaPanel));
 
