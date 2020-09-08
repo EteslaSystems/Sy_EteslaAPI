@@ -107,7 +107,6 @@ router.post('/calcularViaticosBTI',function(request, response){
 /*#endregion*/
 /*#region individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
-const { response } = require('express');
 
 router.post('/cotizacionIndividual', function(request, response){
 	cotizIndiv.cotizacion_individual(request.body)

@@ -30,6 +30,7 @@ async function calcularViaticosBTI(data){
     var arrayCotizacionBTI = [];
     var origen = data.origen;
     var destino = data.destino;
+    var bInstalacion = data.bInstalacion;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -91,6 +92,11 @@ async function calcularViaticosBTI(data){
         viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
         costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
         manoDeObra = await getPrecioDeManoDeObraBTI(__cantidadPaneles, costoTotalPanInvEstr);
+
+        if(bInstalacion === 'false'){
+            manoDeObra[0] = 0;
+        }
+
         totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
         subtotOtrFletManObrTPIE = parseFloat(manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos);
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
@@ -174,12 +180,10 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIVEM){
             otrosPrecioInicial = 4000;
             costoOtros = dictionaryOtrosCost[cantidadPaneles] / precioDolar;
         }
-        else{
-            costoOtros = totalPIVEM * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
-        }
     }
     else{
         costoMO = cantidadPaneles * mo_unitario;
+        costoOtros = totalPIVEM * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
     }
 
     costosManoObraYOtros = [costoMO, costoOtros];

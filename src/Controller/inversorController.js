@@ -206,28 +206,6 @@ module.exports.obtenerInversores_cotizacion = async function(data){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports.insertar = async function (datas) {
 	const result = await insertarBD(datas);
 	return result;

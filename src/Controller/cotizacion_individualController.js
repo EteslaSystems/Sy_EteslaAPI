@@ -34,9 +34,14 @@ var objCotiIndividual = {
 async function cotizacionIndividual(data){
     var idPanel = data.idPanel;
     var idInversor = data.idInversor;
-    var cantidadPaneles = data.cantidadPaneles || 0;
-    var cantidadInversores = data.cantidadInversores || 0;
-    var bEstructuras = data.bEstructuras;
+    var cantidadPaneles = parseInt(data.cantidadPaneles) || 0;
+    var cantidadInversores = parseInt(data.cantidadInversores) || 0;
+
+
+    var cantidadEstructuras = parseInt(data.cantidadEstructuras);
+    // var bMonitoreo = data.monitoreo; //PENDIENTE
+
+    
     var origen = data.origen;
     var destino = data.destino;
     var _costoEstructuras = 0;
@@ -54,10 +59,10 @@ async function cotizacionIndividual(data){
 
         precioPorWatt = parseFloat(panel[0].fPrecio);
 		costoTotalPaneles = Math.round(parseFloat((precioPanel * _potenciaPanel) * cantidadPaneles));
-
-        if(bEstructuras == "true" || bEstructuras == true){
-            _costoEstructuras = await otrosMateriales.obtenerCostoDeEstructuras(cantidadPaneles);
-        }
+        _costoEstructuras = await otrosMateriales.obtenerCostoDeEstructuras(cantidadEstructuras);
+        /* if(bMonitoreo == "true" || bMonitoreo == true){
+            costoMonitoreo = ;
+        } */
 
         objCotiIndividual.panel.potenciaPanel = _potenciaPanel || 0;
         objCotiIndividual.panel.cantidadPaneles = cantidadPaneles || 0;
@@ -65,6 +70,7 @@ async function cotizacionIndividual(data){
         objCotiIndividual.panel.costoDeEstructuras = _costoEstructuras  || 0;
         objCotiIndividual.panel.precioPorWatt = precioPorWatt || 0;
         objCotiIndividual.panel.costoTotalPaneles = costoTotalPaneles || 0;
+        objCotiIndividual.panel.cantidadEstructuras = cantidadEstructuras;
     }
 
     if(idInversor != "-1"){
@@ -107,7 +113,8 @@ async function cotizacionIndividual(data){
     objeto = {
         arrayBTI: cotizacionInd,
         origen: origen,
-        destino: destino
+        destino: destino,
+        bInstalacion: data.bInstalacion
     };
 
     // cotiIndv = await viaticos.mainViaticos(objeto);
