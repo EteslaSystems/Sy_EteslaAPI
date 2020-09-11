@@ -30,7 +30,7 @@ async function calcularViaticosBTI(data){
     var arrayCotizacionBTI = [];
     var origen = data.origen;
     var destino = data.destino;
-    var bInstalacion = data.bInstalacion;
+    var bInstalacion = data.bInstalacion || null;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -93,7 +93,7 @@ async function calcularViaticosBTI(data){
         costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
         manoDeObra = await getPrecioDeManoDeObraBTI(__cantidadPaneles, costoTotalPanInvEstr);
 
-        if(bInstalacion === 'false'){
+        if(bInstalacion != null && bInstalacion === 'false'){
             manoDeObra[0] = 0;
         }
 

@@ -7,6 +7,7 @@ const irradiacionBT = require('../Controller/irradiacionController'); //BT = Baj
 const inversor = require('../Controller/inversorController');
 const panel = require('../Controller/panelesController');
 const viaticosBT = require('../Controller/opcionesViaticsController');
+const power = require('../Controller/powerController');
 
 var eficiencia = 0.82;
 var limite = 0;
@@ -228,11 +229,19 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, data){ //2
     return _calcularPot;
 }
 
+//1er. paso
 module.exports.firstStepBT = async function(data){
     const result = await obtenerEnergiaPaneles_Requeridos(data);
     return result;
 }
 
+//1.5 paso [POWER]
+module.exports.getPowerBTI = async function(data){
+    const result = await power.obtenerPowerBTI(data);
+    return result;
+}
+
+//2do. paso
 module.exports.obtenerInversores_Requeridos = async function(data){
     const result = await inversor.obtenerInversores_cotizacion(data);
     return result;
@@ -259,32 +268,4 @@ function calcular_strings(){
     var min_strings = Math.ceil(inversor.vmin / panel.vmp);
 
     calcular_paneles(max_strings, min_strings);
-}
-
-async function generacion(origen){
-    var generacion = [];
-
-    for(var x=0; x<=12; x++)
-    {
-        if(origen == 'CDMX' || origen == 'Puebla'){
-            generacion[x] = Math.floor(5.42 * (/*?potenciaRequerida?*/ potenciaRequerida/1000) * 0.73 * 30.4);
-        }
-        else{
-            generacion[x] = Math.floor(4.6 * (/*?potenciaRequerida?*/ potenciaRequerida/1000) * 0.83 * 30.4);
-        }
-    }
-
-    return generacion;
-}
-
-async function nuevos_consumos(consumos){
-    var consumos_nuevos = [];
-    var _generacion = await generacion(origen);
-
-    for(var x=0; x<consumos.length; x++)
-    {
-        consumos_nuevos[x] = Math.floor(consumos[x] - _generacion[x]);
-    }
-
-    return consumos_nuevos;
 }
