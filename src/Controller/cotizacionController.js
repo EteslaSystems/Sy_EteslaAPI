@@ -41,7 +41,7 @@ async function mainBusquedaInteligente(data){
         _paneles = await bajaTension.firstStepBT(data);
         newData = {_paneles: _paneles, origen: data.origen, destino: data.destino};
 
-        //__combinacionMediana = await getCombinacionMediana(newData);
+        __combinacionMediana = await getCombinacionMediana(newData);
         __combinacionEconomica = await getCombinacionEconomica(newData);
         __combinacionOptima = await getCombinacionOptima(newData, _consumos);
     }
@@ -51,7 +51,8 @@ async function mainBusquedaInteligente(data){
 
     objCombinaciones = {
         combinacionMediana: __combinacionMediana,
-        combinacionEconomica: __combinacionEconomica
+        combinacionEconomica: __combinacionEconomica,
+        combinacionOptima: __combinacionOptima
     };
 
     __combinaciones.push(objCombinaciones);
@@ -164,8 +165,7 @@ async function getCombinacionMediana(data){//Mediana
                 oldPanelPrice = parseFloat(_panelesSelectos[x].costoTotalPaneles);
             }
             else if(oldPanelPrice >= newPanelPrice){
-                oldPanelPrice = 0;
-                oldPanelPrice += newPanelPrice;
+                oldPanelPrice = newPanelPrice;
                 
                 objCombinacion.panel.idPanel = __paneles[x].panel.idPanel;
                 objCombinacion.panel.nombrePanel = __paneles[x].panel.nombre;
@@ -290,11 +290,14 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
             newSobredimension = parseFloat(__inversores[x].porcentajeSobreDimens);
             newInversorPrice = parseFloat(__inversores[x].precioTotalInversores);
 
-            oldSobredimension = x == 0 ? newSobredimension : 0;
-            oldInversorPrice = x == 0 ? newInversorPrice : 0;
+            if(x == 0){
+                oldSobredimension = newSobredimension;
+                oldInversorPrice = newInversorPrice;
+            }
             
-            if(oldSobredimension <= newSobredimension && oldInversorPrice <= newInversorPrice){
-                oldSobredimension += newSobredimension;
+            if(oldSobredimension <= newSobredimension && oldInversorPrice >= newInversorPrice){
+                oldSobredimension = newSobredimension;
+                oldInversorPrice = newInversorPrice;
 
                 objCombinacion.inversor.idInversor = __inversores[x].idInversor;
                 objCombinacion.inversor.nombreInversor = __inversores[x].nombreInversor;
