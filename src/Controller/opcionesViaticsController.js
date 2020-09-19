@@ -53,7 +53,7 @@ async function calcularViaticosBTI(data){
         __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
         // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
         // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
-        costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
+        costoTotalPaneles = Math.round(parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles) * 100) / 100;
         /*#endregion*/
         /*#region Iteracion_Inversores*/
         __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
