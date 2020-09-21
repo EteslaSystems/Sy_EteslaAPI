@@ -1,6 +1,6 @@
-const tarifa = require('../Controller/tarifaController');
+//const tarifa = require('../Controller/tarifaController');
 
-function getIrradiacionDiasDeMesesDelAnio(){
+async function getIrradiacionDiasDeMesesDelAnio(){
     var objMeses = {};
 
     objMeses = {
@@ -39,7 +39,7 @@ async function getCD_DatosConsumo(data){
     var C = 0;
     var D = 0;
     var tipoCotizacion = data.tipoCotizacion;
-    arrayMeses_ = getIrradiacionDiasDeMesesDelAnio();
+    arrayMeses_ = await getIrradiacionDiasDeMesesDelAnio();
 
     var arrayCD = [];
 
@@ -73,7 +73,7 @@ async function getCD_DatosConsumo(data){
         arrayCD.push(objCD);
     }
     
-    arrayResult = getProduccionIntermedia(data, arrayCD);
+    arrayResult = await getProduccionIntermedia(data, arrayCD);
 
     console.log('respuesta: ');
     console.log(arrayResult);
@@ -83,12 +83,12 @@ async function getCD_DatosConsumo(data){
 /*#endregion*/
 
 /*#region Produccion Solar*/
-function getProduccionBase(){
+async function getProduccionBase(){
     var produccionBase = 0;
     return produccionBase;
 }
 
-function getProduccionPunta(){
+async function getProduccionPunta(){
     var produccionPunta = 0;
     return produccionPunta;
 }
@@ -97,9 +97,9 @@ function getProduccionPunta(){
 async function getProduccionIntermedia(data, arrayCD){ //La data debera traer como dato extra "potenciaReal" y "porcentajeDePerdida"
     var produccionIntermedia = 0;
     var __produccionIntermedia = [];
-    potenciaReal = data.potenciaReal;
+    var potenciaReal = parseFloat(data.potenciaReal);
     porcentajePerdida = parseFloat((data.porcentajePerdida)/100);
-    arrayMeses_ = getIrradiacionDiasDeMesesDelAnio();
+    arrayMeses_ = await getIrradiacionDiasDeMesesDelAnio();
 
     var objResponse = {};
     var arrayResponse = [];
@@ -115,8 +115,8 @@ async function getProduccionIntermedia(data, arrayCD){ //La data debera traer co
     //console.log('getProduccionIntermedia() says: ');
     //console.log(__produccionIntermedia);
 
-    arrayPagosTotales = getBIP_DespuesDeSolar(data, arrayCD, __produccionIntermedia);
-    arrayProduccionAnual = getProduccionAnual_KwhMwh(__produccionIntermedia);
+    arrayPagosTotales = await getBIP_DespuesDeSolar(data, arrayCD, __produccionIntermedia);
+    arrayProduccionAnual = await getProduccionAnual_KwhMwh(__produccionIntermedia);
 
     objResponse = {
         arrayPagosTotales: arrayPagosTotales,
@@ -128,7 +128,7 @@ async function getProduccionIntermedia(data, arrayCD){ //La data debera traer co
     return arrayResponse;
 }
 
-function getProduccionAnual_KwhMwh(_produccionIntermedia){
+async function getProduccionAnual_KwhMwh(_produccionIntermedia){
     var produccionAnualKwh = 0;
     var produccionAnualMwh = 0;
     var objProduccionAnual = {};
@@ -157,15 +157,12 @@ function getProduccionAnual_KwhMwh(_produccionIntermedia){
 
 /*#region Consumos Despues de Solar*/
 //2do. paso (2.2)
-function getBIP_DespuesDeSolar(data, _arrayCD, _produccionIntermedia){
-    arrayMeses_ = getIrradiacionDiasDeMesesDelAnio();
-    var produccionBase = getProduccionBase();
-    var produccionPunta = getProduccionPunta();
+async function getBIP_DespuesDeSolar(data, _arrayCD, _produccionIntermedia){
+    arrayMeses_ = await getIrradiacionDiasDeMesesDelAnio();
+    var produccionBase = await getProduccionBase();
+    var produccionPunta = await getProduccionPunta();
     var _newBIP = [];
     var newBIP = {newB: 0, newI: 0, newP: 0, newC: 0, newD: 0};
-    
-    var result = {};
-    var arrayResult = [];
 
     var bkwh = 0;
     var ikwh = 0;
@@ -206,14 +203,14 @@ function getBIP_DespuesDeSolar(data, _arrayCD, _produccionIntermedia){
     // console.log('getBIP_DespuesDeSolar says:\n');
     // console.log(_newBIP);
 
-    arrayPagosTotales = getBIPMXN_kWh(data, _arrayCD, _newBIP);
+    arrayPagosTotales = await getBIPMXN_kWh(data, _arrayCD, _newBIP);
     return arrayPagosTotales;
 }
 /*#endregion*/
 
 /*#region Tarifas_CFE*/
 //3er. Paso
-function getBIPMXN_kWh(data, arrayCD, newBIP){
+async function getBIPMXN_kWh(data, arrayCD, newBIP){
     var objBIPMXN_kwh = {};
     var _bipMXN_kWh = [];
 
@@ -265,7 +262,7 @@ function getBIPMXN_kWh(data, arrayCD, newBIP){
 
 /*#region Pagos_totales*/
 //4to. paso
-function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
+async function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
     var sumaTodosLosEnergiaSinSolar = 0;
     var sumaTodosLosPagoTransmi = 0;
     var objPagosTotales = {};
@@ -278,16 +275,16 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
     /*#region SIN_SOLAR*/
     for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
     {
-        var bkwh = parseFloat(data.arrayPeriodosGDMTH[i].bkwh);
-        var ikwh = parseFloat(data.arrayPeriodosGDMTH[i].ikwh);
-        var pkwh = parseFloat(data.arrayPeriodosGDMTH[i].pkwh);
+        var bkwh = parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
+        var ikwh = parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
+        var pkwh = parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
 
         var pagoTransmi = parseFloat(data.arrayPeriodosGDMTH[i].pagoTransmi);
-        var bmxn_kwh = bipMXN_kWh[i].bmxn_kwh;
-        var imxn_kwh = bipMXN_kWh[i].imxn_kwh;
-        var pmxn_kwh = bipMXN_kWh[i].pmxn_kwh;
-        var cmxn_kw = bipMXN_kWh[i].cmxn_kw;
-        var dmxn_kw = bipMXN_kWh[i].dmxn_kw;
+        var bmxn_kwh = bipMXN_kWh[i].bmxn_kwh || 0;
+        var imxn_kwh = bipMXN_kWh[i].imxn_kwh || 0;
+        var pmxn_kwh = bipMXN_kWh[i].pmxn_kwh || 0;
+        var cmxn_kw = bipMXN_kWh[i].cmxn_kw || 0;
+        var dmxn_kw = bipMXN_kWh[i].dmxn_kw || 0;
 
         var ckw = arrayCD[i].C;
         var dkw = arrayCD[i].D;
@@ -337,11 +334,11 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
         var newC = parseFloat(newBIP[j].newC);
         var newD = parseFloat(newBIP[j].newD);
 
-        var bmxn_kwh = parseFloat(bipMXN_kWh[j].bmxn_kwh);
-        var imxn_kwh = parseFloat(bipMXN_kWh[j].imxn_kwh);
-        var pmxn_kwh = parseFloat(bipMXN_kWh[j].pmxn_kwh);
-        var cmxn_kw = parseFloat(bipMXN_kWh[j].cmxn_kw);
-        var dmxn_kw = parseFloat(bipMXN_kWh[j].dmxn_kw);
+        var bmxn_kwh = parseFloat(bipMXN_kWh[j].bmxn_kwh) || 0;
+        var imxn_kwh = parseFloat(bipMXN_kWh[j].imxn_kwh) || 0;
+        var pmxn_kwh = parseFloat(bipMXN_kWh[j].pmxn_kwh) || 0;
+        var cmxn_kw = parseFloat(bipMXN_kWh[j].cmxn_kw) || 0;
+        var dmxn_kw = parseFloat(bipMXN_kWh[j].dmxn_kw) || 0;
 
         /*---------------ENERGIA_SIN_SOLAR---------------*/
         energia_sinSolar = _pagosTotales[j].sinSolar.energia;
@@ -379,8 +376,8 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
     }
     /*#endregion*/
 
-    arrayTotalesAhorro = getTotales_Ahorro(__pagTotls);
-    radiacion = getRadiacion(); 
+    arrayTotalesAhorro = await getTotales_Ahorro(__pagTotls);
+    radiacion = await getRadiacion(); 
 
     result = {
         arrayPagosTotales: __pagTotls,
@@ -395,8 +392,8 @@ function getPagosTotales(data, bipMXN_kWh, arrayCD, newBIP){
 /*#endregion*/
 
 /*#region Celdas_Arriba(Radiacion, Produccion_Anual(kWh), Produccion_Anual(mWh), Total, Total, Ahorro, Porcentaje)*/
-function getRadiacion(){
-    var _arrayMeses = getIrradiacionDiasDeMesesDelAnio();
+async function getRadiacion(){
+    var _arrayMeses = await getIrradiacionDiasDeMesesDelAnio();
     var promedioIrradiaciones = 0;
     var sumaDiasDelMes = 0;
 
@@ -411,9 +408,7 @@ function getRadiacion(){
     return radiacion;
 }
 
-
-
-function getTotales_Ahorro(pagosTotales){
+async function getTotales_Ahorro(pagosTotales){
     var pagosTotales_Ahorro = {};
     var __pagosTotalesAhorro = [];
     var totalSinSolar = 0;
@@ -444,66 +439,55 @@ function getTotales_Ahorro(pagosTotales){
 }
 /*#endregion*/
 
-//BAJA TENSION
-/*#region Power_BajaTenison*/
-async function Xx_consumoPesos(data){ /*Modificar el nombre*/ //TESTEAR -NO_SE HA TESTEADO-
-    const tarifas = await tarifa.obtenerTodasLasTarifas();
-    var tarifaSelected = data.tarifa;
-    var consumoPromedio = data.consumoPromedio; //????
-    var meses = [];
-    var pagos = [];
+//BTI - BajaTension_Individual
+/*#region Power_BTI*/
+async function getPowerBTI(data){
+    var _consumos = data.consumos;
+    var origen = data.origen;
+    var potenciaReal = data.potenciaReal; 
+    var objResult = {};
 
-    var no_verano = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 0 && tarifas.siNivel != 0);
-    var verano = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 1 && tarifas.siNivel != 0);
-    var demanda = tarifas.filter(tarifas.vNombre === tarifaSelected && tarifas.siVerano === 0 && tarifas.siNivel === 0);
+    var _generacion = await getGeneration(origen, potenciaReal);
+    var _nuevosConsumos = await getNewConsumption(_consumos, _generacion);
 
-    costo_demanda = demanda.length != 0 ? demanda.precio : 0;
-    meses = verano.length != 0 ? meses[0,1,2,9,10,11] : meses[0,1,2,3,4,5,6,7,8,9,10,11];
-    factor = verano.length != 0 ? 0.824 : 1;
+    objResult = {
+        generacion: _generacion,
+        nuevosConsumos: _nuevosConsumos
+    }
+
+    return objResult;
+}
+
+async function getGeneration(origen, potenciaReal){
+    var _generation = [];
 
     for(var i=0; i<12; i++)
     {
-        pagos[i] = 0;
-        var rango_alto = 0;
-        var rango_bajo = 0;
-
-        if(meses.indexOf(i)){
-            while(no_verano.length === ux)
-            {
-                rango_bajo = rango_alto;
-                rango_alto = rango_alto + no_verano.iRango;
-
-                if((consumoPromedio * factor) > rango_bajo){
-                    if((consumoPromedio * factor) > rango_alto && no_verano.iRango != 0){
-                        pagos[i] = pagos[i] + no_verano.iRango * no_verano.fPrecio;
-                    }
-                    else{
-                        pagos[i] = pagos[i] + ((consumoPromedio * factor - rango_bajo) * no_verano.fPrecio);
-                    }
-                }
-
-                ux++;
-            }
+        if(origen.toString() === "Veracruz"){
+            gener = Math.floor(/*irradiacion->*/4.6 * potenciaReal) * 0.83 * 30.4;
+            _generation.push(gener);
         }
         else{
-            while(verano.length === uwu)
-            {
-                rango_bajo = rango_alto;
-                rango_alto = rango_alto + verano.iRango;
-
-                if((consumoPromedio * 1.172) > rango_bajo){
-                    if((consumoPromedio * 1.172) > rango_alto && verano.iRango != 0){
-                        pagos[i] = pagos[i] + verano.iRango * verano.fPrecio;
-                    }
-                    else{
-                        pagos[i] = pagos[i] + ((consumoPromedio * 1.172) - rango_bajo) * verano.fPrecio;
-                    }
-                }
-
-                uwu++;
-            }
+            gener = Math.floor(/*irradiacion->*/5.42 * potenciaReal) * 0.73 * 30.4;
+            _generation.push(gener);
         }
     }
 
+    return _generation;
 }
+
+async function getNewConsumption(__consumos, __generacion){
+    var _consumosNuevos = [];
+
+    for(var x=0; x<12; x++)
+    {
+        _consumosNuevos[x] = Math.floor(parseFloat(__consumos[0].consumos) - __generacion[x]);
+    }
+    return _consumosNuevos;
+}
+
+module.exports.obtenerPowerBTI = async function(data){
+    const result = await getPowerBTI(data);
+    return result;
+};
 /*#endregion*/

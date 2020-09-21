@@ -1,4 +1,10 @@
 {
+    "busqueda_inteligente": {
+        "combinacionMediana_marcaEspecificaPanel": "Canadian"
+    },
+    "propuesta_cotizacion": {
+        "tiempoExpiracion": 30
+    },
     "costos": {
         "porcentaje_fletes": 0.07,
         "porcentaje_margen": 0.30,

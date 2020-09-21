@@ -7,6 +7,7 @@ const irradiacionBT = require('../Controller/irradiacionController'); //BT = Baj
 const inversor = require('../Controller/inversorController');
 const panel = require('../Controller/panelesController');
 const viaticosBT = require('../Controller/opcionesViaticsController');
+const power = require('../Controller/powerController');
 
 var eficiencia = 0.82;
 var limite = 0;
@@ -20,15 +21,52 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var consumos = data.consumos;
     var tarifa = data.tarifa;
+    var arrayResult = [];
+    var objPropuestaPaneles = {};
 
     __promedioConsumos = await promedio_consumos(consumos);
     _potenciaRequerida = await calcular_potenciaRequerida(__promedioConsumos, tarifa, data);
-    var limiteProduccion = _potenciaRequerida.limite[0].objCalcularPot.limite;
+    var limiteProduccion = _potenciaRequerida[0].limite;
 
-    _arrayNoDePaneles = await panel.paneles.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia, limiteProduccion);
+    var consumoAnual = (consums) => {
+        consumo_anual=0;
+
+        if(consums.length < 12){
+            for(var x=0; x<12; x++)
+            {
+                consumo_anual += parseFloat(consums[0].consumos);
+            }
+
+            consumo_anual = Math.round(consumo_anual * 100) / 100;
+
+            return consumo_anual;
+        }
+    };
+
+    var promedioConsumoTotalkWh = (consumoAnual) => {
+        promedio_consumoTotalkWh = parseFloat(consumoAnual / 12);
+        promedio_consumoTotalkWh = Math.round(promedio_consumoTotalkWh * 100) / 100;
+        return promedio_consumoTotalkWh;
+    };
+
+    nConsumoAnual = consumoAnual(consumos);
+    nPromedioConsumoTotalKwH = promedioConsumoTotalkWh(nConsumoAnual);
+
+    objPropuestaPaneles = {
+        consumo: {
+            consumoAnual: nConsumoAnual,
+            promedioConsumo: nPromedioConsumoTotalKwH,
+            potenciaNecesaria: _potenciaRequerida[0].potenciaRequerida
+        }
+    };
+
+    arrayResult.push(objPropuestaPaneles);
+
+    _arrayNoDePaneles = await panel.numeroDePaneles(__promedioConsumos[0], irradiacion, eficiencia, limiteProduccion);
     
     for(var x=0; x<_arrayNoDePaneles.length; x++)
     {
+        idPanel = _arrayNoDePaneles[x].idPanel;
         nombrePanel = _arrayNoDePaneles[x].nombre;
         marcaPanel = _arrayNoDePaneles[x].marca;
         potenciaPanel = parseFloat(_arrayNoDePaneles[x].potencia);
@@ -41,6 +79,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
         objPropuestaPaneles = { 
             panel: {
+                idPanel: idPanel,
                 nombre: nombrePanel,
                 marca: marcaPanel,
                 potencia: potenciaPanel,
@@ -58,19 +97,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     return arrayResult;
 }
 
-//2ndo paso.
-async function obtenerInversores_Requeridos(data){
-    const result = await inversor.obtenerInversores_cotizacion(data);
-    return result;
-}
-
-//3er. paso (last)
-async function obtenerViaticos_Totales(data){
-    const result = await viaticosBT.calcularViaticosBTI(data);
-    return result;
-}
-
-
+//2do. paso 
 async function promedio_consumos(consumos){ 
     var m = consumos.length === 12 ? 2 : 1;
     var _promedioConsumos = [];
@@ -176,18 +203,18 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, data){ //2
 
     if(origen === 'Veracruz'){
         if(porcentaje === 0){
-            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.82) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.82/*Eficienia*/) * 1000;
         }
         else{
-            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.82) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.82)/*Eficienia*/ * 1000;
         }
     }
     else{
         if(/*?porcentaje?*/ porcentaje === 0){
-            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.73) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = ((__promedioConsumos[0] - subsidio_diario / irradiacion) / 0.73/*Eficienia*/) * 1000;
         }
         else{
-            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.73) * 1000;
+            /*?potenciaRequerida?*/ potenciaRequerida = (((__promedioConsumos[0] * porcentaje) / irradiacion) / 0.73/*Eficienia*/) * 1000;
         }
     }
 
@@ -202,8 +229,27 @@ async function calcular_potenciaRequerida(__promedioConsumos, tarifa, data){ //2
     return _calcularPot;
 }
 
+//1er. paso
 module.exports.firstStepBT = async function(data){
     const result = await obtenerEnergiaPaneles_Requeridos(data);
+    return result;
+}
+
+//1.5 paso [POWER]
+module.exports.getPowerBTI = async function(data){
+    const result = await power.obtenerPowerBTI(data);
+    return result;
+}
+
+//2do. paso
+module.exports.obtenerInversores_Requeridos = async function(data){
+    const result = await inversor.obtenerInversores_cotizacion(data);
+    return result;
+}
+
+//3er. paso (the last)
+module.exports.obtenerViaticos_Totales = async function(data){
+    const result = await viaticosBT.calcularViaticosBTI(data);
     return result;
 }
 /*----------------------------------LO DE ABAJO NO SE A PROGRAMADO BIEN---------------------------------------------------*/
@@ -222,32 +268,4 @@ function calcular_strings(){
     var min_strings = Math.ceil(inversor.vmin / panel.vmp);
 
     calcular_paneles(max_strings, min_strings);
-}
-
-async function generacion(origen){
-    var generacion = [];
-
-    for(var x=0; x<=12; x++)
-    {
-        if(origen == 'CDMX' || origen == 'Puebla'){
-            generacion[x] = Math.floor(5.42 * (/*?potenciaRequerida?*/ potenciaRequerida/1000) * 0.73 * 30.4);
-        }
-        else{
-            generacion[x] = Math.floor(4.6 * (/*?potenciaRequerida?*/ potenciaRequerida/1000) * 0.83 * 30.4);
-        }
-    }
-
-    return generacion;
-}
-
-async function nuevos_consumos(consumos){
-    var consumos_nuevos = [];
-    var _generacion = await generacion(origen);
-
-    for(var x=0; x<consumos.length; x++)
-    {
-        consumos_nuevos[x] = Math.floor(consumos[x] - _generacion[x]);
-    }
-
-    return consumos_nuevos;
 }

@@ -3,7 +3,7 @@
 - @author: 			Yael Ramirez Herrerias / Jesus Daniel Carrera Fálcon
 - @date: 			20/02/2020
 */
-
+//Requires
 const express = require('express');
 const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
@@ -15,11 +15,13 @@ const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 const dollar = require('../Controller/dolar_tipoCambio');
+const viaticosController = require('../Controller/opcionesViaticsController.js');
+const archivoPDF = require('../PDF/crearPdf');  // Ruta del PDF.
 
-const archivoPDF = require('../PDF/create-pdf');  // Ruta del PDF.
-
+//Initializations
 router.use(express.json());
 
+//Routes
 router.get('/', function(requeset, response){
 	response.json({
 		status: 200,
@@ -38,10 +40,15 @@ const powerController = require('../Controller/powerController');
 
 
 /*#region Cotizador*/
+/*#region PrecioDelDolar*/
 router.get('/tipoCambioDolar', function(request, response){
 	dollar.obtenerPrecioDolar()
 	.then(result => {
-		response.json(result);
+		response.json({
+			status: 200,
+			message: result,
+			alert: 'Archivo respaldado y precio del dolar actualizado'
+		});
 	})
 	.catch(error => {
 		response.json({
@@ -50,18 +57,51 @@ router.get('/tipoCambioDolar', function(request, response){
 		}).end();
 	});
 });
+
+router.get('/manualUpdateDolarPrice', function(request, response){
+	dollar.actualizarManualPrecioDolar()
+	.then(result => {
+		console.log(result);
+		/* response.json({
+		}).end(); */
+	})
+	.catch(error => {
+		response.json({ error });
+	}).end();
+});
+/*#endregion*/
 /*#region bajaTension*/
 //1st. Step
 router.post('/sendPeriodsBT', function(request, response){
 	bajaTensionController.firstStepBT(request.body)
 	.then(result => {
-		console.log(result);
+		response.json({
+			status: 200,
+			message: result
+		}).end();
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
 		}).end();
+	});
+});
+
+//Calcular viaticos BTI
+router.post('/calcularViaticosBTI',function(request, response){
+	viaticosController.calcularViaticosBTI(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
 	});
 });
 /*#endregion*/
@@ -288,25 +328,53 @@ router.post('/verificar-email', function (request, response) {
 	});
 });
 
-router.post('/recuperar-password', function (request, response) {
-	usuarioBL.recuperarPassword(request.body)
-	.then(usuario => {
-		response.json({
-			status: 200,
-			message: usuario,
-		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message,
-		}).end();
-	});
-});
+
 
 /*
 - @section: 		Rutas para la sección de inversores.
 */
+/*#regionLH420_experimental*/
+const inversor = require('../Controller/inversorController');
+const cotizacion = require('../Controller/cotizacionController');
+
+router.post('/inversores-selectos', function(request, response){
+	inversor.obtenerInversores_cotizacion(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
+//Busqueda_inteligente
+router.post('/busqueda-inteligente', function(request, response){
+	cotizacion.mainBusqInteligente(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
+//RouteView Handlebars
+router.get('/cotizacionView', (request, response) => {
+	response.render('cotizacion');
+});
+/*#endregion*/
 
 router.get('/lista-inversores', function (request, response) {
 	inversorBL.consultar()
@@ -917,7 +985,7 @@ router.put('/buscar-opcionesViatics', function (request, response) {
 */
 
 router.post('/pdf', function (request, response) {
-	archivoPDF.crear(request.body)
+	archivoPDF.crearPDF(request.body)
 	.then(pdf => {
 		response.json({
 			status: 200,

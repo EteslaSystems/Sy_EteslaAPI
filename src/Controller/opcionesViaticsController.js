@@ -16,24 +16,27 @@ var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a 
 var precioDolar = 0;
 
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
-noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
-km_hospedaje = 130;
-personas_panel = 2.5; //Cotizador - viejo (??)
-hospedaje_dia = 9.5; //Cotizador - viejo (??)
-km_pasaje = 40; //Cotizador - viejo (??)
-km = 0.094; //Cotizador - viejo (??)
-comida_dia = 9.5; //Cotizador - viejo (??)
-viaticos_otros = 0.05; //Cotizador - viejo (??)
+const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
+const km_hospedaje = 130;
+const personas_panel = 2.5; //Cotizador - viejo (??)
+const hospedaje_dia = 9.5; //Cotizador - viejo (??)
+const km_pasaje = 40; //Cotizador - viejo (??)
+const km = 0.094; //Cotizador - viejo (??)
+const comida_dia = 9.5; //Cotizador - viejo (??)
+const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
     var objCotizacionBTI = {};
     var arrayCotizacionBTI = [];
     var origen = data.origen;
     var destino = data.destino;
+    var bInstalacion = data.bInstalacion || null;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
-    precioDolar = 23.00;
+
+    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+    precioDolar = precioDolar[0].precioDolar;
 
     _arrayCotizacion = data.arrayBTI;
     
@@ -50,7 +53,7 @@ async function calcularViaticosBTI(data){
         __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
         // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
         // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
-        costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
+        costoTotalPaneles = Math.round(parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles) * 100) / 100;
         /*#endregion*/
         /*#region Iteracion_Inversores*/
         __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
@@ -80,17 +83,27 @@ async function calcularViaticosBTI(data){
             comida = noDias * comida_dia * noPersonasRequeridas;
             pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
         }
+        else{
+            hospedaje = 0;
+            comida = 0;
+            pasaje = 0;
+        }
 
-        viaticos = (hospedaje + comida + pasaje) * (1 + viaticos_otros);
+        viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
         costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
         manoDeObra = await getPrecioDeManoDeObraBTI(__cantidadPaneles, costoTotalPanInvEstr);
+
+        if(bInstalacion != null && bInstalacion === 'false'){
+            manoDeObra[0] = 0;
+        }
+
         totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
         subtotOtrFletManObrTPIE = parseFloat(manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos);
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
         costoTotalProyecto = Math.ceil(subtotOtrFletManObrTPIE + margen) + (descuento * (subtotOtrFletManObrTPIE + margen));
         precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100;
         precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
-        precioTotalMXN = precioMasIVA * precioDolar;
+        precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
 
         /*????*/precio_watt = parseFloat(costoTotalProyecto / (__cantidadPaneles * __potenciaPanel));
 
@@ -157,19 +170,20 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIVEM){
     mo_unitario = 12;
     otros_porcentaje = 0.035;
 
+    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+    precioDolar = precioDolar[0].precioDolar;
+
     if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
-        costoMO = dictionaryMOCost[cantidadPaneles] / 17;
+        costoMO = dictionaryMOCost[cantidadPaneles] / precioDolar;
 
         if(cantidadPaneles <= 45){
             otrosPrecioInicial = 4000;
-            costoOtros = dictionaryOtrosCost[cantidadPaneles] / 17;
-        }
-        else{
-            costoOtros = totalPIVEM * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
+            costoOtros = dictionaryOtrosCost[cantidadPaneles] / precioDolar;
         }
     }
     else{
         costoMO = cantidadPaneles * mo_unitario;
+        costoOtros = totalPIVEM * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
     }
 
     costosManoObraYOtros = [costoMO, costoOtros];
@@ -191,8 +205,6 @@ async function main_calcularViaticos(data){
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
     // distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
-    
-    precioDolar = 23.00;
 
     // if(Array.isArray(_arrayCotizacion) != true){
     //     _arrayCotizacion = Object.values(_arrayCotizacion);
@@ -210,6 +222,9 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
     var _cotizacion = [];
     var _configFile = await configFile.getArrayOfConfigFile();
     var distanciaEnKm = parseFloat(_distanciaEnKm);
+
+    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+    precioDolar = precioDolar[0].precioDolar;
 
     if(distanciaEnKm > 30)
     {
@@ -441,12 +456,13 @@ function getNumberOfCrews(_numeroPanelesAInstalar){
     }
 }
 
-function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr){
+async function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr){
     var arrayLaborOtrosPrice = [];
     var laborPrice = 0;
     var otros = 0;
 
-    precioDolar = 23.00;
+    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+    precioDolar = precioDolar[0].precioDolar;
 
     if(__cantidadPaneles >= 1 && __cantidadPaneles < 8){
         laborPrice = 2000;

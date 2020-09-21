@@ -5,8 +5,9 @@
 */
 
 const mysqlConnection = require('../../config/database');
+const { all } = require('../Routes/web');
 
-function insertarBD (datas) {
+function insertarBD(datas) {
 	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at } = datas;
 
   	return new Promise((resolve, reject) => {
@@ -54,7 +55,7 @@ function eliminarBD(datas) {
   	});
 }
 
-function editarBD (datas) {
+function editarBD(datas) {
 	const { idInversor, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, iVMIN, iVMAX, iPMAX, iPMIN, updated_at } = datas;
 
   	return new Promise((resolve, reject) => {
@@ -78,7 +79,7 @@ function editarBD (datas) {
   	});
 }
 
-function consultaBD () {
+function consultaBD() {
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
@@ -100,12 +101,11 @@ function consultaBD () {
   	});
 }
 
-function buscarBD (idInversor) {
-	//const { idInversor } = datas;
-	var _idInversor = idInversor;
+function buscarBD(datas) {
+	const { idInversor } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, _idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -151,45 +151,48 @@ async function getFilteredInvestor(idInversor){
 
 async function getInversores_cotizacion(data){
 	var arrayInversor = [];
-	var idInversor = data.idInversor;
-	var potenciaReal_ = data.potenciaReal;
-	inversorFiltrado = await getFilteredInvestor(idInversor);
+	var potenciaReal_ = parseFloat(data.potenciaReal);
+	allInversores = await consultaBD();
+	allInversores = allInversores.message;
 
-	for(var i = 0; i < inversorFiltrado.length; i++)
+	for(var i = 0; i < allInversores.length; i++)
 	{
-		_nombreInversor = inversorFiltrado[i].vNombreMaterialFot;
-		_potencia = inversorFiltrado[i].fPotencia;
-		_precio = inversorFiltrado[i].fPrecio;
-		_marca = inversorFiltrado[i].vMarca;
+		_potencia = allInversores[i].fPotencia;
 		_potenciaMaximaInversor = _potencia * 1.25;
 		NoOfInvestors = potenciaReal_ / _potenciaMaximaInversor;
 		NoOfInvestors = NoOfInvestors * 1000;
-		NoOfInvestors = Math.ceil(NoOfInvestors);
-		_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
-		_potenciaPicoInversor = _potenciaPicoInversor * 1000;
-		
+		NoOfInvestors = NoOfInvestors < 0.9 ? 0 : Math.round(NoOfInvestors);
 
+		if(NoOfInvestors > 0){
+			idInversor = allInversores[i].idInversor;
+			_nombreInversor = allInversores[i].vNombreMaterialFot;
+			_precio = allInversores[i].fPrecio;
+			_marca = allInversores[i].vMarca;
+			_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
+			_potenciaPicoInversor = _potenciaPicoInversor * 1000;
 
-		_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
-		_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
-		_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
-		potenciaNominal = NoOfInvestors * _potencia;
-		precioTotalInversores = _precio * NoOfInvestors;
+			_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
+			_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
+			_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
+			potenciaNominal = NoOfInvestors * _potencia;
+			precioTotalInversores = _precio * NoOfInvestors;
 
-		objInversores = {
-			nombreInversor: _nombreInversor,
-			marcaInversor: _marca,
-			potenciaInversor: _potencia,
-			potenciaNominalInversor: potenciaNominal,
-			precioInversor: _precio,
-			potenciaMaximaInversor: _potenciaMaximaInversor,
-			numeroDeInversores: NoOfInvestors,
-			potenciaPicoInversor: _potenciaPicoInversor,
-			porcentajeSobreDimens: _porcentajeSobreDimensionamiento,
-			precioTotalInversores: precioTotalInversores
-		};
-		
-		arrayInversor.push(objInversores);
+			objInversores = {
+				idInversor: idInversor,
+				nombreInversor: _nombreInversor,
+				marcaInversor: _marca,
+				potenciaInversor: _potencia,
+				potenciaNominalInversor: potenciaNominal,
+				precioInversor: _precio,
+				potenciaMaximaInversor: _potenciaMaximaInversor,
+				numeroDeInversores: NoOfInvestors,
+				potenciaPicoInversor: _potenciaPicoInversor,
+				porcentajeSobreDimens: _porcentajeSobreDimensionamiento,
+				precioTotalInversores: precioTotalInversores
+			};
+			
+			arrayInversor.push(objInversores);
+		}
 	}
 	
 	return arrayInversor;
@@ -200,28 +203,6 @@ module.exports.obtenerInversores_cotizacion = async function(data){
 	return result;
 }
 /*#endregion*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -5,3 +5,7 @@ package-lock.json
 package.json
 LICENSE
 *.pdf
+
+
+
+/config/dirDollarPrice/*.json

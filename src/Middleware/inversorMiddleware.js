@@ -23,10 +23,10 @@ function inversorValidation (data) {
         //     .string(message.string)
         //     .matches(/^[A-Za-z\s]+$/g, message.letter)
         //     .required(message.required),
-        marca: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
+        // marca: yup
+        //     .string(message.string)
+        //     .matches(/^[A-Za-z\s]+$/g, message.letter)
+        //     .required(message.required),
         potencia: yup
             .string(message.string)
             .matches(/^[0-9]+\.?[0-9]*$/, message.number)

@@ -29,23 +29,26 @@ module.exports.getArrayOfConfigFile = function(){
     });
 }
 
-module.exports.getArrayJSONDollarPrice = async function(fileName){
-    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName+'.json';
+module.exports.getArrayJSONDollarPrice = function(fileName){
+    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName;
 
     return new Promise((resolve, reject) => {
-        fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, $dollarPrice) => {
+        fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, dollarPrice) => {
             if(!err){
                 response = {
                     status: true,
-                    message: $dollarPrice
+                    message: dollarPrice
                 };
 
-                resolve(response.message);
+                resolve(response);
             }
             else{
+                dollarPrice = 23;
+
                 response = {
                     status: false,
-                    message: err
+                    message: err,
+                    valueOfDollar: dollarPrice
                 };
 
                 resolve(response);
@@ -64,5 +67,31 @@ module.exports.ifExistConfigFile = function(root, fileName){
         else if(err.code === 'ENOENT'){
             return false;
         }
+    });
+}
+
+/*---Lee Handlebars template*/
+module.exports.getHandlebarsTemplate = function(fileName){
+    var getFileRootOfTemplate = process.cwd()+'/src/PDF/templates/'+fileName;
+
+    return new Promise((resolve, reject) => {
+        fs.readFile(getFileRootOfTemplate, 'utf-8', (err, template) => {
+            if(!err){
+                response = {
+                    status: true,
+                    message: template
+                };
+
+                resolve(response);
+            }
+            else{
+                response = {
+                    status: false,
+                    message: template
+                };
+
+                resolve(response);
+            }
+        });
     });
 }
