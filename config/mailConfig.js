@@ -11,10 +11,8 @@ class mailConfig {
 			"smtpsecure": "tls",
 			"auth": {
 				"type": "login",
-				"user": "danyhacks28@gmail.com",
-				"pass": "Urakirabe28"
-				/*"user": "sistemas.etesla@gmail.com",
-				"pass": "@Etesla123_4"*/
+				"user": "sistemas.etesla@gmail.com",
+				"pass": "@Etesla123_4"
 			}
 		});
 	}

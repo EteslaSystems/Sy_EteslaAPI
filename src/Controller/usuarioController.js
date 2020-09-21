@@ -71,6 +71,7 @@ function editarBD (datas) {
 		});
   	});
 }
+
 function consultaBD () {
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
