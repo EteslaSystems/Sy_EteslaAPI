@@ -20,38 +20,38 @@ const message = {
 // Función de validación. Se establecen las reglas que se requieren por campo, utilizando la librería "yup"
 function usuarioValidation (data) {
 	const schema = yup.object().shape({
-  		rol: yup
-    		.string(message.string)
-    		.matches(/^[0-9]+\.?[0-9]*$/, message.number)
-    		.required(message.required),
-  		tipoUsuario: yup
-    		.string(message.string)
-    		.matches(/^[A-Za-z\s]+$/g, message.letter)
-    		.required(message.required),
-    	contrasenia: yup
-    		.string(message.string)
-    		.required(message.required),
-    	oficina: yup
-    		.string(message.string)
-    		.matches(/^[A-Za-z\s]+$/g, message.letter)
-    		.required(message.required),
-    	nombrePersona: yup
-    		.string(message.string)
-    		.matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
-    		.required(message.required),
-  		primerApellido: yup
-    		.string(message.string)
-    		.matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
-    		.required(message.required),
-    	segundoApellido: yup
-    		.string(message.string)
-    		.matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
-    		.required(message.required),
-        email: yup
-    		.string(message.string)
-            .matches(/^[a-z0-9_.]+@(etesla)\.com\.[a-z0-9]+\.[a-z0-9_.]+$/, message.email)
-            .required(message.required),
-	});
+		rol: yup
+		  .string(message.string)
+		  .matches(/^[0-9]+\.?[0-9]*$/, message.number)
+		  .required(message.required),
+		tipoUsuario: yup
+		  .string(message.string)
+		  .matches(/^[A-Za-z\s]+$/g, message.letter)
+		  .required(message.required),
+	  	contrasenia: yup
+		  .string(message.string)
+		  .required(message.required),
+	  	oficina: yup
+		  .string(message.string)
+		  .matches(/^[A-Za-z\s]+$/g, message.letter)
+		  .required(message.required),
+	  	nombrePersona: yup
+		  .string(message.string)
+		  .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
+		  .required(message.required),
+		primerApellido: yup
+		  .string(message.string)
+		  .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
+		  .required(message.required),
+	  	segundoApellido: yup
+		  .string(message.string)
+		  .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
+		  .required(message.required),
+	  	email: yup
+		  .string(message.string)
+		  .matches(/^[a-z0-9_.]+@[a-z0-9]+\.[a-z0-9_.]+$/, message.email)
+		  .required(message.required),
+  	});
 
 	// Retornamos los resultados mediante una promesa, incluyendo los mensajes o resultados.
 	return new Promise((resolve, reject) => {
