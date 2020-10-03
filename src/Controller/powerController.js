@@ -1,4 +1,4 @@
-//const tarifa = require('../Controller/tarifaController');
+const tarifa = require('../Controller/tarifaController');
 
 async function getIrradiacionDiasDeMesesDelAnio(){
     var objMeses = {};
@@ -442,13 +442,28 @@ async function getTotales_Ahorro(pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
+    var objResult = {};
     var _consumos = data.consumos;
     var origen = data.origen;
     var potenciaReal = data.potenciaReal; 
-    var objResult = {};
+    var consumos = data.consumos;
+    var consumoPromedio = (consumos) => {
+        var promedioConsumo = 0;
+        
+        for(var i=0; i<consumos.length; i++)
+        {
+            promedioConsumo += parseFloat(consumos[i]);    
+        }
+        promedioConsumo = promedioConsumo / consumos.length;
+        return promedioConsumo;
+    };
+
+    consumoPromedio = consumoPromedio(consumos);
 
     var _generacion = await getGeneration(origen, potenciaReal);
     var _nuevosConsumos = await getNewConsumption(_consumos, _generacion);
+    // var dac_o_nodac = await dac(data, consumoPromedio);
+    // await consumo_pesos(dac_o_nodac, consumoPromedio);
 
     objResult = {
         generacion: _generacion,
@@ -484,6 +499,216 @@ async function getNewConsumption(__consumos, __generacion){
         _consumosNuevos[x] = Math.floor(parseFloat(__consumos[0].consumos) - __generacion[x]);
     }
     return _consumosNuevos;
+}
+
+async function dac(data, consumoPromedio){
+    var tarifa = data.tarifa;
+
+    switch(tarifa)
+    {
+        case '1':
+            tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
+        break;
+        case '1a':
+            tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
+        break;
+        case '1b':
+            tarifa = consumoPromedio >= 400 ? 'DAC' : tarifa;
+        break;
+        case '1c':
+            tarifa = consumoPromedio >= 850 ? 'DAC' : tarifa;
+        break;
+        case '1d':
+            tarifa = consumoPromedio >= 1000 ? 'DAC' : tarifa;
+        break;
+        case '1e':
+            tarifa = consumoPromedio >= 2000 ? 'DAC' : tarifa;
+        break;
+        case '1f':
+            tarifa = consumoPromedio >= 2500 ? 'DAC' : tarifa;
+        break;
+        default:
+            tarifa = -1;
+        break;
+    }
+
+    return tarifa;
+}
+
+async function consumo_pesos(dac_o_nodac, consumo_promedio){
+    var dac_o_nodac = dac_o_nodac.toString(); //Tarifa
+    var meses = [];
+    var pagos = [];
+    var _bimestral = [];
+    var factor = 0;
+    var no_verano = (__tarifas) => {
+        noverano = [];
+
+        for(var x=0; x<__tarifas.length; x++)
+        {
+            if(__tarifas[x].vNombreTarifa == dac_o_nodac && __tarifas[x].siVerano == 0 && __tarifas[x].siNivel != 0){
+                noverano.push(__tarifas[x]);
+            }
+        }
+        return noverano;
+    };
+    var verano = (__tarifas) => {
+        _verano = [];
+
+        for(var x=0; x<__tarifas.length; x++)
+        {
+            if(__tarifas[x].vNombreTarifa == dac_o_nodac && __tarifas[x].siVerano == 1 && __tarifas[x].siNivel != 0){
+                _verano.push(__tarifas[x]);
+            }
+        }
+        return _verano;
+    };
+    var demanda = (__tarifas) => {
+        _demanda = [];
+
+        for(var x=0; x<__tarifas.length; x++)
+        {
+            if(__tarifas[x].nuevosConsumos == dac_o_nodac && __tarifas[x].siVerano == 0 && __tarifas[x].siNivel == 0){
+                _demanda.push(__tarifas[x]);
+            }
+        }
+        return _demanda;
+    };
+    var _tarifas = await tarifa.obtenerTodasLasTarifas();
+
+    no_verano = no_verano(_tarifas);
+    verano = verano(_tarifas);
+    demanda = demanda(_tarifas);
+
+    costoDemanda = demanda.length > 0 ? demanda.fPrecio : 0;
+
+    if(verano.length > 0){
+        meses = [0,1,2,9,10,11];
+        factor = 0.824;
+    }
+    else{
+        meses = [0,1,2,3,4,5,6,7,8,9,10,11];
+        factor = 1;
+    }
+
+    for(var h=0; h<12; h++)
+    {
+        var rango_alto = 0;
+        var rango_bajo = 0;
+        var escalon;
+
+        pagos[h] = 0;  //???? -Posibilidad de eliminar esta porqueria
+
+        if(meses.includes(h) == true){
+            while(escalon = noverano[0])
+            {
+                rango_bajo = rango_alto;
+                rango_alto += escalon.iRango;
+
+                if((consumo_promedio * factor) > rango_bajo){
+                    pagos[h] = pagos[h] + escalon.iRango * escalon.fPrecio;
+                }
+                else{
+                    pagos[h] = pagos[h] + ((consumo_promedio * factor) - rango_bajo) * escalon.fPrecio;
+                }
+            }
+        }
+        else{
+            while(escalon = verano[0])
+            {
+                rango_bajo = rango_alto;
+                rango_alto += escalon.iRango;
+
+                if((consumo_promedio * 1.172) > rango_bajo){
+                    if((consumo_promedio * 1.172) > rango_alto && escalon.iRango != 0){
+                        pagos[h] = pagos[h] + escalon.iRango * escalon.fPrecio;
+                    }   
+                    else{
+                        pagos[h] = pagos[h] + ((consumo_promedio * 1.172) - rango_bajo) * escalon.fPrecio;
+                    }
+                }   
+            }
+        }
+    }
+
+    var pago_demanda;
+
+    if(Array.isArray(demanda) == true){
+        for(var z=0; z<demanda.length; z++)
+        {
+            pago_demanda = Math.floor(parseFloat(demanda[z] * costoDemanda));
+        }
+    }
+    else{
+        demanda = 1;
+        pago_demanda = Math.floor(demanda * costoDemanda);
+    }
+
+    var _pagos = []; //??new??
+
+    if(Array.isArray(pago_demanda) == true){
+        for(var k=0; k<pago_demanda.length; k++)
+        {
+            pagosCalculo = Math.floor(pago_demanda[k] + pagos[k]);
+            _pagos.push(pagosCalculo);
+        }
+    }
+
+    _bimestral[0] = parseFloat(pagos[0] + pagos[1]);
+    _bimestral[1] = parseFloat(pagos[2] + pagos[3]);
+    _bimestral[2] = parseFloat(pagos[4] + pagos[5]);
+    _bimestral[3] = parseFloat(pagos[6] + pagos[7]);
+    _bimestral[4] = parseFloat(pagos[8] + pagos[9]);
+    _bimestral[5] = parseFloat(pagos[10] + pagos[11]);
+
+
+    var newPagoPromedio = (_pagos) => {
+        newPago_promedio = 0;
+
+        for(var zx=0; zx<_pagos.length; zx++)
+        {
+            newPagoPromedio += parseFloat(_pagos[zx]);
+        }
+        newPagoPromedio = Math.round((newPagoPromedio / _pagos.length) * 100) / 100;
+        return newPagoPromedio;
+    };
+    var _pagosIVA = (_pagos) => {
+        pagos_iva = [];
+
+        for(var il=0; il<_pagos.length; il++)
+        {
+            pagos_iva[il] = Math.floor(parseFloat(_pagos[il]) * 0.10 + parseFloat(_pagos[il]) * 1.16);
+        }
+
+        return pagos_iva;
+    };
+    var _bimestralIVA = (_bimestral) => {
+        bimestral_iva;
+
+        for(var xx=0; xx<_bimestral.length; xx++)
+        {
+            bimestral_iva = Math.floor(parseFloat(_bimestral[xx]) * 0.10 + parseFloat(_bimestral[xx]) * 1.16);    
+        }
+        return bimestral_iva;
+    };
+    
+    anteriorPagoPromedio = consumo_promedio * 1.16;
+    newPagoPromedio = newPagoPromedio(_pagos);
+    _pagosIVA = _pagosIVA(_pagos);
+    _bimestralIVA = _bimestralIVA(_bimestral);
+
+    objRespuesta = {
+        tarifa: dac_o_nodac,
+        nuevosPagos: _pagos,
+        nuevosPagosIVA: _pagosIVA,
+        anteriorPagoPromedio: consumo_promedio,
+        anteriorPagoPromedioIVA: anteriorPagoPromedio,
+        nuevoPagoPromedio: newPagoPromedio,
+        bimestral: _bimestral,
+        bimestralIVA: _bimestralIVA
+    };
+
+    return objRespuesta;
 }
 
 module.exports.obtenerPowerBTI = async function(data){

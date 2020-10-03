@@ -84,7 +84,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){
 		return resultStep;
 	}
 	else{
-		newData = llenarEspaciosVaciosData(data);
+		newData = await llenarEspaciosVaciosData(data);
 		const resultStep = await promedioDePropiedadesPeriodoGDMTH(newData);
 		return resultStep;
 	}
@@ -246,73 +246,100 @@ function calcularPorcentajeDePerdida(_setPorcentajePerdida){
 	return porcentajePerdida;
 }
 
-function llenarEspaciosVaciosData(data)
-{
-	var newData = [];
+async function llenarEspaciosVaciosData(data)
+{ 
+	var _nuevaDat = [];
+	// /* var nObjArrayGDMTH = {}; */
+	var nObjArrayGDMTH = {
+		bkwh: 0,
+		ikwh: 0,
+		pkwh: 0,
+		bkw: 0,
+		ikw: 0,
+		pkw: 0,
+		bmxn: 0,
+		imxn: 0,
+		pmxn: 0,
+		pagoTransmi: 0,
+		cmxn: 0,
+		dmxn: 0
+	};
 	
 	_data = data.arrayPeriodosGDMTH;
 
 	for(var j=0; j < _data.length; j++)
 	{
-		var _condicional = j == data.length - 1;
-		var bkwh = Number.parseFloat(_data[j].bkwh);
-		var ikwh = Number.parseFloat(_data[j].ikwh);
-		var pkwh = Number.parseFloat(_data[j].pkwh);
-		var bkw = Number.parseFloat(_data[j].bkw);
-		var ikw = Number.parseFloat(_data[j].ikw);	
-		var pkw = Number.parseFloat(_data[j].pkw);
-		var bmxn = Number.parseFloat(_data[j].bmxn);
-		var imxn = Number.parseFloat(_data[j].imxn);
-		var pmxn = Number.parseFloat(_data[j].pmxn);
-		var pagoTransmision = Number.parseFloat(_data[j].pagoTransmi);
-		var cmxn = Number.parseFloat(_data[j].cmxn);
-		var dmxn = Number.parseFloat(_data[j].dmxn);
+		var bkwh_ = parseFloat(_data[j].bkwh);
+		var ikwh_ = parseFloat(_data[j].ikwh);
+		var pkwh_ = parseFloat(_data[j].pkwh);
+		var bkw_ = parseFloat(_data[j].bkw);
+		var ikw_ = parseFloat(_data[j].ikw);	
+		var pkw_ = parseFloat(_data[j].pkw);
+		var bmxn_ = parseFloat(_data[j].bmxn);
+		var imxn_ = parseFloat(_data[j].imxn);
+		var pmxn_ = parseFloat(_data[j].pmxn);
+		var pagoTransmision_ = parseFloat(_data[j].pagoTransmi);
+		var cmxn_ = parseFloat(_data[j].cmxn);
+		var dmxn_ = parseFloat(_data[j].dmxn);
 
-		averageBkWh = Number.parseFloat(averageBkWh + bkwh);
-		averageIkWh = Number.parseFloat(averageIkWh + ikwh);
-		averagePkWh = Number.parseFloat(averagePkWh + pkwh);
-		averageBkW = Number.parseFloat(averageBkW + bkw);
-		averageIkW = Number.parseFloat(averageIkW + ikw);
-		averagePkW = Number.parseFloat(averagePkW + pkw);
-		averageBmxn = Number.parseFloat(averageBmxn + bmxn);
-		averageImxn = Number.parseFloat(averageImxn + imxn);
-		averagePmxn = Number.parseFloat(averagePmxn + pmxn);
-		averagePagoTransmi = Number.parseFloat(averagePagoTransmi + pagoTransmision);
-		averageCmxn = Number.parseFloat(averageCmxn + cmxn);
-		averageDmxn = Number.parseFloat(averageDmxn + dmxn);
+		averageBkWh = parseFloat(averageBkWh + bkwh_);
+		averageIkWh = parseFloat(averageIkWh + ikwh_);
+		averagePkWh = parseFloat(averagePkWh + pkwh_);
+		averageBkW = parseFloat(averageBkW + bkw_);
+		averageIkW = parseFloat(averageIkW + ikw_);
+		averagePkW = parseFloat(averagePkW + pkw_);
+		averageBmxn = parseFloat(averageBmxn + bmxn_);
+		averageImxn = parseFloat(averageImxn + imxn_);
+		averagePmxn = parseFloat(averagePmxn + pmxn_);
+		averagePagoTransmi = parseFloat(averagePagoTransmi + pagoTransmision_);
+		averageCmxn = parseFloat(averageCmxn + cmxn_);
+		averageDmxn = parseFloat(averageDmxn + dmxn_);
 
-		nObjArrayGDMTH = {
-			bkwh: bkwh,
-			ikwh: ikwh,
-			pkwh: pkwh,
-			bkw: bkw,
-			ikw: ikw,
-			pkw: pkw,
-			bmxn: bmxn,
-			imxn: imxn,
-			pmxn: pmxn,
-			pagoTransmi: pagoTransmi,
-			cmxn: cmxn,
-			dmxn: dmxn
-		};
+		/* nObjArrayGDMTH = {
+			bkwh: bkwh_,
+			ikwh: ikwh_,
+			pkwh: pkwh_,
+			bkw: bkw_,
+			ikw: ikw_,
+			pkw: pkw_,
+			bmxn: bmxn_,
+			imxn: imxn_,
+			pmxn: pmxn_,
+			pagoTransmi: pagoTransmi_,
+			cmxn: cmxn_,
+			dmxn: dmxn_
+		}; */
 
-		newData.push(nObjArrayGDMTH);
+		nObjArrayGDMTH.bkwh = bkwh_;
+		nObjArrayGDMTH.ikwh = ikwh_;
+		nObjArrayGDMTH.pkwh = pkwh_;
+		nObjArrayGDMTH.bkw = bkw_;
+		nObjArrayGDMTH.ikw = ikw_;
+		nObjArrayGDMTH.pkw = pkw_;
+		nObjArrayGDMTH.bmxn = bmxn_;
+		nObjArrayGDMTH.imxn = imxn_;
+		nObjArrayGDMTH.pmxn = pmxn_;
+		nObjArrayGDMTH.pagoTransmi = pagoTransmision_;
+		nObjArrayGDMTH.cmxn = cmxn_;
+		nObjArrayGDMTH.dmxn = dmxn_;
 
-		if(_condicional){
-			averageBkWh = Number.parseFloat(averageBkWh / (_data.length)) || null;
-			averageIkWh = Number.parseFloat(averageIkWh / (_data.length)) || null;
-			averagePkWh = Number.parseFloat(averagePkWh / (_data.length)) || null;
-			averageBkW = Number.parseFloat(averageBkW / (_data.length)) || null;
-			averageIkW = Number.parseFloat(averageIkW / (_data.length)) || null;
-			averagePkW = Number.parseFloat(averagePkW / (_data.length)) || null;
-			averageBmxn = Number.parseFloat(averageBmxn / (_data.length)) || null;
-			averageImxn = Number.parseFloat(averageImxn / (_data.length)) || null;
-			averagePmxn = Number.parseFloat(averagePmxn / (_data.length)) || null;
-			averagePagoTransmi = Number.parseFloat(averagePagoTransmi / (_data.length)) || null;
-			averageCmxn = Number.parseFloat(averageCmxn / (_data.length)) || null;
-			averageDmxn = Number.parseFloat(averageDmxn / (_data.length)) || null;
+		_nuevaDat.push(nObjArrayGDMTH);
 
-			nObjArrayGDMTH = {
+		if(j === (_data.length - 1)){
+			averageBkWh = parseFloat(averageBkWh / (_data.length)) || null;
+			averageIkWh = parseFloat(averageIkWh / (_data.length)) || null;
+			averagePkWh = parseFloat(averagePkWh / (_data.length)) || null;
+			averageBkW = parseFloat(averageBkW / (_data.length)) || null;
+			averageIkW = parseFloat(averageIkW / (_data.length)) || null;
+			averagePkW = parseFloat(averagePkW / (_data.length)) || null;
+			averageBmxn = parseFloat(averageBmxn / (_data.length)) || null;
+			averageImxn = parseFloat(averageImxn / (_data.length)) || null;
+			averagePmxn = parseFloat(averagePmxn / (_data.length)) || null;
+			averagePagoTransmi = parseFloat(averagePagoTransmi / (_data.length)) || null;
+			averageCmxn = parseFloat(averageCmxn / (_data.length)) || null;
+			averageDmxn = parseFloat(averageDmxn / (_data.length)) || null;
+
+			/* nObjArrayGDMTH = {
 				bkwh: averageBkWh,
 				ikwh: averageIkWh,
 				pkwh: averagePkWh,
@@ -325,17 +352,30 @@ function llenarEspaciosVaciosData(data)
 				pagoTransmi: averagePagoTransmi,
 				cmxn: averageCmxn,
 				dmxn: averageDmxn
-			};
+			}; */
 
-			for(var n=_data.length; n<=12; n++)
+			nObjArrayGDMTH.bkwh = averageBkWh;
+			nObjArrayGDMTH.ikwh = averageIkWh;
+			nObjArrayGDMTH.pkwh = averagePkWh;
+			nObjArrayGDMTH.bkw = averageBkW;
+			nObjArrayGDMTH.ikw = averageIkW;
+			nObjArrayGDMTH.pkw = averagePkW;
+			nObjArrayGDMTH.bmxn = averageBmxn;
+			nObjArrayGDMTH.imxn = averageImxn;
+			nObjArrayGDMTH.pmxn = averagePmxn;
+			nObjArrayGDMTH.pagoTransmi = averagePagoTransmi;
+			nObjArrayGDMTH.cmxn = averageCmxn;
+			nObjArrayGDMTH.dmxn = averageDmxn;
+
+			for(var n=_data.length; n<12; n++)
 			{
-				newData.push(nObjArrayGDMTH);
+				_nuevaDat.push(nObjArrayGDMTH);
 				
-				if(n === 12){
+				if(n === 11){
 					destino = data.destino;
 					origen = data.origen;
 					newObjeto = {
-						arrayPeriodosGDMTH: newData,
+						arrayPeriodosGDMTH: _nuevaDat,
 						destino: destino,
 						origen: origen
 					};	
