@@ -132,9 +132,9 @@ const otrosMateriales = require('./otrosMaterialesController');
 var objNoDeModulosPorPotenciaDelPanel = {};
 
 async function numberOfModuls(powerNeeded, irradiation, efficiency, topeProduccion){
-	var _potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
+	potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
 	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
-	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
+	var _potenciaRequeridaEnW = getSystemPowerInWatts(potenciaRequeridaEnKwp);
 	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
 	var _arrayTodosPaneles = await getAllPanelsArray();
 	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
@@ -185,9 +185,8 @@ function getSystemPowerInWatts(powerRequired){
 }
 
 async function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency, topeProduccion){
-	potenciaRequeridaEnKwp = monthlyAvarageConsumption / (irradiation * efficiency);
-	potenciaRequeridaEnKwp = parseFloat(Math.round(potenciaRequeridaEnKwp * 100) / 100).toFixed(2);
-	potenciaRequeridaEnKwp >= topeProduccion ? potenciaRequeridaEnKwp = topeProduccion : potenciaRequeridaEnKwp;
+	potenciaRequeridaEnKwp = Math.round((monthlyAvarageConsumption / (irradiation * efficiency)) * 100) / 100;
+	potenciaRequeridaEnKwp = potenciaRequeridaEnKwp >= topeProduccion ? topeProduccion : potenciaRequeridaEnKwp;
 	return potenciaRequeridaEnKwp;
 }
 
