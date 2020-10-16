@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
     <style>
-        /*Formato de paginas PDF - A4*/
+        /*Formato de paginas PDF - A4 _ Documento en general*/
         body {
             background: rgb(204,204,204); 
         }
@@ -26,6 +26,15 @@
             bottom: 0;
             width: 100%;
             text-align: center;
+        }
+        .pNota{
+            font: 9pt "Tahoma";
+        }
+        /* #End_Formato de paginas PDF - A4 _ Documento en general */
+        /* PAGE1 */
+        /* Card */
+        .card-header{
+            background-color: #00CC33;
         }
         /*Tabla comparatiba - Combinaciones*/
         .comparison {
@@ -78,11 +87,34 @@
             border-right:0;
         }
         .comparison .qbse {
-            background:#0078C1;
+            background:#00CC33;
             border-top-left-radius: 3px;
             border-left:0px;
         }
-
+        /*  PAGE2 */
+        .cuadrado{
+            background-color: white;
+            width: 70px; 
+            height: 70px; 
+            border: 3px solid #555;
+            border-radius: 11px;
+            
+        }
+        .cuadrado-benef{
+            background-color: white;
+            width: 50px; 
+            height: 50px; 
+            border: 3px solid #555;
+            border-radius: 11px;
+        }
+        /*Jumbotron*/
+        .jumbotron{
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .colJumb label {
+            font-size: 9px;
+        }
     </style>
     <body>
         <page size="A4">
@@ -122,9 +154,10 @@
                 </div>
             </nav>
             <!-- #Fin_Header -->
+            <br>
             <!-- #Body -->
             <div class="card">
-                <div class="card-header text-white bg-primary">Informacion de la propuesta seleccionada</div>
+                <div class="card-header text-white">Informacion de la propuesta seleccionada</div>
                 <div class="card-body table-responsive">
                     <table class="table table-sm">
                         <thead>
@@ -295,9 +328,9 @@
                     </tbody>
                 </table>
                 <br>    
-                <div class="container">
+                <div class="container-fluid">
                     <div class="form-group row justify-content-center">
-                        <p><strong>NOTA: </strong>El tipo de cambio se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
+                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
                     </div>
                 </div>
             </div>
@@ -307,9 +340,60 @@
 
         <page size="A4">
         <!-- Page2_ResumenBeneficios -->
-            <div class="container">
+            <!-- #Header -->
+            <nav class="navbar navbar-expand-sm">
+                <div class="navbar-brand">
+                    <img src="https://etesla.mx/wp-content/uploads/2019/05/eTesla-Logo-2-01.png" height="70px" width="150px">
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <div class="form-group">
+                                <label><strong>Asesor</strong></label>
+                                <label id="lblRNombreAsesor">Jose Antonio Hernandez</label>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="form-group">
+                                <label><strong>Cliente</strong></label>
+                                <label id="lblRNombreCliente">Eduardo Herrera Aldaraca</label>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="form-group">
+                                <label><strong>Direccion</strong></label>
+                                <label id="lblRDireccion">U.H. Puerta del Sol, calle jalisco #5</label>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="form-group">
+                                <label><strong>Sucursal</strong></label>
+                                <label id="lblRSucursal">Veracruz</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- #Fin_Header -->
+            <!-- #Body_2page-->
+            <section class="jumbotron jumbotron-fluid">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-sm-2">
+                            <div class="cuadrado mx-auto">
+                                <img src="https://img.icons8.com/cute-clipart/64/000000/money-bag.png"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-10">
+                            <p>Por medio de la presente nos permitimos enviarle un cordial saludo, aprovechando para hacerle llegar nuestra propuesta que incluye: <strong>plan de ahorro</strong>, <strong>presupuesto financiero</strong> y <strong>plan de ingeniería</strong>, con las características platicadas anteriormente.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col">
+                        <!-- #Tabla  -->
                         <table class="table table-sm table-bordered" style="font-size:10px;">
                             <thead>
                                 <tr>
@@ -404,21 +488,88 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <!-- #End_Tabla  -->
                     </div>
-                </div>
-                <!-- #Graficos_section -->
-                <div class="row">
+                    <div class="col colJumb">
+                        <label>Impacto ecologico</label>
+                        <section class="jumbotron jumbotron-fluid">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Emisiones de CO2</label>
+                                        <div class="cuadrado-benef mx-auto">
+                                            <img src="https://img.icons8.com/color/45/000000/ecosia.png"/>
+                                        </div>
+                                        <input class="form-control" value="22 ton" readOnly>
+                                    </div>
+                                    <div class="col">
+                                        <label>Arboles plantados</label>
+                                        <div class="cuadrado-benef mx-auto">
+                                            <img src="https://img.icons8.com/cute-clipart/45/000000/deciduous-tree.png"/>
+                                        </div>
+                                        <input class="form-control" value="2 arboles" readOnly>
+                                    </div>
+                                    <div class="col">
+                                        <label>Autos fuera de circulacion</label>
+                                        <div class="cuadrado-benef mx-auto">
+                                            <img src="https://img.icons8.com/clouds/45/000000/traffic-jam.png"/>
+                                        </div>
+                                        <input class="form-control" value="1 auto" readOnly>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <label>Ahorro de energia</label>
+                        <section class="jumbotron jumbotron-fluid">
+                            <div class="container-fluid">
+                                <div class="row justify-content-center">
+                                    <div class="col">
+                                        <label>Cons. actual bimestral</label>
+                                        <div class="cuadrado-benef mx-auto">
+                                            <img src="https://img.icons8.com/cotton/45/000000/bill--v1.png"/>
+                                        </div>
+                                        <input class="form-control" value="1,174 kWh" readOnly>
+                                    </div>
+                                    <div class="col">
+                                        <label>Generacion paneles</label>
+                                        <div class="cuadrado-benef mx-auto">
+                                            <img src="https://img.icons8.com/officel/45/000000/solar-panel.png"/>
+                                        </div>
+                                        <input class="form-control" value="320 kWh" readOnly>
+                                    </div>
+                                    <div class="col">
+                                        <label>Nuevo consumo CFE</label>
+                                        <div class="cuadrado-benef mx-auto">
+                                            <img src="https://img.icons8.com/ios/45/000000/transmission-tower.png"/>
+                                        </div>
+                                        <input class="form-control" value="854 kWh" readOnly>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="w-100"></div>
                     <div class="col" style="width:50%;">
-                        <!-- Grafico de barras -->
+                        <!-- #Grafico_NuevosConsumos  -->
                         <canvas id="myChart" width="400" height="400"></canvas>
+                        <!-- #End_Grafico_NuevosConsumos -->
                     </div>
                     <div class="col" style="width:50%;">
-                        <!-- Grafico de barras -->
+                        <!-- #Grafico_Proyeccion25anios  -->
                         <canvas id="proyeccion25anios" width="400" height="400"></canvas>
+                        <!-- #End_Grafico_Proyeccion25anios  -->
+                    </div>
+                    <br>    
+                    <div class="container-fluid">
+                        <div class="row text-justify">
+                            <div class="col">
+                                <p class="pNota"><strong>NOTA: </strong>La generacion es aproximada en base al promedio de consumo de energia de un año del recibo de luz proporcionado por el cliente en base a los estimados de consumo del cliente, por lo que la empresa Commercializadora eTesla S.A. de C.V. no es responsable de aumentos en el consumo que pudiesen derivarse de <strong>1. Aumentos en los habitos de consumo, 2. Errores de medicion por parte de CFE (ejemplo: medidores viejos que no tuviesen un buen registro) 3. Dispositivos que no registraran la energia ("diablitos") 4. Una mala proyección del consumo.</strong> Solicitamos de la manera más atenta a nuestros clientes informacion de cualquiera de dichas situaciones para podreles ofrecer el sistema que mejor se adecue a sus necesidades futuras. La generacion exacta del sistema puede variar principalmente por sombras, por lo que sera validado por ingenieria una vez realida la visita tecnica.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- #End-Graficos_section -->
             </div>
+            <!-- #End_Body_2page-->
         </page>
     </body>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
