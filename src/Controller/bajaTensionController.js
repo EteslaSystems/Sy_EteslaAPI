@@ -12,8 +12,8 @@ const power = require('../Controller/powerController');
 var eficiencia = 0.82;
 var limite = 0;
 var objetivoDAC = 0;
-
 var potenciaRequerida = 0;
+var objPropuestaPaneles = {};
 
 //1er paso (main).
 async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
@@ -21,55 +21,39 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var consumos = data.consumos;
     var tarifa = data.tarifa;
-    var arrayResult = [];
-    var objPropuestaPaneles = {};
+    var _arrayResult = [];
 
     promedioDeConsumos = await promedio_consumos(consumos);
-    objPropuestaPaneles = { consumos: { promedioDeConsumos } };
+    objPropuestaPaneles = { consumos: { promedioDeConsumos } }; // Se guarda la informacion referente a los consumos, para una futura implementacion [Hoja: POWER]
     nConsumoAnual = promedioDeConsumos.consumoAnual;
-    nPromedioConsumoTotalKwH = promedioDeConsumos.consumoMensual.promedioConsumoMensual; //PromedioBimestral
-    promedioDeConsumos = promedioDeConsumos.promConsumosBimestrales;
-    _potenciaRequerida = await calcular_potenciaRequerida(promedioDeConsumos, tarifa, data);
-    var limiteProduccion = _potenciaRequerida[0].limite;
+    promedioConsumoTotalKwh = promedioDeConsumos.promConsumosBimestrales;
+    potenciaRequerida = await calcular_potenciaRequerida(nConsumoAnual, tarifa, data);
+    limiteProduc = potenciaRequerida.limite;
+    potenciaRequerida = potenciaRequerida.potenciaNecesaria;
+    consumoDiario = Math.round((nConsumoAnual / 365) * 100) / 100;
 
-    /* var consumoAnual = (consums) => {
-        consumo_anual=0;
-
-        if(consums.length < 12){
-            for(var x=0; x<12; x++)
-            {
-                consumo_anual += parseFloat(consums[0].consumos);
-            }
-
-            consumo_anual = Math.round(consumo_anual * 100) / 100;
-
-            return consumo_anual;
+    objPropuestaPaneles = {
+        consumo: {
+            consumoAnual: nConsumoAnual,
+            promedioConsumo: promedioConsumoTotalKwh,
+            potenciaNecesaria: potenciaRequerida
         }
     };
 
-    var promedioConsumoTotalkWh = (consumoAnual) => {
-        promedio_consumoTotalkWh = parseFloat(consumoAnual / 12);
-        promedio_consumoTotalkWh = Math.round(promedio_consumoTotalkWh * 100) / 100;
-        return promedio_consumoTotalkWh;
-    }; */
+    _arrayResult.push(objPropuestaPaneles);
 
-    /* nConsumoAnual = consumoAnual(consumos);
-    nPromedioConsumoTotalKwH = promedioConsumoTotalkWh(nConsumoAnual); */
+    _noPaneles = await panel.numeroDePaneles(consumoDiario, irradiacion, eficiencia, limiteProduc);
 
-    arrayResult.push(objPropuestaPaneles);
-
-    _arrayNoDePaneles = await panel.numeroDePaneles(promedioDeConsumos, irradiacion, eficiencia, limiteProduccion);
-    
-    for(var x=0; x<_arrayNoDePaneles.length; x++)
+    for(var x=0; x<_noPaneles.length; x++)
     {
-        idPanel = _arrayNoDePaneles[x].idPanel;
-        nombrePanel = _arrayNoDePaneles[x].nombre;
-        marcaPanel = _arrayNoDePaneles[x].marca;
-        potenciaPanel = parseFloat(_arrayNoDePaneles[x].potencia);
-        potenciaRealPanel = parseFloat(_arrayNoDePaneles[x].potenciaReal);
-        noModulosP = parseFloat(_arrayNoDePaneles[x].noModulos);
-        precioPanel = parseFloat(_arrayNoDePaneles[x].precioPorPanel);
-        costoEstructuras = parseFloat(_arrayNoDePaneles[x].costoDeEstructuras);
+        idPanel = _noPaneles[x].idPanel;
+        nombrePanel = _noPaneles[x].nombre;
+        marcaPanel = _noPaneles[x].marca;
+        potenciaPanel = parseFloat(_noPaneles[x].potencia);
+        potenciaRealPanel = parseFloat(_noPaneles[x].potenciaReal);
+        noModulosP = parseFloat(_noPaneles[x].noModulos);
+        precioPanel = parseFloat(_noPaneles[x].precioPorPanel);
+        costoEstructuras = parseFloat(_noPaneles[x].costoDeEstructuras);
         costoPorWatt = precioPanel;
         costoTotalPaneles = parseFloat((precioPanel * potenciaPanel) * noModulosP);
 
@@ -87,10 +71,10 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
             }
         };
         
-        arrayResult.push(objPropuestaPaneles);
+        _arrayResult.push(objPropuestaPaneles);
     }
 
-    return arrayResult;
+    return _arrayResult;
 }
 
 //2do. paso 
@@ -163,7 +147,7 @@ async function promedio_consumos(consumos){
     return objResp;
 }
 
-async function calcular_potenciaRequerida(promedioDeConsumos, tarifa, data){ //2 /*OBSERVAR*/
+async function calcular_potenciaRequerida(consumoAnual, tarifa, data){ //2 /*OBSERVAR*/
     var origen = data.origen;
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var porcentaje = parseFloat(data.porcentaje) / 100 || 0;
@@ -237,44 +221,61 @@ async function calcular_potenciaRequerida(promedioDeConsumos, tarifa, data){ //2
         break;
     }
     
-    cuanto_menos = Math.abs(limite - (promedioDeConsumos * 2 * 0.10));
-
-    if(cuanto_menos < objetivoDAC){
-        objetivoDAC = cuanto_menos;
-    }
-    else if(objetivoDAC < 0 || objetivoDAC > (promedioDeConsumos * 2)){
-        objetivoDAC = 0;
-    }
-
-    var subsidio_diario = Math.round(((objetivoDAC * 6)/365) * 100) / 100;
-
-    if(origen === 'Veracruz'){
-        if(porcentaje === 0){
-            /*?potenciaRequerida?*/ potenciaRequerida = Math.round((((promedioDeConsumos - subsidio_diario / irradiacion) / 0.82/*Eficienia*/) * 1000) * 100) / 100;
-        }
-        else{
-            /*?potenciaRequerida?*/ potenciaRequerida = (((promedioDeConsumos * porcentaje) / irradiacion) / 0.82)/*Eficienia*/ * 1000;
-        }
-    }
-    else{
-        if(/*?porcentaje?*/ porcentaje === 0){
-            /*?potenciaRequerida?*/ potenciaRequerida = ((promedioDeConsumos - subsidio_diario / irradiacion) / 0.73/*Eficienia*/) * 1000;
-        }
-        else{
-            /*?potenciaRequerida?*/ potenciaRequerida = (((promedioDeConsumos * porcentaje) / irradiacion) / 0.73/*Eficienia*/) * 1000;
-        }
-    }
+    porcPerd = origen == "Veracruz" ? 82 : 73;
+    porcentajePerdida = await calcularPorcentajePerdida(porcPerd);
+    potenciaNecesaria = Math.round((((consumoAnual / irradiacion) / (1 - porcentajePerdida))/365) * 100) / 100;
+    potenciaNecesaria = potenciaNecesaria >= limite ? limite - 1 : potenciaNecesaria;
 
     objCalcularPot = {
-        limite: parseInt(limite/2),
-        objetivoDAC: objetivoDAC,
-        potenciaRequeridaWts: potenciaRequerida,
-        potenciaRequeridaKw: potenciaRequerida/1000
+        potenciaNecesaria: potenciaNecesaria,
+        limite: limite
     };
 
-    _calcularPot.push(objCalcularPot);
+    return objCalcularPot;
 
-    return _calcularPot;
+    // cuanto_menos = Math.abs(limite - (promedioDeConsumos * 2 * 0.10));
+
+    // if(cuanto_menos < objetivoDAC){
+    //     objetivoDAC = cuanto_menos;
+    // }
+    // else if(objetivoDAC < 0 || objetivoDAC > (promedioDeConsumos * 2)){
+    //     objetivoDAC = 0;
+    // }
+
+    // var subsidio_diario = Math.round(((objetivoDAC * 6)/365) * 100) / 100;
+
+    // if(origen === 'Veracruz'){
+    //     if(porcentaje === 0){
+    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round((((promedioDeConsumos - subsidio_diario / irradiacion) / 0.82/*Eficienia*/)) * 100) / 100;
+    //     }
+    //     else{
+    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round(((((promedioDeConsumos * porcentaje) / irradiacion) / 0.82)/*Eficienia*/) * 100) / 100;
+    //     }
+    // }
+    // else{
+    //     if(/*?porcentaje?*/ porcentaje === 0){
+    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round((((promedioDeConsumos - subsidio_diario / irradiacion) / 0.73/*Eficienia*/)) * 100) / 100;
+    //     }
+    //     else{
+    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round(((((promedioDeConsumos * porcentaje) / irradiacion) / 0.73/*Eficienia*/)) * 100) / 100;
+    //     }
+    // }
+
+    // objCalcularPot = {
+    //     limite: parseInt(limite/2),
+    //     objetivoDAC: objetivoDAC,
+    //     potenciaRequeridaWts: potenciaRequerida,
+    //     potenciaRequeridaKw: potenciaRequerida/1000
+    // };
+
+    // _calcularPot.push(objCalcularPot);
+
+    // return _calcularPot;
+}
+
+async function calcularPorcentajePerdida(porcentajePerdida){
+    var porcentajePerdida = porcentajePerdida / 100;
+	return porcentajePerdida;
 }
 
 //1er. paso

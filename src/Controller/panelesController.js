@@ -134,7 +134,7 @@ var objNoDeModulosPorPotenciaDelPanel = {};
 async function numberOfModuls(powerNeeded, irradiation, efficiency, topeProduccion){
 	potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
 	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
-	var _potenciaRequeridaEnW = getSystemPowerInWatts(potenciaRequeridaEnKwp);
+	var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp);
 	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
 	var _arrayTodosPaneles = await getAllPanelsArray();
 	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
@@ -178,9 +178,9 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 	return arrayNoDeModulosPorPotenciaDelPanel;
 }
 
-function getSystemPowerInWatts(powerRequired){
+async function getSystemPowerInWatts(powerRequired){
 	potenciaRequeridaEnW = powerRequired * 1000;
-	potenciaRequeridaEnW = parseFloat(Math.round(potenciaRequeridaEnW * 100) / 100).toFixed(2);
+	potenciaRequeridaEnW = Math.round(potenciaRequeridaEnW * 100) / 100;
 	return potenciaRequeridaEnW;
 }
 

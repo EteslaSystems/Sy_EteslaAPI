@@ -159,8 +159,8 @@ async function promedioDePropiedadesPeriodoGDMTH(data)
 		var municipio = data.destino; //Direccion del cliente
 		// var irradiacion_ = await getIrradiation(municipio);
 		var irradiacion_ = 4.60;
-		var _potenciaNecesaria = parseFloat(await obtenerPotenciaNecesaria(irradiacion_));
-		var _consumoDiario = parseFloat(await consumoPromedio365(sumaConsumoTotalkWh));
+		var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
+		var _consumoDiario = await consumoPromedio365(sumaConsumoTotalkWh);
 		/*#endregion*/
 		// console.log('_irradiacion: '+irradiacion_);
 		// console.log('_potenciaNecesaria: '+_potenciaNecesaria);
@@ -225,7 +225,7 @@ async function obtenerPotenciaNecesaria(irradiacion_lugar){
 	let _porcentajePerdida = calcularPorcentajeDePerdida(18);//La cantidad que se envia 18%, tiene que cambiarse por una cantidad dinamica obtenida del clienteWeb
 	potenciaNecesaria = ((sumaConsumoTotalkWh / irradiacion_lugar) / (1 - _porcentajePerdida))/365;
 	potenciaNecesaria = parseFloat(Math.round(potenciaNecesaria * 100) / 100).toFixed(2);
-	potenciaNecesaria >= 500 ? potenciaNecesaria = 499 : potenciaNecesaria;
+	potenciaNecesaria = potenciaNecesaria >= 500 ? 499 : potenciaNecesaria;
 	return potenciaNecesaria;
 }
 
