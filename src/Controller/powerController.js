@@ -446,7 +446,6 @@ async function getPowerBTI(data){
     var _consumos = data.consumos;
     var origen = data.origen;
     var potenciaReal = data.potenciaReal; 
-    var consumos = data.consumos;
     var consumoPromedio = (consumos) => {
         var promedioConsumo = 0;
         
@@ -458,7 +457,7 @@ async function getPowerBTI(data){
         return promedioConsumo;
     };
 
-    consumoPromedio = consumoPromedio(consumos);
+    consumoPromedio = consumoPromedio(_consumos);
 
     var _generacion = await getGeneration(origen, potenciaReal);
     var _nuevosConsumos = await getNewConsumption(_consumos, _generacion);
@@ -479,11 +478,11 @@ async function getGeneration(origen, potenciaReal){
     for(var i=0; i<12; i++)
     {
         if(origen.toString() === "Veracruz"){
-            gener = Math.floor(/*irradiacion->*/4.6 * potenciaReal) * 0.83 * 30.4;
+            gener = Math.round((Math.floor(/*irradiacion->*/4.6 * potenciaReal) * 0.83 * 30.4) * 100) / 100;
             _generation.push(gener);
         }
         else{
-            gener = Math.floor(/*irradiacion->*/5.42 * potenciaReal) * 0.73 * 30.4;
+            gener = Math.round((Math.floor(/*irradiacion->*/5.42 * potenciaReal) * 0.73 * 30.4) * 100) / 100;
             _generation.push(gener);
         }
     }
@@ -493,10 +492,28 @@ async function getGeneration(origen, potenciaReal){
 
 async function getNewConsumption(__consumos, __generacion){
     var _consumosNuevos = [];
+    var promConsumosNuevos = (_consNuev) => {
+        prom = 0;
+        for(var i=0; i<_consNuev.length; i++)
+        {
+            prom += _consNuev[i];
+        }
+        prom = prom / _consNuev.length;
+
+        return prom;
+    }
 
     for(var x=0; x<12; x++)
     {
-        _consumosNuevos[x] = Math.floor(parseFloat(__consumos[0].consumos) - __generacion[x]);
+        if(x<6){
+            _consumosNuevos[x] = Math.floor(parseFloat(__consumos[x]) - __generacion[x]);
+        }
+        else  if(x == 6){
+            promConsumosNuevos = promConsumosNuevos(_consumosNuevos);
+        }
+        else{
+            _consumosNuevos[x] = promConsumosNuevos;
+        }
     }
     return _consumosNuevos;
 }

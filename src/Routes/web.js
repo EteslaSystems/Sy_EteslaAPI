@@ -104,6 +104,23 @@ router.post('/calcularViaticosBTI',function(request, response){
 		});
 	});
 });
+
+//[HOJA: POWER]
+router.post('/obtenerPowerBT',function(request, response){
+	powerController.obtenerPowerBTI(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		})
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
 /*#endregion*/
 /*#region individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
@@ -206,8 +223,6 @@ router.post('/calcularVT', function(request, response){
 		}).end();
 	});
 });
-
-
 
 
 
@@ -336,6 +351,26 @@ router.post('/verificar-email', function (request, response) {
 /*#regionLH420_experimental*/
 const inversor = require('../Controller/inversorController');
 const cotizacion = require('../Controller/cotizacionController');
+
+/*#region financiamiento?exp*/
+const financiamiento = require('../Controller/financiamientoProjController');
+
+router.post('/finan', function(request, response){
+	financiamiento.financiamiento(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+/*#end region*/
 
 router.post('/inversores-selectos', function(request, response){
 	inversor.obtenerInversores_cotizacion(request.body)

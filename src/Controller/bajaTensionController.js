@@ -232,45 +232,6 @@ async function calcular_potenciaRequerida(consumoAnual, tarifa, data){ //2 /*OBS
     };
 
     return objCalcularPot;
-
-    // cuanto_menos = Math.abs(limite - (promedioDeConsumos * 2 * 0.10));
-
-    // if(cuanto_menos < objetivoDAC){
-    //     objetivoDAC = cuanto_menos;
-    // }
-    // else if(objetivoDAC < 0 || objetivoDAC > (promedioDeConsumos * 2)){
-    //     objetivoDAC = 0;
-    // }
-
-    // var subsidio_diario = Math.round(((objetivoDAC * 6)/365) * 100) / 100;
-
-    // if(origen === 'Veracruz'){
-    //     if(porcentaje === 0){
-    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round((((promedioDeConsumos - subsidio_diario / irradiacion) / 0.82/*Eficienia*/)) * 100) / 100;
-    //     }
-    //     else{
-    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round(((((promedioDeConsumos * porcentaje) / irradiacion) / 0.82)/*Eficienia*/) * 100) / 100;
-    //     }
-    // }
-    // else{
-    //     if(/*?porcentaje?*/ porcentaje === 0){
-    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round((((promedioDeConsumos - subsidio_diario / irradiacion) / 0.73/*Eficienia*/)) * 100) / 100;
-    //     }
-    //     else{
-    //         /*?potenciaRequerida?*/ potenciaRequerida = Math.round(((((promedioDeConsumos * porcentaje) / irradiacion) / 0.73/*Eficienia*/)) * 100) / 100;
-    //     }
-    // }
-
-    // objCalcularPot = {
-    //     limite: parseInt(limite/2),
-    //     objetivoDAC: objetivoDAC,
-    //     potenciaRequeridaWts: potenciaRequerida,
-    //     potenciaRequeridaKw: potenciaRequerida/1000
-    // };
-
-    // _calcularPot.push(objCalcularPot);
-
-    // return _calcularPot;
 }
 
 async function calcularPorcentajePerdida(porcentajePerdida){
