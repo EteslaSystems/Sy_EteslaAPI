@@ -46,11 +46,11 @@ async function calcularViaticosBTI(data){
         __no = _arrayCotizacion[x].no || 0;
         __nombrePanel = _arrayCotizacion[x].panel.nombrePanel || null;
         __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
-        __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
+        __potenciaPanel = parseFloat(_arrayCotizacion[x].panel.potenciaPanel) || 0;
         __cantidadPaneles = parseInt(_arrayCotizacion[x].panel.cantidadPaneles) || 0; //numeroDeModulos
-        __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
+        __potenciaReal =  parseFloat(_arrayCotizacion[x].panel.potenciaReal) || 0;
         __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
-        __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
+        __precioPorWattPanel = parseFloat(_arrayCotizacion[x].panel.precioPorWatt) || 0;
         // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
         // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
         costoTotalPaneles = Math.round(parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles) * 100) / 100;
@@ -58,14 +58,14 @@ async function calcularViaticosBTI(data){
         /*#region Iteracion_Inversores*/
         __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
         __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-        __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor || 0;
-        __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor || 0;
-        __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
-        __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
+        __potenciaInversor = parseFloat(_arrayCotizacion[x].inversor.potenciaInversor) || 0;
+        __potenciaNominalInversor = parseFloat(_arrayCotizacion[x].inversor.potenciaNominalInversor) || 0;
+        __precioInversor = parseFloat(_arrayCotizacion[x].inversor.precioInversor) || 0;
+        __potenciaMaximaInversor = parseFloat(_arrayCotizacion[x].inversor.potenciaMaximaInversor) || 0;
         __numeroDeInversores = parseInt(_arrayCotizacion[x].inversor.numeroDeInversores) || 0;
         __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
-        __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
-        costoTotalInversores = _arrayCotizacion[x].inversor.costoTotalInversores || 0;
+        __porcentajeSobreDimens = parseFloat(_arrayCotizacion[x].inversor.porcentajeSobreDimens) || 0;
+        costoTotalInversores = parseFloat(_arrayCotizacion[x].inversor.costoTotalInversores) || 0;
         /*#endregion*/
         
         noDias = await getDaysBTI(__cantidadPaneles);

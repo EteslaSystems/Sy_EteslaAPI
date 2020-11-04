@@ -9,7 +9,7 @@ const panel = require('../Controller/panelesController');
 const viaticosBT = require('../Controller/opcionesViaticsController');
 const power = require('../Controller/powerController');
 
-var eficiencia = 0.82;
+var eficiencia = 0.85;
 var limite = 0;
 var objetivoDAC = 0;
 var potenciaRequerida = 0;
@@ -34,6 +34,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
     objPropuestaPaneles = {
         consumo: {
+            _promCons: promedioDeConsumos,
             consumoAnual: nConsumoAnual,
             promedioConsumo: promedioConsumoTotalKwh,
             potenciaNecesaria: potenciaRequerida
@@ -157,38 +158,38 @@ async function calcular_potenciaRequerida(consumoAnual, tarifa, data){ //2 /*OBS
     switch(tarifa)
     {
         case '1':
-            limite = 500;
-            objetivoDAC = 250;
+            limite = 499;
+            objetivoDAC = 200;
             limitepotenciaRequerida = 50500;
         break;
         case '1a':
-            limite = 600;
-            objetivoDAC = 350;
+            limite = 599;
+            objetivoDAC = 250;
             limitepotenciaRequerida = 50500;
         break;
         case '1b':
-            limite = 800;
-            objetivoDAC = 450;
+            limite = 799;
+            objetivoDAC = 300;
             limitepotencia = 50500;
         break;
         case '1c':
-            limite = 1700;
-            objetivoDAC = 850;
+            limite = 1699;
+            objetivoDAC = 800;
             limitepotencia = 50500;
         break;
         case '1d':
-            limite = 2000;
-            objetivoDAC = 1000;
+            limite = 1999;
+            objetivoDAC = 900;
             limitepotencia = 50500;
         break;
         case '1e':
-            limite = 4000;
-            objetivoDAC = 1800;
+            limite = 2500;
+            objetivoDAC = 1100;
             limitepotencia = 50500;
         break;
         case '1f':
-            limite = 5000;
-            objetivoDAC = 5000;
+            limite = 3000;
+            objetivoDAC = 1250;
             limitepotencia = 50500;
         break;
         case '2':
