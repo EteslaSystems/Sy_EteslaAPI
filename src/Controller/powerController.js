@@ -463,10 +463,12 @@ async function getPowerBTI(data){
     var _nuevosConsumos = await getNewConsumption(_consumos, _generacion);
     // var dac_o_nodac = await dac(data, consumoPromedio);
     // await consumo_pesos(dac_o_nodac, consumoPromedio);
+    var porcentajePotencia = Math.round((_generacion[0] / consumoPromedio) * 100);
 
     objResult = {
         generacion: _generacion,
-        nuevosConsumos: _nuevosConsumos
+        nuevosConsumos: _nuevosConsumos,
+        porcentajePotencia: porcentajePotencia
     }
 
     return objResult;
@@ -524,25 +526,25 @@ async function dac(data, consumoPromedio){
     switch(tarifa)
     {
         case '1':
-            tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 200 ? 'DAC' : tarifa;
         break;
         case '1a':
-            tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
         break;
         case '1b':
-            tarifa = consumoPromedio >= 400 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
         break;
         case '1c':
-            tarifa = consumoPromedio >= 850 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 800 ? 'DAC' : tarifa;
         break;
         case '1d':
-            tarifa = consumoPromedio >= 1000 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 900 ? 'DAC' : tarifa;
         break;
         case '1e':
-            tarifa = consumoPromedio >= 2000 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 1100 ? 'DAC' : tarifa;
         break;
         case '1f':
-            tarifa = consumoPromedio >= 2500 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 1250 ? 'DAC' : tarifa;
         break;
         default:
             tarifa = -1;

@@ -17,8 +17,7 @@ var newInversorPrice = 0;
 var objCombinacion = {
     combinacion: '',
     panel:{ idPanel:0, nombrePanel:'', marcaPanel:'', potenciaPanel:'', cantidadPaneles:0, potenciaReal:0, costoDeEstructuras:0, precioPorWatt:0, costoTotalPaneles:0 }, 
-    inversor:{ idInversor:0, nombreInversor:'', marcaInversor:'', potenciaInversor:0, potenciaNominalInversor:0, precioInversor:0, potenciaMaximaInversor:0, numeroDeInversores:0, potenciaPicoInversor:0, porcentajeSobreDimens:0, costoTotalInversores:0 },
-    produccion: []
+    inversor:{ idInversor:0, nombreInversor:'', marcaInversor:'', potenciaInversor:0, potenciaNominalInversor:0, precioInversor:0, potenciaMaximaInversor:0, numeroDeInversores:0, potenciaPicoInversor:0, porcentajeSobreDimens:0, costoTotalInversores:0 }
 };
 
 
@@ -40,6 +39,7 @@ async function mainBusquedaInteligente(data){
     
     if(tipoCotizacion == 'bajaTension'){
         _paneles = await bajaTension.firstStepBT(data);
+        _arrayConsumos = _paneles[0];
         newData = {_paneles: _paneles, origen: data.origen, destino: data.destino};
 
         __combinacionMediana = await getCombinacionMediana(newData, _consumos);
@@ -51,6 +51,7 @@ async function mainBusquedaInteligente(data){
     } */
 
     objCombinaciones = {
+        _arrayConsumos: _arrayConsumos,
         combinacionMediana: __combinacionMediana,
         combinacionEconomica: __combinacionEconomica,
         combinacionOptima: __combinacionOptima
@@ -127,18 +128,13 @@ async function getCombinacionEconomica(data, __consumos){
     newData = {
         arrayBTI: _combinacionEconomica,
         origen: data.origen,
-        destino: data.destino
+        destino: data.destino,
+        consumos: __consumos
     };
-
-    ///Se agrega datos de conexion [POWER]
-    objCombinacionEconomica = {consumos: __consumos, origen: data.origen, potenciaReal: objCombinacion.panel.potenciaReal};
-    _generacionPower = await bajaTension.getPowerBTI(objCombinacionEconomica);
-    _generacionPower = _generacionPower.generacion;
-    objCombinacion.produccion = _generacionPower;
 
     ///Se calculan viaticos
     _combinacionEconomica = await bajaTension.obtenerViaticos_Totales(newData);
-    _combinacionEconomica.push(objCombinacion.combinacion, objCombinacion.produccion);
+    _combinacionEconomica.push(objCombinacion.combinacion);
 
     return _combinacionEconomica;
 }
@@ -233,25 +229,20 @@ async function getCombinacionMediana(data, __consumos){//Mediana
     };
 
     mediaCostoTotInversores = mediaCostoTotInversores(__inversores);
-    objInversorSeleccionado = inversorCombMediana(__inversores,mediaCostoTotInversores);
+    inversorCombMediana(__inversores,mediaCostoTotInversores);
 
     _combinacionMediana.push(objCombinacion);
     
     newData = {
         arrayBTI: _combinacionMediana,
         origen: data.origen,
-        destino: data.destino
+        destino: data.destino,
+        consumos: __consumos
     };
-
-    ///Se agrega datos de conexion [POWER]
-    objCombinacionMediana = {consumos: __consumos, origen: data.origen, potenciaReal: objCombinacion.panel.potenciaReal};
-    _generacionPower = await bajaTension.getPowerBTI(objCombinacionMediana);
-    _generacionPower = _generacionPower.generacion;
-    objCombinacion.produccion = _generacionPower;
 
     ///Se calculan viaticos
     _combinacionMediana = await bajaTension.obtenerViaticos_Totales(newData);
-    _combinacionMediana.push(objCombinacion.combinacion, objCombinacion.produccion);
+    _combinacionMediana.push(objCombinacion.combinacion);
 
      return _combinacionMediana;
 }
@@ -351,15 +342,13 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
     newData = {
         arrayBTI: _combinacionOptima,
         origen: origen,
-        destino: data.destino
+        destino: data.destino,
+        consumos: __consumos
     };
-
-    ///Se agrega datos de conexion [POWER]
-    objCombinacion.produccion = _generacionPower;
 
     ///Se calculan viaticos
     _combinacionOptima = await bajaTension.obtenerViaticos_Totales(newData);
-    _combinacionOptima.push(objCombinacion.combinacion, objCombinacion.produccion);
+    _combinacionOptima.push(objCombinacion.combinacion);
 
     return _combinacionOptima;
 }

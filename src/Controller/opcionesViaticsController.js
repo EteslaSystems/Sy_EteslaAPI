@@ -8,13 +8,13 @@ const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
 const dolar = require('../Controller/dolar_tipoCambio');
 const financiamiento = require('../Controller/financiamientoProjController');
+const power = require('../Controller/powerController');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
 var precioDolar = 0;
-
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
 const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
 const km_hospedaje = 130;
@@ -31,6 +31,7 @@ async function calcularViaticosBTI(data){
     var origen = data.origen;
     var destino = data.destino;
     var bInstalacion = data.bInstalacion || null;
+    var _consums = data.consumos || null;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -107,9 +108,13 @@ async function calcularViaticosBTI(data){
 
         /*????*/precio_watt = Math.round(((costoTotalProyecto / (__cantidadPaneles * __potenciaPanel))) * 100) / 100;
 
+        //P O W E R
+        dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal };
+        objPower = await power.obtenerPowerBTI(dataPwr);
+
         //F I N A N C I A M I E N T O
         data = { costoTotal: precioTotalMXN };
-        finan = await financiamiento.financiamiento(data);
+        objFinan = await financiamiento.financiamiento(data);
 
         objCotizacionBTI = {
             no: _arrayCotizacion[x].no || 0,
@@ -155,7 +160,8 @@ async function calcularViaticosBTI(data){
                 precio_watt: precio_watt,
                 precioTotalMXN: precioTotalMXN
             },
-            financiamiento: finan
+            financiamiento: objFinan,
+            power: objPower
         };
 
         arrayCotizacionBTI.push(objCotizacionBTI);

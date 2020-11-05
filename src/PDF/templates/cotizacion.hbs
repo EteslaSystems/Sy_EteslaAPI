@@ -158,6 +158,7 @@
         /*Table consumos*/
         #tblCnsBenf th, td{
             text-align: center;
+            vertical-align: middle;
         }
         /*#endregion */
         /*#region  PAGE4 */
@@ -349,24 +350,22 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><strong>SUBTOTAL  </strong></div>
-                                </div>
-                                <input type="text" class="form-control" id="inpSubtotal" value="123$">
-                            </div>
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><strong>IVA</strong></div>
-                                </div>
-                                <input type="text" class="form-control" id="inpIVA" value="456$">
-                            </div>
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><strong>TOTAL</strong></div>
-                                </div>
-                                <input type="text" class="form-control" id="inpTotal" value="777$">
-                            </div>
+                            <table class="table table-sm table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Subtotal</th>
+                                        <th class="text-center">IVA</th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">$1234</td>
+                                        <td class="text-center">$1234</td>
+                                        <td class="text-center">$1234</td>
+                                    </tr>
+                                </tbody>
+                            </table>                     
                         </div> 
                     </section>
                 </div>
@@ -403,10 +402,10 @@
                     <!-- #EtiquetasComparatiba - Contenido -->
                         <tr>
                             <td></td>
-                            <td colspan="4">Potencia instalada</td>
+                            <td colspan="4">Potencia</td>
                         </tr>
                         <tr>
-                            <td><strong>Potencia instalada</strong></td>
+                            <td><strong>Potencia</strong></td>
                             <td class="text-center"></td>
                             <td class="text-center"></td>
                             <td class="text-center"></td>
@@ -668,34 +667,6 @@
                         <!-- #End_Tabla  -->
                     </div>
                     <div class="col colJumb">
-                        <label>Impacto ecologico</label>
-                        <section class="jumbotron jumbotron-fluid jmtbtrn">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col">
-                                        <label>Emisiones de CO2</label>
-                                        <div class="cuadrado-benef mx-auto">
-                                            <img src="https://img.icons8.com/color/45/000000/ecosia.png"/>
-                                        </div>
-                                        <input class="form-control" value="22 ton" readOnly>
-                                    </div>
-                                    <div class="col">
-                                        <label>Arboles plantados</label>
-                                        <div class="cuadrado-benef mx-auto">
-                                            <img src="https://img.icons8.com/cute-clipart/45/000000/deciduous-tree.png"/>
-                                        </div>
-                                        <input class="form-control" value="2 arboles" readOnly>
-                                    </div>
-                                    <div class="col">
-                                        <label>Autos fuera de circulacion</label>
-                                        <div class="cuadrado-benef mx-auto">
-                                            <img src="https://img.icons8.com/clouds/45/000000/traffic-jam.png"/>
-                                        </div>
-                                        <input class="form-control" value="1 auto" readOnly>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
                         <label>Ahorro de energia</label>
                         <section class="jumbotron jumbotron-fluid jmtbtrn">
                             <div class="container-fluid">
