@@ -442,8 +442,8 @@ async function getTotales_Ahorro(pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    var objResult = {};
-    var _consumos = data.consumos;
+    var objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'' };
+    var _consumos = data.consumos || null;
     var origen = data.origen;
     var potenciaReal = data.potenciaReal; 
     var consumoPromedio = (consumos) => {
@@ -457,20 +457,37 @@ async function getPowerBTI(data){
         return promedioConsumo;
     };
 
-    consumoPromedio = consumoPromedio(_consumos);
+    var _consumosMensuales = (_consums) => {
+        consMens = 0;
+        _consMens = [];
 
-    var _generacion = await getGeneration(origen, potenciaReal);
-    var _nuevosConsumos = await getNewConsumption(_consumos, _generacion);
-    // var dac_o_nodac = await dac(data, consumoPromedio);
-    // await consumo_pesos(dac_o_nodac, consumoPromedio);
-    var porcentajePotencia = Math.round((_generacion[0] / consumoPromedio) * 100);
-
-    objResult = {
-        generacion: _generacion,
-        nuevosConsumos: _nuevosConsumos,
-        porcentajePotencia: porcentajePotencia
+        for(var i=0; i<_consums.length; i++)
+        {
+            consMens = parseFloat(_consums[i] / 2);
+            for(var x=0; x<2; x++){
+                _consMens.push(consMens);
+            }
+        }
+        return _consMens;
     }
 
+    _consumosMensuales = _consumosMensuales(_consumos);
+
+    var _generacion = await getGeneration(origen, potenciaReal); //GeneracionMensual
+
+    if(_consumos != null){
+        var _nuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
+        consumoPromedio = consumoPromedio(_consumos);
+        dac_o_nodac = await dac(data, consumoPromedio);
+        objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
+        var porcentajePotencia = Math.floor((_generacion[0] / _consumosMensuales[0]) * 100);
+
+        objResult.nuevosConsumos = _nuevosConsumos;
+        objResult.porcentajePotencia = porcentajePotencia;
+    }
+
+    objResult.generacion = _generacion;
+    
     return objResult;
 }
 
@@ -494,29 +511,12 @@ async function getGeneration(origen, potenciaReal){
 
 async function getNewConsumption(__consumos, __generacion){
     var _consumosNuevos = [];
-    var promConsumosNuevos = (_consNuev) => {
-        prom = 0;
-        for(var i=0; i<_consNuev.length; i++)
-        {
-            prom += _consNuev[i];
-        }
-        prom = prom / _consNuev.length;
 
-        return prom;
-    }
-
-    for(var x=0; x<12; x++)
+    for(var x=0; x<__consumos.length; x++)
     {
-        if(x<6){
-            _consumosNuevos[x] = Math.floor(parseFloat(__consumos[x]) - __generacion[x]);
-        }
-        else  if(x == 6){
-            promConsumosNuevos = promConsumosNuevos(_consumosNuevos);
-        }
-        else{
-            _consumosNuevos[x] = promConsumosNuevos;
-        }
+        _consumosNuevos[x] = Math.floor(__consumos[x] - __generacion[x]);
     }
+
     return _consumosNuevos;
 }
 

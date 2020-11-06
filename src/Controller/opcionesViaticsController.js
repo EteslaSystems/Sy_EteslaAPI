@@ -109,7 +109,7 @@ async function calcularViaticosBTI(data){
         /*????*/precio_watt = Math.round(((costoTotalProyecto / (__cantidadPaneles * __potenciaPanel))) * 100) / 100;
 
         //P O W E R
-        dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal };
+        dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal, tarifa: data.tarifa };
         objPower = await power.obtenerPowerBTI(dataPwr);
 
         //F I N A N C I A M I E N T O

@@ -55,7 +55,7 @@ async function cotizacionIndividual(data){
 
         _potenciaPanel = panel[0].fPotencia;
         precioPanel = panel[0].fPrecio;
-        _potenciaReal = (_potenciaPanel * cantidadPaneles)/1000;
+        _potenciaReal = Math.round(((_potenciaPanel * cantidadPaneles)/1000) * 100) / 100;
 
         precioPorWatt = parseFloat(panel[0].fPrecio);
 		costoTotalPaneles = Math.round(parseFloat((precioPanel * _potenciaPanel) * cantidadPaneles));
@@ -85,7 +85,7 @@ async function cotizacionIndividual(data){
         precioTotalInversores = Math.round((precioInversor * cantidadInversores) * 100) / 100;
 
         if(objCotiIndividual.panel.potenciaPanel != 0){
-            _potenciaPicoInversor = _potenciaReal / cantidadInversores;
+            _potenciaPicoInversor = Math.round((_potenciaReal / cantidadInversores) * 100) / 100;
             _porcentajeSobreDimens = _potenciaPicoInversor / _potenciaInversor;
 
             objCotiIndividual.inversor.potenciaPicoInversor = _potenciaPicoInversor || 0;
