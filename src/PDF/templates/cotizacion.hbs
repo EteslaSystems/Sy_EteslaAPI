@@ -187,9 +187,8 @@
                         <div class="card mb-1 tableReciboCFE" style="height: 140px;">
                             <div class="card-header">Cliente</div>
                             <div class="card-body">
-                                <h5 id="nombreCliente" class="mb-1">Eduardo Herrera Aldaraca</h5>
-                                <p id="direccionCliente" class="mb-1">Some text</p>
-                                <p id="direccionSucursal" class="mb-1">Este es algun texto aleatorio</p>
+                                <h5 id="nombreCliente" class="mb-1">{{ cliente.nombre }}</h5>
+                                <p id="direccionCliente" class="mb-1">{{ cliente.direccion }}</p>
                             </div>
                         </div>
                         <div class="card mb-1 tableReciboCFE" style="height: 7rem;">
@@ -279,13 +278,13 @@
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Cliente</strong></label>
-                                <label id="lblRNombreCliente">Eduardo Herrera Aldaraca</label>
+                                <label id="lblRNombreCliente">{{ cliente.nombre }}</label>
                             </div>
                         </li>
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Direccion</strong></label>
-                                <label id="lblRDireccion">U.H. Puerta del Sol, calle jalisco #5</label>
+                                <label id="lblRDireccion">{{ cliente.direccion }}</label>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -329,12 +328,10 @@
                             <tr>
                                 <td></td>
                                 <td>Tramite de CFE</td>
-                                <td id="tdTramiteCFE" align="center">3$</td>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>Otros materiales electronicos varios para la instalacion, incluye cable fotovoltaico, protecciones electricas</td>
-                                <td id="tdPrecioOtros" align="center">5$</td>
                             </tr>
                         </tbody>
                     </table>
@@ -406,19 +403,19 @@
                         </tr>
                         <tr>
                             <td><strong>Potencia</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                        </tr>
+                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.paneles.potenciaReal }} kW</td>
+                            <td class="text-center">{{ combinaciones.combinacionMediana.0.paneles.potenciaReal }} kW</td>
+                            <td class="text-center">{{ combinaciones.combinacionOptima.0.paneles.potenciaReal }} kW</td>
+                        </tr>  
                         <tr>
                             <td></td>
                             <td colspan="4">Paneles</td>
                         </tr>
                         <tr class="compare-row">
                             <td><strong>Paneles</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
+                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.paneles.marcaPanel }}</td>
+                            <td class="text-center">{{ combinaciones.combinacionMediana.0.paneles.marcaPanel }}</td>
+                            <td class="text-center">{{ combinaciones.combinacionOptima.0.paneles.marcaPanel }}</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
@@ -426,9 +423,9 @@
                         </tr>
                         <tr>
                             <td><strong>Modelo panel</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
+                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
+                            <td class="text-center">{{ combinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
+                            <td class="text-center">{{ combinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
@@ -456,9 +453,9 @@
                         </tr>
                         <tr class="compare-row">
                             <td><strong>Inversor</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
+                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.inversores.marcaInversor }}</td>
+                            <td class="text-center">{{ combinaciones.combinacionMediana.0.inversores.marcaInversor }}</td>
+                            <td class="text-center">{{ combinaciones.combinacionOptima.0.inversores.marcaInversor }}</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
@@ -466,9 +463,9 @@
                         </tr>
                         <tr>
                             <td><strong>Modelo inversor</strong></td>
-                            <td class="text-center" class="text-center"></td>
-                            <td class="text-center" class="text-center"></td>
-                            <td class="text-center" class="text-center"></td>
+                            <td class="text-center" class="text-center">{{ combinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
+                            <td class="text-center" class="text-center">{{ combinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
+                            <td class="text-center" class="text-center">{{ combinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
@@ -495,10 +492,10 @@
                             <td colspan="4">Costo (USD/MXN)</td>
                         </tr>
                         <tr class="compare-row">
-                            <td><strong>Costo (USD/MXN)</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
+                            <td><strong>Costo (MXN)</strong></td>
+                            <td class="text-center">${{ combinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                            <td class="text-center">${{ combinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
+                            <td class="text-center">${{ combinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
                         </tr>
                     <!-- #End_EtiquetasComparatiba - Contenido -->
                     </tbody>
@@ -532,13 +529,13 @@
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Cliente</strong></label>
-                                <label id="lblRNombreCliente">Eduardo Herrera Aldaraca</label>
+                                <label id="lblRNombreCliente">{{ cliente.nombre }}</label>
                             </div>
                         </li>
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Direccion</strong></label>
-                                <label id="lblRDireccion">U.H. Puerta del Sol, calle jalisco #5</label>
+                                <label id="lblRDireccion">{{ cliente.direccion }}</label>
                             </div>
                         </li>
                         <li class="nav-item">

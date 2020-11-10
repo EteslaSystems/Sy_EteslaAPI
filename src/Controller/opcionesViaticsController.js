@@ -26,12 +26,13 @@ const comida_dia = 9.5; //Cotizador - viejo (??)
 const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
-    var objCotizacionBTI = {};
+    var objCotizacionBTI = { paneles: '', inversores: '',  power: '', viaticos_costos: '', totales: '', financiamiento: '' };
     var arrayCotizacionBTI = [];
     var origen = data.origen;
     var destino = data.destino;
     var bInstalacion = data.bInstalacion || null;
     var _consums = data.consumos || null;
+    var tarifa = data.tarifa || null;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -108,61 +109,61 @@ async function calcularViaticosBTI(data){
 
         /*????*/precio_watt = Math.round(((costoTotalProyecto / (__cantidadPaneles * __potenciaPanel))) * 100) / 100;
 
-        //P O W E R
-        dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal, tarifa: data.tarifa };
-        objPower = await power.obtenerPowerBTI(dataPwr);
+        if(_consums != null){
+            //P O W E R
+            dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal, tarifa: tarifa };
+            objPower = await power.obtenerPowerBTI(dataPwr) || null;
+
+            objCotizacionBTI.power = objPower;
+        }
 
         //F I N A N C I A M I E N T O
         data = { costoTotal: precioTotalMXN };
         objFinan = await financiamiento.financiamiento(data);
 
-        objCotizacionBTI = {
-            no: _arrayCotizacion[x].no || 0,
-            paneles: {
-                nombrePanel: __nombrePanel || null,
-                marcaPanel: __marcaPanel || null,
-                potenciaPanel: __potenciaPanel || null,
-                cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
-                potenciaReal: __potenciaReal || null,
-                costoDeEstructuras:  __costoDeEstructuras || null,
-                precioPorWatt: __precioPorWattPanel || null,
-                // precioPorModulo: __precioPorModulo || null,
-                costoTotalPaneles: costoTotalPaneles || null
-            },
-            inversores: {
-                nombreInversor:  __nombreInversor || null,
-                marcaInversor: __marcaInversor || null,
-                potenciaInversor: __potenciaInversor || null,
-                potenciaNominalInversor: __potenciaNominalInversor || null,
-                potenciaPicoPorInversor: __potenciaPicoInversor || null,
-                precioInversor: __precioInversor || null,
-                potenciaMaximaInversor:  __potenciaMaximaInversor || null,
-                numeroDeInversores: __numeroDeInversores || null,
-                porcentajeSobreDimens: __porcentajeSobreDimens || null,
-                costoTotalInversores: costoTotalInversores || null
-            },
-            viaticos_costos: {
-                noDias: noDias,
-                hospedaje: hospedaje,
-                comida: comida,
-                pasaje: pasaje
-            },
-            totales: {
-                totalViaticosMT: viaticos,
-                manoDeObra: manoDeObra[0],
-                otrosTotal: manoDeObra[1],
-                totalFletes: totalFletes,
-                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-                margen: margen,
-                totalDeTodo: costoTotalProyecto,
-                precio: precio,
-                precioMasIVA: precioMasIVA,
-                precio_watt: precio_watt,
-                precioTotalMXN: precioTotalMXN
-            },
-            financiamiento: objFinan,
-            power: objPower
+        objCotizacionBTI.paneles = {
+            nombrePanel: __nombrePanel || null,
+            marcaPanel: __marcaPanel || null,
+            potenciaPanel: __potenciaPanel || null,
+            cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
+            potenciaReal: __potenciaReal || null,
+            costoDeEstructuras:  __costoDeEstructuras || null,
+            precioPorWatt: __precioPorWattPanel || null,
+            // precioPorModulo: __precioPorModulo || null,
+            costoTotalPaneles: costoTotalPaneles || null
         };
+        objCotizacionBTI.inversores = {
+            nombreInversor:  __nombreInversor || null,
+            marcaInversor: __marcaInversor || null,
+            potenciaInversor: __potenciaInversor || null,
+            potenciaNominalInversor: __potenciaNominalInversor || null,
+            potenciaPicoPorInversor: __potenciaPicoInversor || null,
+            precioInversor: __precioInversor || null,
+            potenciaMaximaInversor:  __potenciaMaximaInversor || null,
+            numeroDeInversores: __numeroDeInversores || null,
+            porcentajeSobreDimens: __porcentajeSobreDimens || null,
+            costoTotalInversores: costoTotalInversores || null
+        };
+        objCotizacionBTI.viaticos_costos = {
+            noDias: noDias,
+            hospedaje: hospedaje,
+            comida: comida,
+            pasaje: pasaje
+        };
+        objCotizacionBTI.totales = {
+            totalViaticosMT: viaticos,
+            manoDeObra: manoDeObra[0],
+            otrosTotal: manoDeObra[1],
+            totalFletes: totalFletes,
+            totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+            margen: margen,
+            totalDeTodo: costoTotalProyecto,
+            precio: precio,
+            precioMasIVA: precioMasIVA,
+            precio_watt: precio_watt,
+            precioTotalMXN: precioTotalMXN
+        };
+        objCotizacionBTI.financiamiento = objFinan;
 
         arrayCotizacionBTI.push(objCotizacionBTI);
     }

@@ -318,9 +318,9 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
                 oldInversorPrice = newInversorPrice;
             }
             
-            if(oldSobredimension <= newSobredimension && oldInversorPrice >= newInversorPrice){
+            if(oldSobredimension <= newSobredimension /* && oldInversorPrice >= newInversorPrice */){
                 oldSobredimension = newSobredimension;
-                oldInversorPrice = newInversorPrice;
+                /* oldInversorPrice = newInversorPrice; */
 
                 objCombinacion.inversor.idInversor = __inversores[x].idInversor;
                 objCombinacion.inversor.nombreInversor = __inversores[x].nombreInversor;

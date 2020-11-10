@@ -444,6 +444,7 @@ async function getTotales_Ahorro(pagosTotales){
 async function getPowerBTI(data){
     var objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'' };
     var _consumos = data.consumos || null;
+    var tarifa = data.tarifa || null;
     var origen = data.origen;
     var potenciaReal = data.potenciaReal; 
     var consumoPromedio = (consumos) => {
@@ -478,10 +479,13 @@ async function getPowerBTI(data){
     if(_consumos != null){
         var _nuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
         consumoPromedio = consumoPromedio(_consumos);
-        dac_o_nodac = await dac(data, consumoPromedio);
-        objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
         var porcentajePotencia = Math.floor((_generacion[0] / _consumosMensuales[0]) * 100);
-
+        
+        /* if(tarifa != null){
+            dac_o_nodac = await dac(tarifa, consumoPromedio);
+            objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
+        } */
+        
         objResult.nuevosConsumos = _nuevosConsumos;
         objResult.porcentajePotencia = porcentajePotencia;
     }
@@ -520,9 +524,7 @@ async function getNewConsumption(__consumos, __generacion){
     return _consumosNuevos;
 }
 
-async function dac(data, consumoPromedio){
-    var tarifa = data.tarifa;
-
+async function dac(tarifa, consumoPromedio){
     switch(tarifa)
     {
         case '1':
@@ -555,7 +557,7 @@ async function dac(data, consumoPromedio){
 }
 
 async function consumo_pesos(dac_o_nodac, consumo_promedio){
-    var dac_o_nodac = dac_o_nodac.toString(); //Tarifa
+    var dac_o_nodac = dac_o_nodac; //Tarifa
     var meses = [];
     var pagos = [];
     var _bimestral = [];
@@ -593,6 +595,7 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
         }
         return _demanda;
     };
+
     var _tarifas = await tarifa.obtenerTodasLasTarifas();
 
     no_verano = no_verano(_tarifas);
