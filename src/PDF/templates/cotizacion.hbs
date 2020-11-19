@@ -272,7 +272,7 @@
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Asesor</strong></label>
-                                <label id="lblRNombreAsesor">Jose Antonio Hernandez</label>
+                                <label id="lblRNombreAsesor">{{ vendedor.nombre }}</label>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -290,7 +290,7 @@
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Sucursal</strong></label>
-                                <label id="lblRSucursal">Veracruz</label>
+                                <label id="lblRSucursal">{{ vendedor.sucursal }}</label>
                             </div>
                         </li>
                     </ul>
@@ -310,21 +310,61 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td id="tdCantidadPaneles" align="center">2</td>
-                                <td>Risen Policristalino 345 W</td>
-                                <td id="tdPrecioPaneles" align="center">1$</td>
-                            </tr>
-                            <tr>
-                                <td id="tdCantidadInversores" align="center">1</td>
-                                <td>Fronius Galvo 1.5-1 208?240</td>
-                                <td id="tdPrecioPrecioInversores" align="center">2$</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
-                                <td id="tdPrecioEstructuras" align="center">3$</td>
-                            </tr>
+                            {{#if combinaciones}}
+                                {{#with combinaciones}}
+                                    {{#if combinacionEconomica}}
+                                        <tr>
+                                            <td id="tdCantidadPaneles" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
+                                            <td id="tdPrecioPaneles" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoTotalPaneles }}$</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdCantidadInversores" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores }}</td>
+                                            <td>{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
+                                            <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.costoTotalInversores }}$</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                            <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoDeEstructuras }}$</td>
+                                        </tr>
+                                    {{/if}}
+                                    {{#if combinacionMediana}}
+                                        <tr>
+                                            <td id="tdCantidadPaneles" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
+                                            <td>{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
+                                            <td id="tdPrecioPaneles" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoTotalPaneles }}$</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdCantidadInversores" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores }}</td>
+                                            <td>{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
+                                            <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.costoTotalInversores }}$</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                            <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoDeEstructuras }}$</td>
+                                        </tr>
+                                    {{/if}}
+                                    {{#if combinacionOptima}}
+                                        <tr>
+                                            <td id="tdCantidadPaneles" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
+                                            <td>{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
+                                            <td id="tdPrecioPaneles" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoTotalPaneles }}$</td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdCantidadInversores" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores }}</td>
+                                            <td>{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
+                                            <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.costoTotalInversores }}$</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                            <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoDeEstructuras }}$</td>
+                                        </tr>
+                                    {{/if}}
+                                {{/with}}
+                            {{/if}}
                             <tr>
                                 <td></td>
                                 <td>Tramite de CFE</td>
@@ -357,9 +397,29 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-center">$1234</td>
-                                        <td class="text-center">$1234</td>
-                                        <td class="text-center">$1234</td>
+                                        {{#if combinaciones}}
+                                            {{#with combinaciones}}
+                                                {{#if combinacionEconomica}}
+                                                    <td id="subt" class="text-center">{{ objCombinaciones.combinacionEconomica.0.totales.precio }}$</td>
+                                                    <td id="iva" class="text-center">{{ objCombinaciones.combinacionEconomica.0.totales.precioMasIVA }}$</td>
+                                                    <td id="total" class="text-center">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                                                {{/if}}
+                                                {{#if combinacionMediana}}
+                                                    <td id="subt" class="text-center">{{ objCombinaciones.combinacionMediana.0.totales.precio }}$</td>
+                                                    <td id="iva" class="text-center">{{ objCombinaciones.combinacionMediana.0.totales.precioMasIVA }}$</td>
+                                                    <td id="total" class="text-center">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>                                                
+                                                {{/if}}
+                                                {{#if combinacionOptima}}
+                                                    <td id="subt" class="text-center">{{ objCombinaciones.combinacionOptima.0.totales.precio }}$</td>
+                                                    <td id="iva" class="text-center">{{ objCombinaciones.combinacionOptima.0.totales.precioMasIVA }}$</td>
+                                                    <td id="total" class="text-center">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>                                                
+                                                {{/if}}
+                                            {{/with}}
+                                        {{else}}
+                                            <td id="subt" class="text-center">$1234</td>
+                                            <td id="iva" class="text-center">$1234</td>
+                                            <td id="total" class="text-center">$1234</td>
+                                        {{/if}}
                                     </tr>
                                 </tbody>
                             </table>                     
@@ -369,137 +429,243 @@
             </div>
             <!-- #TablaComparativba_Combinaciones -->
             <div class="comparison">
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="tl tl2"></th>
-                            <th class="qbse">Economica</th>
-                            <th class="qbse">Mediana</th>
-                            <th class="qbse">Optima</th>
-                        </tr>
-                    <!-- #Heading - Imagenes/Logos equipos -->
-                        <tr>
-                            <th class="tl"></th>
-                            <th id="combinacionEconomica" class="compare-heading">
-                                <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
-                                <img id="imgInversor" width="50" height="50" src="https://cdn.shopify.com/s/files/1/0245/5633/9234/products/81_750x.png?v=1579908568">
-                            </th>
-                            <th id="combinacionMediana" class="compare-heading">
-                                <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
-                                <img id="imgInversor" width="50" height="50" src="data:image/jpeg;base64,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">
-                            </th>
-                            <th id="combinacionOptima" class="compare-heading">
-                                <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
-                                <img id="imgInversor" width="50" height="50" src="data:image/jpeg;base64,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">
-                            </th>
-                        </tr>
-                    <!-- #End_Heading - Imagenes/Logos equipos -->
-                    </thead>
-                    <tbody>
-                    <!-- #EtiquetasComparatiba - Contenido -->
-                        <tr>
-                            <td></td>
-                            <td colspan="4">Potencia</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Potencia</strong></td>
-                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.paneles.potenciaReal }} kW</td>
-                            <td class="text-center">{{ combinaciones.combinacionMediana.0.paneles.potenciaReal }} kW</td>
-                            <td class="text-center">{{ combinaciones.combinacionOptima.0.paneles.potenciaReal }} kW</td>
-                        </tr>  
-                        <tr>
-                            <td></td>
-                            <td colspan="4">Paneles</td>
-                        </tr>
-                        <tr class="compare-row">
-                            <td><strong>Paneles</strong></td>
-                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.paneles.marcaPanel }}</td>
-                            <td class="text-center">{{ combinaciones.combinacionMediana.0.paneles.marcaPanel }}</td>
-                            <td class="text-center">{{ combinaciones.combinacionOptima.0.paneles.marcaPanel }}</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Modelo panel</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Modelo panel</strong></td>
-                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
-                            <td class="text-center">{{ combinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
-                            <td class="text-center">{{ combinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Procedencia</td>
-                        </tr>
-                        <tr class="compare-row">
-                            <td><strong>Procedencia</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Garantia</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Garantia</strong></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                            <td class="text-center"></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Inversor</td>
-                        </tr>
-                        <tr class="compare-row">
-                            <td><strong>Inversor</strong></td>
-                            <td class="text-center">{{ combinaciones.combinacionEconomica.0.inversores.marcaInversor }}</td>
-                            <td class="text-center">{{ combinaciones.combinacionMediana.0.inversores.marcaInversor }}</td>
-                            <td class="text-center">{{ combinaciones.combinacionOptima.0.inversores.marcaInversor }}</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Modelo inversor</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Modelo inversor</strong></td>
-                            <td class="text-center" class="text-center">{{ combinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
-                            <td class="text-center" class="text-center">{{ combinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
-                            <td class="text-center" class="text-center">{{ combinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Procedencia</td>
-                        </tr>
-                        <tr class="compare-row">
-                            <td><strong>Procedencia</strong></td>
-                            <td class="text-center" class="text-center"></td>
-                            <td class="text-center" class="text-center"></td>
-                            <td class="text-center" class="text-center"></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Garantia</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Garantia</strong></td>
-                            <td class="text-center" class="text-center"></td>
-                            <td class="text-center" class="text-center"></td>
-                            <td class="text-center" class="text-center"></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td colspan="4">Costo (USD/MXN)</td>
-                        </tr>
-                        <tr class="compare-row">
-                            <td><strong>Costo (MXN)</strong></td>
-                            <td class="text-center">${{ combinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
-                            <td class="text-center">${{ combinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
-                            <td class="text-center">${{ combinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
-                        </tr>
-                    <!-- #End_EtiquetasComparatiba - Contenido -->
-                    </tbody>
-                </table>
+                {{#if combinaciones}}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="tl tl2"></th>
+                                <th class="qbse">Economica</th>
+                                <th class="qbse">Mediana</th>
+                                <th class="qbse">Optima</th>
+                            </tr>
+                        <!-- #Heading - Imagenes/Logos equipos -->
+                            <tr>
+                                <th class="tl"></th>
+                                <th id="combinacionEconomica" class="compare-heading">
+                                    <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
+                                    <img id="imgInversor" width="50" height="50" src="https://cdn.shopify.com/s/files/1/0245/5633/9234/products/81_750x.png?v=1579908568">
+                                </th>
+                                <th id="combinacionMediana" class="compare-heading">
+                                    <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
+                                    <img id="imgInversor" width="50" height="50" src="data:image/jpeg;base64,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">
+                                </th>
+                                <th id="combinacionOptima" class="compare-heading">
+                                    <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
+                                    <img id="imgInversor" width="50" height="50" src="data:image/jpeg;base64,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">
+                                </th>
+                            </tr>
+                        <!-- #End_Heading - Imagenes/Logos equipos -->
+                        </thead>
+                        <tbody>
+                        <!-- #EtiquetasComparatiba - Contenido -->
+                            <tr>
+                                <td></td>
+                                <td colspan="4">Potencia</td>
+                            </tr>
+                            {{#with combinaciones}}
+                                <tr>
+                                    <td><strong>Potencia</strong></td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.paneles.potenciaReal }} kW</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.paneles.potenciaReal }} kW</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.paneles.potenciaReal }} kW</td>
+                                </tr>  
+                                <tr>
+                                    <td></td>
+                                    <td colspan="4">Paneles</td>
+                                </tr>
+                                <tr class="compare-row">
+                                    <td><strong>Paneles</strong></td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.paneles.marcaPanel }}</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.paneles.marcaPanel }}</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.paneles.marcaPanel }}</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Modelo panel</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Modelo panel</strong></td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Procedencia</td>
+                                </tr>
+                                <tr class="compare-row">
+                                    <td><strong>Procedencia</strong></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Garantia</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Garantia</strong></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Inversor</td>
+                                </tr>
+                                <tr class="compare-row">
+                                    <td><strong>Inversor</strong></td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.inversores.marcaInversor }}</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.inversores.marcaInversor }}</td>
+                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.inversores.marcaInversor }}</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Modelo inversor</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Modelo inversor</strong></td>
+                                    <td class="text-center" class="text-center">{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
+                                    <td class="text-center" class="text-center">{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
+                                    <td class="text-center" class="text-center">{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Procedencia</td>
+                                </tr>
+                                <tr class="compare-row">
+                                    <td><strong>Procedencia</strong></td>
+                                    <td class="text-center" class="text-center"></td>
+                                    <td class="text-center" class="text-center"></td>
+                                    <td class="text-center" class="text-center"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Garantia</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Garantia</strong></td>
+                                    <td class="text-center" class="text-center"></td>
+                                    <td class="text-center" class="text-center"></td>
+                                    <td class="text-center" class="text-center"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="4">Costo (USD/MXN)</td>
+                                </tr>
+                                <tr class="compare-row">
+                                    <td><strong>Costo (MXN)</strong></td>
+                                    <td class="text-center">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                                    <td class="text-center">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
+                                    <td class="text-center">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
+                                </tr>
+                            {{/with}}
+                        <!-- #End_EtiquetasComparatiba - Contenido -->
+                        </tbody>
+                    </table>
+                {{else}}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="tl tl2"></th>
+                                <th class="qbse">Propuesta</th>
+                            </tr> 
+                            <!-- Heading logos -->
+                            <tr>
+                                <th class="tl"></th>
+                                <th id="logosEquipos" class="compare-heading">
+                                    <img id="imgPanel" width="60" height="60" src="https://distribuidorsolar.mx/wp-content/uploads/2018/11/PANEL-CANADIAN-SOLAR-345W.jpg">
+                                    <img id="imgInversor" width="50" height="50" src="https://cdn.shopify.com/s/files/1/0245/5633/9234/products/81_750x.png?v=1579908568">
+                                </th>
+                            </tr>      
+                        </thead>
+                        <tbody>
+                        <!-- #EtiquetasComparatiba - Contenido -->
+                            <tr>
+                                <td></td>
+                                <td colspan="4">Potencia</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Potencia</strong></td>
+                                <td class="text-center"> kW</td>
+                            </tr>  
+                            <tr>
+                                <td></td>
+                                <td colspan="4">Paneles</td>
+                            </tr>
+                            <tr class="compare-row">
+                                <td><strong>Paneles</strong></td>
+                                <td class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Modelo panel</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Modelo panel</strong></td>
+                                <td class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Procedencia</td>
+                            </tr>
+                            <tr class="compare-row">
+                                <td><strong>Procedencia</strong></td>
+                                <td class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Garantia</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Garantia</strong></td>
+                                <td class="text-center"></td>
+                                
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Inversor</td>
+                            </tr>
+                            <tr class="compare-row">
+                                <td><strong>Inversor</strong></td>
+                                <td class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Modelo inversor</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Modelo inversor</strong></td>
+                                <td class="text-center" class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Procedencia</td>
+                            </tr>
+                            <tr class="compare-row">
+                                <td><strong>Procedencia</strong></td>
+                                <td class="text-center" class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Garantia</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Garantia</strong></td>
+                                <td class="text-center" class="text-center"></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td colspan="4">Costo (USD/MXN)</td>
+                            </tr>
+                            <tr class="compare-row">
+                                <td><strong>Costo (MXN)</strong></td>
+                                <td class="text-center">$</td>
+                            </tr>
+                        <!-- #End_EtiquetasComparatiba - Contenido -->
+                        </tbody>
+                    </table>
+                {{/if}}
                 <br>    
                 <div class="container-fluid">
                     <div class="form-group row justify-content-center">
@@ -523,7 +689,7 @@
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Asesor</strong></label>
-                                <label id="lblRNombreAsesor">Jose Antonio Hernandez</label>
+                                <label id="lblRNombreAsesor">{{ vendedor.nombre }}</label>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -541,7 +707,7 @@
                         <li class="nav-item">
                             <div class="form-group">
                                 <label><strong>Sucursal</strong></label>
-                                <label id="lblRSucursal">Veracruz</label>
+                                <label id="lblRSucursal">{{ vendedor.sucursal }}</label>
                             </div>
                         </li>
                     </ul>
@@ -733,12 +899,41 @@
             <div class="container-fluid">
                 <table class="table table-sm tabFinanciamiento">
                     <tr>
-                        <th class="tabFinanciamientothtd">Pago de contado</th>
-                        <td class="tabFinanciamientothtd">$ 79,398</td>
-                        <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                        <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
-                        <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                        <td class="tabFinanciamientothtd">4.6 años</td>
+                        {{#if combinaciones}}
+                            {{#with combinaciones}}
+                                {{#if combinacionEconomica}}
+                                    <th class="tabFinanciamientothtd">Pago de contado</th>
+                                    <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                                    <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                                    <th class="tabFinanciamientothtd">Retorno de inversión</th>
+                                    <td class="tabFinanciamientothtd">4.6 años</td>
+                                {{/if}}
+                                {{#if combinacionMediana}}
+                                    <th class="tabFinanciamientothtd">Pago de contado</th>
+                                    <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
+                                    <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                                    <th class="tabFinanciamientothtd">Retorno de inversión</th>
+                                    <td class="tabFinanciamientothtd">4.6 años</td>
+                                {{/if}}
+                                {{#if combinacionOptima}}
+                                    <th class="tabFinanciamientothtd">Pago de contado</th>
+                                    <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
+                                    <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                                    <th class="tabFinanciamientothtd">Retorno de inversión</th>
+                                    <td class="tabFinanciamientothtd">4.6 años</td>
+                                {{/if}}
+                            {{/with}}
+                        {{else}}
+                            <th class="tabFinanciamientothtd">Pago de contado</th>
+                            <td class="tabFinanciamientothtd">$ 79,398</td>
+                            <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
+                            <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                            <th class="tabFinanciamientothtd">Retorno de inversión</th>
+                            <td class="tabFinanciamientothtd">4.6 años</td>
+                        {{/if}}
                     </tr>
                 </table>
                 <table class="table table-sm tabFinanciamiento">
@@ -752,11 +947,37 @@
                     </tr>
                     <tr>
                         <th class="text-center tabFinanciamientothtd">Pago mensual</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        <td class="text-center tabFinanciamientothtd">$ 7,411</td>
-                        <td class="text-center tabFinanciamientothtd">$ 5,206</td>
+                        {{#if combinaciones}}
+                            {{#with combinaciones}}
+                                {{#if combinacionEconomica}}
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objMensualidadesCreditCard.tresMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objMensualidadesCreditCard.seisMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objMensualidadesCreditCard.nueveMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objMensualidadesCreditCard.doceMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objMensualidadesCreditCard.dieciochoMeses }}</td>
+                                {{/if}}
+                                {{#if combinacionMediana}}
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objMensualidadesCreditCard.tresMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objMensualidadesCreditCard.seisMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objMensualidadesCreditCard.nueveMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objMensualidadesCreditCard.doceMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objMensualidadesCreditCard.dieciochoMeses }}</td>
+                                {{/if}}
+                                {{#if combinacionOptima}}
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objMensualidadesCreditCard.tresMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objMensualidadesCreditCard.seisMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objMensualidadesCreditCard.nueveMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objMensualidadesCreditCard.doceMeses }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objMensualidadesCreditCard.dieciochoMeses }}</td>
+                                {{/if}}
+                            {{/with}}
+                        {{else}}
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                            <td class="text-center tabFinanciamientothtd">$ 7,411</td>
+                            <td class="text-center tabFinanciamientothtd">$ 5,206</td>
+                        {{/if}}
                     </tr>
                 </table>
                 <table class="table table-sm tabFinanciamiento">
@@ -768,9 +989,29 @@
                     </tr>
                     <tr>
                         <th class="text-center tabFinanciamientothtd">Enganche</th>
-                        <td class="text-center tabFinanciamientothtd">$ 11,910</td>
-                        <td class="text-center tabFinanciamientothtd">$ 27,789</td>
-                        <td class="text-center tabFinanciamientothtd">$ 39,699</td>
+                        {{#if combinaciones}}
+                            {{#with combinaciones}}
+                                {{#if combinacionEconomica}}
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objEnganche.quincePorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objEnganche.treintacincoPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento.objEnganche.cincuentaPorcent }}</td>
+                                {{/if}}  
+                                {{#if combinacionMediana}}
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objEnganche.quincePorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objEnganche.treintacincoPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento.objEnganche.cincuentaPorcent }}</td>
+                                {{/if}}
+                                {{#if combinacionOptima}}
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objEnganche.quincePorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objEnganche.treintacincoPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento.objEnganche.cincuentaPorcent }}</td>
+                                {{/if}}
+                            {{/with}}
+                        {{else}}
+                            <td class="text-center tabFinanciamientothtd">$ 11,910</td>
+                            <td class="text-center tabFinanciamientothtd">$ 27,789</td>
+                            <td class="text-center tabFinanciamientothtd">$ 39,699</td>
+                        {{/if}}
                     </tr>   
                 </table>
                 <table class="table table-sm tabFinanciamiento">
@@ -780,48 +1021,191 @@
                         <th class="text-center align-middle tabFinanciamientothtd">35%</th>
                         <th class="text-center align-middle tabFinanciamientothtd">50%</th>
                     </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 12 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 24 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 36 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 48 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 60 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 72 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
-                    <tr>
-                        <th class="tabFinanciamientothtd">A 84 meses</th>
-                        <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                        <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                        <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                    </tr>
+                    {{#if combinaciones}}
+                        {{#with combinaciones}}
+                            {{#if combinacionEconomica}}
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 12 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 24 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 36 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 48 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 60 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 72 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 84 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                </tr>
+                            {{/if}}
+                            {{#if combinacionMediana}}
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 12 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 24 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 36 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 48 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 60 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 72 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 84 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>   
+                            {{/if}}
+                            {{#if combinacionOptima}}
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 12 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 24 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 36 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 48 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 60 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 72 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="tabFinanciamientothtd">A 84 meses</th>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                </tr>
+                            {{/if}}
+                        {{/with}}
+                    {{else}}
+                        <tr>
+                            <th class="tabFinanciamientothtd">Pagos mensuales</br>por plazo</th>
+                            <th class="text-center align-middle tabFinanciamientothtd">15%</th>
+                            <th class="text-center align-middle tabFinanciamientothtd">35%</th>
+                            <th class="text-center align-middle tabFinanciamientothtd">50%</th>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 12 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 24 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 36 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 48 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 60 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 72 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                        <tr>
+                            <th class="tabFinanciamientothtd">A 84 meses</th>
+                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
+                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
+                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
+                        </tr>
+                    {{/if}}
                 </table>
             </div>
             <!-- #FinBody_3page -->
@@ -833,86 +1217,96 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
-    <script>
-        var config = {
-            type: 'bar',
-            data: {
-                labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Agos','Sept','Oct','Nov','Dic'],
-                datasets: [{
-                    label: 'Consumo anterior',
-                    fill: false,
-                    backgroundColor: window.chartColors.red,
-                    borderColor: window.chartColors.red,
-                    data: [
-                        randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-                        randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-                    ],
-                },
-                {
-                    label: 'Consumo nuevo',
-                    fill: false,
-                    backgroundColor: window.chartColors.green,
-                    borderColor: window.chartColors.green,
-                    data: [
-                        randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-                        randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor(),
-						randomScalingFactor()
-                    ],
-                }],
-            },
-            options: {
-                responsive: true,
-				title: {
-					display: true,
-					text: 'Proyeccion a 25 años'
-				},
-				hover: {
-					mode: 'nearest',
-					intersect: true
-				},
-				scales: {
-					xAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Meses'
-						}
-					}],
-					yAxes: [{
-						display: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Consumos'
-						}
-					}]
-				}
-			}
-        };
-        
-        window.onload = function(){
+    <script id="scriptsGeneral">
+        $(function(){
+            printGraphicsToPDF();
+        });
+
+        /*-------------G R A F I C O S-------------*/
+        /* Scripts que pintan los graficos en las paginas*/
+        function printGraphicsToPDF(){
             var ctx = document.getElementById('myChart').getContext('2d');
             var ctx1 = document.getElementById('proyeccion25anios').getContext('2d');
+
+            var config = {
+                type: 'bar',
+                data: {
+                    labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Agos','Sept','Oct','Nov','Dic'],
+                    datasets: [{
+                        label: 'Consumo anterior',
+                        fill: false,
+                        backgroundColor: window.chartColors.red,
+                        borderColor: window.chartColors.red,
+                        data: [
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor()
+                        ],
+                    },
+                    {
+                        label: 'Consumo nuevo',
+                        fill: false,
+                        backgroundColor: window.chartColors.green,
+                        borderColor: window.chartColors.green,
+                        data: [
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor(),
+                            randomScalingFactor()
+                        ],
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Proyeccion a 25 años'
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Meses'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Consumos'
+                            }
+                        }]
+                    }
+                }
+            };
+
+            
             window.myLine = new Chart(ctx, config);
             window.myLine1 = new Chart(ctx1, config);
-        };
+        }
+        
+        
 </script>
 </html>

@@ -131,15 +131,6 @@ function buscarBD(datas) {
 - @author: 				LH420
 - @date: 				07/04/2020
 */
-var objInversores = {
-	nombreInversor: '',
-	potenciaInversor: 0,
-	precioInversor: 0,
-	potenciaNominalInversor: 0,
-	potenciaMaximaInversor: 0,
-	numeroDeInversores: 0,
-	precioTotalInversores: 0
-};
 
 /*#region SI_SIRVE*/
 async function getFilteredInvestor(idInversor){
@@ -150,6 +141,7 @@ async function getFilteredInvestor(idInversor){
 }
 
 async function getInversores_cotizacion(data){
+	var objInversores = {};
 	var arrayInversor = [];
 	var potenciaReal_ = parseFloat(data.potenciaReal);
 	allInversores = await consultaBD();
