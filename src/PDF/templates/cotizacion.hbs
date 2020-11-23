@@ -203,11 +203,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td id="tdConsumoActual" style="font-size: 13px;" class="text-center">qwe123</td>
-                                            <td id="tdGeneracionPaneles" style="font-size: 13px;" class="text-center">qwe123</td>
-                                            <td id="tdNuevoConsumoCFE" style="font-size: 13px;" class="text-center">qwe123</td>
-                                        </tr>
+                                        {{#if combinaciones}}
+                                            {{#with combinaciones}}
+                                                {{#if combinacionEconomica}}
+                                                    <tr>
+                                                        <td id="tdConsumoActual" style="font-size: 13px;" class="text-center">{{ objCombinaciones._arrayConsumos.consumo.promConsumosBimestrales }} kWh</td>
+                                                        <td id="tdGeneracionPaneles" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                        <td id="tdNuevoConsumoCFE" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                    </tr>
+                                                {{/if}}
+                                                {{#if combinacionMediana}}
+                                                    <tr>
+                                                        <td id="tdConsumoActual" style="font-size: 13px;" class="text-center">{{ objCombinaciones._arrayConsumos.consumo.promConsumosBimestrales }} kWh</td>
+                                                        <td id="tdGeneracionPaneles" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                        <td id="tdNuevoConsumoCFE" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                    </tr>
+                                                {{/if}}
+                                                {{#if combinacionOptima}}
+                                                    <tr>
+                                                        <td id="tdConsumoActual" style="font-size: 13px;" class="text-center">{{ objCombinaciones._arrayConsumos.consumo.promConsumosBimestrales }} kWh</td>
+                                                        <td id="tdGeneracionPaneles" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                        <td id="tdNuevoConsumoCFE" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                    </tr>
+                                                {{/if}}
+                                            {{/with}}
+                                        {{else}}
+                                            <tr>
+                                                <td id="tdConsumoActual" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                <td id="tdGeneracionPaneles" style="font-size: 13px;" class="text-center">qwe123</td>
+                                                <td id="tdNuevoConsumoCFE" style="font-size: 13px;" class="text-center">qwe123</td>
+                                            </tr>
+                                        {{/if}}
                                     </tbody>
                                 </table>
                             </div>
@@ -341,7 +367,7 @@
                                             <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.costoTotalInversores }}$</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
                                             <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
                                             <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
@@ -1014,7 +1040,7 @@
                         {{/if}}
                     </tr>   
                 </table>
-                <table class="table table-sm tabFinanciamiento">
+                <table id="tabFinanciamient" class="table table-sm tabFinanciamiento">
                     <tr>
                         <th class="tabFinanciamientothtd">Pagos mensuales</br>por plazo</th>
                         <th class="text-center align-middle tabFinanciamientothtd">15%</th>
@@ -1026,133 +1052,133 @@
                             {{#if combinacionEconomica}}
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 12 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.12.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.12.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.12.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 24 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.24.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.24.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.24.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 36 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.36.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.36.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.36.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 48 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.48.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.48.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.48.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 60 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.60.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.60.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.60.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 72 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.72.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.72.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.72.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 84 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.84.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.84.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0.84.fiftyPorcent }}</td>
                                 </tr>
                             {{/if}}
                             {{#if combinacionMediana}}
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 12 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.12.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.12.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.12.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 24 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.24.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.24.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.24.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 36 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.36.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.36.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.36.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 48 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.48.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.48.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.48.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 60 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.60.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.60.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.60.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 72 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.72.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.72.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.72.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 84 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                </tr>   
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.84.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.84.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionMediana.0.financiamiento._pagosMensualesPorPlazo.0.84.fiftyPorcent }}</td>
+                                </tr>  
                             {{/if}}
                             {{#if combinacionOptima}}
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 12 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.12.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.12.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.12.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 24 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.24.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.24.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.24.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 36 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.36.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.36.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.36.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 48 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.48.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.48.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.48.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 60 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.60.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.60.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.60.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 72 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.72.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.72.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.72.fiftyPorcent }}</td>
                                 </tr>
                                 <tr>
                                     <th class="tabFinanciamientothtd">A 84 meses</th>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
-                                    <td class="text-center tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.financiamiento._pagosMensualesPorPlazo.0. }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.84.fifteenPorcent }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.84.thirtyFive }}</td>
+                                    <td class="text-center tabFinanciamientothtd tdFinanciamiento">$ {{ objCombinaciones.combinacionOptima.0.financiamiento._pagosMensualesPorPlazo.0.84.fiftyPorcent }}</td>
                                 </tr>
                             {{/if}}
                         {{/with}}

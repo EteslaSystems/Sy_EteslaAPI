@@ -29,3 +29,4 @@ app.use(require('../src/Routes/web.js')); //Instancia del archivo de rutas del s
 server.listen(app.get('port'), () => { //Se da inicio al servidor con los parametros antes declarados.
     console.log('Servidor iniciado de manera exitosa en el puerto: ', app.get('port'));
 });
+    

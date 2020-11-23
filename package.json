@@ -17,7 +17,7 @@
     "Sistema",
     "Gestion"
   ],
-  "author": "[Jesus Daniel Carrera Falcon (https://github.com/JesusDCF)] [Benny Yael Ramirez Herrerias] [Eduardo Herrera Aldaraca]",
+  "author": "[Eduardo Herrera Aldaraca], [Jesus Daniel Carrera Falcon], [Benny Yael Ramirez Herrerias]",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
