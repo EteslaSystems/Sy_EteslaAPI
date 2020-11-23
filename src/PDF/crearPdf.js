@@ -29,7 +29,7 @@ async function generarPDF(data){ ///Main()
     const pdf = await page.pdf(configPDFDocument);
     await browser.close();
     console.log('PDF creado!!');
-    }
+}
 
 async function compileHandleFile(data){
     var fileName = 'cotizacion.hbs';
