@@ -13,7 +13,6 @@
           --gris: #636363;
           --vainilla: #F4F8DF;
         }
-
         body {
             background: rgb(204,204,204);
             font-family: 'Manrope', sans-serif;
@@ -41,7 +40,6 @@
         }
         /* #endregion*/
         /*#region PAGE1 */
-
         /* Lado izquierdo del detalle del recibo */
         .mnHeaderRecib{
             background-color:var(--verde);
@@ -50,11 +48,9 @@
             text-align: center;
             font-weight: 600;
         }
-
         .detalleRecibo{
           margin-top: 8px;
         }
-
         .dtlReciboCards{
           border-radius: 15px;
           margin: 4px 0 8px 0;
@@ -62,7 +58,6 @@
           border-color: var(--gris);
           border-width: 2px;
         }
-
         .dtlReciboCards .card-header{
           background: var(--gris);
           color: #FFF;
@@ -72,42 +67,34 @@
           padding: 4px;
           border-radius: 10px 10px 0 0;
         }
-
         .etqTitulos{
           color: #000;
           font-size: 0.85rem;
           font-weight: 600;
         }
-
         .etqTexto{
           color: #000;
           font-size: 0.75rem;
         }
-
         .etqTextoBold{
           color: #000;
           font-size: 0.75rem;
           font-weight: 600;
         }
-
         .etqTexto2X{
           color: #000;
           font-size: 0.85rem;
           font-weight: 600;
         }
-
         .cdConsumo{
           height: 150px;
         }
-
         .cdApoyo{
           height: 120px;
         }
-
         .cdConsumo .card-body {
           text-align: center;
         }
-
         /* Lado derecho detalle del recibo */
         .dtlReciboCardsVerde{
           border-radius: 15px;
@@ -115,7 +102,6 @@
           border-color: var(--verde);
           border-width: 2px;
         }
-
         .dtlReciboCardsVerde .card-header{
           background: var(--verde);
           color: #FFF;
@@ -125,12 +111,10 @@
           padding: 4px;
           border-radius: 10px 10px 0 0;
         }
-
         .dtlReciboCardsVerde .card-body{
           background: var(--vainilla);
           border-radius: 0 0 14px 14px;
         }
-
         .separador{
           background: var(--verde);
           height: 15px;
@@ -138,7 +122,6 @@
           position: relative;
           left: -20px;
         }
-
         .tableReciboCFE{
             width: 31rem;
             border: 3px solid grey;
@@ -446,7 +429,7 @@
                                             <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.costoTotalInversores }}$</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
                                             <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
                                             <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
@@ -463,7 +446,7 @@
                                             <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.costoTotalInversores }}$</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td>{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
                                             <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
                                             <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
