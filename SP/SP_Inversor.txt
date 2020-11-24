@@ -1,0 +1,50 @@
+DELIMITER //
+CREATE PROCEDURE SP_Inversor
+(
+	IN Opcion INT,
+	IN xIdInversor VARCHAR(255),
+	IN NombreMaterialFot VARCHAR(50),
+	IN Marca VARCHAR(50),
+	IN Potencia FLOAT,
+	IN Precio FLOAT,
+	IN TipoMoneda VARCHAR(20),
+	IN Garantia VARCHAR(50),
+	IN Origen VARCHAR(100),
+	IN ISC FLOAT,
+	IN VMIN FLOAT,
+	IN VMAX FLOAT,
+	IN PMAX FLOAT,
+	IN PMIN FLOAT,
+	IN created TIMESTAMP,
+	IN updated TIMESTAMP,
+	IN deleted TIMESTAMP
+)
+BEGIN
+    /* Insertar nuevo Panel */
+    IF (Opcion = 0) THEN
+        INSERT INTO inversor
+        VALUES (UUID(), NombreMaterialFot, Marca, Potencia, Precio, TipoMoneda, Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, NOW(), NULL, NULL);
+    /* Eliminar Panel */
+    ELSEIF (Opcion = 1) THEN
+        UPDATE inversor
+        SET deleted_at = deleted
+        WHERE idInversor = UNHEX(xIdInversor);
+    /* Editar Panel */
+    ELSEIF (Opcion = 2) THEN
+        UPDATE inversor
+        SET vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, fPrecio = Precio, vTipoMoneda = TipoMoneda, vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, updated_at = updated
+        WHERE idInversor = UNHEX(xIdInversor);
+    /* Consultar todos los registros de Paneles */
+    ELSEIF (Opcion = 3) THEN
+        SELECT HEX(idInversor) AS idInversor, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, updated_at
+        FROM inversor
+        WHERE deleted_at IS NULL
+        ORDER BY created_at DESC, vMarca;
+    /* Leer - filtrado */
+    ELSEIF (Opcion = 4) THEN
+        SELECT HEX(xIdInversor) AS idInversor, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, updated_at
+        FROM inversor
+        WHERE deleted_at IS NULL AND idInversor = UNHEX(xIdInversor);
+    END IF;
+END
+// DELIMITER ;
