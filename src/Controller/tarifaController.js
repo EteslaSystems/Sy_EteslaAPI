@@ -53,11 +53,7 @@ function buscarBD (datas) {
 
 module.exports.obtenerTodasLasTarifas = async function(){
     const result = await consultaBD();
-    
-    if(result.status === true){
-        result = result.message;
-        return result;
-    }
+    return result;
 }
 
 module.exports.buscarTarifaFiltrada = async function(data){

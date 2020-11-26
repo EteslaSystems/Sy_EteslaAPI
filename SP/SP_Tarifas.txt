@@ -1,8 +1,9 @@
+DELIMITER //
 CREATE PROCEDURE SP_Tarifas
 (
 	IN Opcion INT,
 	IN xIdTarifa VARCHAR(255),
-	IN NombreTarifa VARHCAR(80),
+	IN NombreTarifa VARCHAR(80),
 	IN Nivel SMALLINT,	
 	IN Verano SMALLINT,
 	IN Rango INT,
@@ -14,33 +15,29 @@ CREATE PROCEDURE SP_Tarifas
 BEGIN
 	IF(Opcion = 0) THEN
 	/*Insertar*/
-	   	INSERT INTO Tarifas
+	   	INSERT INTO tarifa
 	   	VALUES(UUID(), NombreTarifa, Nivel, Verano, Rango, Precio, created, NULL, NULL);
 	ELSEIF(Opcion = 1) THEN
 	/*Eliminar*/
-	   	UPDATE Tarifas
+	   	UPDATE tarifa
 	   	SET deleted_at = deleted
 	   	WHERE idTarifa = UNHEX(xIdTarifa);
 	ELSEIF(Opcion = 2) THEN
 	/*Actualizar*/
-	   	UPDATE Tarifas
-	   	SET vNombreTarifa = NombreTarifa, sintNivel = Nivel, sintVerano = Verano, iRango = Rango, fPrecio = Precio, updated_at = updated
+	   	UPDATE tarifa
+	   	SET vNombreTarifa = NombreTarifa, sinNivel = Nivel, siVerano = Verano, iRango = Rango, fPrecio = Precio, updated_at = updated
 	   	WHERE idTarifa = UNHEX(xIdTarifa);
 	ELSEIF(Opcion = 3) THEN
 	/*Leer*/
-	   	SELECT HEX(idTarifa) AS idTarifa, vNombreTarifa, sintNivel, sintVerano, iRango, fPrecio, created_at, updated_at, deleted_at
-	   	FROM Tarifas
+	   	SELECT HEX(idTarifa) AS idTarifa, vNombreTarifa, siNivel, siVerano, iRango, fPrecio, created_at, updated_at, deleted_at
+	   	FROM tarifa
 	   	WHERE deleted_at IS NULL	
 	   	ORDER BY created_at DESC;
 	ELSEIF(Opcion = 4) THEN
 	/*Leer - filtrado*/
-		SELECT HEX(idTarifa) AS idTarifa, vNombreTarifa, sintNivel, sintVerano, iRango, fPrecio, created_at, updated_at, deleted_at
+		SELECT HEX(idTarifa) AS idTarifa, vNombreTarifa, siNivel, siVerano, iRango, fPrecio, created_at, updated_at, deleted_at
 	   	FROM Tarifas
-    	WHERE idTarifa = UNHEX(xIdTarifa);
-	ELSEIF(Opcion = 5) THEN
-	/*Consulta filtrada - BajaTension*/
-		SELECT * 
-		FROM Tarifas
-		
+    		WHERE idTarifa = UNHEX(xIdTarifa);
 	END IF;
 END
+// DELIMITER ;

@@ -40,7 +40,7 @@ async function mainBusquedaInteligente(data){
     if(tipoCotizacion == 'bajaTension'){
         _paneles = await bajaTension.firstStepBT(data);
         _arrayConsumos = _paneles[0];
-        newData = {_paneles: _paneles, origen: data.origen, destino: data.destino};
+        newData = {_paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa};
 
         __combinacionMediana = await getCombinacionMediana(newData, _consumos);
         __combinacionEconomica = await getCombinacionEconomica(newData, _consumos);
@@ -129,6 +129,7 @@ async function getCombinacionEconomica(data, __consumos){
         arrayBTI: _combinacionEconomica,
         origen: data.origen,
         destino: data.destino,
+        tarifa: data.tarifa,
         consumos: __consumos
     };
 
@@ -237,6 +238,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         arrayBTI: _combinacionMediana,
         origen: data.origen,
         destino: data.destino,
+        tarifa: data.tarifa,
         consumos: __consumos
     };
 
@@ -343,6 +345,7 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
         arrayBTI: _combinacionOptima,
         origen: origen,
         destino: data.destino,
+        tarifa: data.tarifa,
         consumos: __consumos
     };
 

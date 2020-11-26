@@ -481,10 +481,10 @@ async function getPowerBTI(data){
         consumoPromedio = consumoPromedio(_consumos);
         var porcentajePotencia = Math.floor((_generacion[0] / _consumosMensuales[0]) * 100);
         
-        /* if(tarifa != null){
+        if(tarifa != null){
             dac_o_nodac = await dac(tarifa, consumoPromedio);
             objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
-        } */
+        }
         
         objResult.nuevosConsumos = _nuevosConsumos;
         objResult.porcentajePotencia = porcentajePotencia;
@@ -525,28 +525,29 @@ async function getNewConsumption(__consumos, __generacion){
 }
 
 async function dac(tarifa, consumoPromedio){
+    consmProm = consumoPromedio/2; //Promedio de consumos (*MENSUAL*)
     switch(tarifa)
     {
         case '1':
-            tarifa = consumoPromedio >= 200 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 200 ? 'DAC' : tarifa;
         break;
         case '1a':
-            tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 250 ? 'DAC' : tarifa;
         break;
         case '1b':
-            tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 300 ? 'DAC' : tarifa;
         break;
         case '1c':
-            tarifa = consumoPromedio >= 800 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 800 ? 'DAC' : tarifa;
         break;
         case '1d':
-            tarifa = consumoPromedio >= 900 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 900 ? 'DAC' : tarifa;
         break;
         case '1e':
-            tarifa = consumoPromedio >= 1100 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 1100 ? 'DAC' : tarifa;
         break;
         case '1f':
-            tarifa = consumoPromedio >= 1250 ? 'DAC' : tarifa;
+            tarifa = consmProm >= 1250 ? 'DAC' : tarifa;
         break;
         default:
             tarifa = -1;
@@ -568,7 +569,7 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
         for(var x=0; x<__tarifas.length; x++)
         {
             if(__tarifas[x].vNombreTarifa == dac_o_nodac && __tarifas[x].siVerano == 0 && __tarifas[x].siNivel != 0){
-                noverano.push(__tarifas[x]);
+                noverano.push(parseFloat(__tarifas[x]));
             }
         }
         return noverano;
@@ -597,6 +598,7 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
     };
 
     var _tarifas = await tarifa.obtenerTodasLasTarifas();
+    _tarifas = _tarifas.message;
 
     no_verano = no_verano(_tarifas);
     verano = verano(_tarifas);
