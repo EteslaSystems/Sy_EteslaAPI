@@ -1035,4 +1035,6 @@ router.post('/pdf', function (request, response) {
 	});
 });
 
+/*#endregion*/
+
 module.exports = router; //Exportar la constate 'router' con el fin de que esta clase pueda ser ocupada por las demas

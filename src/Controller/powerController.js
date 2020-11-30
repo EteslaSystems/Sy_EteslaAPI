@@ -569,7 +569,7 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
         for(var x=0; x<__tarifas.length; x++)
         {
             if(__tarifas[x].vNombreTarifa == dac_o_nodac && __tarifas[x].siVerano == 0 && __tarifas[x].siNivel != 0){
-                noverano.push(parseFloat(__tarifas[x]));
+                noverano.push(__tarifas[x]);
             }
         }
         return noverano;
@@ -590,7 +590,7 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
 
         for(var x=0; x<__tarifas.length; x++)
         {
-            if(__tarifas[x].nuevosConsumos == dac_o_nodac && __tarifas[x].siVerano == 0 && __tarifas[x].siNivel == 0){
+            if(__tarifas[x].vNombreTarifa == dac_o_nodac && __tarifas[x].siVerano == 0 && __tarifas[x].siNivel == 0){
                 _demanda.push(__tarifas[x]);
             }
         }
@@ -600,9 +600,9 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
     var _tarifas = await tarifa.obtenerTodasLasTarifas();
     _tarifas = _tarifas.message;
 
-    no_verano = no_verano(_tarifas);
-    verano = verano(_tarifas);
-    demanda = demanda(_tarifas);
+    _no_verano = no_verano(_tarifas);
+    _verano = verano(_tarifas);
+    _demanda = demanda(_tarifas);
 
     costoDemanda = demanda.length > 0 ? demanda.fPrecio : 0;
 

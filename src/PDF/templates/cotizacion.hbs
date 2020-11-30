@@ -809,39 +809,35 @@
         <!-- Page3_Beneficios -->
         <page size="A4">
             <!-- #Header -->
-            <nav class="navbar navbar-expand-sm">
-                <div class="navbar-brand">
+            <section class="container-fluid p-2 hdDatosCliente">
+                <div class="row">
+                  <div class="col-sm-3">
                     <img src="https://etesla.mx/wp-content/uploads/2019/05/eTesla-Logo-2-01.png" height="70px" width="150px">
+                  </div>
+                  <div class="col-sm-9">
+                    <div class="row mt-1">
+                        <div class="col-sm-6 d-flex">
+                          <p class="etqTextoBold">Asesor:</p>
+                          <p class="etqTexto">{{ vendedor.nombre }}</p>
+                        </div>
+                        <div class="col-sm-6 d-flex">
+                          <p class="etqTextoBold">Cliente:</p>
+                          <p class="etqTexto">{{ cliente.nombre }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3 d-flex">
+                            <p class="etqTextoBold">Sucursal:</p>
+                            <p class="etqTexto">{{ vendedor.sucursal }}</p>
+                        </div>
+                        <div class="col-sm-9 d-flex">
+                            <p class="etqTextoBold">Dirección:</p>
+                            <p class="etqTexto">{{ cliente.direccion }}</p>
+                        </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <div class="form-group">
-                                <label><strong>Asesor</strong></label>
-                                <label id="lblRNombreAsesor">{{ vendedor.nombre }}</label>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div class="form-group">
-                                <label><strong>Cliente</strong></label>
-                                <label id="lblRNombreCliente">{{ cliente.nombre }}</label>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div class="form-group">
-                                <label><strong>Direccion</strong></label>
-                                <label id="lblRDireccion">{{ cliente.direccion }}</label>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <div class="form-group">
-                                <label><strong>Sucursal</strong></label>
-                                <label id="lblRSucursal">{{ vendedor.sucursal }}</label>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            </section>
             <!-- #Fin_Header -->
             <!-- #Body_2page-->
             <section class="jumbotron jumbotron-fluid jmtbtrn">
