@@ -240,13 +240,20 @@
             padding-top: 5px;
             padding-bottom: 5px;
         }
-        .colJumb label{
-            font-size: 9px;
+        /*Explic-Tables-Graphics*/
+        .tableGraficos tr>td{
+            text-align: left;
+            font-size: 11px;
         }
-        /*Table consumos*/
-        #tblCnsBenf th, td{
-            text-align: center;
-            vertical-align: middle;
+        .tableGraficos .tbGraphAnswSucc{
+            text-align: right;
+            color: green;
+            font-weight: bold;
+        }
+        .tableGraficos .tbGraphAnswDang{
+            text-align: right;
+            color: red;
+            font-weight: bold;
         }
         /*#endregion */
         /*#region  PAGE4 */
@@ -442,64 +449,64 @@
                                 {{#with combinaciones}}
                                     {{#if combinacionEconomica}}
                                         <tr>
-                                            <td id="tdCantidadPaneles" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
-                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
-                                            <td id="tdPrecioPaneles" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoTotalPaneles }}$</td>
+                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
+                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoTotalPaneles }}$</td>
                                         </tr>
                                         <tr>
-                                            <td id="tdCantidadInversores" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores }}</td>
-                                            <td>{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
-                                            <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.costoTotalInversores }}$</td>
+                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
+                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.costoTotalInversores }}$</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
-                                            <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
-                                            <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoDeEstructuras }}$</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                            <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
                                     {{/if}}
                                     {{#if combinacionMediana}}
                                         <tr>
-                                            <td id="tdCantidadPaneles" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
-                                            <td>{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
-                                            <td id="tdPrecioPaneles" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoTotalPaneles }}$</td>
+                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
+                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoTotalPaneles }}$</td>
                                         </tr>
                                         <tr>
-                                            <td id="tdCantidadInversores" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores }}</td>
-                                            <td>{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
-                                            <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.costoTotalInversores }}$</td>
+                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
+                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.costoTotalInversores }}$</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
-                                            <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
-                                            <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoDeEstructuras }}$</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                            <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
                                     {{/if}}
                                     {{#if combinacionOptima}}
                                         <tr>
-                                            <td id="tdCantidadPaneles" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
-                                            <td>{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
-                                            <td id="tdPrecioPaneles" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoTotalPaneles }}$</td>
+                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
+                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoTotalPaneles }}$</td>
                                         </tr>
                                         <tr>
-                                            <td id="tdCantidadInversores" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores }}</td>
-                                            <td>{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
-                                            <td id="tdPrecioPrecioInversores" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.costoTotalInversores }}$</td>
+                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
+                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.costoTotalInversores }}$</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
-                                            <td>Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
-                                            <td id="tdPrecioEstructuras" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoDeEstructuras }}$</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                            <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
                                     {{/if}}
                                 {{/with}}
                             {{/if}}
                             <tr>
                                 <td></td>
-                                <td>Tramite de CFE</td>
+                                <td class="etqTexto">Tramite de CFE</td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td>Otros materiales electronicos varios para la instalacion, incluye cable fotovoltaico, protecciones electricas</td>
+                                <td class="etqTexto">Otros materiales electronicos varios para la instalacion, incluye cable fotovoltaico, protecciones electricas</td>
                             </tr>
                         </tbody>
                     </table>
@@ -593,9 +600,9 @@
                             {{#with combinaciones}}
                                 <tr>
                                     <td><strong>Potencia</strong></td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.paneles.potenciaReal }} kW</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.paneles.potenciaReal }} kW</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.paneles.potenciaReal }} kW</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.potenciaReal }} kW</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.potenciaReal }} kW</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.potenciaReal }} kW</td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -603,9 +610,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Paneles</strong></td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.paneles.marcaPanel }}</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.paneles.marcaPanel }}</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.paneles.marcaPanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.marcaPanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.marcaPanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.marcaPanel }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -613,9 +620,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Modelo panel</strong></td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -623,9 +630,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Procedencia</strong></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -633,9 +640,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Garantia</strong></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
-                                    <td class="text-center"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -643,9 +650,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Inversor</strong></td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionEconomica.0.inversores.marcaInversor }}</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionMediana.0.inversores.marcaInversor }}</td>
-                                    <td class="text-center">{{ objCombinaciones.combinacionOptima.0.inversores.marcaInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.marcaInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.marcaInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.marcaInversor }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -653,9 +660,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Modelo inversor</strong></td>
-                                    <td class="text-center" class="text-center">{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
-                                    <td class="text-center" class="text-center">{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
-                                    <td class="text-center" class="text-center">{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -663,9 +670,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Procedencia</strong></td>
-                                    <td class="text-center" class="text-center"></td>
-                                    <td class="text-center" class="text-center"></td>
-                                    <td class="text-center" class="text-center"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -673,9 +680,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Garantia</strong></td>
-                                    <td class="text-center" class="text-center"></td>
-                                    <td class="text-center" class="text-center"></td>
-                                    <td class="text-center" class="text-center"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto"></td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -683,9 +690,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Costo (MXN)</strong></td>
-                                    <td class="text-center">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
-                                    <td class="text-center">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
-                                    <td class="text-center">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
+                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
+                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
                                 </tr>
                             {{/with}}
                         <!-- #End_EtiquetasComparatiba - Contenido -->
@@ -715,7 +722,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Potencia</strong></td>
-                                <td class="text-center"> kW</td>
+                                <td class="text-center etqTexto"> kW</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -723,7 +730,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Paneles</strong></td>
-                                <td class="text-center"></td>
+                                <td class="text-center etqTexto"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -731,7 +738,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Modelo panel</strong></td>
-                                <td class="text-center"></td>
+                                <td class="text-center etqTexto"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -739,7 +746,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Procedencia</strong></td>
-                                <td class="text-center"></td>
+                                <td class="text-center etqTexto"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -747,7 +754,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Garantia</strong></td>
-                                <td class="text-center"></td>
+                                <td class="text-center etqTexto"></td>
 
                             </tr>
                             <tr>
@@ -756,7 +763,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Inversor</strong></td>
-                                <td class="text-center"></td>
+                                <td class="text-center etqTexto"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -764,7 +771,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Modelo inversor</strong></td>
-                                <td class="text-center" class="text-center"></td>
+                                <td class="text-center etqTexto" class="text-center"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -772,7 +779,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Procedencia</strong></td>
-                                <td class="text-center" class="text-center"></td>
+                                <td class="text-center etqTexto" class="text-center"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -780,7 +787,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Garantia</strong></td>
-                                <td class="text-center" class="text-center"></td>
+                                <td class="text-center etqTexto" class="text-center"></td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -788,7 +795,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Costo (MXN)</strong></td>
-                                <td class="text-center">$</td>
+                                <td class="text-center etqTexto">$</td>
                             </tr>
                         <!-- #End_EtiquetasComparatiba - Contenido -->
                         </tbody>
@@ -839,7 +846,7 @@
                 </div>
             </section>
             <!-- #Fin_Header -->
-            <!-- #Body_2page-->
+            <!-- #Body_3page-->
             <section class="jumbotron jumbotron-fluid jmtbtrn">
                 <div class="container-fluid">
                     <div class="row align-items-center">
@@ -854,147 +861,80 @@
                     </div>
                 </div>
             </section>
+            <!-- Contenido pagina 3 -->
             <div class="container-fluid">
-                <div class="row">
+                <div class="row text-center">
+                    <div class="col" title="Beneficios energeticos">
+                        <div class="card">
+                            <div class="card-body">
+                                <canvas id="grafBenefEnergeticos"></canvas>
+                            </div>
+                        </div>   
+                    </div>
                     <div class="col">
-                        <!-- #Tabla  -->
-                        <table id="tblCnsBenf" class="table table-sm table-bordered" style="font-size:10px;">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Consumo actual</th>
-                                    <th scope="col">Produccion</th>
-                                    <th scope="col">Consumo nuevo</th>
-                                </tr>
-                            </thead>
+                        <h1 class="etqTitulos" style="color: blue;">Beneficios energeticos</h1>
+                        <table class="table table-sm tableGraficos">
                             <tbody>
                                 <tr>
-                                    <th scope="row">Enero</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
+                                    <td>Tu consumo a CFE en el último año</td>
+                                    <td class="tbGraphAnswDang">10,512 kWh</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Febrero</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
+                                    <td>Tu consumo promedio a CFE bimestral </td>
+                                    <td class="tbGraphAnswDang">1,752 kWh</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Marzo</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
+                                    <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                    <td class="tbGraphAnswSucc">5,498 kWh</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Abril</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
+                                    <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                    <td class="tbGraphAnswSucc">916 kWh</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Mayo</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Junio</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Julio</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Agosto</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Septiembre</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Octubre</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                    <th scope="row">Energia generada</th>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Noviembre</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                    <th align="center">4</th>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Diciembre</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                    <th scope="row">% de ahorro</th>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Total anual</th>
-                                    <td align="right">1</td>
-                                    <td align="right">2</td>
-                                    <td align="right">3</td>
-                                    <th align="center">4</th>
+                                    <td>% de ahorro de energía</td>
+                                    <td class="tbGraphAnswSucc">48%</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <!-- #End_Tabla  -->
-                    </div>
-                    <div class="col colJumb">
-                        <label>Ahorro de energia</label>
-                        <section class="jumbotron jumbotron-fluid jmtbtrn">
-                            <div class="container-fluid">
-                                <div class="row justify-content-center">
-                                    <div class="col">
-                                        <label>Cons. actual bimestral</label>
-                                        <div class="cuadrado-benef mx-auto">
-                                            <img src="https://img.icons8.com/cotton/45/000000/bill--v1.png"/>
-                                        </div>
-                                        <input class="form-control" value="1,174 kWh" readOnly>
-                                    </div>
-                                    <div class="col">
-                                        <label>Generacion paneles</label>
-                                        <div class="cuadrado-benef mx-auto">
-                                            <img src="https://img.icons8.com/officel/45/000000/solar-panel.png"/>
-                                        </div>
-                                        <input class="form-control" value="320 kWh" readOnly>
-                                    </div>
-                                    <div class="col">
-                                        <label>Nuevo consumo CFE</label>
-                                        <div class="cuadrado-benef mx-auto">
-                                            <img src="https://img.icons8.com/ios/45/000000/transmission-tower.png"/>
-                                        </div>
-                                        <input class="form-control" value="854 kWh" readOnly>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
                     </div>
                     <div class="w-100"></div>
-                    <div class="col" style="width:50%;">
-                        <!-- #Grafico_NuevosConsumos  -->
-                        <canvas id="myChart" width="400" height="400"></canvas>
-                        <!-- #End_Grafico_NuevosConsumos -->
+                    <div class="col">
+                        <br>
+                        <h1 class="etqTitulos" style="color: blue;">Beneficios financieros</h1>
+                        <table class="table table-sm tableGraficos">
+                            <tbody>
+                                <tr>
+                                    <td>Tu gasto anual actual al costo eléctrico de hoy</td>
+                                    <td class="tbGraphAnswDang">$53,099</td>
+                                </tr>
+                                <tr>
+                                    <td>Lo que pagas hoy por tu consumo promedio</td>
+                                    <td class="tbGraphAnswDang">$8,850</td>
+                                </tr>
+                                <tr>
+                                    <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
+                                    <td class="tbGraphAnswSucc">$9,013</td>
+                                </tr>
+                                <tr>
+                                    <td>Lo que pagarás a CFE en promedio bimestral con EE</td>
+                                    <td class="tbGraphAnswSucc">$1,502</td>
+                                </tr>
+                                <tr>
+                                    <td>% de ahorro de dinero</td>
+                                    <td class="tbGraphAnswSucc">83%</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="col" style="width:50%;">
-                        <!-- #Grafico_Proyeccion25anios  -->
-                        <canvas id="proyeccion25anios" width="400" height="400"></canvas>
-                        <!-- #End_Grafico_Proyeccion25anios  -->
+                    <div class="col" title="Beneficios financieros">
+                        <div class="card">
+                            <div class="card-body row">
+                                <canvas id="graficoBenefFinancieros"></canvas>
+                            </div>
+                        </div>  
                     </div>
+            <!-- Fin_Contenido pagina 3 -->
                     <br>
                     <div class="container-fluid">
                         <div class="row text-justify">
@@ -1020,7 +960,7 @@
                 </div>
             </nav>
             <!-- #Fin_Header -->
-            <!-- #Body_3page -->
+            <!-- #Body_4page -->
             <div class="container-fluid">
                 <table class="table table-sm tabFinanciamiento">
                     <tr>
@@ -1333,7 +1273,7 @@
                     {{/if}}
                 </table>
             </div>
-            <!-- #FinBody_3page -->
+            <!-- #FinBody_4page -->
         </page>
         <!-- #End_Page4 -->
     </body>
@@ -1350,86 +1290,61 @@
         /*-------------G R A F I C O S-------------*/
         /* Scripts que pintan los graficos en las paginas*/
         function printGraphicsToPDF(){
-            var ctx = document.getElementById('myChart').getContext('2d');
-            var ctx1 = document.getElementById('proyeccion25anios').getContext('2d');
+            var graficoBenefEnergeticos = document.getElementById('grafBenefEnergeticos').getContext('2d');
+            var graficoBenefFinancieros = document.getElementById('graficoBenefFinancieros').getContext('2d');
 
-            var config = {
-                type: 'bar',
-                data: {
-                    labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Agos','Sept','Oct','Nov','Dic'],
+            var configBenefEnerg = {
+                type: 'doughnut',
+                data: { 
                     datasets: [{
-                        label: 'Consumo anterior',
-                        fill: false,
-                        backgroundColor: window.chartColors.red,
-                        borderColor: window.chartColors.red,
+                        borderAlign: 'inner',
                         data: [
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
                             randomScalingFactor(),
                             randomScalingFactor()
                         ],
-                    },
-                    {
-                        label: 'Consumo nuevo',
-                        fill: false,
-                        backgroundColor: window.chartColors.green,
-                        borderColor: window.chartColors.green,
-                        data: [
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor()
-                        ],
+                        backgroundColor: [ 'green', 'red' ]
                     }],
+                    labels: [ 'Energia generada por el sistema', 'Energia a pagar a CFE' ]
                 },
                 options: {
+                    animation: { animateRotate: false },
                     responsive: true,
-                    title: {
+                    title:{
                         display: true,
-                        text: 'Proyeccion a 25 años'
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Meses'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Consumos'
-                            }
-                        }]
+                        position: 'left',
+                        text: 'Ahorro energetico'
                     }
                 }
             };
-
-
-            window.myLine = new Chart(ctx, config);
-            window.myLine1 = new Chart(ctx1, config);
+            var configBenefFinan = {
+                type: 'bar',
+                data: { 
+                    datasets: [{
+                        label: 'Con paneles',
+                        borderColor: 'grey',
+                        borderWidth: 1,
+                        data: [
+                            randomScalingFactor()
+                        ],
+                        backgroundColor: [ 'green' ]
+                    },
+                    {
+                        label: 'Sin paneles',
+                        borderColor: 'grey',
+                        borderWidth: 1,
+                        data: [
+                            randomScalingFactor()
+                        ],
+                        backgroundColor: [ 'red' ]
+                    }]
+                }
+            };
+            
+            window.graficoPastel = new Chart(graficoBenefEnergeticos, configBenefEnerg);
+            window.graficoBarras = new Chart(graficoBenefFinancieros, configBenefFinan);
         }
+
+        /**window.myLine = new Chart(ctx, config);
+        window.myLine1 = new Chart(ctx1, config);**/
     </script>
 </html>

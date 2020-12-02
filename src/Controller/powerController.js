@@ -469,7 +469,24 @@ async function getPowerBTI(data){
                 _consMens.push(consMens);
             }
         }
-        return _consMens;
+
+        var promedioDeConsumosMensuales = (arrayConsumosMns) => {
+            promedioCnsmsMens = 0;
+            for(var x=0; x<arrayConsumosMns.length; x++)
+            {
+                promedioCnsmsMens += parseFloat(arrayConsumosMns[x]);
+            }
+            return promedioCnsmsMens = promedioCnsmsMens / arrayConsumosMns.length;
+        };
+
+        promedioDeConsumosMensuales = promedioDeConsumosMensuales(_consMens);
+
+        objectResp = {
+            _consumosMensuales: _consMens,
+            promedioDeConsumosMensuales: promedioDeConsumosMensuales
+        };
+        
+        return objectResp;
     }
 
     _consumosMensuales = _consumosMensuales(_consumos);
@@ -479,11 +496,11 @@ async function getPowerBTI(data){
     if(_consumos != null){
         var _nuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
         consumoPromedio = consumoPromedio(_consumos);
-        var porcentajePotencia = Math.floor((_generacion[0] / _consumosMensuales[0]) * 100);
+        porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / _consumosMensuales.promedioDeConsumosMensuales) * 100);
         
         if(tarifa != null){
             dac_o_nodac = await dac(tarifa, consumoPromedio);
-            objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
+            //objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
         }
         
         objResult.nuevosConsumos = _nuevosConsumos;
@@ -510,11 +527,31 @@ async function getGeneration(origen, potenciaReal){
         }
     }
 
-    return _generation;
+    var promedioDeGeneracion = (_generacn) => {
+        promDGeneracion = 0;
+
+        for(var i=0; i<_generacn.length; i++)
+        {
+            promDGeneracion += _generacn[i];
+        }
+
+        return promDGeneracion = promDGeneracion / _generacn.length;
+    }
+
+    promeDGeneracion = promedioDeGeneracion(_generation);
+
+    objrespuesta = {
+        _generacion: _generation,
+        promedioDeGeneracion: promeDGeneracion
+    };
+
+    return objrespuesta;
 }
 
 async function getNewConsumption(__consumos, __generacion){
     var _consumosNuevos = [];
+    __generacion = __generacion._generacion;
+    __consumos = __consumos._consumosMensuales;
 
     for(var x=0; x<__consumos.length; x++)
     {

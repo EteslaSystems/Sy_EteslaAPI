@@ -43,7 +43,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
     _arrayResult.push(objPropuestaPaneles);
 
-    _noPaneles = await panel.numeroDePaneles(consumoDiario, irradiacion, eficiencia, limiteProduc);
+    _noPaneles = await panel.numeroDePaneles(potenciaRequerida);
 
     for(var x=0; x<_noPaneles.length; x++)
     {
@@ -153,7 +153,6 @@ async function calcular_potenciaRequerida(consumoAnual, tarifa, data){ //2 /*OBS
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var porcentaje = parseFloat(data.porcentaje) / 100 || 0;
     var objCalcularPot = {};
-    var _calcularPot = [];
 
     switch(tarifa)
     {
@@ -221,10 +220,14 @@ async function calcular_potenciaRequerida(consumoAnual, tarifa, data){ //2 /*OBS
             0;
         break;
     }
+
+    var consumoDiario = consumoAnual / 365;
+    var subsidioDiario = (objetivoDAC * 6)/365;
     
     porcPerd = origen == "Veracruz" ? 82 : 73;
     porcentajePerdida = await calcularPorcentajePerdida(porcPerd);
-    potenciaNecesaria = Math.round((((consumoAnual / irradiacion) / (1 - porcentajePerdida))/365) * 100) / 100;
+    potenciaNecesaria = Math.round(((consumoDiario - subsidioDiario) / irradiacion)/porcentajePerdida * 100) / 100;
+    /* potenciaNecesaria = Math.round((((consumoAnual / irradiacion) / (1 - porcentajePerdida))/365) * 100) / 100;  */
     potenciaNecesaria = potenciaNecesaria >= limite ? limite - 1 : potenciaNecesaria;
 
     objCalcularPot = {

@@ -131,13 +131,11 @@ const otrosMateriales = require('./otrosMaterialesController');
 
 var objNoDeModulosPorPotenciaDelPanel = {};
 
-async function numberOfModuls(powerNeeded, irradiation, efficiency, topeProduccion){
-	potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
-	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
-	var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp);
-	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
+async function numberOfModuls(potenciaNecesaria){
+	//potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
+	//var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp);
 	var _arrayTodosPaneles = await getAllPanelsArray();
-	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
+	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
 
 	return _arrayObjectsNoOfModuls;
 }
@@ -179,8 +177,7 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
 }
 
 async function getSystemPowerInWatts(powerRequired){
-	potenciaRequeridaEnW = powerRequired * 1000;
-	potenciaRequeridaEnW = Math.round(potenciaRequeridaEnW * 100) / 100;
+	potenciaRequeridaEnW = Math.round((powerRequired/1000) * 100)/100;
 	return potenciaRequeridaEnW;
 }
 
