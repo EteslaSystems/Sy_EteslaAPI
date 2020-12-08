@@ -132,8 +132,8 @@ const otrosMateriales = require('./otrosMaterialesController');
 var objNoDeModulosPorPotenciaDelPanel = {};
 
 async function numberOfModuls(potenciaNecesaria){
-	//potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
-	//var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp);
+	/* potenciaRequeridaEnKwp = await getSystemPowerInKwp(promedioConsumoMensual, irradiation, efficiency, topeProduccion);
+	var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp); */
 	var _arrayTodosPaneles = await getAllPanelsArray();
 	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
 
@@ -146,17 +146,17 @@ async function getAllPanelsArray(){
 	return consultaPaneles;
 }
 
-async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
+async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
 	for(var i = 0; i < arrayAllOfPanels.length; i++)
 	{
 		idPanel = arrayAllOfPanels[i].idPanel;
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
-		_marca = arrayAllOfPanels[i].vMarca
+		_marca = arrayAllOfPanels[i].vMarca;
 		_precio = parseFloat(arrayAllOfPanels[i].fPrecio);
 		potenciaDelPanel = parseFloat(arrayAllOfPanels[i].fPotencia);
-		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
+		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel * 1000);
 		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
 		_potenciaReal = Math.round(((potenciaDelPanel * NoOfModuls)/1000) * 100) / 100;
 
@@ -182,7 +182,7 @@ async function getSystemPowerInWatts(powerRequired){
 }
 
 async function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency, topeProduccion){
-	potenciaRequeridaEnKwp = Math.round((monthlyAvarageConsumption / (irradiation * efficiency)) * 100) / 100;
+	potenciaRequeridaEnKwp = Math.round((monthlyAvarageConsumption / (irradiation * efficiency * 30/*dias*/)) * 100) / 100;
 	potenciaRequeridaEnKwp = potenciaRequeridaEnKwp >= topeProduccion ? topeProduccion : potenciaRequeridaEnKwp;
 	return potenciaRequeridaEnKwp;
 }

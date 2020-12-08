@@ -22,8 +22,8 @@ app.engine('.hbs', exphbs({ layoutsDir: app.get('views'), defaultLayout: 'cotiza
 app.set('view engine','.hbs');//Borrar cuando se deje de utilizar el testeo de la plantilla del PDF
 
 //Middlewares
-/* app.use(compression); */
-app.use(require('../src/Routes/web.js')); //Instancia del archivo de rutas del servidor.
+app.use(express.static(__dirname + '/src'));
+app.use(require(__dirname+'/src/Routes/web.js')); //Instancia del archivo de rutas del servidor.
 
 //Arranque
 server.listen(app.get('port'), () => { //Se da inicio al servidor con los parametros antes declarados.

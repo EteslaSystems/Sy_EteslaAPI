@@ -2,10 +2,10 @@
   "name": "api_etesla",
   "version": "0.0.1x",
   "description": "API del sistema de gestion eTesla",
-  "main": "config/configStart.js",
+  "main": "configStart.js",
   "scripts": {
-    "start": "node config/configStart.js",
-    "dev": "nodemon config/configStart.js",
+    "start": "node configStart.js",
+    "dev": "nodemon configStart.js",
     "desarrollo": "pm2 start config/configStart.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

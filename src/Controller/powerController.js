@@ -535,7 +535,7 @@ async function getGeneration(origen, potenciaReal){
             promDGeneracion += _generacn[i];
         }
 
-        return promDGeneracion = promDGeneracion / _generacn.length;
+        return promDGeneracion = (promDGeneracion / _generacn.length) * 1000; //kwh
     }
 
     promeDGeneracion = promedioDeGeneracion(_generation);

@@ -29,6 +29,13 @@ async function generarPDF(data){ ///Main()
     const pdf = await page.pdf(configPDFDocument);
     await browser.close();
     console.log('PDF creado!!');
+
+    objResult = {
+        nombreArchivo: fileName,
+        rutaArchivo: fileCreatedPath
+    };
+
+    return objResult;
 }
 
 async function compileHandleFile(data){
@@ -106,5 +113,5 @@ async function ordenarData(dataa){
 
 module.exports.crearPDF = async function(data){
     const result = await generarPDF(data);
-    /* return result; */
+    return result;
 }

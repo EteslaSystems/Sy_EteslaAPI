@@ -5,6 +5,7 @@
 */
 //Requires
 const express = require('express');
+const fs = require('fs');
 const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');
@@ -1019,13 +1020,15 @@ router.put('/buscar-opcionesViatics', function (request, response) {
 - @section: 		Ruta para la creación del archivo PDF.
 */
 
-router.post('/pdf', function (request, response) {
+router.post('/pdf',function (request, response) {
 	archivoPDF.crearPDF(request.body)
-	.then(pdf => {
+	.then(objPdf => {
+		pdf64 = fs.readFileSync(objPdf.rutaArchivo, { encoding: 'base64' });
+
 		response.json({
 			status: 200,
-			message: pdf,
-		}).end();
+			message: pdf64
+		});
 	})
 	.catch(error => {
 		response.json({

@@ -13,7 +13,6 @@ const power = require('../Controller/powerController');
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
-var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
 var precioDolar = 0;
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
 const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
@@ -33,6 +32,7 @@ async function calcularViaticosBTI(data){
     var bInstalacion = data.bInstalacion || null;
     var _consums = data.consumos || null;
     var tarifa = data.tarifa || null;
+    var descuento = (parseFloat(data.descuento) / 100) || 0;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -214,6 +214,7 @@ async function main_calcularViaticos(data){
     var _arrayCotizacion = data.arrayPeriodosGDMTH;
     var origen = data.origen;
     var destino = data.destino;
+    var descuento = (parseFloat(data.descuento) / 100) || 0;
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
     // distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
@@ -224,13 +225,13 @@ async function main_calcularViaticos(data){
 
     console.log('Distancia en km, de la cotizacion: '+distanciaEnKm);
 
-    _arrayCotizacion = await calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm);
+    _arrayCotizacion = await calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm, descuento);
     
     return _arrayCotizacion;
 }
 
 /*#region Cuadrilla - Mano de obra*/
-async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
+async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm, descuent){
     var _cotizacion = [];
     var _configFile = await configFile.getArrayOfConfigFile();
     var distanciaEnKm = parseFloat(_distanciaEnKm);
@@ -287,7 +288,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
             margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100;
             totalDeTodo = subtotOtrFletManObrTPIE + margen + totalViaticosMT;
-            precio = Math.round(totalDeTodo * (1 - descuento) * 100)/100;
+            precio = Math.round(totalDeTodo * (1 - descuent) * 100)/100;
             precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
             precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
 
@@ -388,7 +389,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1]+ costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) || 0; //TPIE = Total Paneles Inversores Estructuras
             margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100 || 0;
             totalDeTodo = subtotOtrFletManObrTPIE + margen || 0;
-            precio = Math.round(totalDeTodo * (1 - descuento) * 100)/100;
+            precio = Math.round(totalDeTodo * (1 - descuent) * 100)/100;
             precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
             precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
 

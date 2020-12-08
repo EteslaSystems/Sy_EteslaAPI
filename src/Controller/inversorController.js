@@ -156,34 +156,36 @@ async function getInversores_cotizacion(data){
 		NoOfInvestors = NoOfInvestors < 0.9 ? 0 : Math.round(NoOfInvestors);
 
 		if(NoOfInvestors > 0){
-			idInversor = allInversores[i].idInversor;
-			_nombreInversor = allInversores[i].vNombreMaterialFot;
-			_precio = allInversores[i].fPrecio;
-			_marca = allInversores[i].vMarca;
 			_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
 			_potenciaPicoInversor = _potenciaPicoInversor * 1000;
 
-			_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
-			_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
-			_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
-			potenciaNominal = NoOfInvestors * _potencia;
-			precioTotalInversores = _precio * NoOfInvestors;
-
-			objInversores = {
-				idInversor: idInversor,
-				nombreInversor: _nombreInversor,
-				marcaInversor: _marca,
-				potenciaInversor: _potencia,
-				potenciaNominalInversor: potenciaNominal,
-				precioInversor: _precio,
-				potenciaMaximaInversor: _potenciaMaximaInversor,
-				numeroDeInversores: NoOfInvestors,
-				potenciaPicoInversor: _potenciaPicoInversor,
-				porcentajeSobreDimens: _porcentajeSobreDimensionamiento,
-				precioTotalInversores: precioTotalInversores
-			};
-			
-			arrayInversor.push(objInversores);
+			if(_potenciaPicoInversor > allInversores[i].iPMIN && _potenciaPicoInversor < allInversores[i].iPMAX){
+				idInversor = allInversores[i].idInversor;
+				_nombreInversor = allInversores[i].vNombreMaterialFot;
+				_precio = allInversores[i].fPrecio;
+				_marca = allInversores[i].vMarca;
+				_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
+				_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
+				_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
+				potenciaNominal = NoOfInvestors * _potencia;
+				precioTotalInversores = _precio * NoOfInvestors;
+	
+				objInversores = {
+					idInversor: idInversor,
+					nombreInversor: _nombreInversor,
+					marcaInversor: _marca,
+					potenciaInversor: _potencia,
+					potenciaNominalInversor: potenciaNominal,
+					precioInversor: _precio,
+					potenciaMaximaInversor: _potenciaMaximaInversor,
+					numeroDeInversores: NoOfInvestors,
+					potenciaPicoInversor: _potenciaPicoInversor,
+					porcentajeSobreDimens: _porcentajeSobreDimensionamiento,
+					precioTotalInversores: precioTotalInversores
+				};
+				
+				arrayInversor.push(objInversores);
+			}
 		}
 	}
 	
