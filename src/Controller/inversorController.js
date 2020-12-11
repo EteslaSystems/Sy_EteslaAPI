@@ -144,6 +144,7 @@ async function getInversores_cotizacion(data){
 	var objInversores = {};
 	var arrayInversor = [];
 	var potenciaReal_ = parseFloat(data.potenciaReal);
+	potenciaReal_ = potenciaReal_ * 1000; ///Watss - Kw ===> wtts
 	allInversores = await consultaBD();
 	allInversores = allInversores.message;
 
@@ -152,14 +153,14 @@ async function getInversores_cotizacion(data){
 		_potencia = allInversores[i].fPotencia;
 		_potenciaMaximaInversor = _potencia * 1.25;
 		NoOfInvestors = potenciaReal_ / _potenciaMaximaInversor;
-		NoOfInvestors = NoOfInvestors * 1000;
 		NoOfInvestors = NoOfInvestors < 0.9 ? 0 : Math.round(NoOfInvestors);
 
 		if(NoOfInvestors > 0){
 			_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
-			_potenciaPicoInversor = _potenciaPicoInversor * 1000;
+			PMIN_inversor = allInversores[i].iPMIN
+			PMAX_inversor = allInversores[i].iPMAX;
 
-			if(_potenciaPicoInversor > allInversores[i].iPMIN && _potenciaPicoInversor < allInversores[i].iPMAX){
+			if(_potenciaPicoInversor > PMIN_inversor && _potenciaPicoInversor < PMAX_inversor){
 				idInversor = allInversores[i].idInversor;
 				_nombreInversor = allInversores[i].vNombreMaterialFot;
 				_precio = allInversores[i].fPrecio;

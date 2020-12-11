@@ -156,9 +156,9 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 		_marca = arrayAllOfPanels[i].vMarca;
 		_precio = parseFloat(arrayAllOfPanels[i].fPrecio);
 		potenciaDelPanel = parseFloat(arrayAllOfPanels[i].fPotencia);
-		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel * 1000);
+		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel);
 		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
-		_potenciaReal = Math.round(((potenciaDelPanel * NoOfModuls)/1000) * 100) / 100;
+		_potenciaReal = Math.round(((potenciaDelPanel * NoOfModuls) / 1000) * 100) / 100; //KWp - wtts ===> kwp
 
 		objNoDeModulosPorPotenciaDelPanel = {
 			idPanel: idPanel,

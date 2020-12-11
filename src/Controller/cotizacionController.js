@@ -151,6 +151,45 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 
     objCombinacion.combinacion = "mediana";
 
+    var mediaCostoTotPaneles = (_panelSelected) => {
+        mediaDePrecios = 0;
+        
+        for(var k=0; k<_panelSelected.length; k++)
+        {
+            mediaDePrecios += parseFloat(_panelSelected[k].costoTotalPaneles);
+        }
+
+        mediaDePrecios = Math.round((mediaDePrecios / _panelSelected.length) * 100) / 100;
+        return mediaDePrecios;
+    };
+    var panelCombMediana = (_panelSelecto, mediaCostoTPaneles) => {
+        acercamiento = 0;
+        oldAcercamiento = 0;
+        newAcercamiento = 0;
+
+        for(var u=0; u<_panelSelecto.length; u++)
+        {
+            acercamiento = Math.abs(Math.round((mediaCostoTPaneles - _panelSelecto[u].costoTotalPaneles) * 100) / 100);
+
+            if(u === 0){
+                oldAcercamiento = acercamiento;
+            }
+            if(oldAcercamiento >= newAcercamiento){
+                oldAcercamiento = newAcercamiento;
+
+                objCombinacion.panel.idPanel = _panelSelecto[u].idPanel;
+                objCombinacion.panel.nombrePanel = _panelSelecto[u].nombre;
+                objCombinacion.panel.marcaPanel = _panelSelecto[u].marca;
+                objCombinacion.panel.potenciaPanel = _panelSelecto[u].potencia;
+                objCombinacion.panel.cantidadPaneles = _panelSelecto[u].noModulos;
+                objCombinacion.panel.potenciaReal = _panelSelecto[u].potenciaReal;
+                objCombinacion.panel.costoDeEstructuras = _panelSelecto[u].costoDeEstructuras;
+                objCombinacion.panel.precioPorWatt = _panelSelecto[u].costoPorWatt;
+                objCombinacion.panel.costoTotalPaneles = _panelSelecto[u].costoTotalPaneles;
+            }
+        }
+    };
+
     if(__paneles.length > 0){
         //Se seleccionan paneles de la marcaEspecifica
         for(var i=1; i<__paneles.length; i++)
@@ -159,30 +198,9 @@ async function getCombinacionMediana(data, __consumos){//Mediana
                 _panelesSelectos.push(__paneles[i].panel);
             }
         }
-        
-        //Se selecciona el panel mas caro
-        for(var x=0; x<_panelesSelectos.length; x++)
-        {
-            newPanelPrice = parseFloat(_panelesSelectos[x].costoTotalPaneles);
 
-            if(x === 0){
-                oldPanelPrice = parseFloat(_panelesSelectos[x].costoTotalPaneles);
-            }
-            
-            if(oldPanelPrice >= newPanelPrice){
-                oldPanelPrice = newPanelPrice;
-                
-                objCombinacion.panel.idPanel = _panelesSelectos[x].idPanel;
-                objCombinacion.panel.nombrePanel = _panelesSelectos[x].nombre;
-                objCombinacion.panel.marcaPanel = _panelesSelectos[x].marca;
-                objCombinacion.panel.potenciaPanel = _panelesSelectos[x].potencia;
-                objCombinacion.panel.cantidadPaneles = _panelesSelectos[x].noModulos;
-                objCombinacion.panel.potenciaReal = _panelesSelectos[x].potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = _panelesSelectos[x].costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = _panelesSelectos[x].costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = _panelesSelectos[x].costoTotalPaneles;
-            }
-        }
+        mediaCostoTotPaneles = mediaCostoTotPaneles(_panelesSelectos);
+        panelCombMediana(_panelesSelectos, mediaCostoTotPaneles);
     }
 
     var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
