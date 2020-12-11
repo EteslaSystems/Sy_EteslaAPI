@@ -1025,9 +1025,14 @@ router.post('/pdf',function (request, response) {
 	.then(objPdf => {
 		pdf64 = fs.readFileSync(objPdf.rutaArchivo, { encoding: 'base64' });
 
+		var respuesta = {
+			fileName: objPdf.nombreArchivo,
+			pdfBase64: pdf64
+		};
+
 		response.json({
 			status: 200,
-			message: pdf64
+			message: respuesta
 		});
 	})
 	.catch(error => {

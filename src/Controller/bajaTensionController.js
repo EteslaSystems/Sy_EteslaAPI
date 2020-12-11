@@ -27,7 +27,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     objPropuestaPaneles = { consumos: { promedioDeConsumos } }; // Se guarda la informacion referente a los consumos, para una futura implementacion [Hoja: POWER]
     nConsumoAnual = promedioDeConsumos.consumoAnual;
     promedioConsumsMensuales = promedioDeConsumos.promedioConsumosMensuales;
-    promedioConsumoTotalKwh = promedioDeConsumos.promConsumosBimestrales;
+    promedioConsumosBimestrales = promedioDeConsumos.promConsumosBimestrales;
     potenciaRequerida = await calcular_potenciaRequerida(promedioConsumsMensuales, tarifa, data);
     limiteProduc = potenciaRequerida.limite;
     potenciaRequerida = potenciaRequerida.potenciaNecesaria;
@@ -37,7 +37,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
         consumo: {
             _promCons: promedioDeConsumos,
             consumoAnual: nConsumoAnual,
-            promedioConsumo: promedioConsumoTotalKwh,
+            promedioConsumo: promedioConsumosBimestrales,
             potenciaNecesaria: potenciaRequerida
         }
     };
@@ -81,6 +81,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
 //2do. paso 
 async function promedio_consumos(consumos){ 
+    //Retorna todo en kwh
     var promConsumosBimestrales = (consumos) => {
         promConsumosBim = 0;
         for(var i=0; i<consumos.length; i++)
