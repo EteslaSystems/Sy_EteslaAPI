@@ -9,6 +9,7 @@ const configFile = require('../Controller/configFileController');
 const dolar = require('../Controller/dolar_tipoCambio');
 const financiamiento = require('../Controller/financiamientoProjController');
 const power = require('../Controller/powerController');
+const roi = require('../Controller/ROIController');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -25,7 +26,7 @@ const comida_dia = 9.5; //Cotizador - viejo (??)
 const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
-    var objCotizacionBTI = { paneles: '', inversores: '',  power: '', viaticos_costos: '', totales: '', financiamiento: '' };
+    var objCotizacionBTI = { paneles: '', inversores: '',  power: '', viaticos_costos: '', totales: '', financiamiento: '', roi:'' };
     var arrayCotizacionBTI = [];
     var origen = data.origen;
     var destino = data.destino;
@@ -113,8 +114,9 @@ async function calcularViaticosBTI(data){
             //P O W E R
             dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal, tarifa: tarifa };
             objPower = await power.obtenerPowerBTI(dataPwr) || null;
-
+            objROI = await roi.obtenerROI(objPower, _consums, precioTotalMXN);
             objCotizacionBTI.power = objPower;
+            objCotizacionBTI.roi = objROI;
         }
 
         //F I N A N C I A M I E N T O

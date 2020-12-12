@@ -1,5 +1,3 @@
-const tarifa = require('../Controller/tarifaController');
-
 async function getIrradiacionDiasDeMesesDelAnio(){
     var objMeses = {};
 
@@ -442,65 +440,23 @@ async function getTotales_Ahorro(pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    var objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'' };
+    var objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'', dac_o_nodac: '' };
     var _consumos = data.consumos || null;
     var tarifa = data.tarifa || null;
     var origen = data.origen;
     var potenciaReal = data.potenciaReal; 
-    var consumoPromedio = (consumos) => {
-        var promedioConsumo = 0;
-        
-        for(var i=0; i<consumos.length; i++)
-        {
-            promedioConsumo += parseFloat(consumos[i]);    
-        }
-        promedioConsumo = promedioConsumo / consumos.length;
-        return promedioConsumo;
-    };
+    var promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
 
-    var _consumosMensuales = (_consums) => {
-        consMens = 0;
-        _consMens = [];
-
-        for(var i=0; i<_consums.length; i++)
-        {
-            consMens = parseFloat(_consums[i] / 2);
-            for(var x=0; x<2; x++){
-                _consMens.push(consMens);
-            }
-        }
-
-        var promedioDeConsumosMensuales = (arrayConsumosMns) => {
-            promedioCnsmsMens = 0;
-            for(var x=0; x<arrayConsumosMns.length; x++)
-            {
-                promedioCnsmsMens += parseFloat(arrayConsumosMns[x]);
-            }
-            return promedioCnsmsMens = promedioCnsmsMens / arrayConsumosMns.length;
-        };
-
-        promedioDeConsumosMensuales = promedioDeConsumosMensuales(_consMens);
-
-        objectResp = {
-            _consumosMensuales: _consMens,
-            promedioDeConsumosMensuales: promedioDeConsumosMensuales
-        };
-        
-        return objectResp;
-    }
-
-    _consumosMensuales = _consumosMensuales(_consumos);
-
-    var _generacion = await getGeneration(origen, potenciaReal); //GeneracionMensual
+    var _generacion = await getGeneration(origen, potenciaReal); //Generacion en KWp
 
     if(_consumos != null){
+        _consumosMensuales = _consumos._promCons.consumoMensual;
         var _nuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
-        consumoPromedio = consumoPromedio(_consumos);
-        porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / _consumosMensuales.promedioDeConsumosMensuales) * 100);
+        porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
         
         if(tarifa != null){
-            dac_o_nodac = await dac(tarifa, consumoPromedio);
-            //objConsumosPesos = await consumo_pesos(dac_o_nodac, consumoPromedio);
+            dac_o_nodac = await dac(tarifa, promedioConsumosMensuales);
+            objResult.dac_o_nodac = dac_o_nodac;
         }
         
         objResult.nuevosConsumos = _nuevosConsumos;
@@ -525,9 +481,10 @@ async function getGeneration(origen, potenciaReal){
             gener = Math.round((Math.floor(/*irradiacion->*/5.42 * potenciaReal) * 0.73 * 30.4) * 100) / 100;
             _generation.push(gener);
         }
+        //kwp
     }
 
-    var promedioDeGeneracion = (_generacn) => {
+    var promeDGeneracionMensual = (_generacn) => {
         promDGeneracion = 0;
 
         for(var i=0; i<_generacn.length; i++)
@@ -535,14 +492,25 @@ async function getGeneration(origen, potenciaReal){
             promDGeneracion += _generacn[i];
         }
 
-        return promDGeneracion = (promDGeneracion / _generacn.length) * 1000; //kwh
+        return promDGeneracion = Math.round((promDGeneracion / _generacn.length) * 100) / 100; 
     }
 
-    promeDGeneracion = promedioDeGeneracion(_generation);
+    var generacionAnual = (_generacn) => {
+        generationAnual = 0;
+        for(var i=0; i<_generacn.length; i++)
+        {
+            generationAnual += _generacn[i];
+        }
+        return Math.round(generationAnual * 100) / 100;
+    };
+
+    promeDGeneracionMensual = promeDGeneracionMensual(_generation);
+    generacionAnual = generacionAnual(_generation);
 
     objrespuesta = {
-        _generacion: _generation,
-        promedioDeGeneracion: promeDGeneracion
+        _generacion: _generation, //kwp
+        promedioDeGeneracion: promeDGeneracionMensual, //kwp - promedioGeneracionMensual
+        generacionAnual: generacionAnual //kwp
     };
 
     return objrespuesta;
@@ -550,41 +518,41 @@ async function getGeneration(origen, potenciaReal){
 
 async function getNewConsumption(__consumos, __generacion){
     var _consumosNuevos = [];
-    __generacion = __generacion._generacion;
-    __consumos = __consumos._consumosMensuales;
+    __generacion = __generacion._generacion; //kwp
+    __consumos = __consumos._consumosMensuales; //kwh
 
     for(var x=0; x<__consumos.length; x++)
     {
         _consumosNuevos[x] = Math.floor(__consumos[x] - __generacion[x]);
     }
 
-    return _consumosNuevos;
+    return _consumosNuevos; //kilowatts
 }
 
 async function dac(tarifa, consumoPromedio){
-    consmProm = consumoPromedio/2; //Promedio de consumos (*MENSUAL*)
+    //consumoPromedio = PROMEDIO DE CONSUMOS MENSUALES
     switch(tarifa)
     {
         case '1':
-            tarifa = consmProm >= 200 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 200 ? 'DAC' : tarifa;
         break;
         case '1a':
-            tarifa = consmProm >= 250 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
         break;
         case '1b':
-            tarifa = consmProm >= 300 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
         break;
         case '1c':
-            tarifa = consmProm >= 800 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 800 ? 'DAC' : tarifa;
         break;
         case '1d':
-            tarifa = consmProm >= 900 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 900 ? 'DAC' : tarifa;
         break;
         case '1e':
-            tarifa = consmProm >= 1100 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 1100 ? 'DAC' : tarifa;
         break;
         case '1f':
-            tarifa = consmProm >= 1250 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 1250 ? 'DAC' : tarifa;
         break;
         default:
             tarifa = -1;
@@ -594,7 +562,7 @@ async function dac(tarifa, consumoPromedio){
     return tarifa;
 }
 
-async function consumo_pesos(dac_o_nodac, consumo_promedio){
+/* async function consumo_pesos(dac_o_nodac, consumo_promedio){
     var dac_o_nodac = dac_o_nodac; //Tarifa
     var meses = [];
     var pagos = [];
@@ -770,7 +738,7 @@ async function consumo_pesos(dac_o_nodac, consumo_promedio){
     };
 
     return objRespuesta;
-}
+} */
 
 module.exports.obtenerPowerBTI = async function(data){
     const result = await getPowerBTI(data);

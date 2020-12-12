@@ -30,7 +30,6 @@ module.exports.mainBusqInteligente = async function(data){
 }
 
 async function mainBusquedaInteligente(data){
-    var _consumos = data.consumos;
     var tipoCotizacion = data.tipoCotizacion;
     var _paneles = [];
     var newData = {};
@@ -39,6 +38,7 @@ async function mainBusquedaInteligente(data){
     
     if(tipoCotizacion == 'bajaTension'){
         _paneles = await bajaTension.firstStepBT(data);
+        _consumos = _paneles[0].consumo;
         _arrayConsumos = _paneles[0];
         newData = {_paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa};
 

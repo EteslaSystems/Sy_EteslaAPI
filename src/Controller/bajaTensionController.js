@@ -73,7 +73,6 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     return _arrayResult;
 }
 
-//2do. paso 
 async function promedio_consumos(consumos){ 
     //Retorna todo en kwh
     var promConsumosBimestrales = (consumos) => {
