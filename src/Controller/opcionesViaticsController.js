@@ -41,6 +41,16 @@ async function calcularViaticosBTI(data){
     precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
     precioDolar = precioDolar[0].precioDolar;
 
+    var validarJSON = (objJSON) => { //Valida y procesa de String a Object
+        if(typeof objJSON === 'string'){
+            consums = JSON.parse(objJSON);
+            consums = consums.consumo;
+            return consums;
+        }
+        return false;
+    };
+    _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
+
     _arrayCotizacion = data.arrayBTI;
     
     for(var x=0; x<_arrayCotizacion.length; x++)
