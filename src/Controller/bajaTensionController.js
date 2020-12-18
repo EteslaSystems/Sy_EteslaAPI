@@ -9,7 +9,6 @@ const panel = require('../Controller/panelesController');
 const viaticosBT = require('../Controller/opcionesViaticsController');
 const power = require('../Controller/powerController');
 
-var eficiencia = 0.85;
 var limite = 0;
 var objetivoDAC = 0;
 var potenciaRequerida = 0;
@@ -17,8 +16,6 @@ var objPropuestaPaneles = {};
 
 //1er paso (main).
 async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
-    var origen = data.origen;
-    var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var consumos = data.consumos;
     var tarifa = data.tarifa;
     var _arrayResult = [];
@@ -148,7 +145,7 @@ async function promedio_consumos(consumos){
 async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){ //2 /*OBSERVAR*/
     var origen = data.origen;
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
-    var porcentajePropuesta = parseFloat(data.porcentaje) / 100 || 0;
+    var porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
     var objCalcularPot = {};
 
     switch(tarifa)
