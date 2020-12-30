@@ -33,7 +33,7 @@ async function calcularViaticosBTI(data){
     var bInstalacion = data.bInstalacion || null;
     var _consums = data.consumos || null;
     var tarifa = data.tarifa || null;
-    var descuento = (parseFloat(data.descuento) / 100) || 0;
+    var descuento = (parseFloat(data.descuento) / 100) || null;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -176,6 +176,7 @@ async function calcularViaticosBTI(data){
             precioTotalMXN: precioTotalMXN
         };
         objCotizacionBTI.financiamiento = objFinan;
+        objCotizacionBTI.descuento = descuento;
 
         arrayCotizacionBTI.push(objCotizacionBTI);
     }

@@ -169,7 +169,7 @@ async function getInversores_cotizacion(data){
 				_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
 				_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
 				potenciaNominal = NoOfInvestors * _potencia;
-				precioTotalInversores = _precio * NoOfInvestors;
+				precioTotalInversores = Math.round((_precio * NoOfInvestors) * 100) / 100;
 	
 				objInversores = {
 					idInversor: idInversor,

@@ -224,7 +224,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 
         for(var u=0; u<_inversSelect.length; u++)
         {
-            acercamiento = mediaCostoTInv - parseFloat(_inversSelect[u].precioTotalInversores);
+            acercamiento = Math.abs(mediaCostoTInv - _inversSelect[u].precioTotalInversores);
 
             if(u === 0){
                 oldAcercamiento = acercamiento;
