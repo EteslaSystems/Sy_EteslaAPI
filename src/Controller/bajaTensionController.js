@@ -39,31 +39,13 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
     for(var x=0; x<_noPaneles.length; x++)
     {
-        idPanel = _noPaneles[x].idPanel;
-        nombrePanel = _noPaneles[x].nombre;
-        marcaPanel = _noPaneles[x].marca;
-        potenciaPanel = parseFloat(_noPaneles[x].potencia);
-        potenciaRealPanel = parseFloat(_noPaneles[x].potenciaReal);
-        noModulosP = parseFloat(_noPaneles[x].noModulos);
-        precioPanel = parseFloat(_noPaneles[x].precioPorPanel);
-        costoEstructuras = parseFloat(_noPaneles[x].costoDeEstructuras);
-        costoPorWatt = precioPanel;
-        costoTotalPaneles = Math.round(((precioPanel * potenciaPanel) * noModulosP) * 100) / 100;
+        costoTotalPaneles = Math.round(((parseFloat(_noPaneles[x].precioPorPanel * _noPaneles[x].potencia)) * _noPaneles[x].noModulos) * 100) / 100;
+        _noPaneles[x].costoTotal = costoTotalPaneles;
 
-        objPropuestaPaneles = { 
-            panel: {
-                idPanel: idPanel,
-                nombre: nombrePanel,
-                marca: marcaPanel,
-                potencia: potenciaPanel,
-                potenciaReal: potenciaRealPanel,
-                noModulos: noModulosP,
-                costoDeEstructuras: costoEstructuras,
-                costoPorWatt: costoPorWatt,
-                costoTotalPaneles: costoTotalPaneles
-            }
+        objPropuestaPaneles = {
+            panel: _noPaneles[x]
         };
-        
+
         _arrayResult.push(objPropuestaPaneles);
     }
 

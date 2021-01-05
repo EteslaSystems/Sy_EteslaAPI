@@ -141,7 +141,6 @@ async function getFilteredInvestor(idInversor){
 }
 
 async function getInversores_cotizacion(data){
-	var objInversores = {};
 	var arrayInversor = [];
 	var potenciaReal_ = parseFloat(data.potenciaReal);
 	potenciaReal_ = potenciaReal_ * 1000; ///Watss - Kw ===> wtts
@@ -150,42 +149,38 @@ async function getInversores_cotizacion(data){
 
 	for(var i = 0; i < allInversores.length; i++)
 	{
-		_potencia = allInversores[i].fPotencia;
-		_potenciaMaximaInversor = _potencia * 1.25;
-		NoOfInvestors = potenciaReal_ / _potenciaMaximaInversor;
-		NoOfInvestors = NoOfInvestors < 0.9 ? 0 : Math.round(NoOfInvestors);
+		redimensinoamiento = allInversores[i].fPotencia * 1.25;
+		numeroDeInversores = potenciaReal_ / redimensinoamiento;
+		numeroDeInversores = numeroDeInversores < 0.9 ? 0 : Math.round(numeroDeInversores);
 
-		if(NoOfInvestors > 0){
-			_potenciaPicoInversor = potenciaReal_ / NoOfInvestors;
+		if(numeroDeInversores > 0){
+			_potenciaPicoInversor = potenciaReal_ / numeroDeInversores;
 			PMIN_inversor = allInversores[i].iPMIN
 			PMAX_inversor = allInversores[i].iPMAX;
 
 			if(_potenciaPicoInversor > PMIN_inversor && _potenciaPicoInversor < PMAX_inversor){
-				idInversor = allInversores[i].idInversor;
-				_nombreInversor = allInversores[i].vNombreMaterialFot;
-				_precio = allInversores[i].fPrecio;
-				_marca = allInversores[i].vMarca;
-				_porcentajeSobreDimensionamiento = _potenciaPicoInversor / _potencia;
-				_porcentajeSobreDimensionamiento = _porcentajeSobreDimensionamiento * 100;
-				_porcentajeSobreDimensionamiento = parseFloat(Math.round(_porcentajeSobreDimensionamiento) / 100).toFixed(2);
-				potenciaNominal = NoOfInvestors * _potencia;
-				precioTotalInversores = Math.round((_precio * NoOfInvestors) * 100) / 100;
-	
-				objInversores = {
-					idInversor: idInversor,
-					nombreInversor: _nombreInversor,
-					marcaInversor: _marca,
-					potenciaInversor: _potencia,
-					potenciaNominalInversor: potenciaNominal,
-					precioInversor: _precio,
-					potenciaMaximaInversor: _potenciaMaximaInversor,
-					numeroDeInversores: NoOfInvestors,
-					potenciaPicoInversor: _potenciaPicoInversor,
-					porcentajeSobreDimens: _porcentajeSobreDimensionamiento,
-					precioTotalInversores: precioTotalInversores
-				};
+				precioTotalInversores = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100;
 				
-				arrayInversor.push(objInversores);
+				inversoresResult = {
+					fISC: allInversores[i].fISC,
+					fPotencia: allInversores[i].fPotencia,
+					fPrecio: allInversores[i].fPrecio,
+					iPMAX: allInversores[i].iPMAX,
+					iPMIN: allInversores[i].iPMIN,
+					iVMAX: allInversores[i].iVMAX,
+					iVMIN: allInversores[i].iVMIN,
+					vGarantia: allInversores[i].vGarantia,
+					vMarca: allInversores[i].vMarca,
+					vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
+					vOrigen: allInversores[i].vOrigen,
+					vTipoMoneda: allInversores[i].vTipoMoneda,
+					precioTotalInversores: precioTotalInversores,
+					numeroDeInversores: numeroDeInversores,
+				};
+
+
+				//Se agrega el elemento al array de inversores_seleccionados
+				arrayInversor.push(inversoresResult);
 			}
 		}
 	}

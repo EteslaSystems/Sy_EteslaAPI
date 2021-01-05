@@ -155,6 +155,8 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
 		_marca = arrayAllOfPanels[i].vMarca;
 		_precio = parseFloat(arrayAllOfPanels[i].fPrecio);
+		origen = arrayAllOfPanels[i].vOrigen;
+		garantia = arrayAllOfPanels[i].vGarantia;
 		potenciaDelPanel = parseFloat(arrayAllOfPanels[i].fPotencia);
 		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel);
 		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
@@ -165,10 +167,13 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 			nombre: _nombre,
 			marca: _marca,
 			potencia: potenciaDelPanel,
+			origen: origen,
+			garantia: garantia,
 			potenciaReal: _potenciaReal,
 			noModulos: NoOfModuls,
 			precioPorPanel: _precio,
-			costoDeEstructuras: structuresCost
+			costoDeEstructuras: structuresCost,
+			costoTotal: 0
 		};
 
 		arrayNoDeModulosPorPotenciaDelPanel.push(objNoDeModulosPorPotenciaDelPanel);

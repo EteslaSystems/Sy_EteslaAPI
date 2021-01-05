@@ -16,8 +16,8 @@ var oldInversorPrice = 0;
 var newInversorPrice = 0;
 var objCombinacion = {
     combinacion: '',
-    panel:{ idPanel:0, nombrePanel:'', marcaPanel:'', potenciaPanel:'', cantidadPaneles:0, potenciaReal:0, costoDeEstructuras:0, precioPorWatt:0, costoTotalPaneles:0 }, 
-    inversor:{ idInversor:0, nombreInversor:'', marcaInversor:'', potenciaInversor:0, potenciaNominalInversor:0, precioInversor:0, potenciaMaximaInversor:0, numeroDeInversores:0, potenciaPicoInversor:0, porcentajeSobreDimens:0, costoTotalInversores:0 }
+    panel: '', 
+    inversor: ''
 };
 
 
@@ -72,7 +72,7 @@ async function getCombinacionEconomica(data, __consumos){
     if(__paneles.length > 0){
         for(var i=1; i<__paneles.length; i++)
         {
-            newPanelPrice = parseFloat(__paneles[i].panel.costoTotalPaneles);
+            newPanelPrice = parseFloat(__paneles[i].panel.costoTotal);
 
             if(i == 1){
                 oldPanelPrice = newPanelPrice;
@@ -81,15 +81,7 @@ async function getCombinacionEconomica(data, __consumos){
             if(oldPanelPrice >= newPanelPrice){
                 oldPanelPrice = newPanelPrice;
                 
-                objCombinacion.panel.idPanel = __paneles[i].panel.idPanel;
-                objCombinacion.panel.nombrePanel = __paneles[i].panel.nombre;
-                objCombinacion.panel.marcaPanel = __paneles[i].panel.marca;
-                objCombinacion.panel.potenciaPanel = __paneles[i].panel.potencia;
-                objCombinacion.panel.cantidadPaneles = __paneles[i].panel.noModulos;
-                objCombinacion.panel.potenciaReal = __paneles[i].panel.potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = __paneles[i].panel.costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = __paneles[i].panel.costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = __paneles[i].panel.costoTotalPaneles;
+                objCombinacion.panel = __paneles[i].panel;
             }
         }
     }
@@ -108,17 +100,7 @@ async function getCombinacionEconomica(data, __consumos){
             if(oldInversorPrice >= newInversorPrice){
                 oldInversorPrice = newInversorPrice;
 
-                objCombinacion.inversor.idInversor = __inversores[j].idInversor;
-                objCombinacion.inversor.nombreInversor = __inversores[j].nombreInversor;
-                objCombinacion.inversor.marcaInversor = __inversores[j].marcaInversor;
-                objCombinacion.inversor.potenciaInversor = __inversores[j].potenciaInversor;
-                objCombinacion.inversor.potenciaNominalInversor = __inversores[j].potenciaNominalInversor;
-                objCombinacion.inversor.precioInversor = __inversores[j].precioInversor;
-                objCombinacion.inversor.potenciaMaximaInversor = __inversores[j].potenciaMaximaInversor;
-                objCombinacion.inversor.numeroDeInversores = __inversores[j].numeroDeInversores;
-                objCombinacion.inversor.potenciaPicoInversor = __inversores[j].potenciaPicoInversor;
-                objCombinacion.inversor.porcentajeSobreDimens = parseFloat(__inversores[j].porcentajeSobreDimens);
-                objCombinacion.inversor.costoTotalInversores = __inversores[j].precioTotalInversores;
+                objCombinacion.inversor = __inversores[j];
             }
         }
     }
@@ -156,7 +138,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         
         for(var k=0; k<_panelSelected.length; k++)
         {
-            mediaDePrecios += parseFloat(_panelSelected[k].costoTotalPaneles);
+            mediaDePrecios += parseFloat(_panelSelected[k].costoTotal);
         }
 
         mediaDePrecios = Math.round((mediaDePrecios / _panelSelected.length) * 100) / 100;
@@ -169,7 +151,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 
         for(var u=0; u<_panelSelecto.length; u++)
         {
-            acercamiento = Math.abs(Math.round((mediaCostoTPaneles - _panelSelecto[u].costoTotalPaneles) * 100) / 100);
+            acercamiento = Math.abs(Math.round((mediaCostoTPaneles - _panelSelecto[u].costoTotal) * 100) / 100);
 
             if(u === 0){
                 oldAcercamiento = acercamiento;
@@ -177,15 +159,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
             if(oldAcercamiento >= newAcercamiento){
                 oldAcercamiento = newAcercamiento;
 
-                objCombinacion.panel.idPanel = _panelSelecto[u].idPanel;
-                objCombinacion.panel.nombrePanel = _panelSelecto[u].nombre;
-                objCombinacion.panel.marcaPanel = _panelSelecto[u].marca;
-                objCombinacion.panel.potenciaPanel = _panelSelecto[u].potencia;
-                objCombinacion.panel.cantidadPaneles = _panelSelecto[u].noModulos;
-                objCombinacion.panel.potenciaReal = _panelSelecto[u].potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = _panelSelecto[u].costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = _panelSelecto[u].costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = _panelSelecto[u].costoTotalPaneles;
+                objCombinacion.panel = _panelSelecto[u];
             }
         }
     };
@@ -232,17 +206,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
             if(oldAcercamiento >= newAcercamiento){
                 oldAcercamiento = newAcercamiento;
 
-                objCombinacion.inversor.idInversor = __inversores[u].idInversor;
-                objCombinacion.inversor.nombreInversor = __inversores[u].nombreInversor;
-                objCombinacion.inversor.marcaInversor = __inversores[u].marcaInversor;
-                objCombinacion.inversor.potenciaInversor = __inversores[u].potenciaInversor;
-                objCombinacion.inversor.potenciaNominalInversor = __inversores[u].potenciaNominalInversor;
-                objCombinacion.inversor.precioInversor = __inversores[u].precioInversor;
-                objCombinacion.inversor.potenciaMaximaInversor = __inversores[u].potenciaMaximaInversor;
-                objCombinacion.inversor.numeroDeInversores = __inversores[u].numeroDeInversores;
-                objCombinacion.inversor.potenciaPicoInversor = __inversores[u].potenciaPicoInversor;
-                objCombinacion.inversor.porcentajeSobreDimens = parseFloat(__inversores[u].porcentajeSobreDimens);
-                objCombinacion.inversor.costoTotalInversores = __inversores[u].precioTotalInversores;
+                objCombinacion.inversor = __inversores[u];
             }
         }
     };
@@ -283,22 +247,12 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
         {   
             potenciaReal = parseFloat(__paneles[i].panel.potenciaReal);
 
-            objCombinacionOptima = { consumos:__consumos, origen, potenciaReal };
+            objCombinacionOptima = { consumos:__consumos, origen, potenciaReal, tarifa: data.tarifa };
 
             newData = await bajaTension.getPowerBTI(objCombinacionOptima);
             _generacionPower = newData.generacion;
 
-            var totalNewGeneration = (_arr) => {
-                generation = 0;
-
-                for(var a=0; a<_arr.length; a++)
-                {
-                    generation += _arr[a];
-                }
-                return generation;
-            };
-
-            newProduccion = totalNewGeneration(_generacionPower);
+            newProduccion = _generacionPower.generacionAnual;
 
             //Comparacion de mayor produccion
             if(i === 1){
@@ -308,15 +262,7 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
             if(oldProduccion <= newProduccion){
                 oldProduccion = newProduccion;
 
-                objCombinacion.panel.idPanel = __paneles[i].panel.idPanel;
-                objCombinacion.panel.nombrePanel = __paneles[i].panel.nombre;
-                objCombinacion.panel.marcaPanel = __paneles[i].panel.marca;
-                objCombinacion.panel.potenciaPanel = __paneles[i].panel.potencia;
-                objCombinacion.panel.cantidadPaneles = __paneles[i].panel.noModulos;
-                objCombinacion.panel.potenciaReal = __paneles[i].panel.potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = __paneles[i].panel.costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = __paneles[i].panel.costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = __paneles[i].panel.costoTotalPaneles;
+                objCombinacion.panel = __paneles[i].panel;
             }
         }
     }
@@ -342,17 +288,7 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
                 oldSobredimension = newSobredimension;
                 /* oldInversorPrice = newInversorPrice; */
 
-                objCombinacion.inversor.idInversor = __inversores[x].idInversor;
-                objCombinacion.inversor.nombreInversor = __inversores[x].nombreInversor;
-                objCombinacion.inversor.marcaInversor = __inversores[x].marcaInversor;
-                objCombinacion.inversor.potenciaInversor = __inversores[x].potenciaInversor;
-                objCombinacion.inversor.potenciaNominalInversor = __inversores[x].potenciaNominalInversor;
-                objCombinacion.inversor.precioInversor = __inversores[x].precioInversor;
-                objCombinacion.inversor.potenciaMaximaInversor = __inversores[x].potenciaMaximaInversor;
-                objCombinacion.inversor.numeroDeInversores = __inversores[x].numeroDeInversores;
-                objCombinacion.inversor.potenciaPicoInversor = __inversores[x].potenciaPicoInversor;
-                objCombinacion.inversor.porcentajeSobreDimens = parseFloat(__inversores[x].porcentajeSobreDimens);
-                objCombinacion.inversor.costoTotalInversores = parseFloat(__inversores[x].precioTotalInversores);
+                objCombinacion.inversor = __inversores[x];
             }
         }
     }

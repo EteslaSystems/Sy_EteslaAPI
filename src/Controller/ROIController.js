@@ -5,26 +5,44 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
     var generacionAnual = objPower.generacion.generacionAnual; //*KWp* 
     var costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
 
-    /*kwh - Ahorro energia*/
-    consumoAnualaCFE = Math.round((consumoAnual - generacionAnual) * 100)/100;
+    /*Ahorro (energia/$$)*/
+    ahorroAnual = Math.round((consumoAnual - generacionAnual) * 100)/100; //kwh
+    /*#region Hipotesis_aboutROI*/
+    ahorroAnualEnPesosMXN = Math.round((ahorroAnual * costoKwh) * 100)/100; //$$
+    ahorroBimestralEnPesosMXN = Math.round((ahorroAnualEnPesosMXN / 6) * 100)/100; //$$
+    ahorroMensualEnPesosMXN = Math.round((ahorroAnualEnPesosMXN / 12) * 100)/100; //$$
+    /*#endregion*/  
 
-    /*$$ - Ahorro dinero(s)*/
-    consumoAnualPesosMXN = consumoAnual * costoKwh; 
+    /*$$ - Pago a CFE y Ahorro(s)*/
+    ///Pago a CFE
+    consumoAnualPesosMXN = consumoAnual * costoKwh;
+    consumoBimestralPesosMXN = consumoAnualPesosMXN / 6;
+    consumoMensualPesosMXN = consumoAnualPesosMXN / 12;
+    ///
     generacionAnualPesosMXN = (generacionAnual * costoKwh); //(generacionAnual_kwh) * costoKwh
     ROIenAnios = Math.round((costoDeProyecto / generacionAnualPesosMXN) * 100) / 100;
 
     /*$$ - Nuevo pago a CFE*/
-    nuevoPagoAnual = Math.round((consumoAnualaCFE * 1.5) * 100) / 100;
+    nuevoPagoAnual = Math.round((ahorroAnual * 1.5) * 100) / 100;
     nuevoPagoBimestral = Math.round((nuevoPagoAnual / 6) * 100)/100;
 
     objRespuesta = {
-        ahorroAnualEnKwh: generacionAnual,
-        consumoAnualaCFE: consumoAnualaCFE,
-        consumoAnualPesosMXN: consumoAnualPesosMXN,
-        generacionAnualPesosMXN: generacionAnualPesosMXN,
-        ROIenAnios: ROIenAnios,
-        nuevoPagoAnual: nuevoPagoAnual,
-        nuevoPagoBimestral: nuevoPagoBimestral
+        ahorro: {
+            ahorroAnualEnPesosMXN: ahorroAnualEnPesosMXN,
+            ahorroBimestralEnPesosMXN: ahorroBimestralEnPesosMXN,
+            ahorroMensualEnPesosMXN: ahorroMensualEnPesosMXN
+        },
+        consumo: {
+            consumoAnualPesosMXN: consumoAnualPesosMXN,
+            consumoBimestralPesosMXN: consumoBimestralPesosMXN,
+            consumoMensualPesosMXN: consumoMensualPesosMXN
+        },
+        generacion: {
+            generacionAnualPesosMXN: generacionAnualPesosMXN,
+            nuevoPagoAnual: nuevoPagoAnual,
+            nuevoPagoBimestral: nuevoPagoBimestral
+        },
+        roiEnAnios: ROIenAnios
     };
 
     return objRespuesta;

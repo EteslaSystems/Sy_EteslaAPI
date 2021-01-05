@@ -26,8 +26,8 @@ const comida_dia = 9.5; //Cotizador - viejo (??)
 const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
-    var objCotizacionBTI = { paneles: '', inversores: '',  power: '', viaticos_costos: '', totales: '', financiamiento: '', roi:'' };
-    var arrayCotizacionBTI = [];
+    var _result = [];
+    var objCotizacionBTI = {};
     var origen = data.origen;
     var destino = data.destino;
     var bInstalacion = data.bInstalacion || null;
@@ -55,33 +55,7 @@ async function calcularViaticosBTI(data){
     
     for(var x=0; x<_arrayCotizacion.length; x++)
     {
-        /*#region Iteracion_Paneles*/
-        __no = _arrayCotizacion[x].no || 0;
-        __nombrePanel = _arrayCotizacion[x].panel.nombrePanel || null;
-        __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
-        __potenciaPanel = parseFloat(_arrayCotizacion[x].panel.potenciaPanel) || 0;
-        __cantidadPaneles = parseInt(_arrayCotizacion[x].panel.cantidadPaneles) || 0; //numeroDeModulos
-        __potenciaReal =  parseFloat(_arrayCotizacion[x].panel.potenciaReal) || 0;
-        __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
-        __precioPorWattPanel = parseFloat(_arrayCotizacion[x].panel.precioPorWatt) || 0;
-        // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-        // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
-        costoTotalPaneles = Math.round(parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles) * 100) / 100;
-        /*#endregion*/
-        /*#region Iteracion_Inversores*/
-        __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
-        __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-        __potenciaInversor = parseFloat(_arrayCotizacion[x].inversor.potenciaInversor) || 0;
-        __potenciaNominalInversor = parseFloat(_arrayCotizacion[x].inversor.potenciaNominalInversor) || 0;
-        __precioInversor = parseFloat(_arrayCotizacion[x].inversor.precioInversor) || 0;
-        __potenciaMaximaInversor = parseFloat(_arrayCotizacion[x].inversor.potenciaMaximaInversor) || 0;
-        __numeroDeInversores = parseInt(_arrayCotizacion[x].inversor.numeroDeInversores) || 0;
-        __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
-        __porcentajeSobreDimens = parseFloat(_arrayCotizacion[x].inversor.porcentajeSobreDimens) || 0;
-        costoTotalInversores = parseFloat(_arrayCotizacion[x].inversor.costoTotalInversores) || 0;
-        /*#endregion*/
-        
-        noDias = await getDaysBTI(__cantidadPaneles);
+        noDias = await getDaysBTI(_arrayCotizacion[x].panel.noModulos);
 
         if(distanciaEnKm >= km_hospedaje){
             hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
@@ -103,8 +77,8 @@ async function calcularViaticosBTI(data){
         }
 
         viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
-        costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + __costoDeEstructuras) * 100) / 100;
-        manoDeObra = await getPrecioDeManoDeObraBTI(__cantidadPaneles, costoTotalPanInvEstr);
+        costoTotalPanInvEstr = Math.round((_arrayCotizacion[x].panel.costoTotal + _arrayCotizacion[x].inversor.precioTotalInversores + _arrayCotizacion[x].panel.costoDeEstructuras) * 100) / 100;
+        manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
 
         if(bInstalacion != null && bInstalacion === 'false'){
             manoDeObra[0] = 0;
@@ -113,75 +87,57 @@ async function calcularViaticosBTI(data){
         totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
         subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
-        costoTotalProyecto = subtotOtrFletManObrTPIE + margen + viaticos + totalFletes;
+        costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos + totalFletes)*100)/100;
         precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100;
         precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
         precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
 
-        /*????*/precio_watt = Math.round(((costoTotalProyecto / (__cantidadPaneles * __potenciaPanel))) * 100) / 100;
+        /*????*/precio_watt = Math.round(((costoTotalProyecto / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
 
         if(_consums != null){
             //P O W E R
-            dataPwr = { consumos: _consums, origen: origen, potenciaReal: __potenciaReal, tarifa: tarifa };
+            dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
             objPower = await power.obtenerPowerBTI(dataPwr) || null;
             objROI = await roi.obtenerROI(objPower, _consums, precioTotalMXN);
-            objCotizacionBTI.power = objPower;
-            objCotizacionBTI.roi = objROI;
         }
 
         //F I N A N C I A M I E N T O
         data = { costoTotal: precioTotalMXN };
         objFinan = await financiamiento.financiamiento(data);
 
-        objCotizacionBTI.paneles = {
-            nombrePanel: __nombrePanel || null,
-            marcaPanel: __marcaPanel || null,
-            potenciaPanel: __potenciaPanel || null,
-            cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
-            potenciaReal: __potenciaReal || null,
-            costoDeEstructuras:  __costoDeEstructuras || null,
-            precioPorWatt: __precioPorWattPanel || null,
-            // precioPorModulo: __precioPorModulo || null,
-            costoTotalPaneles: costoTotalPaneles || null
+        //Se llena el objetoRespuesta
+        objCotizacionBTI = {
+            paneles: _arrayCotizacion[x].panel,
+            inversores: _arrayCotizacion[x].inversor,
+            viaticos_costos: {
+                noDias: noDias,
+                hospedaje: hospedaje,
+                comida: comida,
+                pasaje: pasaje
+            },
+            totales: {
+                totalViaticosMT: viaticos,
+                manoDeObra: manoDeObra[0],
+                otrosTotal: manoDeObra[1],
+                totalFletes: totalFletes,
+                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                margen: margen,
+                totalDeTodo: costoTotalProyecto,
+                precio: precio,
+                precioMasIVA: precioMasIVA,
+                precio_watt: precio_watt,
+                precioTotalMXN: precioTotalMXN
+            },
+            power: objPower || null,
+            roi: objROI || null, 
+            financiamiento: objFinan,
+            descuento: descuento
         };
-        objCotizacionBTI.inversores = {
-            nombreInversor:  __nombreInversor || null,
-            marcaInversor: __marcaInversor || null,
-            potenciaInversor: __potenciaInversor || null,
-            potenciaNominalInversor: __potenciaNominalInversor || null,
-            potenciaPicoPorInversor: __potenciaPicoInversor || null,
-            precioInversor: __precioInversor || null,
-            potenciaMaximaInversor:  __potenciaMaximaInversor || null,
-            numeroDeInversores: __numeroDeInversores || null,
-            porcentajeSobreDimens: __porcentajeSobreDimens || null,
-            costoTotalInversores: costoTotalInversores || null
-        };
-        objCotizacionBTI.viaticos_costos = {
-            noDias: noDias,
-            hospedaje: hospedaje,
-            comida: comida,
-            pasaje: pasaje
-        };
-        objCotizacionBTI.totales = {
-            totalViaticosMT: viaticos,
-            manoDeObra: manoDeObra[0],
-            otrosTotal: manoDeObra[1],
-            totalFletes: totalFletes,
-            totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-            margen: margen,
-            totalDeTodo: costoTotalProyecto,
-            precio: precio,
-            precioMasIVA: precioMasIVA,
-            precio_watt: precio_watt,
-            precioTotalMXN: precioTotalMXN
-        };
-        objCotizacionBTI.financiamiento = objFinan;
-        objCotizacionBTI.descuento = descuento;
 
-        arrayCotizacionBTI.push(objCotizacionBTI);
+        _result.push(objCotizacionBTI);
     }
 
-    return arrayCotizacionBTI;
+    return _result;
 }
 
 async function getDaysBTI(noPanelesAInstalar){
@@ -300,7 +256,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm, descuent
             costoManoDeObra = getPrecioDeManoDeObraMT(__cantidadPaneles, costoTotalPanInvEstr);
             subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
             margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100;
-            totalDeTodo = subtotOtrFletManObrTPIE + margen + totalViaticosMT;
+            totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticosMT)*100) / 100;
             precio = Math.round(totalDeTodo * (1 - descuent) * 100)/100;
             precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
             precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
