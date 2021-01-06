@@ -76,8 +76,14 @@ async function calcularViaticosBTI(data){
             pasaje = 0;
         }
 
+        /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
+        costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotal);
+        costoTotalInversores = parseFloat(_arrayCotizacion[x].inversor.precioTotal);
+        costoTotalEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras);
+        /*#endregion*/
+
         viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
-        costoTotalPanInvEstr = Math.round((_arrayCotizacion[x].panel.costoTotal + _arrayCotizacion[x].inversor.precioTotalInversores + _arrayCotizacion[x].panel.costoDeEstructuras) * 100) / 100;
+        costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
         manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
 
         if(bInstalacion != null && bInstalacion === 'false'){
@@ -220,9 +226,7 @@ async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm, descuent
             __cantidadPaneles = parseInt(_arrayCotizacion[x].panel.cantidadPaneles) || 0; //numeroDeModulos
             __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
             __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
-            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
-            // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-            // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
+            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorPanel || 0;
             costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
             /*#endregion*/
 

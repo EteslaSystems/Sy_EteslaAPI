@@ -47,6 +47,7 @@ async function compileHandleFile(data){
 }
 
 async function ordenarData(dataa){
+    var objResultDatOrd = { vendedor:''||null, cliente:''||null, combinaciones:''||null, combinacionesPropuesta:false};
     var idCliente = dataa.idCliente;
     var idVendedor = dataa.idVendedor;
     var datas = { idPersona: '' };
@@ -65,11 +66,20 @@ async function ordenarData(dataa){
     var uVendedor = await vendedor.consultarId(datas);
     uVendedor = uVendedor.message;
 
-    if(dataa.combinacionesPropuesta == "true" || true){
+    objResultDatOrd.vendedor = {
+            nombre: uVendedor[0].vNombrePersona +' '+uVendedor[0].vPrimerApellido+' '+uCliente[0].vSegundoApellido,
+            sucursal: uVendedor[0].vOficina
+    };
+    objResultDatOrd.cliente = {
+        nombre: uCliente[0].vNombrePersona + ' ' + uCliente[0].vPrimerApellido + ' ' + uCliente[0].vSegundoApellido,
+        direccion: uCliente[0].vCalle + ' ' + uCliente[0].vMunicipio + ' ' + uCliente[0].vEstado
+    };
+
+    if(dataa.combinacionesPropuesta === true){ ///Combinaciones
         objCombinaciones = JSON.parse(dataa.dataCombinaciones);
-
+    
         combinacionSeleccionada = dataa.combSeleccionada.toString();
-
+    
         switch(combinacionSeleccionada)
         {
             case 'optConvinacionEconomica':
@@ -85,30 +95,21 @@ async function ordenarData(dataa){
                 -1;
             break;
         }
+
+        objResultDatOrd.combinaciones = {
+                objCombinaciones: objCombinaciones,
+                combinacionEconomica: combinacionEconomica,
+                combinacionMediana: combinacionMediana,
+                combinacionOptima: combinacionOptima
+        };
+        objResultDatOrd.combinacionesPropuesta = dataa.combinacionesPropuesta;
     }
-    
-    objResult = {
-        vendedor: {
-            nombre: uVendedor[0].vNombrePersona +' '+uVendedor[0].vPrimerApellido+' '+uCliente[0].vSegundoApellido,
-            sucursal: uVendedor[0].vOficina
-        },
-        cliente: {
-            nombre: uCliente[0].vNombrePersona + ' ' + uCliente[0].vPrimerApellido + ' ' + uCliente[0].vSegundoApellido,
-            direccion: uCliente[0].vCalle + ' ' + uCliente[0].vMunicipio + ' ' + uCliente[0].vEstado
-        },
-        combinaciones: {
-            objCombinaciones: objCombinaciones,
-            combinacionEconomica: combinacionEconomica,
-            combinacionMediana: combinacionMediana,
-            combinacionOptima: combinacionOptima
-        },
-        combinacionesPropuesta: dataa.combinacionesPropuesta
+    else{ ///Equipos seleccionados
+        propuesta = JSON.parse(dataa.objProyecto.propuesta);
+        objResultDatOrd.propuesta = propuesta;
     }
 
-   console.log('createPdf says: ');
-   console.log(objResult);
-
-   return objResult;
+   return objResultDatOrd;
 }
 
 module.exports.crearPDF = async function(data){

@@ -154,12 +154,14 @@ async function getInversores_cotizacion(data){
 		numeroDeInversores = numeroDeInversores < 0.9 ? 0 : Math.round(numeroDeInversores);
 
 		if(numeroDeInversores > 0){
-			_potenciaPicoInversor = potenciaReal_ / numeroDeInversores;
+			_potenciaPicoInversor = Math.round((potenciaReal_ / numeroDeInversores) * 100) / 100;
 			PMIN_inversor = allInversores[i].iPMIN
 			PMAX_inversor = allInversores[i].iPMAX;
+			porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
+			potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
 
 			if(_potenciaPicoInversor > PMIN_inversor && _potenciaPicoInversor < PMAX_inversor){
-				precioTotalInversores = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100;
+				precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 				
 				inversoresResult = {
 					fISC: allInversores[i].fISC,
@@ -174,8 +176,11 @@ async function getInversores_cotizacion(data){
 					vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
 					vOrigen: allInversores[i].vOrigen,
 					vTipoMoneda: allInversores[i].vTipoMoneda,
-					precioTotalInversores: precioTotalInversores,
+					precioTotal: precioTotal,
 					numeroDeInversores: numeroDeInversores,
+					porcentajeSobreDimens: porcentajeSobreDimens,
+					potenciaNominal: potenciaNominal,
+					potenciaPico: _potenciaPicoInversor
 				};
 
 

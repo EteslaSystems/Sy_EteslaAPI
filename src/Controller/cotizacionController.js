@@ -184,7 +184,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         
         for(var k=0; k<_inversoreSelected.length; k++)
         {
-            mediaDePrecios += parseFloat(_inversoreSelected[k].precioTotalInversores);
+            mediaDePrecios += parseFloat(_inversoreSelected[k].precioTotal);
         }
 
         mediaDePrecios = Math.round((mediaDePrecios / _inversoreSelected.length) * 100) / 100;
@@ -198,7 +198,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 
         for(var u=0; u<_inversSelect.length; u++)
         {
-            acercamiento = Math.abs(mediaCostoTInv - _inversSelect[u].precioTotalInversores);
+            acercamiento = Math.abs(mediaCostoTInv - _inversSelect[u].precioTotal);
 
             if(u === 0){
                 oldAcercamiento = acercamiento;

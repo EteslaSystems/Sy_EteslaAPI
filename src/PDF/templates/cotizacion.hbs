@@ -367,7 +367,21 @@
                         <div class="card dtlReciboCardsVerde">
                             <div class="card-header">Total a Pagar</div>
                             <div class="card-body">
-                                <h2 id="nuevoPagoConPaneles" class="text-center"><strong>$1,234.00</strong></h2>
+                                {{#if combinaciones}}
+                                    {{#with combinaciones}}
+                                        {{#if combinacionEconomica}}
+                                            <h2 id="nuevoPagoConPaneles" class="text-center"><strong>${{ objCombinaciones.combinacionEconomica.0.roi.generacion.nuevoPagoBimestral }}</strong></h2>
+                                        {{/if}}
+                                        {{#if combinacionMediana}}
+                                            <h2 id="nuevoPagoConPaneles" class="text-center"><strong>${{ objCombinaciones.combinacionMediana.0.roi.generacion.nuevoPagoBimestral }}</strong></h2>
+                                        {{/if}}
+                                        {{#if combinacionOptima}}
+                                            <h2 id="nuevoPagoConPaneles" class="text-center"><strong>${{ objCombinaciones.combinacionOptima.0.roi.generacion.nuevoPagoBimestral }}</strong></h2>
+                                        {{/if}}
+                                    {{/with}}
+                                {{else}}
+                                    <h2 id="nuevoPagoConPaneles" class="text-center"><strong>$1,234.00</strong></h2>
+                                {{/if}}
                                 <div class="separador"></div>
                                 <div class="row mt-2">
                                   <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="28" height="28" viewBox="0 0 172 172" style=" fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g fill="#f1c40f"><path d="M86,14.33333l41.925,50.16667h-83.85z"></path><path d="M71.66667,53.75h28.66667v96.75h-28.66667z"></path></g></g></svg>
@@ -434,7 +448,21 @@
             <!-- #Body -->
             <div class="container-fluid">
             <div class="card">
-                <div class="card-header text-white">Informacion de la propuesta seleccionada</div>
+                {{#if combinaciones}}
+                    {{#with combinaciones}}
+                        {{#if combinacionEconomica}}
+                            <div class="card-header text-white">Informacion de la propuesta economica</div>
+                        {{/if}}
+                        {{#if combinacionMediana}}
+                            <div class="card-header text-white">Informacion de la propuesta mediana</div>
+                        {{/if}}
+                        {{#if combinacionOptima}}
+                            <div class="card-header text-white">Informacion de la propuesta optima</div>
+                        {{/if}}
+                    {{/with}}
+                {{else}}
+                    <div class="card-header text-white">Propuesta ...</div>
+                {{/if}}
                 <div class="card-body table-responsive">
                     <table class="table table-sm">
                         <thead>
@@ -877,24 +905,95 @@
                             <tbody>
                                 <tr>
                                     <td>Tu consumo a CFE en el último año</td>
-                                    <td class="tbGraphAnswDang">10,512 kWh</td>
+                                    <td class="tbGraphAnswDang"> kWh</td>
                                 </tr>
                                 <tr>
                                     <td>Tu consumo promedio a CFE bimestral </td>
-                                    <td class="tbGraphAnswDang">1,752 kWh</td>
+                                    <td class="tbGraphAnswDang"> kWh</td>
                                 </tr>
-                                <tr>
-                                    <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                    <td class="tbGraphAnswSucc">5,498 kWh</td>
-                                </tr>
-                                <tr>
-                                    <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                    <td class="tbGraphAnswSucc">916 kWh</td>
-                                </tr>
-                                <tr>
-                                    <td>% de ahorro de energía</td>
-                                    <td class="tbGraphAnswSucc">48%</td>
-                                </tr>
+                                {{#if combinaciones}}
+                                    {{#with combinaciones}}
+                                        {{#if combinacionEconomica}}
+                                            <tr>
+                                                <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>% de ahorro de energía</td>
+                                                <td class="tbGraphAnswSucc">48%</td>
+                                            </tr>
+                                        {{/if}}
+                                        {{#if combinacionMediana}}
+                                            <tr>
+                                                <td>Tu consumo a CFE en el último año</td>
+                                                <td class="tbGraphAnswDang"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tu consumo promedio a CFE bimestral </td>
+                                                <td class="tbGraphAnswDang"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>% de ahorro de energía</td>
+                                                <td class="tbGraphAnswSucc">48%</td>
+                                            </tr>
+                                        {{/if}}
+                                        {{#if combinacionOptima}}
+                                            <tr>
+                                                <td>Tu consumo a CFE en el último año</td>
+                                                <td class="tbGraphAnswDang"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tu consumo promedio a CFE bimestral </td>
+                                                <td class="tbGraphAnswDang"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>% de ahorro de energía</td>
+                                                <td class="tbGraphAnswSucc">48%</td>
+                                            </tr>
+                                        {{/if}}
+                                    {{/with}}
+                                {{else}}
+                                    <tr>
+                                        <td>Tu consumo a CFE en el último año</td>
+                                        <td class="tbGraphAnswDang">10,512 kWh</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tu consumo promedio a CFE bimestral </td>
+                                        <td class="tbGraphAnswDang">1,752 kWh</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                        <td class="tbGraphAnswSucc">5,498 kWh</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                        <td class="tbGraphAnswSucc">916 kWh</td>
+                                    </tr>
+                                    <tr>
+                                        <td>% de ahorro de energía</td>
+                                        <td class="tbGraphAnswSucc">48%</td>
+                                    </tr>
+                                {{/if}}
                             </tbody>
                         </table>
                     </div>
