@@ -380,7 +380,7 @@
                                         {{/if}}
                                     {{/with}}
                                 {{else}}
-                                    <h2 id="nuevoPagoConPaneles" class="text-center"><strong>$1,234.00</strong></h2>
+                                    <h2 id="nuevoPagoConPaneles" class="text-center"><strong>${{ propuesta.0.roi.generacion.nuevoPagoBimestral }}</strong></h2>
                                 {{/if}}
                                 <div class="separador"></div>
                                 <div class="row mt-2">
@@ -461,7 +461,7 @@
                         {{/if}}
                     {{/with}}
                 {{else}}
-                    <div class="card-header text-white">Propuesta ...</div>
+                    <div class="card-header text-white">Propuesta de {{ propuesta.0.paneles.nombre }}</div>
                 {{/if}}
                 <div class="card-body table-responsive">
                     <table class="table table-sm">
@@ -477,55 +477,73 @@
                                 {{#with combinaciones}}
                                     {{#if combinacionEconomica}}
                                         <tr>
-                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
-                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoTotalPaneles }}$</td>
+                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.noModulos }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.nombre }}</td>
+                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoTotal }}$</td>
                                         </tr>
                                         <tr>
                                             <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
-                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.costoTotalInversores }}$</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vNombreMaterialFot }}</td>
+                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.precioTotal }}$</td>
                                         </tr>
                                         <tr>
-                                            <td class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.noModulos }}</td>
                                             <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
                                             <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
                                     {{/if}}
                                     {{#if combinacionMediana}}
                                         <tr>
-                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
-                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoTotalPaneles }}$</td>
+                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.noModulos }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.nombre }}</td>
+                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoTotal }}$</td>
                                         </tr>
                                         <tr>
                                             <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
-                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.costoTotalInversores }}$</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vNombreMaterialFot }}</td>
+                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.precioTotal }}$</td>
                                         </tr>
                                         <tr>
-                                            <td class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.noModulos }}</td>
                                             <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
                                             <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
                                     {{/if}}
                                     {{#if combinacionOptima}}
                                         <tr>
-                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
-                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoTotalPaneles }}$</td>
+                                            <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.noModulos }}</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.nombre }}</td>
+                                            <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoTotal }}$</td>
                                         </tr>
                                         <tr>
                                             <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
-                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.costoTotalInversores }}$</td>
+                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vNombreMaterialFot }}</td>
+                                            <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.precioTotal }}$</td>
                                         </tr>
                                         <tr>
-                                            <td class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.cantidadPaneles }}</td>
+                                            <td class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.noModulos }}</td>
                                             <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
                                             <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoDeEstructuras }}$</td>
                                         </tr>
                                     {{/if}}
+                                {{/with}}
+                            {{else}}
+                                {{#with propeusta}}
+                                    <tr>
+                                        <td id="tdCantidadPaneles" class="etqTexto" align="center">{{ 0.paneles.noModulos }}</td>
+                                        <td class="etqTexto">{{ 0.paneles.nombre }}</td>
+                                        <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ 0.paneles.costoTotal }}$</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="tdCantidadInversores" class="etqTexto" align="center">{{ 0.inversores.numeroDeInversores }}</td>
+                                        <td class="etqTexto">{{ 0.inversores.vNombreMaterialFot }}</td>
+                                        <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ 0.inversores.precioTotal }}$</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="etqTexto" align="center">{{ 0.paneles.noModulos }}</td>
+                                        <td class="etqTexto">Kit de estructuras de aluminio especiales para modulos fotovoltaicos</td>
+                                        <td id="tdPrecioEstructuras" class="etqTexto" align="center">{{ 0.paneles.costoDeEstructuras }}$</td>
+                                    </tr>
                                 {{/with}}
                             {{/if}}
                             <tr>
@@ -638,9 +656,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Paneles</strong></td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.marcaPanel }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.marcaPanel }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.marcaPanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.marca }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.marca }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.marca }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -648,9 +666,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Modelo panel</strong></td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.nombrePanel }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.nombrePanel }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.nombrePanel }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.nombre }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.nombre }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.nombre }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -658,9 +676,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Procedencia</strong></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.origen }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.origen }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.origen }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -668,9 +686,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Garantia</strong></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.paneles.garantia }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.paneles.garantia }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.paneles.garantia }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -678,9 +696,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Inversor</strong></td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.marcaInversor }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.marcaInversor }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.marcaInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vMarca }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vMarca }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vMarca }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -688,9 +706,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Modelo inversor</strong></td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.nombreInversor }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.nombreInversor }}</td>
-                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.nombreInversor }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vNombreMaterialFot }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vNombreMaterialFot }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vNombreMaterialFot }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -698,9 +716,9 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Procedencia</strong></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vOrigen }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vOrigen }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vOrigen }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -708,9 +726,9 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Garantia</strong></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
-                                    <td class="text-center etqTexto"></td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vGarantia }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vGarantia }}</td>
+                                    <td class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vGarantia }}</td>
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -744,13 +762,14 @@
                         </thead>
                         <tbody>
                         <!-- #EtiquetasComparatiba - Contenido -->
+                        {{#with propuesta}}
                             <tr>
                                 <td></td>
                                 <td colspan="4">Potencia</td>
                             </tr>
                             <tr>
                                 <td><strong>Potencia</strong></td>
-                                <td class="text-center etqTexto"> kW</td>
+                                <td class="text-center etqTexto">{{ 0.paneles.potenciaReal }} kW</td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -758,7 +777,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Paneles</strong></td>
-                                <td class="text-center etqTexto"></td>
+                                <td class="text-center etqTexto">{{ 0.paneles.marca }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -766,7 +785,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Modelo panel</strong></td>
-                                <td class="text-center etqTexto"></td>
+                                <td class="text-center etqTexto">{{ 0.paneles.nombre }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -774,7 +793,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Procedencia</strong></td>
-                                <td class="text-center etqTexto"></td>
+                                <td class="text-center etqTexto">{{ 0.paneles.origen }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -782,7 +801,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Garantia</strong></td>
-                                <td class="text-center etqTexto"></td>
+                                <td class="text-center etqTexto">{{ 0.paneles.garantia }}</td>
 
                             </tr>
                             <tr>
@@ -791,7 +810,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Inversor</strong></td>
-                                <td class="text-center etqTexto"></td>
+                                <td class="text-center etqTexto">{{ 0.inversores.vMarca }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -799,7 +818,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Modelo inversor</strong></td>
-                                <td class="text-center etqTexto" class="text-center"></td>
+                                <td class="text-center etqTexto" class="text-center">{{ 0.inversores.vNombreMaterialFot }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -807,7 +826,7 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Procedencia</strong></td>
-                                <td class="text-center etqTexto" class="text-center"></td>
+                                <td class="text-center etqTexto" class="text-center">{{ 0.inversores.vOrigen }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -815,7 +834,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Garantia</strong></td>
-                                <td class="text-center etqTexto" class="text-center"></td>
+                                <td class="text-center etqTexto" class="text-center">{{ 0.inversores.vGarantia }}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -823,8 +842,9 @@
                             </tr>
                             <tr class="compare-row">
                                 <td><strong>Costo (MXN)</strong></td>
-                                <td class="text-center etqTexto">$</td>
+                                <td class="text-center etqTexto">${{ 0.totales.precioTotalMXN }}</td>
                             </tr>
+                        {{/with}}
                         <!-- #End_EtiquetasComparatiba - Contenido -->
                         </tbody>
                     </table>
@@ -903,24 +923,24 @@
                         <h1 class="etqTitulos" style="color: blue;">Beneficios energeticos</h1>
                         <table class="table table-sm tableGraficos">
                             <tbody>
-                                <tr>
-                                    <td>Tu consumo a CFE en el último año</td>
-                                    <td class="tbGraphAnswDang"> kWh</td>
-                                </tr>
-                                <tr>
-                                    <td>Tu consumo promedio a CFE bimestral </td>
-                                    <td class="tbGraphAnswDang"> kWh</td>
-                                </tr>
                                 {{#if combinaciones}}
                                     {{#with combinaciones}}
                                         {{#if combinacionEconomica}}
                                             <tr>
-                                                <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td>Tu consumo a CFE en el último año</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica. }} kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica. }} kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
@@ -930,19 +950,19 @@
                                         {{#if combinacionMediana}}
                                             <tr>
                                                 <td>Tu consumo a CFE en el último año</td>
-                                                <td class="tbGraphAnswDang"> kWh</td>
+                                                <td class="tbGraphAnswDang">{{ objCombinaciones.combinacionMediana. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Tu consumo promedio a CFE bimestral </td>
-                                                <td class="tbGraphAnswDang"> kWh</td>
+                                                <td class="tbGraphAnswDang">{{ objCombinaciones.combinacionMediana. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
@@ -952,19 +972,19 @@
                                         {{#if combinacionOptima}}
                                             <tr>
                                                 <td>Tu consumo a CFE en el último año</td>
-                                                <td class="tbGraphAnswDang"> kWh</td>
+                                                <td class="tbGraphAnswDang">{{ objCombinaciones.combinacionOptima. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Tu consumo promedio a CFE bimestral </td>
-                                                <td class="tbGraphAnswDang"> kWh</td>
+                                                <td class="tbGraphAnswDang">{{ objCombinaciones.combinacionOptima. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima. }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
@@ -1085,18 +1105,20 @@
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
                                     <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionOptima.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                                    <td class="tabFinanciamientothtd">4.6 años</td>
+                                    <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionOptima.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
                             {{/with}}
                         {{else}}
-                            <th class="tabFinanciamientothtd">Pago de contado</th>
-                            <td class="tabFinanciamientothtd">$ 79,398</td>
-                            <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                            <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
-                            <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                            <td class="tabFinanciamientothtd">4.6 años</td>
+                            {{#with propuesta}}
+                                <th class="tabFinanciamientothtd">Pago de contado</th>
+                                <td class="tabFinanciamientothtd">$ {{ 0.totales.precioTotalMXN }}</td>
+                                <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
+                                <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$ {{ 0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
+                                <th class="tabFinanciamientothtd">Retorno de inversión</th>
+                                <td class="tabFinanciamientothtd">{{ 0.roi.roiEnAnios }} años</td>
+                            {{/with}}
                         {{/if}}
                     </tr>
                 </table>

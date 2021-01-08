@@ -10,6 +10,7 @@ const dolar = require('../Controller/dolar_tipoCambio');
 const financiamiento = require('../Controller/financiamientoProjController');
 const power = require('../Controller/powerController');
 const roi = require('../Controller/ROIController');
+const { validar } = require('./usuarioController');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -43,15 +44,38 @@ async function calcularViaticosBTI(data){
 
     var validarJSON = (objJSON) => { //Valida y procesa de String a Object
         if(typeof objJSON === 'string'){
-            consums = JSON.parse(objJSON);
-            consums = consums.consumo;
-            return consums;
+            objJSON = JSON.parse(objJSON);
+            return objJSON;
         }
         return false;
     };
+
+    //Consumos
     _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
 
-    _arrayCotizacion = data.arrayBTI;
+    //ArrayBTI - Equipos seleccionados/Combinaciones
+    if(data.arrayBTI[0].combinacion){
+        //Combinaciones
+        _arrayCotizacion = data.arrayBTI;
+    }
+    else{
+        /*
+            NOTA: -Probar o asegurarse que siempre sera el lugar "0" del arrayBTI.
+                  -Si no... agregar un ciclo for... para iterar el arrayBTI para poder
+                   jalar el ultimo elemnto aunado al array.
+        */
+
+        //Equipos seleccionados
+        formated = data.arrayBTI[0].panel;
+        data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel);
+        formated = data.arrayBTI[0].inversor;
+        data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor);
+        
+        //Se adjuntan los consumos al _arrayBTI
+        data.arrayBTI[0]._arrayConsumos = _consums;
+
+        _arrayCotizacion = data.arrayBTI;
+    }
     
     for(var x=0; x<_arrayCotizacion.length; x++)
     {

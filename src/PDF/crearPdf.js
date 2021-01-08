@@ -75,6 +75,7 @@ async function ordenarData(dataa){
         direccion: uCliente[0].vCalle + ' ' + uCliente[0].vMunicipio + ' ' + uCliente[0].vEstado
     };
 
+    //Se filtra si la propuesta contiene combinaciones o equipos seleccionados
     if(dataa.combinacionesPropuesta === true){ ///Combinaciones
         objCombinaciones = JSON.parse(dataa.dataCombinaciones);
     
@@ -105,11 +106,16 @@ async function ordenarData(dataa){
         objResultDatOrd.combinacionesPropuesta = dataa.combinacionesPropuesta;
     }
     else{ ///Equipos seleccionados
-        propuesta = JSON.parse(dataa.objProyecto.propuesta);
+        propuesta = JSON.parse(dataa.propuesta);
+        _arrayConsumos = JSON.parse(dataa.consumos);
+        _arrayConsumos = _arrayConsumos[0];
+
+        propuesta.push(_arrayConsumos);
+
         objResultDatOrd.propuesta = propuesta;
     }
 
-   return objResultDatOrd;
+    return objResultDatOrd;
 }
 
 module.exports.crearPDF = async function(data){
