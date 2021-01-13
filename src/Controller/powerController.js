@@ -451,7 +451,7 @@ async function getPowerBTI(data){
 
     if(_consumos != null){
         _consumosMensuales = _consumos._promCons.consumoMensual;
-        var _nuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
+        var objNuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
         porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
         
         if(tarifa != null){
@@ -459,7 +459,7 @@ async function getPowerBTI(data){
             objResult.dac_o_nodac = dac_o_nodac;
         }
         
-        objResult.nuevosConsumos = _nuevosConsumos;
+        objResult.nuevosConsumos = objNuevosConsumos;
         objResult.porcentajePotencia = porcentajePotencia;
     }
 
@@ -535,13 +535,17 @@ async function getNewConsumption(__consumos, __generacion){
         _bimestres = [];
         sumBimestres = 0;
 
-        for(var x=0; x<consumosMensuales.length; x++)
+        for(var x=0; x<12; x++)
         {
             bimestre += consumosMensuales[x];
-            x % 2 == 0 ? _bimestres.push(bimestre) : null ;
+            if(x != 0 && x % 2 == 1){
+                _bimestres.push(bimestre);
+                bimestre = 0;
+            }
         }
-        _bimestres.foreach(bimest => {
-            sumBimestres += bimest;
+
+        _bimestres.forEach(function(bimestre){
+            sumBimestres += bimestre;
         });
 
         promedioConsumBimest = Math.round((sumBimestres / _bimestres.length) * 100) / 100;
@@ -549,13 +553,27 @@ async function getNewConsumption(__consumos, __generacion){
         return promedioConsumBimest;
     };
 
-    var promedioConsumoAnual = () => {};
+    var nuevoConsumoAnual = (consumosMens) => {
+        nwConsumosMnsuales = 0;
 
+        consumosMens.forEach(function(nwConsumoMensual){
+            nwConsumosMnsuales += nwConsumoMensual
+        });
+        
+        return nwConsumosMnsuales; //Retorna - KW
+    };
     _consumosNuevosMensuales = _consumosNuevosMensuales(__consumos);
-    
-    promedioConsumoMensual = promedioConsumoMensual(_consumosNuevosMensuales);
+    nuevoConsumoAnual = nuevoConsumoAnual(_consumosNuevosMensuales);
     promedioConsumoBimestral = promedioConsumoBimestral(_consumosNuevosMensuales);
-    //return _consumosNuevos; //kilowatts
+
+    objResult = {
+        ////Todo es retornado en Kw
+        _consuosNuevosMensuales: _consumosNuevosMensuales,
+        nuevoConsumoAnual: nuevoConsumoAnual,
+        promedioConsumoBimestral: promedioConsumoBimestral
+    };
+
+    return objResult; 
 }
 
 async function dac(tarifa, consumoPromedio){

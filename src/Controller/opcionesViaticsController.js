@@ -28,6 +28,8 @@ const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
     var _result = [];
+    var objROI=null;
+    var objPower=null;
     var objCotizacionBTI = {};
     var origen = data.origen;
     var destino = data.destino;
@@ -50,8 +52,13 @@ async function calcularViaticosBTI(data){
         return false;
     };
 
-    //Consumos
-    _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
+    if(_consums != null){
+        //Consumos
+        _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
+
+        //Se adjuntan los consumos al _arrayBTI
+        data.arrayBTI[0]._arrayConsumos = _consums;
+    }
 
     //ArrayBTI - Equipos seleccionados/Combinaciones
     if(data.arrayBTI[0].combinacion){
@@ -66,13 +73,15 @@ async function calcularViaticosBTI(data){
         */
 
         //Equipos seleccionados
-        formated = data.arrayBTI[0].panel;
-        data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel);
-        formated = data.arrayBTI[0].inversor;
-        data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor);
-        
-        //Se adjuntan los consumos al _arrayBTI
-        data.arrayBTI[0]._arrayConsumos = _consums;
+        if(data.arrayBTI[0].inversor != null){
+            formated = data.arrayBTI[0].inversor;
+            data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor);
+        }
+
+        if(data.arrayBTI[0].panel != null){
+            formated = data.arrayBTI[0].panel;
+            data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel) === false ? data.arrayBTI[0].panel : validarJSON(data.arrayBTI[0].panel);
+        }
 
         _arrayCotizacion = data.arrayBTI;
     }
@@ -101,9 +110,9 @@ async function calcularViaticosBTI(data){
         }
 
         /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
-        costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotal);
-        costoTotalInversores = parseFloat(_arrayCotizacion[x].inversor.precioTotal);
-        costoTotalEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras);
+        costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
+        costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
+        costoTotalEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
         /*#endregion*/
 
         viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
@@ -135,10 +144,15 @@ async function calcularViaticosBTI(data){
         data = { costoTotal: precioTotalMXN };
         objFinan = await financiamiento.financiamiento(data);
 
+        /*#region Foromating . . .*/
+        paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
+        inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
+        /*#endregion*/
+
         //Se llena el objetoRespuesta
         objCotizacionBTI = {
-            paneles: _arrayCotizacion[x].panel,
-            inversores: _arrayCotizacion[x].inversor,
+            paneles: paneles,
+            inversores: inversores,
             viaticos_costos: {
                 noDias: noDias,
                 hospedaje: hospedaje,
@@ -158,8 +172,8 @@ async function calcularViaticosBTI(data){
                 precio_watt: precio_watt,
                 precioTotalMXN: precioTotalMXN
             },
-            power: objPower || null,
-            roi: objROI || null, 
+            power: objPower,
+            roi: objROI, 
             financiamiento: objFinan,
             descuento: descuento
         };

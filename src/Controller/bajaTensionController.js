@@ -254,19 +254,3 @@ module.exports.obtenerViaticos_Totales = async function(data){
     return result;
 }
 /*----------------------------------LO DE ABAJO NO SE A PROGRAMADO BIEN---------------------------------------------------*/
-
-
-
-
-
-
-
-function calcular_strings(){
-    var inversor_ = 'x';
-    var panel_ = 'x';
-
-    var max_strings = Math.floor(inversor.vmax / panel.voc);
-    var min_strings = Math.ceil(inversor.vmin / panel.vmp);
-
-    calcular_paneles(max_strings, min_strings);
-}

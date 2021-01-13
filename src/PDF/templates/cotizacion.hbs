@@ -938,11 +938,11 @@
                                         {{#if combinacionEconomica}}
                                             <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.nuevoConsumoAnual}} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.promedioConsumoBimestral}} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
@@ -951,58 +951,56 @@
                                         {{/if}}
                                         {{#if combinacionMediana}}
                                             <tr>
-                                                <td>Tu consumo promedio a CFE bimestral </td>
-                                                <td class="tbGraphAnswDang"> kWh</td>
-                                            </tr>
-                                            <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.nuevoConsumoAnual }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.promedioConsumoBimestral }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
-                                                <td class="tbGraphAnswSucc">48%</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.porcentajePotencia }}%</td>
                                             </tr>
                                         {{/if}}
                                         {{#if combinacionOptima}}
                                             <tr>
-                                                <td>Tu consumo promedio a CFE bimestral </td>
-                                                <td class="tbGraphAnswDang"> kWh</td>
-                                            </tr>
-                                            <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.nuevosConsumos.nuevoConsumoAnual }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc"> kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.nuevosConsumos.promedioConsumoBimestral }} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
-                                                <td class="tbGraphAnswSucc">48%</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.porcentajePotencia }}%</td>
                                             </tr>
                                         {{/if}}
                                     {{/with}}
                                 {{else}}
-                                    <tr>
-                                        <td>Tu consumo promedio a CFE bimestral </td>
-                                        <td class="tbGraphAnswDang">1,752 kWh</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                        <td class="tbGraphAnswSucc">5,498 kWh</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                        <td class="tbGraphAnswSucc">916 kWh</td>
-                                    </tr>
-                                    <tr>
-                                        <td>% de ahorro de energía</td>
-                                        <td class="tbGraphAnswSucc">48%</td>
-                                    </tr>
+                                    {{#with propuesta}}
+                                        <tr>
+                                            <td>Tu consumo a CFE en el último año</td>
+                                            <td class="tbGraphAnswSucc">{{ 1.consumo._promCons.consumoAnual }} kWh</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tu consumo promedio a CFE bimestral</td>
+                                            <td class="tbGraphAnswSucc">{{ 1.consumo._promCons.promConsumosBimestrales }} kWh</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Consumo a CFE anual promedio con Paneles solares</td>
+                                            <td class="tbGraphAnswSucc">{{ 0.power.nuevosConsumos.nuevoConsumoAnual }} kWh</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Consumo a CFE bimestral promedio con Paneles solares</td>
+                                            <td class="tbGraphAnswSucc">{{ 0.power.nuevosConsumos.promedioConsumoBimestral }} kWh</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% de ahorro de energía</td>
+                                            <td class="tbGraphAnswSucc">{{ 0.power.porcentajePotencia }}%</td>
+                                        </tr>
+                                    {{/with}}
                                 {{/if}}
                             </tbody>
                         </table>
@@ -1013,26 +1011,99 @@
                         <h1 class="etqTitulos" style="color: blue;">Beneficios financieros</h1>
                         <table class="table table-sm tableGraficos">
                             <tbody>
-                                <tr>
-                                    <td>Tu gasto anual actual al costo eléctrico de hoy</td>
-                                    <td class="tbGraphAnswDang">$53,099</td>
-                                </tr>
-                                <tr>
-                                    <td>Lo que pagas hoy por tu consumo promedio</td>
-                                    <td class="tbGraphAnswDang">$8,850</td>
-                                </tr>
-                                <tr>
-                                    <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                    <td class="tbGraphAnswSucc">$9,013</td>
-                                </tr>
-                                <tr>
-                                    <td>Lo que pagarás a CFE en promedio bimestral con EE</td>
-                                    <td class="tbGraphAnswSucc">$1,502</td>
-                                </tr>
-                                <tr>
-                                    <td>% de ahorro de dinero</td>
-                                    <td class="tbGraphAnswSucc">83%</td>
-                                </tr>
+                                {{#if combinaciones}}
+                                    {{#with combinaciones}}
+                                        {{#if combinacionEconomica}}
+                                            <tr>
+                                                <td>Tu gasto anual actual al costo eléctrico de hoy</td>
+                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionEconomica.0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagas hoy por tu consumo promedio</td>
+                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionEconomica.0.roi.consumo.consumoBimestralPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
+                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionEconomica.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagarás a CFE en promedio bimestral con Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionEconomica.0.roi.generacion.nuevoPagoBimestral }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>% de ahorro de dinero</td>
+                                                <td class="tbGraphAnswSucc">null%</td>
+                                            </tr>
+                                        {{/if}}
+                                        {{#if combinacionMediana}}
+                                            <tr>
+                                                <td>Tu gasto anual actual al costo eléctrico de hoy</td>
+                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionMediana.0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagas hoy por tu consumo promedio</td>
+                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionMediana.0.roi.consumo.consumoBimestralPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
+                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionMediana.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagarás a CFE en promedio bimestral con EE</td>
+                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionMediana.0.roi.generacion.nuevoPagoBimestral }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>% de ahorro de dinero</td>
+                                                <td class="tbGraphAnswSucc">null%</td>
+                                            </tr>
+                                        {{/if}}
+                                        {{#if combinacionOptima}}
+                                            <tr>
+                                                <td>Tu gasto anual actual al costo eléctrico de hoy</td>
+                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionOptima.0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagas hoy por tu consumo promedio</td>
+                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionOptima.0.roi.consumo.consumoBimestralPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
+                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionOptima.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Lo que pagarás a CFE en promedio bimestral con EE</td>
+                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionOptima.0.roi.generacion.nuevoPagoBimestral }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>% de ahorro de dinero</td>
+                                                <td class="tbGraphAnswSucc">null%</td>
+                                            </tr>
+                                        {{/if}}
+                                    {{/with}}
+                                {{else}}
+                                    {{#with propuesta}}
+                                        <tr>
+                                            <td>Tu gasto anual actual al costo eléctrico de hoy</td>
+                                            <td class="tbGraphAnswDang">${{ 0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lo que pagas hoy por tu consumo promedio</td>
+                                            <td class="tbGraphAnswDang">${{ 0.roi.consumo.consumoBimestralPesosMXN }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
+                                            <td class="tbGraphAnswSucc">${{ 0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lo que pagarás a CFE en promedio bimestral con EE</td>
+                                            <td class="tbGraphAnswSucc">${{ 0.roi.generacion.nuevoPagoBimestral }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>% de ahorro de dinero</td>
+                                            <td class="tbGraphAnswSucc">null%</td>
+                                        </tr>
+                                    {{/with}}
+                                {{/if}}
                             </tbody>
                         </table>
                     </div>
@@ -1077,23 +1148,23 @@
                             {{#with combinaciones}}
                                 {{#if combinacionEconomica}}
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
-                                    <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                                    <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionEconomica.0.roi.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                                    <td class="tabFinanciamientothtd">4.6 años</td>
+                                    <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionEconomica.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
                                 {{#if combinacionMediana}}
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
-                                    <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
+                                    <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$530</td>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionMediana.0.roi.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                                    <td class="tabFinanciamientothtd">4.6 años</td>
+                                    <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionMediana.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
                                 {{#if combinacionOptima}}
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
-                                    <td class="tabFinanciamientothtd">$ {{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
+                                    <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
                                     <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionOptima.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
@@ -1101,14 +1172,14 @@
                                 {{/if}}
                             {{/with}}
                         {{else}}
-                            
+                            {{#with propuesta}}
                                 <th class="tabFinanciamientothtd">Pago de contado</th>
-                                <td class="tabFinanciamientothtd">$ </td>
+                                <td class="tabFinanciamientothtd">${{ 0.totales.precioTotalMXN }}</td>
                                 <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                <td class="tabFinanciamientothtd" style="background-color: #03BABE;">$ </td>
+                                <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ 0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                 <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                                <td class="tabFinanciamientothtd"> años</td>
-                            
+                                <td class="tabFinanciamientothtd">{{ 0.roi.roiEnAnios }} años</td>
+                            {{/with}}
                         {{/if}}
                     </tr>
                 </table>
