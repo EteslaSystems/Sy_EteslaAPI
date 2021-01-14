@@ -10,7 +10,9 @@ const viaticos = require('../Controller/opcionesViaticsController');
 const otrosMateriales = require('./otrosMaterialesController');
 
 var cotizacionInd = [];
-var objCotiIndividual = { panel: {}, 
+
+async function cotizacionIndividual(data){
+    var objCotiIndividual = { panel: {}, 
     inversor: {
         fISC: 0,
         fPotencia: 0,
@@ -30,8 +32,6 @@ var objCotiIndividual = { panel: {},
         potenciaNominal: 0,
         potenciaPico: 0
     }};
-
-async function cotizacionIndividual(data){
     var idPanel = data.idPanel;
     var idInversor = data.idInversor;
     var cantidadPaneles = parseInt(data.cantidadPaneles) || 0;
@@ -84,23 +84,33 @@ async function cotizacionIndividual(data){
         inversor = await inversores.buscar(data);
         inversor = inversor.message;
 
-        _potenciaNominalInversor = cantidadInversores * inversor[0].fPotencia;
+        _potenciaNominalInversor = cantidadInversores * inversor[0].fPotencia; //Watts
         precioTotalInversores = Math.round((inversor[0].fPrecio * cantidadInversores) * 100) / 100;
 
-        if(objCotiIndividual.panel.potenciaPanel != 0){
+        if(objCotiIndividual.panel != null){
             _potenciaPicoInversor = Math.round((_potenciaReal / cantidadInversores) * 100) / 100;
             _porcentajeSobreDimens = _potenciaPicoInversor /  inversor[0].fPotencia;
 
             objCotiIndividual.inversor.potenciaPico = _potenciaPicoInversor || 0;
             objCotiIndividual.inversor.porcentajeSobreDimens = _porcentajeSobreDimens || 0;
         }
-
-        objCotiIndividual.inversor.fPotencia = inversor[0].fPotencia || 0;
-        objCotiIndividual.inversor.potenciaNominal = _potenciaNominalInversor || 0;
-        objCotiIndividual.inversor.fPrecio = precioInversor || 0;
-        objCotiIndividual.inversor.iPMAX = allInversores[i].iPMAX || 0;
-        objCotiIndividual.inversor.numeroDeInversores = cantidadInversores || 0;
-        objCotiIndividual.inversor.precioTotal = precioTotalInversores || 0;
+        
+        objCotiIndividual.inversor.fISC = inversor[0].fISC;
+		objCotiIndividual.inversor.fPotencia = inversor[0].fPotencia;
+		objCotiIndividual.inversor.fPrecio = inversor[0].fPrecio;
+		objCotiIndividual.inversor.iPMAX = inversor[0].iPMAX;
+		objCotiIndividual.inversor.iPMIN = inversor[0].iPMIN;
+		objCotiIndividual.inversor.iVMAX = inversor[0].iVMAX;
+		objCotiIndividual.inversor.iVMIN = inversor[0].iVMIN;
+		objCotiIndividual.inversor.vGarantia = inversor[0].vGarantia;
+		objCotiIndividual.inversor.vMarca = inversor[0].vMarca;
+		objCotiIndividual.inversor.vNombreMaterialFot = inversor[0].vNombreMaterialFot;
+		objCotiIndividual.inversor.vOrigen = inversor[0].vOrigen;
+		objCotiIndividual.inversor.vTipoMoneda = inversor[0].vTipoMoneda;
+		objCotiIndividual.inversor.precioTotal = precioTotalInversores;
+		objCotiIndividual.inversor.numeroDeInversores = cantidadInversores;
+		objCotiIndividual.inversor.potenciaNominal = _potenciaNominalInversor;
+       
 
         if(objCotiIndividual.panel.potenciaPanel == 0 && objCotiIndividual.inversor.potenciaInversor != 0){
             var _cotizacionUnicamenteInversor = [];

@@ -1150,7 +1150,7 @@
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
                                     <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionEconomica.0.roi.ahorroMensualEnPesosMXN }}</td>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionEconomica.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
                                     <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionEconomica.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
@@ -1158,7 +1158,7 @@
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
                                     <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionMediana.0.roi.ahorroMensualEnPesosMXN }}</td>
+                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionMediana.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
                                     <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionMediana.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
@@ -1219,11 +1219,13 @@
                                 {{/if}}
                             {{/with}}
                         {{else}}
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                            <td class="text-center tabFinanciamientothtd">$ 7,411</td>
-                            <td class="text-center tabFinanciamientothtd">$ 5,206</td>
+                            {{#with propuesta}}
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objMensualidadesCreditCard.tresMeses }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objMensualidadesCreditCard.seisMeses }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objMensualidadesCreditCard.nueveMeses }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objMensualidadesCreditCard.doceMeses }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objMensualidadesCreditCard.dieciochoMeses }}</td>
+                            {{/with}}
                         {{/if}}
                     </tr>
                 </table>
@@ -1255,9 +1257,11 @@
                                 {{/if}}
                             {{/with}}
                         {{else}}
-                            <td class="text-center tabFinanciamientothtd">$ 11,910</td>
-                            <td class="text-center tabFinanciamientothtd">$ 27,789</td>
-                            <td class="text-center tabFinanciamientothtd">$ 39,699</td>
+                            {{#with propuesta}}
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objEnganche.quincePorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objEnganche.treintacincoPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento.objEnganche.cincuentaPorcent }}</td>
+                            {{/with}}
                         {{/if}}
                     </tr>
                 </table>
@@ -1404,54 +1408,50 @@
                             {{/if}}
                         {{/with}}
                     {{else}}
-                        <tr>
-                            <th class="tabFinanciamientothtd">Pagos mensuales</br>por plazo</th>
-                            <th class="text-center align-middle tabFinanciamientothtd">15%</th>
-                            <th class="text-center align-middle tabFinanciamientothtd">35%</th>
-                            <th class="text-center align-middle tabFinanciamientothtd">50%</th>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 12 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 24 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 36 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 48 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 60 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 72 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
-                        <tr>
-                            <th class="tabFinanciamientothtd">A 84 meses</th>
-                            <td class="text-center tabFinanciamientothtd">$ 27,261</td>
-                            <td class="text-center tabFinanciamientothtd">$ 14,028</td>
-                            <td class="text-center tabFinanciamientothtd">$ 9,617</td>
-                        </tr>
+                        {{#with propuesta}}
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 12 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.12.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.12.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.12.fiftyPorcent }}</td>
+                            </tr>
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 24 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.24.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.24.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.24.fiftyPorcent }}</td>
+                            </tr>
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 36 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.36.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.36.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.36.fiftyPorcent }}</td>
+                            </tr>
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 48 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.48.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.48.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.48.fiftyPorcent }}</td>
+                            </tr>
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 60 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.60.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.60.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.60.fiftyPorcent }}</td>
+                            </tr>
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 72 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.72.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.72.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.72.fiftyPorcent }}</td>
+                            </tr>
+                            <tr>
+                                <th class="tabFinanciamientothtd">A 84 meses</th>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.84.fifteenPorcent }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.84.thirtyFive }}</td>
+                                <td class="text-center tabFinanciamientothtd">$ {{ 0.financiamiento._pagosMensualesPorPlazo.0.84.fiftyPorcent }}</td>
+                            </tr>
+                        {{/with}}          
                     {{/if}}
                 </table>
             </div>

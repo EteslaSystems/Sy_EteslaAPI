@@ -75,7 +75,7 @@ async function calcularViaticosBTI(data){
         //Equipos seleccionados
         if(data.arrayBTI[0].inversor != null){
             formated = data.arrayBTI[0].inversor;
-            data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor);
+            data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor) === false ? data.arrayBTI[0].inversor : validarJSON(data.arrayBTI[0].inversor);
         }
 
         if(data.arrayBTI[0].panel != null){
