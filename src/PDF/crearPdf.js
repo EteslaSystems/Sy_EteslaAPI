@@ -6,10 +6,9 @@ const configFile = require('../Controller/configFileController');
 const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 
-async function generarPDF(data){ ///Main()    
-    var now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+async function generarPDF(data){ ///Main()  
     var dataOrdenada = await ordenarData(data);
-    var fileName = now.toString()+'_'+dataOrdenada.cliente.nombre.toString()+'.pdf';
+    var fileName = await getNameFile(dataOrdenada);
     const fileCreatedPath = path.join(process.cwd(),'src/PDF/PDFs_created/'+fileName);
 
     console.log(dataOrdenada);
@@ -116,6 +115,35 @@ async function ordenarData(dataa){
     }
 
     return objResultDatOrd;
+}
+
+async function getNameFile(data){
+    var fechaCreacion = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+    var tipoPropuesta = '';
+    var nombreCliente = data.cliente.nombre;
+    var horaCreacion = moment().format('HH:mm:ss');
+    horaCreacion = horaCreacion.replace(/:/g,"-");
+
+    if(data.combinacionesPropuesta === true){
+        if(data.combinaciones.combinacionEconomica === true){
+            tipoPropuesta = "combinacionEconomica";
+        }
+
+        if(data.combinaciones.combinacionMediana === true){
+            tipoPropuesta = "combinacionMediana";  
+        }
+
+        if(data.combinaciones.combinacionOptima === true){
+            tipoPropuesta = "combinacionOptima";  
+        }
+    }
+    else{
+        tipoPropuesta = 'propuestaDe'+data.propuesta[0].paneles.potencia + 'W';
+    }
+
+    nombrArchivoPDF = nombreCliente+'_'+tipoPropuesta+'_'+fechaCreacion+'_'+horaCreacion+'.pdf';
+
+    return nombrArchivoPDF.toString();
 }
 
 module.exports.crearPDF = async function(data){

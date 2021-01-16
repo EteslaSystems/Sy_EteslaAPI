@@ -150,7 +150,7 @@ async function getInversores_cotizacion(data){
 	}
 
 	potenciaReal_= parseFloat(data.potenciaReal);
-	potenciaReal_ = potenciaReal_ * 1000; ///Watss - Kw ===> wtts
+	potenciaReal_ = potenciaReal_ * 1000; ///Watss 
 
 	for(var i = 0; i < allInversores.length; i++)
 	{
@@ -173,7 +173,8 @@ async function getInversores_cotizacion(data){
 			porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
 			potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
 
-			if(_potenciaPicoInversor > PMIN_inversor && _potenciaPicoInversor < PMAX_inversor){
+			// if(_potenciaPicoInversor > PMIN_inversor && _potenciaPicoInversor < PMAX_inversor){
+				if(numeroDeInversores > 0){
 				precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 				
 				inversoresResult = {
