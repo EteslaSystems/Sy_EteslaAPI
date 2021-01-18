@@ -70,7 +70,7 @@ module.exports.ifExistConfigFile = function(root, fileName){
     });
 }
 
-/*---Lee Handlebars template*/
+/*---  Lectura del Handlebars-Template para el PDF  ---*/
 module.exports.getHandlebarsTemplate = function(fileName){
     var getFileRootOfTemplate = process.cwd()+'/src/PDF/templates/'+fileName;
 

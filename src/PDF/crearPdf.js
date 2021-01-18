@@ -38,7 +38,16 @@ async function generarPDF(data){ ///Main()
 }
 
 async function compileHandleFile(data){
-    var fileName = 'cotizacion.hbs';
+    var fileName = '';
+
+    //Se identifica el tipo de cotizacion
+    if(data.tipoPropuesta != "individual"){ ///Cotizacion BajaTension && MediaTension
+        fileName = 'cotizacion.hbs';
+    }
+    else{ ///Cotizacion Individual
+        fileName = 'cotizacion_individual.hbs';
+    }
+    
     var plantilla = await configFile.getHandlebarsTemplate(fileName);
     plantilla = plantilla.message;
 
@@ -46,7 +55,7 @@ async function compileHandleFile(data){
 }
 
 async function ordenarData(dataa){
-    var objResultDatOrd = { vendedor:''||null, cliente:''||null, combinaciones:''||null, combinacionesPropuesta:false};
+    var objResultDatOrd = { vendedor:''||null, cliente:''||null, combinaciones:''||null, combinacionesPropuesta:null, tipoPropuesta:''};
     var idCliente = dataa.idCliente;
     var idVendedor = dataa.idVendedor;
     var datas = { idPersona: '' };
@@ -54,14 +63,16 @@ async function ordenarData(dataa){
     var combinacionMediana = false;
     var combinacionOptima = false;
 
-    combinacionesPropuesta = dataa.combinacionesPropuesta;
-    dataa.combinacionesPropuesta = combinacionesPropuesta == "true" ? true : false;
+    if(dataa.combinacionesPropuesta){
+        combinacionesPropuesta = dataa.combinacionesPropuesta;
+        dataa.combinacionesPropuesta = combinacionesPropuesta == "true" ? true : false;
+    }
 
-    datas.idPersona = idCliente;
+    datas.idPersona = idCliente; ///Formating data to consulting BD
     var uCliente = await cliente.consultarId(datas);
     uCliente = uCliente.message;
 
-    datas.idPersona = idVendedor;
+    datas.idPersona = idVendedor; ///Formating data to consulting BD
     var uVendedor = await vendedor.consultarId(datas);
     uVendedor = uVendedor.message;
 
@@ -75,7 +86,8 @@ async function ordenarData(dataa){
     };
 
     //Se filtra si la propuesta contiene combinaciones o equipos seleccionados
-    if(dataa.combinacionesPropuesta === true){ ///Combinaciones
+    if(dataa.combinacionesPropuesta === true){ 
+        ///Combinaciones
         objCombinaciones = JSON.parse(dataa.dataCombinaciones);
     
         combinacionSeleccionada = dataa.combSeleccionada.toString();
@@ -104,14 +116,23 @@ async function ordenarData(dataa){
         };
         objResultDatOrd.combinacionesPropuesta = dataa.combinacionesPropuesta;
     }
-    else{ ///Equipos seleccionados
+    else if(dataa.combinacionesPropuesta === false){ 
+        ///Equipos seleccionados
+        //Se obtiene la propuesta calculada
         propuesta = JSON.parse(dataa.propuesta);
+
+        //Se obtiene los consumos del cliente
         _arrayConsumos = JSON.parse(dataa.consumos);
         _arrayConsumos = _arrayConsumos[0];
 
         propuesta.push(_arrayConsumos);
 
         objResultDatOrd.propuesta = propuesta;
+    }
+    else{
+        //Cotizacion individual
+        objResultDatOrd.propuesta = JSON.parse(dataa.propuesta_individual);
+        objResultDatOrd.tipoPropuesta = "individual";
     }
 
     return objResultDatOrd;
@@ -122,7 +143,9 @@ async function getNameFile(data){
     var tipoPropuesta = '';
     var nombreCliente = data.cliente.nombre;
     var horaCreacion = moment().format('HH:mm:ss');
-    horaCreacion = horaCreacion.replace(/:/g,"-");
+
+    horaCreacion = horaCreacion.replace(/:/g,"_"); //Se remplazan ":" por "_" del formato de hora
+    nombreCliente = nombreCliente.replace(/\s+/g, ''); //Se borra los espacios en blanco 
 
     if(data.combinacionesPropuesta === true){
         if(data.combinaciones.combinacionEconomica === true){
@@ -137,8 +160,11 @@ async function getNameFile(data){
             tipoPropuesta = "combinacionOptima";  
         }
     }
-    else{
+    else if(data.combinacionesPropuesta === false){
         tipoPropuesta = 'propuestaDe'+data.propuesta[0].paneles.potencia + 'W';
+    }
+    else{
+        tipoPropuesta = 'cotizacionIndividual'+data.propuesta[0].paneles.potencia + 'W';
     }
 
     nombrArchivoPDF = nombreCliente+'_'+tipoPropuesta+'_'+fechaCreacion+'_'+horaCreacion+'.pdf';
