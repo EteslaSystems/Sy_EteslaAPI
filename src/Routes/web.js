@@ -1026,14 +1026,12 @@ router.post('/pdf',function (request, response) {
 		pdf64 = fs.readFileSync(objPdf.rutaArchivo, { encoding: 'base64' });
 
 		if(objPdf.nombreArchivo != null){
-			console.log('no viene vacio el nombre del pdf');
+			var respuesta = {
+				fileName: objPdf.nombreArchivo,
+				pdfBase64: pdf64
+			};
 		}
 		
-		var respuesta = {
-			fileName: objPdf.nombreArchivo,
-			pdfBase64: pdf64
-		};
-
 		response.json({
 			status: 200,
 			message: respuesta

@@ -19,10 +19,10 @@ const message = {
 // Función de validación. Se establecen las reglas que se requieren por campo, utilizando la librería "yup"
 function clienteValidation (data) {
     const schema = yup.object().shape({
-        consumo: yup
-            .string(message.string)
-            .matches(/^[0-9]+\.?[0-9]*$/, message.number)
-            .required(message.required),
+        // consumo: yup
+        //     .string(message.string)
+        //     .matches(/^[0-9]+\.?[0-9]*$/, message.number)
+        //     .required(message.required),
         nombrePersona: yup
             .string(message.string)
             .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)

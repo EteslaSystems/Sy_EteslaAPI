@@ -5,6 +5,7 @@ CREATE PROCEDURE SP_Cliente
     IN Opcion INT,
     IN xIdCliente VARCHAR(255),
     IN Consumo FLOAT,
+    IN TienePropuesta TINYINT(1),
     /* Variable para Persona */
     IN xIdPersona VARCHAR(255),
     IN NombrePersona VARCHAR(50),
@@ -31,7 +32,7 @@ BEGIN
         SET xIdPersona = (SELECT HEX(idPersona) AS idPersona FROM persona WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 1);
         /*Cliente*/
         INSERT INTO cliente
-        VALUES (UUID(), UNHEX(xIdPersona), Consumo);
+        VALUES (UUID(), UNHEX(xIdPersona), Consumo, TienePropuesta);
         SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente INNER JOIN persona ON cliente.id_Persona = persona.idPersona WHERE deleted_at IS NULL ORDER BY persona.created_at DESC LIMIT 1);
         /*Direccion*/
         INSERT INTO direccion

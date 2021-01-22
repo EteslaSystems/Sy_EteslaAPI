@@ -41,7 +41,6 @@ async function cotizacionIndividual(data){
     var cantidadEstructuras = parseInt(data.cantidadEstructuras);
     // var bMonitoreo = data.monitoreo; //PENDIENTE
 
-    
     var origen = data.origen;
     var destino = data.destino;
     var _costoEstructuras = 0;
@@ -133,7 +132,6 @@ async function cotizacionIndividual(data){
         bInstalacion: data.bInstalacion
     };
 
-    // cotiIndv = await viaticos.mainViaticos(objeto);
     cotiIndv = await viaticos.calcularViaticosBTI(objeto);
 
     return cotiIndv;

@@ -7,10 +7,10 @@
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas) {
-    const { fConsumo, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, vCalle, vMunicipio, vEstado } = datas;
+    const { fConsumo, vNombrePersona, vPrimerApellido, bTienePropuesta, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, vCalle, vMunicipio, vEstado } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, fConsumo, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, fConsumo, bTienePropuesta, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -118,7 +118,7 @@ function consultaIdBD (datas) {
 					message: rows[0]
 				}
 
-				resolve(response);
+				reject(response);
 			}
 		});
   	});
