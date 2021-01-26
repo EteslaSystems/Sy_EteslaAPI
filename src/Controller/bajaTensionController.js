@@ -203,7 +203,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){ 
     cuanto_menos = limite - (promedioConsumsMensuales * 2 * 0.10);
     objetiveDac = cuanto_menos < objetivoDAC ? cuanto_menos : 0;
     objetiveDac = objetivoDAC > objPromedioDeConsumos.promConsumosBimestrales ? 0 : objetiveDac;
-    subsidio_diario = (objetiveDac * 6) / 365;
+    subsidio_diario = Math.round(((objetiveDac * 6) / 365) * 100)/100;
     porcentajePerdida = origen == "Veracruz" ? 82 : 73;
     porcentajePerdida = await calcularPorcentajePerdida(porcentajePerdida);
     

@@ -178,7 +178,7 @@ async function calcularViaticosBTI(data){
             descuento: descuento
         };
 
-        _result.push(objCotizacionBTI);
+        _result[0] = objCotizacionBTI;
     }
 
     return _result;
@@ -761,7 +761,7 @@ function obtenerDistanciaEnKm(origen, destino){
     console.log('Origen: '+origen+' Destino: '+destino);
 
     return new Promise((resolve, reject) => {
-        request.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origen+"&destinations="+destino+"&key="+apikey, (error, response, body) => {
+        request.get("https://maps.googleapis.com/maps/api/distancematrix/json?key="+apikey+"&origins="+origen+"&destinations="+destino, (error, response, body) => {
             if(!error){
                 body = JSON.parse(body);
                 body = body.rows[0].elements;
@@ -781,9 +781,9 @@ function obtenerDistanciaEnKm(origen, destino){
             else{
                 response = {
                     status: false,
-                    message: 'Hubo un error al intentar calcular la distancia, revisa tu destino (direccion_cliente)'
+                    message: 'Hubo un error al intentar calcular la distancia, revisa tu destino (direccion_cliente): '+error
                 };
-                resolve(response);
+                reject(response);
             }
         });   
     });
