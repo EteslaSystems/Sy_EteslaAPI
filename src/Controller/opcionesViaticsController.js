@@ -175,7 +175,8 @@ async function calcularViaticosBTI(data){
             power: objPower,
             roi: objROI, 
             financiamiento: objFinan,
-            descuento: descuento
+            descuento: descuento,
+            tipoDeCambio: precioDolar
         };
 
         _result[0] = objCotizacionBTI;

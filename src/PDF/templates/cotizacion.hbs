@@ -559,10 +559,10 @@
                     <section class="row">
                         <div class="col-8">
                             <div class="form-group row">
-                                <div class="col-sm">
+                                <div class="col-sm-5">
                                     <img width="200" height="75" src="https://document-export.canva.com/gg3GQ/DAEKhGgg3GQ/149/thumbnail/4KuZ0yLjh-bJFeXL9vubVQ-0001-12023840483.png">
                                 </div>
-                                <div class="col-sm">
+                                <div class="col-sm-4">
                                     <img width="200" height="75" src="https://document-export.canva.com/gg3GQ/DAEKhGgg3GQ/151/thumbnail/6KFGipnBq4HBI2zZSVMC3w-0002-12024682665.png">
                                 </div>
                             </div>
@@ -571,36 +571,41 @@
                             <table class="table table-sm table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">Subtotal</th>
-                                        <th class="text-center">IVA</th>
-                                        <th class="text-center">Total</th>
+                                        <th class="text-center etqTexto">Subtotal</th>
+                                        <th class="text-center etqTexto">IVA</th>
+                                        <th class="text-center etqTexto">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td class="text-center etqTexto" style="background-color:#03B1FF; color:white;">USD</td>
+                                        <td class="text-center etqTexto" style="background-color:#03B1FF; color:white;">USD</td>
+                                        <td class="text-center etqTexto" style="background-color:#29D337; color:white;">MXN</td>
+                                    </tr>
+                                    <tr>
                                         {{#if combinaciones}}
                                             {{#with combinaciones}}
                                                 {{#if combinacionEconomica}}
-                                                    <td id="subt" class="text-center">{{ objCombinaciones.combinacionEconomica.0.totales.totalDeTodo }}$</td>
-                                                    <td id="iva" class="text-center">{{ objCombinaciones.combinacionEconomica.0.totales.precioMasIVA }}$</td>
-                                                    <td id="total" class="text-center">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
+                                                    <td id="subt" class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.totales.totalDeTodo }}$</td>
+                                                    <td id="iva" class="text-center etqTexto">{{ objCombinaciones.combinacionEconomica.0.totales.precioMasIVA }}$</td>
+                                                    <td id="total" class="text-center etqTexto">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
                                                 {{/if}}
                                                 {{#if combinacionMediana}}
-                                                    <td id="subt" class="text-center">{{ objCombinaciones.combinacionMediana.0.totales.totalDeTodo }}$</td>
-                                                    <td id="iva" class="text-center">{{ objCombinaciones.combinacionMediana.0.totales.precioMasIVA }}$</td>
-                                                    <td id="total" class="text-center">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
+                                                    <td id="subt" class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.totales.totalDeTodo }}$</td>
+                                                    <td id="iva" class="text-center etqTexto">{{ objCombinaciones.combinacionMediana.0.totales.precioMasIVA }}$</td>
+                                                    <td id="total" class="text-center etqTexto">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
                                                 {{/if}}
                                                 {{#if combinacionOptima}}
-                                                    <td id="subt" class="text-center">{{ objCombinaciones.combinacionOptima.0.totales.totalDeTodo }}$</td>
-                                                    <td id="iva" class="text-center">{{ objCombinaciones.combinacionOptima.0.totales.precioMasIVA }}$</td>
-                                                    <td id="total" class="text-center">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
+                                                    <td id="subt" class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.totales.totalDeTodo }}$</td>
+                                                    <td id="iva" class="text-center etqTexto">{{ objCombinaciones.combinacionOptima.0.totales.precioMasIVA }}$</td>
+                                                    <td id="total" class="text-center etqTexto">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
                                                 {{/if}}
                                             {{/with}}
                                         {{else}}
                                             {{#with propuesta}}
-                                                <td id="subt" class="text-center">{{ 0.totales.totalDeTodo }}$</td>
-                                                <td id="iva" class="text-center">{{ 0.totales.precioMasIVA }}$</td>
-                                                <td id="total" class="text-center">${{ 0.totales.precioTotalMXN }}</td>
+                                                <td id="subt" class="text-center etqTexto">{{ 0.totales.totalDeTodo }}$</td>
+                                                <td id="iva" class="text-center etqTexto">{{ 0.totales.precioMasIVA }}$</td>
+                                                <td id="total" class="text-center etqTexto">${{ 0.totales.precioTotalMXN }}</td>
                                             {{/with}}
                                         {{/if}}
                                     </tr>
@@ -737,10 +742,10 @@
                                     <td colspan="4">Costo (USD/MXN)</td>
                                 </tr>
                                 <tr class="compare-row">
-                                    <td><strong>Costo (MXN)</strong></td>
-                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
-                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
-                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
+                                    <td><strong>Costo (USD)</strong></td>
+                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionEconomica.0.totales.precioMasIVA }}</td>
+                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionMediana.0.totales.precioMasIVA }}</td>
+                                    <td class="text-center etqTexto">${{ objCombinaciones.combinacionOptima.0.totales.precioMasIVA }}</td>
                                 </tr>
                             {{/with}}
                         <!-- #End_EtiquetasComparatiba - Contenido -->
@@ -804,7 +809,6 @@
                                 <tr>
                                     <td><strong>Garantia</strong></td>
                                     <td class="text-center etqTexto">{{ 0.paneles.garantia }} años</td>
-
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
@@ -840,11 +844,11 @@
                                 </tr>
                                 <tr>
                                     <td>&nbsp;</td>
-                                    <td colspan="4">Costo (USD/MXN)</td>
+                                    <td colspan="4">Costo (USD)</td>
                                 </tr>
                                 <tr class="compare-row">
-                                    <td><strong>Costo (MXN)</strong></td>
-                                    <td class="text-center etqTexto">${{ 0.totales.precioTotalMXN }}</td>
+                                    <td><strong>Costo (USD)</strong></td>
+                                    <td class="text-center etqTexto">${{ 0.totales.precioMasIVA }}</td>
                                 </tr>
                             {{/with}}
                         <!-- #End_EtiquetasComparatiba - Contenido -->
@@ -854,7 +858,7 @@
                 <br>
                 <div class="container-fluid">
                     <div class="form-group row justify-content-center">
-                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
+                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio (${{ tipoDeCambio }}mxn) se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
                     </div>
                 </div>
             </div>
