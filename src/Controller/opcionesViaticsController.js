@@ -32,10 +32,10 @@ async function calcularViaticosBTI(data){
     var objPower=null;
     var objCotizacionBTI = {};
     var origen = data.origen;
-    var destino = data.destino;
+    var destino = data.destino || data.data.direccionCliente;
     var bInstalacion = data.bInstalacion || null;
     var _consums = data.consumos || null;
-    var tarifa = data.tarifa || null;
+    var tarifa = data.tarifa || data.data.tarifa || null;
     var descuento = (parseFloat(data.descuento) / 100) || null;
     _configFile = await configFile.getArrayOfConfigFile();
     distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);

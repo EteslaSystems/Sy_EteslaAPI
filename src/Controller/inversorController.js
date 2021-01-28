@@ -147,6 +147,7 @@ async function getInversores_cotizacion(data){
 
 	if(data.objPanelSelect){
 		data = data.objPanelSelect;
+		data = data.panel;
 	}
 
 	potenciaReal_= parseFloat(data.potenciaReal);
