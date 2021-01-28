@@ -111,14 +111,14 @@ function consultaIdBD (datas) {
 					message: error
 				}
 
-				resolve (response);
+				reject (response);
 			} else {
 				const response = {
 					status: true,
 					message: rows[0]
 				}
 
-				reject(response);
+				resolve(response);
 			}
 		});
   	});
