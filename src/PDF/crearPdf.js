@@ -62,6 +62,7 @@ async function ordenarData(dataa){
     var combinacionEconomica = false;
     var combinacionMediana = false;
     var combinacionOptima = false;
+    var propuesta = [];
 
     if(dataa.combinacionesPropuesta){
         combinacionesPropuesta = dataa.combinacionesPropuesta;
@@ -120,10 +121,11 @@ async function ordenarData(dataa){
         ///Equipos seleccionados
         //Se obtiene la propuesta calculada
         propuesta = JSON.parse(dataa.propuesta);
+        propuesta = propuesta.message;
 
         //Se obtiene los consumos del cliente
         _arrayConsumos = JSON.parse(dataa.consumos);
-        _arrayConsumos = _arrayConsumos[0];
+        _arrayConsumos = _arrayConsumos.consumo;
 
         propuesta.push(_arrayConsumos);
 

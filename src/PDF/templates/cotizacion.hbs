@@ -612,6 +612,28 @@
                                 </tbody>
                             </table>
                         </div>
+                        <br>
+                                    <div class="container-fluid">
+                                        <div class="form-group row justify-content-center">
+                                            {{#if combinaciones}}
+                                                {{#with combinaciones}}
+                                                    {{#if combinacionEconomica}}
+                                                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio (${{ objCombinaciones.combinacionEconomica.0.tipoDeCambio }}mxn) se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
+                                                    {{/if}}
+                                                    {{#if combinacionMediana}}
+                                                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio (${{ objCombinaciones.combinacionMediana.0.tipoDeCambio }}mxn) se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
+                                                    {{/if}}
+                                                    {{#if combinacionOptima}}
+                                                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio (${{ objCombinaciones.combinacionOptima.0.tipoDeCambio }}mxn) se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
+                                                    {{/if}}
+                                                {{/with}}
+                                            {{else}}
+                                                {{#with propuesta}}
+                                                    <p class="pNota"><strong>NOTA: </strong>El tipo de cambio (${{ 0.tipoDeCambio }}mxn) se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p> 
+                                                {{/with}}
+                                            {{/if}}
+                                        </div>
+                                    </div>
                     </section>
                 </div>
             </div>
@@ -855,12 +877,6 @@
                         </tbody>
                     </table>
                 {{/if}}
-                <br>
-                <div class="container-fluid">
-                    <div class="form-group row justify-content-center">
-                        <p class="pNota"><strong>NOTA: </strong>El tipo de cambio (${{ tipoDeCambio }}mxn) se tomará el reportado por Banorte a la Venta del día en que se realice cada pago. Se requiere de un 50% de anticipo a la aprobación del proyecto, 35% antes de realizar el embarque de equipos, y 15% posterior a la instalación. El proyecto se entrega preparado para conexión con CFE.</p>
-                    </div>
-                </div>
             </div>
             <!-- #End_TablaComparatiba_Combinaciones -->
             <!-- #Fin_Body -->
@@ -1458,20 +1474,6 @@
                         {{/with}}          
                     {{/if}}
                 </table>
-                <!-- Area experimental -->
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th>Contenido de prueba</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="rendijaPrueba">$1234</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!-- Fin Area experimental -->
             </div>
             <!-- #FinBody_4page -->
         </page>
@@ -1545,32 +1547,51 @@
             window.graficoBarras = new Chart(graficoBenefFinancieros, configBenefFinan);
         }
 
-
+        /*----------------Coloreada de celdas------------*/
         function pintarRejasFinanciamiento(){
-            var celda = document.getElementById('rendijaPrueba');
-            var valorCelda = celda.textContent;
-            valorCelda = valorCelda.replace(/[$]/g,'');
-            valorCelda = parseFloat(valorCelda);
-
-            if(valorCelda > 1){
-                celda.style.backgroundColor = "#FF03F3";
-            }
-        }
-
-        /*function pintarRejasFinanciamiento(){
             var celdaAhorroMensual = document.getElementById('tdAhorroMensual');
             var ahorroMensual = celdaAhorroMensual.textContent;
             ahorroMensual = ahorroMensual.replace(/[$]/g,'');
             ahorroMensual = parseFloat(ahorroMensual);
+            var montoDiezPorciento = (monto) => {
+                var cantidadDiezPorc = Math.round(((monto * 10) / 100) * 100) / 100;
+                cantidadDiezPorc = monto + cantidadDiezPorc;
+                return cantidadDiezPorc;
+            };
+            montoDiezPorciento = montoDiezPorciento(ahorroMensual);
 
-            var celdaFinanciamiento = document.getElementById('');
+            var meses = ['doce','veinticuatro','treintaseis','cuarentaocho','sesenta','setentados','ochentacuatro'];        
+            var numeroMeses = ['15','35','50'];
 
+            for(var i=0; i<meses.length; i++)
+            {
+                for(var j=0; j<3; j++)
+                {
+                    idCelda = meses[i] +'_'+ numeroMeses[j];
+                    idCelda = idCelda.toString();
 
-            //Iterar todas las celdas del financiamiento, formatear el dato y despues
-            //validarlo contra *ahorroMensual* para poder decidir si *celdaAhorroMensual*  
-            //se pinta de otro color (verde o amarillo) o se queda igual (del mismo color)
-            
-            
-        }*/
+                    var celdaFinanciamiento = document.getElementById(idCelda);
+                    /*Formating*/
+                    var montoFinanciamiento = celdaFinanciamiento.textContent;
+                    montoFinanciamiento = montoFinanciamiento.replace(/[$]/g,'');
+                    montoFinanciamiento = parseFloat(montoFinanciamiento);
+                    
+                    var hxColor = '';
+
+                    //Validacion para colorear celda
+                    if(montoFinanciamiento > celdaAhorroMensual && montoFinanciamiento < montoDiezPorciento){ //Amarillo
+                        hxColor = '#E0D30C';
+                    }
+                    else if(montoFinanciamiento <= celdaAhorroMensual){
+                        hxColor = '#44C331';
+                    }
+                    else{
+                        hxColor = '#3A565E';
+                    }
+
+                    celdaFinanciamiento.style.backgroundColor = hxColor;
+                }
+            }
+        }
     </script>
 </html>
