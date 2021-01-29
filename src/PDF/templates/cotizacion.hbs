@@ -1154,7 +1154,7 @@
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
                                     <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionEconomica.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionEconomica.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
+                                    <td id="tdAhorroMensual" class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionEconomica.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
                                     <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionEconomica.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
@@ -1162,7 +1162,7 @@
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
                                     <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionMediana.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionMediana.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
+                                    <td id="tdAhorroMensual" class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionMediana.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
                                     <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionMediana.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
@@ -1170,7 +1170,7 @@
                                     <th class="tabFinanciamientothtd">Pago de contado</th>
                                     <td class="tabFinanciamientothtd">${{ objCombinaciones.combinacionOptima.0.totales.precioTotalMXN }}</td>
                                     <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                    <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionOptima.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
+                                    <td id="tdAhorroMensual" class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ objCombinaciones.combinacionOptima.0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                     <th class="tabFinanciamientothtd">Retorno de inversión</th>
                                     <td class="tabFinanciamientothtd">{{ objCombinaciones.combinacionOptima.0.roi.roiEnAnios }} años</td>
                                 {{/if}}
@@ -1180,7 +1180,7 @@
                                 <th class="tabFinanciamientothtd">Pago de contado</th>
                                 <td class="tabFinanciamientothtd">${{ 0.totales.precioTotalMXN }}</td>
                                 <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                                <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ 0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
+                                <td id="tdAhorroMensual" class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ 0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
                                 <th class="tabFinanciamientothtd">Retorno de inversión</th>
                                 <td class="tabFinanciamientothtd">{{ 0.roi.roiEnAnios }} años</td>
                             {{/with}}
@@ -1458,7 +1458,20 @@
                         {{/with}}          
                     {{/if}}
                 </table>
-                <input id="inpPrueba">
+                <!-- Area experimental -->
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Contenido de prueba</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="rendijaPrueba">$1234</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Fin Area experimental -->
             </div>
             <!-- #FinBody_4page -->
         </page>
@@ -1532,17 +1545,32 @@
             window.graficoBarras = new Chart(graficoBenefFinancieros, configBenefFinan);
         }
 
+
         function pintarRejasFinanciamiento(){
-            var celda = document.getElementById('doce_15');
-            var valorCelda = parseFloat(celda.textContent);
+            var celda = document.getElementById('rendijaPrueba');
+            var valorCelda = celda.textContent;
+            valorCelda = valorCelda.replace(/[$]/g,'');
+            valorCelda = parseFloat(valorCelda);
 
-            valorCelda = valorCelda.substring("$");
-
-            document.getElementById('inpPrueba').innerHTML = "valorCelda";
-
-            //if(valorCelda > 1){
-            //    celda.style.backgroundColor = "#FF03F3";
-            //}
+            if(valorCelda > 1){
+                celda.style.backgroundColor = "#FF03F3";
+            }
         }
+
+        /*function pintarRejasFinanciamiento(){
+            var celdaAhorroMensual = document.getElementById('tdAhorroMensual');
+            var ahorroMensual = celdaAhorroMensual.textContent;
+            ahorroMensual = ahorroMensual.replace(/[$]/g,'');
+            ahorroMensual = parseFloat(ahorroMensual);
+
+            var celdaFinanciamiento = document.getElementById('');
+
+
+            //Iterar todas las celdas del financiamiento, formatear el dato y despues
+            //validarlo contra *ahorroMensual* para poder decidir si *celdaAhorroMensual*  
+            //se pinta de otro color (verde o amarillo) o se queda igual (del mismo color)
+            
+            
+        }*/
     </script>
 </html>
