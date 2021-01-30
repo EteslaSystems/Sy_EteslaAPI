@@ -127,9 +127,10 @@ async function calcularViaticosBTI(data){
         subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
         costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos + totalFletes)*100)/100;
-        precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100;
-        precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
-        precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
+        precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD
+        precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD
+        precioMXN = Math.round((precio * precioDolar) * 100)/100;
+        precioMasIVAMXN = Math.round((precioMasIVA * precioDolar)*100)/100;
 
         /*????*/precio_watt = Math.round(((costoTotalProyecto / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
 
@@ -137,11 +138,11 @@ async function calcularViaticosBTI(data){
             //P O W E R
             dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
             objPower = await power.obtenerPowerBTI(dataPwr) || null;
-            objROI = await roi.obtenerROI(objPower, _consums, precioTotalMXN);
+            objROI = await roi.obtenerROI(objPower, _consums, precioMasIVAMXN);
         }
 
         //F I N A N C I A M I E N T O
-        data = { costoTotal: precioTotalMXN };
+        data = { costoTotal: precioMasIVAMXN };
         objFinan = await financiamiento.financiamiento(data);
 
         /*#region Foromating . . .*/
@@ -169,8 +170,9 @@ async function calcularViaticosBTI(data){
                 totalDeTodo: costoTotalProyecto,
                 precio: precio,
                 precioMasIVA: precioMasIVA,
-                precio_watt: precio_watt,
-                precioTotalMXN: precioTotalMXN
+                precioMXN: precioMXN,
+                precioMasIVAMXN: precioMasIVAMXN,
+                precio_watt: precio_watt
             },
             power: objPower,
             roi: objROI, 
