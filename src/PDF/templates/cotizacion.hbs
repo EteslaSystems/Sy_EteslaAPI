@@ -982,7 +982,7 @@
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
-                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica.0.power.porcentajePotencia }}%</td>
+                                                <td id="tdPorcentajePotencia" class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica.0.power.porcentajePotencia }}%</td>
                                             </tr>
                                         {{/if}}
                                         {{#if combinacionMediana}}
@@ -996,7 +996,7 @@
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
-                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.porcentajePotencia }}%</td>
+                                                <td id="tdPorcentajePotencia" class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.porcentajePotencia }}%</td>
                                             </tr>
                                         {{/if}}
                                         {{#if combinacionOptima}}
@@ -1010,7 +1010,7 @@
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
-                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.porcentajePotencia }}%</td>
+                                                <td id="tdPorcentajePotencia" class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.porcentajePotencia }}%</td>
                                             </tr>
                                         {{/if}}
                                     {{/with}}
@@ -1034,7 +1034,7 @@
                                         </tr>
                                         <tr>
                                             <td>% de ahorro de energía</td>
-                                            <td class="tbGraphAnswSucc">{{ 0.power.porcentajePotencia }}%</td>
+                                            <td id="tdPorcentajePotencia" class="tbGraphAnswSucc">{{ 0.power.porcentajePotencia }}%</td>
                                         </tr>
                                     {{/with}}
                                 {{/if}}
@@ -1052,7 +1052,7 @@
                                         {{#if combinacionEconomica}}
                                             <tr>
                                                 <td>Tu gasto anual actual al costo eléctrico de hoy</td>
-                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionEconomica.0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                                <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ objCombinaciones.combinacionEconomica.0.roi.consumo.consumoAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagas hoy por tu consumo promedio</td>
@@ -1060,7 +1060,7 @@
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionEconomica.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionEconomica.0.roi.generacion.generacionAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE en promedio bimestral con Paneles solares</td>
@@ -1074,7 +1074,7 @@
                                         {{#if combinacionMediana}}
                                             <tr>
                                                 <td>Tu gasto anual actual al costo eléctrico de hoy</td>
-                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionMediana.0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                                <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ objCombinaciones.combinacionMediana.0.roi.consumo.consumoAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagas hoy por tu consumo promedio</td>
@@ -1082,7 +1082,7 @@
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionMediana.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionMediana.0.roi.generacion.generacionAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE en promedio bimestral con paneles solares</td>
@@ -1096,7 +1096,7 @@
                                         {{#if combinacionOptima}}
                                             <tr>
                                                 <td>Tu gasto anual actual al costo eléctrico de hoy</td>
-                                                <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionOptima.0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                                <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ objCombinaciones.combinacionOptima.0.roi.consumo.consumoAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagas hoy por tu consumo promedio</td>
@@ -1104,7 +1104,7 @@
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                                <td class="tbGraphAnswSucc">${{ objCombinaciones.combinacionOptima.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionOptima.0.roi.generacion.generacionAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE en promedio bimestral con paneles solares</td>
@@ -1120,7 +1120,7 @@
                                     {{#with propuesta}}
                                         <tr>
                                             <td>Tu gasto anual actual al costo eléctrico de hoy</td>
-                                            <td class="tbGraphAnswDang">${{ 0.roi.consumo.consumoAnualPesosMXN }}</td>
+                                            <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ 0.roi.consumo.consumoAnualPesosMXN }}</td>
                                         </tr>
                                         <tr>
                                             <td>Lo que pagas hoy por tu consumo promedio</td>
@@ -1128,7 +1128,7 @@
                                         </tr>
                                         <tr>
                                             <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                            <td class="tbGraphAnswSucc">${{ 0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                            <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ 0.roi.generacion.generacionAnualPesosMXN }}</td>
                                         </tr>
                                         <tr>
                                             <td>Lo que pagarás a CFE en promedio bimestral con paneles solares</td>
@@ -1511,16 +1511,17 @@
         function printGraphicsToPDF(){
             var graficoBenefEnergeticos = document.getElementById('grafBenefEnergeticos').getContext('2d');
             var graficoBenefFinancieros = document.getElementById('graficoBenefFinancieros').getContext('2d');
+            var porcentajeEnergia = document.getElementById('tdPorcentajePotencia').textContent;
+            porcentajeEnergia = porcentajeEnergia.replace(/[%]/g,'');
+            porcentajeEnergia = parseFloat(porcentajeEnergia); //Formating
+            sobrantePorcentaje = 100 - porcentajeEnergia;
 
             var configBenefEnerg = {
                 type: 'doughnut',
                 data: { 
                     datasets: [{
                         borderAlign: 'inner',
-                        data: [
-                            randomScalingFactor(),
-                            randomScalingFactor()
-                        ],
+                        data: [porcentajeEnergia, sobrantePorcentaje],
                         backgroundColor: [ 'green', 'red' ]
                     }],
                     labels: [ 'Energia generada por el sistema', 'Energia a pagar a CFE' ]
@@ -1535,6 +1536,15 @@
                     }
                 }
             };
+            
+            /*--------------------------------*--------------------------------*/
+            var gastoActualAnual = document.getElementById('tdGastoActualAnual').textContent;
+            gastoActualAnual = gastoActualAnual.replace(/[$]/g,'');
+            gastoActualAnual = parseFloat(gastoActualAnual);
+            var proyeccionAnual = document.getElementById('tdProyeccionAnual').textContent;
+            proyeccionAnual = proyeccionAnual.replace(/[$]/g,'');
+            proyeccionAnual = parseFloat(proyeccionAnual);
+
             var configBenefFinan = {
                 type: 'bar',
                 data: { 
@@ -1542,18 +1552,14 @@
                         label: 'Con paneles',
                         borderColor: 'grey',
                         borderWidth: 1,
-                        data: [
-                            randomScalingFactor()
-                        ],
+                        data: [proyeccionAnual],
                         backgroundColor: [ 'green' ]
                     },
                     {
                         label: 'Sin paneles',
                         borderColor: 'grey',
                         borderWidth: 1,
-                        data: [
-                            randomScalingFactor()
-                        ],
+                        data: [gastoActualAnual],
                         backgroundColor: [ 'red' ]
                     }]
                 }
