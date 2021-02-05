@@ -1505,7 +1505,7 @@
     <script id="scriptsGeneral">
         $(function(){
             printGraphicsToPDF();
-            //pintarRejasFinanciamiento();
+            pintarRejasFinanciamiento();
         });
 
         /*-------------G R A F I C O S-------------*/
@@ -1514,10 +1514,10 @@
             var graficoBenefEnergeticos = document.getElementById('grafBenefEnergeticos').getContext('2d');
             var graficoBenefFinancieros = document.getElementById('graficoBenefFinancieros').getContext('2d');
             
-            //var porcentajeEnergia = document.getElementById('tdPorcentajePotencia').textContent;
-            //porcentajeEnergia = porcentajeEnergia.replace(/[%]/g,'');
-            //porcentajeEnergia = parseFloat(porcentajeEnergia); //Formating
-            //sobrantePorcentaje = 100 - porcentajeEnergia;
+            var porcentajeEnergia = document.getElementById('tdPorcentajePotencia').textContent;
+            porcentajeEnergia = porcentajeEnergia.replace(/[%]/g,'');
+            porcentajeEnergia = parseFloat(porcentajeEnergia); //Formating
+            sobrantePorcentaje = 100 - porcentajeEnergia;
 
             var configBenefEnerg = {
                 type: 'pie',
@@ -1551,12 +1551,12 @@
             };
             
             /*--------------------------------*--------------------------------*/
-            //var gastoActualAnual = document.getElementById('tdGastoActualAnual').textContent;
-            //gastoActualAnual = gastoActualAnual.replace(/[$]/g,'');
-            //gastoActualAnual = parseFloat(gastoActualAnual);
-            //var proyeccionAnual = document.getElementById('tdProyeccionAnual').textContent;
-            //proyeccionAnual = proyeccionAnual.replace(/[$]/g,'');
-            //proyeccionAnual = parseFloat(proyeccionAnual);
+            var gastoActualAnual = document.getElementById('tdGastoActualAnual').textContent;
+            gastoActualAnual = gastoActualAnual.replace(/[$]/g,'');
+            gastoActualAnual = parseFloat(gastoActualAnual);
+            var proyeccionAnual = document.getElementById('tdProyeccionAnual').textContent;
+            proyeccionAnual = proyeccionAnual.replace(/[$]/g,'');
+            proyeccionAnual = parseFloat(proyeccionAnual);
 
             var configBenefFinan = {
                 type: 'bar',
@@ -1565,20 +1565,14 @@
                         label: 'Con paneles',
                         borderColor: 'grey',
                         borderWidth: 1,
-                        data: [
-                            //proyeccionAnual
-                            100
-                        ],
+                        data: [proyeccionAnual],
                         backgroundColor: [ 'green' ]
                     },
                     {
                         label: 'Sin paneles',
                         borderColor: 'grey',
                         borderWidth: 1,
-                        data: [
-                            //gastoActualAnual
-                            70
-                        ],
+                        data: [gastoActualAnual],
                         backgroundColor: [ 'red' ]
                     }]
                 },
@@ -1588,6 +1582,16 @@
                         position: 'top',
                         text: 'Pago a CFE MXN al año'
                     },
+                     scales: {
+                        yAxes: [{
+                            ticks: {
+                                //Incluye el signo de pesos a los valores que se muestran en el eje Y
+                                callback: function(value, index, values) {
+                                    return '$' + value;
+                                }
+                            }
+                        }]
+                    }
                 }
             };
             

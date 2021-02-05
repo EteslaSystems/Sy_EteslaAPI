@@ -19,7 +19,7 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
     consumoBimestralPesosMXN = consumoAnualPesosMXN / 6;
     consumoMensualPesosMXN = consumoAnualPesosMXN / 12;
     ///
-    generacionAnualPesosMXN = (generacionAnual * costoKwh); //(generacionAnual_kwh) * costoKwh
+    generacionAnualPesosMXN = Math.round((generacionAnual * costoKwh) * 100)/100; //(generacionAnual_kwh) * costoKwh
     ROIenAnios = Math.round((costoDeProyecto / generacionAnualPesosMXN) * 100) / 100;
 
     /*$$ - Nuevo pago a CFE*/
