@@ -1500,10 +1500,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
     <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+
     <script id="scriptsGeneral">
         $(function(){
             printGraphicsToPDF();
-            pintarRejasFinanciamiento();
+            //pintarRejasFinanciamiento();
         });
 
         /*-------------G R A F I C O S-------------*/
@@ -1511,39 +1513,50 @@
         function printGraphicsToPDF(){
             var graficoBenefEnergeticos = document.getElementById('grafBenefEnergeticos').getContext('2d');
             var graficoBenefFinancieros = document.getElementById('graficoBenefFinancieros').getContext('2d');
-            var porcentajeEnergia = document.getElementById('tdPorcentajePotencia').textContent;
-            porcentajeEnergia = porcentajeEnergia.replace(/[%]/g,'');
-            porcentajeEnergia = parseFloat(porcentajeEnergia); //Formating
-            sobrantePorcentaje = 100 - porcentajeEnergia;
+            
+            //var porcentajeEnergia = document.getElementById('tdPorcentajePotencia').textContent;
+            //porcentajeEnergia = porcentajeEnergia.replace(/[%]/g,'');
+            //porcentajeEnergia = parseFloat(porcentajeEnergia); //Formating
+            //sobrantePorcentaje = 100 - porcentajeEnergia;
 
             var configBenefEnerg = {
-                type: 'doughnut',
+                type: 'pie',
                 data: { 
                     datasets: [{
                         borderAlign: 'inner',
                         data: [porcentajeEnergia, sobrantePorcentaje],
                         backgroundColor: [ 'green', 'red' ]
                     }],
-                    labels: [ 'Energia generada por el sistema', 'Energia a pagar a CFE' ]
+                    labels: [ 'Energia generada por el sistema (kwh)', 'Energia a pagar a CFE (kwh)' ]
                 },
                 options: {
                     animation: { animateRotate: false },
+                    tooltips: { enabled: false },
                     responsive: true,
                     title:{
                         display: true,
                         position: 'left',
                         text: 'Ahorro energetico'
+                    },
+                    plugins: {
+                        datalabels: {
+                            backgroundColor: '#ccc',
+                            borderRadius: 2,
+                            formatter: (value) => {
+                                return value + '%';
+                            }
+                        }
                     }
                 }
             };
             
             /*--------------------------------*--------------------------------*/
-            var gastoActualAnual = document.getElementById('tdGastoActualAnual').textContent;
-            gastoActualAnual = gastoActualAnual.replace(/[$]/g,'');
-            gastoActualAnual = parseFloat(gastoActualAnual);
-            var proyeccionAnual = document.getElementById('tdProyeccionAnual').textContent;
-            proyeccionAnual = proyeccionAnual.replace(/[$]/g,'');
-            proyeccionAnual = parseFloat(proyeccionAnual);
+            //var gastoActualAnual = document.getElementById('tdGastoActualAnual').textContent;
+            //gastoActualAnual = gastoActualAnual.replace(/[$]/g,'');
+            //gastoActualAnual = parseFloat(gastoActualAnual);
+            //var proyeccionAnual = document.getElementById('tdProyeccionAnual').textContent;
+            //proyeccionAnual = proyeccionAnual.replace(/[$]/g,'');
+            //proyeccionAnual = parseFloat(proyeccionAnual);
 
             var configBenefFinan = {
                 type: 'bar',
@@ -1552,16 +1565,29 @@
                         label: 'Con paneles',
                         borderColor: 'grey',
                         borderWidth: 1,
-                        data: [proyeccionAnual],
+                        data: [
+                            //proyeccionAnual
+                            100
+                        ],
                         backgroundColor: [ 'green' ]
                     },
                     {
                         label: 'Sin paneles',
                         borderColor: 'grey',
                         borderWidth: 1,
-                        data: [gastoActualAnual],
+                        data: [
+                            //gastoActualAnual
+                            70
+                        ],
                         backgroundColor: [ 'red' ]
                     }]
+                },
+                options: {
+                    title:{
+                        display: true,
+                        position: 'top',
+                        text: 'Pago a CFE MXN al año'
+                    },
                 }
             };
             
