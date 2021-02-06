@@ -469,6 +469,7 @@ async function getPowerBTI(data){
 }
 
 async function getGeneration(origen, potenciaReal){
+    //Generacion Mensual
     var _generation = [];
 
     for(var i=0; i<12; i++)
@@ -492,8 +493,37 @@ async function getGeneration(origen, potenciaReal){
             promDGeneracion += _generacn[i];
         }
 
-        return promDGeneracion = Math.round((promDGeneracion / _generacn.length) * 100) / 100; 
+        promDGeneracion = Math.round((promDGeneracion / _generacn.length) * 100) / 100; 
+        return promDGeneracion;
     }
+
+    var _generacionBimestral = (_generacionMes) => {
+        generacionBimestre = 0;
+        _generacionBimestrl = [];
+
+        for(var i=0; i<_generacionMes.length; i++)
+        {
+            generacionBimestre += _generacionMes[i];
+
+            if((i + 1) % 2 === 0){
+                _generacionBimestrl.push(generacionBimestre);
+                generacionBimestre = 0;
+            }
+        }
+        return _generacionBimestrl;
+    };
+
+    var promeDGeneracionBimestral = (_genBimestral) => {
+        promedioGB = 0;
+
+        for(var i=0; i<_genBimestral.length; i++)
+        {
+            promedioGB += _genBimestral[i];
+        }
+        
+        promedioGB = promedioGB / _genBimestral.length;
+        return promedioGB;
+    };
 
     var generacionAnual = (_generacn) => {
         generationAnual = 0;
@@ -501,14 +531,20 @@ async function getGeneration(origen, potenciaReal){
         {
             generationAnual += _generacn[i];
         }
-        return Math.round(generationAnual * 100) / 100;
+
+        generationAnual = Math.round(generationAnual * 100) / 100;
+        return generationAnual;
     };
 
     promeDGeneracionMensual = promeDGeneracionMensual(_generation);
+    _generacionBimestral = _generacionBimestral(_generation);
+    promeDGeneracionBimestral = promeDGeneracionBimestral(_generacionBimestral);
     generacionAnual = generacionAnual(_generation);
 
     objrespuesta = {
-        _generacion: _generation, //kwp
+        _generacion: _generation, //kwp - Mensual
+        _generacionBimestral: _generacionBimestral,
+        promeDGeneracionBimestral: promeDGeneracionBimestral,
         promedioDeGeneracion: promeDGeneracionMensual, //kwp - promedioGeneracionMensual
         generacionAnual: generacionAnual //kwp
     };

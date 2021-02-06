@@ -289,13 +289,13 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-4">
-                                      <p class="etqTitulos">Consumo Actual</p>
+                                      <p class="etqTitulos">Consumo Actual (bimestral)</p>
                                     </div>
                                     <div class="col-sm-4">
-                                      <p class="etqTitulos">Generación con Paneles</p>
+                                      <p class="etqTitulos">Generación con Paneles (bimestral)</p>
                                     </div>
                                     <div class="col-sm-4">
-                                      <p class="etqTitulos">Nuevo Consumo CFE</p>
+                                      <p class="etqTitulos">Nuevo Consumo CFE (bimestral)</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -303,48 +303,50 @@
                                         {{#with combinaciones}}
                                             {{#if combinacionEconomica}}
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdConsumoActual">120</p>
+                                                    <p class="etqTexto" id="tdConsumoActual"{{ objCombinaciones._arrayConsumos.consumo._promCons.promConsumosBimestrales }} kw</p>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdGeneracionPaneles">90</p>
+                                                    <p class="etqTexto" id="tdGeneracionPaneles">{{ objCombinaciones.combinacionEconomica.0.power.generacion.promeDGeneracionBimestral }} kw</p>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdNuevoConsumoCFE">85</p>
+                                                    <p class="etqTexto" id="tdNuevoConsumoCFE">{{ objCombinaciones.combinacionEconomica.0.power.nuevosConsumos.promedioConsumoBimestral }} kw</p>
                                                 </div>
                                             {{/if}}
                                             {{#if combinacionMediana}}
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdConsumoActual">120</p>
+                                                    <p class="etqTexto" id="tdConsumoActual">{{ objCombinaciones._arrayConsumos.consumo._promCons.promConsumosBimestrales }} kw</p>
+                                                </div>
+                                                <div class="col-sm-4"></div>
+                                                    <p class="etqTexto" id="tdGeneracionPaneles">{{ objCombinaciones.combinacionMediana.0.power.generacion.promeDGeneracionBimestral }} kw</p>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdGeneracionPaneles">90</p>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdNuevoConsumoCFE">85</p>
+                                                    <p class="etqTexto" id="tdNuevoConsumoCFE">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.promedioConsumoBimestral }} kw</p>
                                                 </div>
                                             {{/if}}
                                             {{#if combinacionOptima}}
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdConsumoActual">120</p>
+                                                    <p class="etqTexto" id="tdConsumoActual">{{ objCombinaciones._arrayConsumos.consumo._promCons.promConsumosBimestrales }} kw</p>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdGeneracionPaneles">90</p>
+                                                    <p class="etqTexto" id="tdGeneracionPaneles">{{ objCombinaciones.combinacionOptima.0.power.generacion.promeDGeneracionBimestral }} kw</p>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <p class="etqTexto" id="tdNuevoConsumoCFE">85</p>
+                                                    <p class="etqTexto" id="tdNuevoConsumoCFE">{{ objCombinaciones.combinacionOptima.0.power.nuevosConsumos.promedioConsumoBimestral }} kw</p>
                                                 </div>
                                             {{/if}}
                                         {{/with}}
                                     {{else}}
-                                        <div class="col-sm-4">
-                                            <p class="etqTexto" id="tdConsumoActual">120</p>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <p class="etqTexto" id="tdGeneracionPaneles">90</p>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <p class="etqTexto" id="tdNuevoConsumoCFE">85</p>
-                                        </div>
+                                        {{#with propuesta}}
+                                            <div class="col-sm-4">
+                                                <p class="etqTexto" id="tdConsumoActual">{{ 1.promConsumosBimestrales }} kw</p>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <p class="etqTexto" id="tdGeneracionPaneles">{{ 0.power.generacion.promeDGeneracionBimestral }} kw</p>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <p class="etqTexto" id="tdNuevoConsumoCFE">{{ 0.power.nuevosConsumos.promedioConsumoBimestral }} kw</p>
+                                            </div>
+                                        {{/with}}
                                     {{/if}}
                                 </div>
                             </div>
@@ -482,8 +484,13 @@
                                             <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.paneles.costoTotal }}$</td>
                                         </tr>
                                         <tr>
-                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vNombreMaterialFot }}</td>
+                                            {{#if objCombinaciones.combinacionEconomica.0.inversores.combinacion}}
+                                                <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores.cantidadTotalEquipos }}</td>
+                                                <td class="etqTexto"><strong>QS1: </strong>{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores.invSoportMay }} <strong>YC600: </strong>{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores.invSoportMen }}</td>
+                                            {{else}}
+                                                <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores }}</td>
+                                                <td class="etqTexto">{{ objCombinaciones.combinacionEconomica.0.inversores.vNombreMaterialFot }}</td>
+                                            {{/if}}
                                             <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionEconomica.0.inversores.precioTotal }}$</td>
                                         </tr>
                                         <tr>
@@ -499,8 +506,13 @@
                                             <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.paneles.costoTotal }}$</td>
                                         </tr>
                                         <tr>
-                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vNombreMaterialFot }}</td>
+                                            {{#if objCombinaciones.combinacionMediana.0.inversores.combinacion}}
+                                                <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores.cantidadTotalEquipos }}</td>
+                                                <td class="etqTexto"><strong>QS1: </strong>{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores.invSoportMay }} <strong>YC600: </strong>{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores.invSoportMen }}</td>
+                                            {{else}}
+                                                <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.numeroDeInversores }}</td>
+                                                <td class="etqTexto">{{ objCombinaciones.combinacionMediana.0.inversores.vNombreMaterialFot }}</td>
+                                            {{/if}}
                                             <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionMediana.0.inversores.precioTotal }}$</td>
                                         </tr>
                                         <tr>
@@ -516,8 +528,13 @@
                                             <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.paneles.costoTotal }}$</td>
                                         </tr>
                                         <tr>
-                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores }}</td>
-                                            <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vNombreMaterialFot }}</td>
+                                            {{#if objCombinaciones.combinacionOptima.0.inversores.combinacion}}
+                                                <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores.cantidadTotalEquipos }}</td>
+                                                <td class="etqTexto"><strong>QS1: </strong>{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores.invSoportMay }} <strong>YC600: </strong>{{ objCombinaciones.combinacionEconomica.0.inversores.numeroDeInversores.invSoportMen }}</td>
+                                            {{else}}
+                                                <td id="tdCantidadInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.numeroDeInversores }}</td>
+                                                <td class="etqTexto">{{ objCombinaciones.combinacionOptima.0.inversores.vNombreMaterialFot }}</td>
+                                            {{/if}}
                                             <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ objCombinaciones.combinacionOptima.0.inversores.precioTotal }}$</td>
                                         </tr>
                                         <tr>
@@ -535,8 +552,13 @@
                                         <td id="tdPrecioPaneles" class="etqTexto" align="center">{{ 0.paneles.costoTotal }}$</td>
                                     </tr>
                                     <tr>
-                                        <td id="tdCantidadInversores" class="etqTexto" align="center">{{ 0.inversores.numeroDeInversores }}</td>
-                                        <td class="etqTexto">{{ 0.inversores.vNombreMaterialFot }}</td>
+                                        {{#if 0.inversores.combinacion}}
+                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ 0.inversores.numeroDeInversores.cantidadTotalEquipos }}</td>
+                                            <td class="etqTexto"><strong>QS1: </strong>{{ 0.inversores.numeroDeInversores.invSoportMay }} <strong>YC600: </strong>{{ 0.inversores.numeroDeInversores.invSoportMen }}</td>
+                                        {{else}}
+                                            <td id="tdCantidadInversores" class="etqTexto" align="center">{{ 0.inversores.numeroDeInversores }}</td>
+                                            <td class="etqTexto">{{ 0.inversores.vNombreMaterialFot }}</td>
+                                        {{/if}}
                                         <td id="tdPrecioPrecioInversores" class="etqTexto" align="center">{{ 0.inversores.precioTotal }}$</td>
                                     </tr>
                                     <tr>
@@ -973,12 +995,20 @@
                                         </tr>
                                         {{#if combinacionEconomica}}
                                             <tr>
+                                                <td>Generacion bimestral de Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica.0.power.generacion.promeDGeneracionBimestral }} kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Generacion anual de Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica.0.power.generacion.generacionAnual }} kWh</td>
+                                            </tr>
+                                            <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.nuevoConsumoAnual}} kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica.0.power.nuevosConsumos.nuevoConsumoAnual}} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>Consumo a CFE bimestral promedio con Paneles solares</td>
-                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.promedioConsumoBimestral}} kWh</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionEconomica.0.power.nuevosConsumos.promedioConsumoBimestral}} kWh</td>
                                             </tr>
                                             <tr>
                                                 <td>% de ahorro de energía</td>
@@ -986,6 +1016,14 @@
                                             </tr>
                                         {{/if}}
                                         {{#if combinacionMediana}}
+                                            <tr>
+                                                <td>Generacion bimestral de Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.generacion.promeDGeneracionBimestral }} kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Generacion anual de Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.generacion.generacionAnual }} kWh</td>
+                                            </tr>
                                             <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
                                                 <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionMediana.0.power.nuevosConsumos.nuevoConsumoAnual }} kWh</td>
@@ -1000,6 +1038,14 @@
                                             </tr>
                                         {{/if}}
                                         {{#if combinacionOptima}}
+                                            <tr>
+                                                <td>Generacion bimestral de Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.generacion.promeDGeneracionBimestral }} kWh</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Generacion anual de Paneles solares</td>
+                                                <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.generacion.generacionAnual }} kWh</td>
+                                            </tr>
                                             <tr>
                                                 <td>Consumo a CFE anual promedio con Paneles solares</td>
                                                 <td class="tbGraphAnswSucc">{{ objCombinaciones.combinacionOptima.0.power.nuevosConsumos.nuevoConsumoAnual }} kWh</td>
@@ -1016,6 +1062,14 @@
                                     {{/with}}
                                 {{else}}
                                     {{#with propuesta}}
+                                        <tr>
+                                            <td>Generacion bimestral de Paneles solares</td>
+                                            <td class="tbGraphAnswSucc">{{ 0.power.generacion.promeDGeneracionBimestral }} kWh</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Generacion anual de Paneles solares</td>
+                                            <td class="tbGraphAnswSucc">{{ 0.power.generacion.generacionAnual }} kWh</td>
+                                        </tr>
                                         <tr>
                                             <td>Tu consumo a CFE en el último año</td>
                                             <td class="tbGraphAnswSucc">{{ 1._promCons.consumoAnual }} kWh</td>
@@ -1055,12 +1109,12 @@
                                                 <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ objCombinaciones.combinacionEconomica.0.roi.consumo.consumoAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Lo que pagas hoy por tu consumo promedio</td>
+                                                <td> (bimestral)</td>
                                                 <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionEconomica.0.roi.consumo.consumoBimestralPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionEconomica.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionEconomica.0.roi.generacion.nuevoPagoAnual }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE en promedio bimestral con Paneles solares</td>
@@ -1077,12 +1131,12 @@
                                                 <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ objCombinaciones.combinacionMediana.0.roi.consumo.consumoAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Lo que pagas hoy por tu consumo promedio</td>
+                                                <td>Lo que pagas hoy por tu consumo promedio (bimestral)</td>
                                                 <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionMediana.0.roi.consumo.consumoBimestralPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionMediana.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionMediana.0.roi.generacion.nuevoPagoAnual }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE en promedio bimestral con paneles solares</td>
@@ -1099,12 +1153,12 @@
                                                 <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ objCombinaciones.combinacionOptima.0.roi.consumo.consumoAnualPesosMXN }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Lo que pagas hoy por tu consumo promedio</td>
+                                                <td>Lo que pagas hoy por tu consumo promedio (bimestral)</td>
                                                 <td class="tbGraphAnswDang">${{ objCombinaciones.combinacionOptima.0.roi.consumo.consumoBimestralPesosMXN }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionOptima.0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                                <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ objCombinaciones.combinacionOptima.0.roi.generacion.nuevoPagoAnual }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Lo que pagarás a CFE en promedio bimestral con paneles solares</td>
@@ -1123,12 +1177,12 @@
                                             <td id="tdGastoActualAnual" class="tbGraphAnswDang">${{ 0.roi.consumo.consumoAnualPesosMXN }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Lo que pagas hoy por tu consumo promedio</td>
+                                            <td>Lo que pagas hoy por tu consumo promedio (bimestral)</td>
                                             <td class="tbGraphAnswDang">${{ 0.roi.consumo.consumoBimestralPesosMXN }}</td>
                                         </tr>
                                         <tr>
                                             <td>Lo que pagarás a CFE con Paneles Solares en 1 año</td>
-                                            <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ 0.roi.generacion.generacionAnualPesosMXN }}</td>
+                                            <td id="tdProyeccionAnual" class="tbGraphAnswSucc">${{ 0.roi.generacion.nuevoPagoAnual }}</td>
                                         </tr>
                                         <tr>
                                             <td>Lo que pagarás a CFE en promedio bimestral con paneles solares</td>
