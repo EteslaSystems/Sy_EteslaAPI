@@ -168,8 +168,9 @@ async function getInversores_cotizacion(data){
 
 			//Se valida el noPaneles, que sea >6, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
 			if(noPaneles >= 6){
-				for(var j=0; j<=noPaneles; j++)
-				{
+				var j=0;
+
+				do{
 					if(noPaneles > 0){
 						//Cantidad de micros del modelo QS1
 						if(noPaneles >= 4){
@@ -187,6 +188,7 @@ async function getInversores_cotizacion(data){
 						}
 					}
 				}
+				while(j<noPaneles);
 
 				cantidadTotalEquipos = invSoportMay+invSoportMen;
 
