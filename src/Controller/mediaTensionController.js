@@ -9,433 +9,205 @@ const inversores = require('../Controller/inversorController');
 const viaticos = require('../Controller/opcionesViaticsController');
 const power = require('../Controller/powerController');
 
-/*#region GDMTH*/
-const eficiencia = 0.82;
-var averageBkWh = 0.0;
-var averageIkWh = 0.0;
-var averagePkWh = 0.0;
-var averageBkW = 0.0;
-var averageIkW = 0.0;
-var averagePkW = 0.0;
-var averageBmxn = 0.0;
-var averageImxn = 0.0;
-var averagePmxn = 0.0;
-var averagePagoTransmi = 0.0;
-var averageCmxn = 0.0;
-var averageDmxn = 0.0;
-var sumaConsumoTotalkWh = 0;
-var promedioConsumoTotalkWh = 0;
-var _objresulProm = {
-	consumo:{
-		consumoAnual: 0,
-		promedioConsumo: 0,
-		potenciaNecesaria: 0
-	},
-	panel:{
-		nombre: '',
-		marca: '',
-		potencia: 0,
-		potenciaReal: 0,
-		noModulos: 0,
-		precioPanel: 0,
-		costoDeEstructuras: 0,
-		costoPorWatt: 0,
-		costoTotalPaneles: 0
-	}
-};
+async function firstStep(data){
+	let _arrayResult = [];
+	var objPropuestaPaneles = {};
+	//Se formatea el array de los periodos cuanto los periodos vengan incompletos (<12)
+	var completarData = (data) => {
+		_periodos = data.arrayPeriodos;
 
-/* var newData = [];
-var newObjArrayGDMTH = {
-	bkwh: 0,
-	ikwh: 0,
-	pkwh: 0,
-	bkw: 0,
-	ikw: 0,
-	pkw: 0,
-	bmxn: 0,
-	imxn: 0,
-	pmxn: 0,
-	pagoTransmi: 0,
-	cmxn: 0,
-	dmxn: 0
-}; */
-
-
-/*1.-Comprobar el tamanio de la data (>12 o ==12)*/
-/*2.-Sacar en base al consumo la ENERGIA REQUERIDA y retornar -LA CONVINACION DE PANELES REQ.-
-	-Filtrar Inversores, para que el usuario pueda seleccionar uno
-*/
-/*3.-En base al INVERSOR seleccionado. Retornar:
-	*	-Numero de inversores requeridos
-*/
-/*4.-Viaticos y Totales
-	*	-Enviar convinacion de paneles e inversores para poder obtener viaticos/cuadrillas y totales
-*/
-
-
-
-
-//Datos de consumo
-//1st. and 2nd. Step (Energia y Paneles Requeridos):
-async function obtenerEnergiaPaneles_Requeridos(data){
-	_data = data.arrayPeriodosGDMTH;
-	if(_data.length === 12){
-		const resultStep = await promedioDePropiedadesPeriodoGDMTH(data);
-		return resultStep;
-	}
-	else{
-		newData = await llenarEspaciosVaciosData(data);
-		const resultStep = await promedioDePropiedadesPeriodoGDMTH(newData);
-		return resultStep;
-	}
-}
-
-//3rd. Step (Inversores):
-	//Obtener Inversor filtrado
-	//Enviar "_potenciaReal" (panel)
-async function obtenerInversores_Requeridos(data){
-	const resultStep = await inversores.obtenerInversores_cotizacion(data);
-	return resultStep;
-}
-
-//4th. Step (Viaticos):
-async function obtenerViaticos_Totales(data){
-	const resultStep = await viaticos.mainViaticos(data);
-	return resultStep;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-// async function cotizacionGDMTH(data){
-	
-// 	menosUno = data.length - 1;
-// 	//arrayConVinacionesPanelesInversores = await promedioDePropiedadesPeriodoGDMTH(data);
-// 	// console.log('cotizacionGDMTH(data) says: ');
-// 	// console.log(arrayConVinacionesPanelesInversores);
-
-// 	/*1.- Obtener el consumo de energia y los paneles*/
-
-// }
-
-
-
-async function promedioDePropiedadesPeriodoGDMTH(data)
-{
-	var arrayResult = [];
-
-	for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
-	{
-		var condicional_ = i == data.arrayPeriodosGDMTH.length - 1;
-		var bkwh = parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
-		var ikwh = parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
-		var pkwh = parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
-
-		/*#region Hipotesis ConsumoTotal*/
-		var periodo = bkwh + ikwh + pkwh;
-		// console.log('Periodo: '+periodo);
-		sumaConsumoTotalkWh += periodo;
-		condicional_ ? promedioConsumoTotalkWh = parseFloat(sumaConsumoTotalkWh / 12) : null;
-		
-		/*#endregion*/
-	}
-
-	if(promedioConsumoTotalkWh > 0)
-	{
-		// console.log('Consumo anual: '+sumaConsumoTotalkWh);
-		// console.log('Promedio inicial: '+promedioConsumoTotalkWh);
-		promedioConsumoTotalkWh = Math.ceil(promedioConsumoTotalkWh);
-		// console.log('Promedio redondeado: '+promedioConsumoTotalkWh);
-		/*#region PotenciaNecesaria*/
-		var municipio = data.destino; //Direccion del cliente
-		// var irradiacion_ = await getIrradiation(municipio);
-		var irradiacion_ = 4.60;
-		var _potenciaNecesaria = await obtenerPotenciaNecesaria(irradiacion_);
-		var _consumoDiario = await consumoPromedio365(sumaConsumoTotalkWh);
-		/*#endregion*/
-		// console.log('_irradiacion: '+irradiacion_);
-		// console.log('_potenciaNecesaria: '+_potenciaNecesaria);
-		// console.log('Consumo promedio 365: '+_consumoDiario)
-		/*#region Paneles_cotizacion*/
-
-		_objresulProm.consumo.consumoAnual = sumaConsumoTotalkWh;
-		_objresulProm.consumo.promedioConsumo = promedioConsumoTotalkWh;
-		_objresulProm.consumo.potenciaNecesaria = _potenciaNecesaria;
-
-		arrayResult.push(_objresulProm);
-
-		_arrayNoDePaneles = await paneles.numeroDePaneles(_consumoDiario, irradiacion_, eficiencia, 499/*TopeProduccion*/);
-		// console.log('_arrayNoDePaneles says: ');
-		// console.log(_arrayNoDePaneles);
-		for(var x=0; x<_arrayNoDePaneles.length; x++)
+		for(var j=0; j<_periodos.length; j++)
 		{
-			nombrePanel = _arrayNoDePaneles[x].nombre;
-			marcaPanel = _arrayNoDePaneles[x].marca;
-			potenciaPanel = parseFloat(_arrayNoDePaneles[x].potencia);
-			potenciaRealPanel = parseFloat(_arrayNoDePaneles[x].potenciaReal);
-			noModulosP = parseFloat(_arrayNoDePaneles[x].noModulos);
-			precioPanel = parseFloat(_arrayNoDePaneles[x].precioPorPanel);
-			costoEstructuras = parseFloat(_arrayNoDePaneles[x].costoDeEstructuras);
-			costoPorWatt = precioPanel;
-			costoTotalPaneles = parseFloat((precioPanel * potenciaPanel) * noModulosP);
-
-			_objresulProm = { 
-				panel: {
-					nombre: nombrePanel,
-					marca: marcaPanel,
-					potencia: potenciaPanel,
-					potenciaReal: potenciaRealPanel,
-					noModulos: noModulosP,
-					costoDeEstructuras: costoEstructuras,
-					costoPorWatt: costoPorWatt,
-					costoTotalPaneles: costoTotalPaneles
-				}
-			};
-			
-			arrayResult.push(_objresulProm);
+			ikwh = parseFloat(_periodos[j].ikwh);
+			bkwh = parseFloat(_periodos[j].bkwh);
+			pkwh = parseFloat(_periodos[j].pkwh);
+			bkw= parseFloat(_periodos[j].bkw);
+			ikw= parseFloat(_periodos[j].ikw);	
+			pkw= parseFloat(_periodos[j].pkw);
+			bmxn = parseFloat(_periodos[j].bmxn);
+			imxn = parseFloat(_periodos[j].imxn);
+			pmxn = parseFloat(_periodos[j].pmxn);
+			pagoTransmision = parseFloat(_periodos[j].pagoTransmi);
+			cmxn = parseFloat(_periodos[j].cmxn);
+			dmxn = parseFloat(_periodos[j].dmxn);
+			/*----------------------------------------*/
+			pIkwh += bkwh;
+			pBkwh += ikwh;
+			pPkwh += pkwh;
+			pBkw += bkw;
+			pIkw += ikw;
+			pPkw += pkw;
+			pBmxn += bmxn;
+			pImxn += imxn;
+			pPmxn += pmxn;
+			pPagoTrans += pagoTransmision;
+			pCmxn += cmxn;
+			pDmxn += dmxn;
 		}
 
-		// console.log('promedioDePropiedadesPeriodoGDMTH(data) says:');
-		// console.log(arrayResult);
-		return arrayResult;
+		pIkwh = pIkwh / _periodos.length;
+		pBkwh = pBkwh / _periodos.length;
+		pPkwh = pPkwh / _periodos.length;
+		pBkw = pBkw / _periodos.length;
+		pIkw = pIkw / _periodos.length;
+		pPkw = pPkw / _periodos.length;
+		pBmxn = pBmxn / _periodos.length;
+		pImxn = pImxn / _periodos.length;
+		pPmxn = pPmxn / _periodos.length;
+		pPagoTrans = pPagoTrans / _periodos.length;
+		pCmxn = pCmxn / _periodos.length;
+		pDmxn = pDmxn / _periodos.length;
+		
+		//Formateada de nueva data => nuevosPeriodos
+		for(var i=(_periodos.length - 1); i<12; i++)
+		{
+			data.arrayPeriodos[i].bkwh = pIkwh;
+			data.arrayPeriodos[i].ikwh = pBkwh;
+			data.arrayPeriodos[i].pkwh = pPkwh;
+			data.arrayPeriodos[i].bkw = pBkw;
+			data.arrayPeriodos[i].ikw = pIkw;
+			data.arrayPeriodos[i].pkw = pPkw;
+			data.arrayPeriodos[i].bmxn = pBmxn;
+			data.arrayPeriodos[i].imxn = pImxn;
+			data.arrayPeriodos[i].pmxn = pPmxn;
+			data.arrayPeriodos[i].pagoTransmi = pPagoTrans;
+			data.arrayPeriodos[i].cmxn = pCmxn;
+			data.arrayPeriodos[i].dmxn = pDmxn;
+		}
+	};
 
-		/*#endregion*/
-		/*#endregion*/
-	}
+	//Validar que en la data vengan los 12 periodos
+	data.arrayPeriodos = data.arrayPeriodos.length === 12 ? data.arrayPeriodos : completarData(data);
+
+	//Calculo de consumos
+	objEnergiaConsumida = getPeriodosPromedios(data);
+
+	potenciaNecesaria = await getPotenciaNecesaria(4.6,objEnergiaConsumida.consumoAnual); //Watts
+	
+	objPropuestaPaneles = {
+        consumo: {
+            _promCons: objEnergiaConsumida,
+            potenciaNecesaria: potenciaNecesaria
+        }
+    };
+
+	_arrayResult.push(objPropuestaPaneles);
+
+	_paneles = await paneles.numeroDePaneles(potenciaNecesaria);
+
+	for(var x=0; x<_paneles.length; x++)
+    {
+        costoTotalPaneles = Math.round(((parseFloat(_paneles[x].precioPorPanel * _paneles[x].potencia)) * _paneles[x].noModulos) * 100) / 100;
+        _paneles[x].costoTotal = costoTotalPaneles;
+
+        objPropuestaPaneles = {
+            panel: _paneles[x]
+        };
+
+        _arrayResult.push(objPropuestaPaneles);
+    }
+
+	return _arrayResult;
 }
 
-
-/*#endregion*/
-
-/*#endregion*/
-
-
-/*#endregion*/
-
-async function obtenerPotenciaNecesaria(irradiacion_lugar){
-	let _porcentajePerdida = calcularPorcentajeDePerdida(18);//La cantidad que se envia 18%, tiene que cambiarse por una cantidad dinamica obtenida del clienteWeb
-	potenciaNecesaria = ((sumaConsumoTotalkWh / irradiacion_lugar) / (1 - _porcentajePerdida))/365;
-	potenciaNecesaria = parseFloat(Math.round(potenciaNecesaria * 100) / 100).toFixed(2);
+async function getPotenciaNecesaria(irradiacion, consumoAnual){ //Retorna en watts
+	var porcentajePerdida = 18 / 100;
+	var potenciaNecesaria = Math.round((((consumoAnual / irradiacion) / (1 - porcentajePerdida)) / 365) * 100)/100;
+	
 	potenciaNecesaria = potenciaNecesaria >= 500 ? 499 : potenciaNecesaria;
+	potenciaNecesaria = potenciaNecesaria * 1000;
+
 	return potenciaNecesaria;
 }
 
-async function getIrradiation(municipio){
-	_irradiacion = await irradiacion.buscarIrradiacionFiltrada(municipio);
-	_irradiacion = _irradiacion.fIrradiacion;
-	return _irradiacion;
-}
+async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
+	_periods = data.arrayPeriodos;
 
-async function consumoPromedio365(powerNeeded){
-	__consumoPromedioMensual = powerNeeded/365;
-	__consumoPromedioMensual = parseFloat(Math.round(__consumoPromedioMensual * 100) / 100).toFixed(2);
-	return __consumoPromedioMensual;
-}
+	var getPeriodosSumados = (periodos) => { //PeriodoSumado = bkwh + ikwh + pkwh; => [Mes]
+		_periodoSumado = [];
 
-function calcularPorcentajeDePerdida(_setPorcentajePerdida){
-	var porcentajePerdida = _setPorcentajePerdida / 100;
-	return porcentajePerdida;
-}
+		for(var a=0; a<periodos.length; a++)
+		{
+			var bkwh = periodos[a].bkwh;
+			var ikwh = periodos[a].ikwh;
+			var pkwh = periodos[a].pkwh;
 
-async function llenarEspaciosVaciosData(data)
-{ 
-	var _nuevaDat = [];
-	// /* var nObjArrayGDMTH = {}; */
-	var nObjArrayGDMTH = {
-		bkwh: 0,
-		ikwh: 0,
-		pkwh: 0,
-		bkw: 0,
-		ikw: 0,
-		pkw: 0,
-		bmxn: 0,
-		imxn: 0,
-		pmxn: 0,
-		pagoTransmi: 0,
-		cmxn: 0,
-		dmxn: 0
-	};
-	
-	_data = data.arrayPeriodosGDMTH;
+			sumaPeriodo = bkwh + ikwh + pkwh;
 
-	for(var j=0; j < _data.length; j++)
-	{
-		var bkwh_ = parseFloat(_data[j].bkwh);
-		var ikwh_ = parseFloat(_data[j].ikwh);
-		var pkwh_ = parseFloat(_data[j].pkwh);
-		var bkw_ = parseFloat(_data[j].bkw);
-		var ikw_ = parseFloat(_data[j].ikw);	
-		var pkw_ = parseFloat(_data[j].pkw);
-		var bmxn_ = parseFloat(_data[j].bmxn);
-		var imxn_ = parseFloat(_data[j].imxn);
-		var pmxn_ = parseFloat(_data[j].pmxn);
-		var pagoTransmision_ = parseFloat(_data[j].pagoTransmi);
-		var cmxn_ = parseFloat(_data[j].cmxn);
-		var dmxn_ = parseFloat(_data[j].dmxn);
-
-		averageBkWh = parseFloat(averageBkWh + bkwh_);
-		averageIkWh = parseFloat(averageIkWh + ikwh_);
-		averagePkWh = parseFloat(averagePkWh + pkwh_);
-		averageBkW = parseFloat(averageBkW + bkw_);
-		averageIkW = parseFloat(averageIkW + ikw_);
-		averagePkW = parseFloat(averagePkW + pkw_);
-		averageBmxn = parseFloat(averageBmxn + bmxn_);
-		averageImxn = parseFloat(averageImxn + imxn_);
-		averagePmxn = parseFloat(averagePmxn + pmxn_);
-		averagePagoTransmi = parseFloat(averagePagoTransmi + pagoTransmision_);
-		averageCmxn = parseFloat(averageCmxn + cmxn_);
-		averageDmxn = parseFloat(averageDmxn + dmxn_);
-
-		/* nObjArrayGDMTH = {
-			bkwh: bkwh_,
-			ikwh: ikwh_,
-			pkwh: pkwh_,
-			bkw: bkw_,
-			ikw: ikw_,
-			pkw: pkw_,
-			bmxn: bmxn_,
-			imxn: imxn_,
-			pmxn: pmxn_,
-			pagoTransmi: pagoTransmi_,
-			cmxn: cmxn_,
-			dmxn: dmxn_
-		}; */
-
-		nObjArrayGDMTH.bkwh = bkwh_;
-		nObjArrayGDMTH.ikwh = ikwh_;
-		nObjArrayGDMTH.pkwh = pkwh_;
-		nObjArrayGDMTH.bkw = bkw_;
-		nObjArrayGDMTH.ikw = ikw_;
-		nObjArrayGDMTH.pkw = pkw_;
-		nObjArrayGDMTH.bmxn = bmxn_;
-		nObjArrayGDMTH.imxn = imxn_;
-		nObjArrayGDMTH.pmxn = pmxn_;
-		nObjArrayGDMTH.pagoTransmi = pagoTransmision_;
-		nObjArrayGDMTH.cmxn = cmxn_;
-		nObjArrayGDMTH.dmxn = dmxn_;
-
-		_nuevaDat.push(nObjArrayGDMTH);
-
-		if(j === (_data.length - 1)){
-			averageBkWh = parseFloat(averageBkWh / (_data.length)) || null;
-			averageIkWh = parseFloat(averageIkWh / (_data.length)) || null;
-			averagePkWh = parseFloat(averagePkWh / (_data.length)) || null;
-			averageBkW = parseFloat(averageBkW / (_data.length)) || null;
-			averageIkW = parseFloat(averageIkW / (_data.length)) || null;
-			averagePkW = parseFloat(averagePkW / (_data.length)) || null;
-			averageBmxn = parseFloat(averageBmxn / (_data.length)) || null;
-			averageImxn = parseFloat(averageImxn / (_data.length)) || null;
-			averagePmxn = parseFloat(averagePmxn / (_data.length)) || null;
-			averagePagoTransmi = parseFloat(averagePagoTransmi / (_data.length)) || null;
-			averageCmxn = parseFloat(averageCmxn / (_data.length)) || null;
-			averageDmxn = parseFloat(averageDmxn / (_data.length)) || null;
-
-			/* nObjArrayGDMTH = {
-				bkwh: averageBkWh,
-				ikwh: averageIkWh,
-				pkwh: averagePkWh,
-				bkw: averageBkW,
-				ikw: averageIkW,
-				pkw: averagePkW,
-				bmxn: averageBmxn,
-				imxn: averageImxn,
-				pmxn: averagePmxn,
-				pagoTransmi: averagePagoTransmi,
-				cmxn: averageCmxn,
-				dmxn: averageDmxn
-			}; */
-
-			nObjArrayGDMTH.bkwh = averageBkWh;
-			nObjArrayGDMTH.ikwh = averageIkWh;
-			nObjArrayGDMTH.pkwh = averagePkWh;
-			nObjArrayGDMTH.bkw = averageBkW;
-			nObjArrayGDMTH.ikw = averageIkW;
-			nObjArrayGDMTH.pkw = averagePkW;
-			nObjArrayGDMTH.bmxn = averageBmxn;
-			nObjArrayGDMTH.imxn = averageImxn;
-			nObjArrayGDMTH.pmxn = averagePmxn;
-			nObjArrayGDMTH.pagoTransmi = averagePagoTransmi;
-			nObjArrayGDMTH.cmxn = averageCmxn;
-			nObjArrayGDMTH.dmxn = averageDmxn;
-
-			for(var n=_data.length; n<12; n++)
-			{
-				_nuevaDat.push(nObjArrayGDMTH);
-				
-				if(n === 11){
-					destino = data.destino;
-					origen = data.origen;
-					newObjeto = {
-						arrayPeriodosGDMTH: _nuevaDat,
-						destino: destino,
-						origen: origen
-					};	
-
-					return newObjeto;
-				}
-			}
+			_periodoSumado[a] = sumaPeriodo;
 		}
-	}
+		return _periodoSumado;
+	};
+
+	var consumoAnual = (periodoSumado) => {
+		consAnual = 0;
+
+		periodoSumado.forEach(periodo => { consAnual += periodo });
+
+		return consAnual;
+	};
+
+	var consumoDiario = (consumoAnio) => {
+		consDiario = consumoAnio / 365;
+		return consDiario;
+	};
+
+	var consumoBimestral = (periodoSumado) => {
+		consBimestral = [];
+		bimestre = 0;
+
+		for(e=0; e<6; e++)
+		{
+			if(e != 0 && e % 2 == 1){
+				bimestre = periodoSumado[e+1] + periodoSumado[e+2];
+			}
+			else{
+				bimestre = periodoSumado[e] + periodoSumado[e+1];
+			}
+
+			consBimestral[e] = bimestre;
+		}
+
+		return consBimestral;
+	};
+
+	var promedioConsumosMensuales = (periodoSumado) => {
+		promConsumoMensual = 0;
+
+		periodoSumado.forEach(periodo => { promConsumoMensual += periodo });
+
+		promConsumoMensual = promedioConsumosMensuales / periodoSumado.length;
+		return promConsumoMensual;
+	};
+
+	var promedioConsumosBimestrales = (consumosBimestrales) => {
+		promConsBimest = 0;
+
+		consumosBimestrales.forEach(bimestre => { promConsBimest += bimestre });
+		promConsBimest = promConsBimest / consumosBimestrales.length;
+		return promConsBimest;
+	};
+
+	_periodoSumados = getPeriodosSumados(periodos); //Consumos mensuales
+	_consumosBimestral = consumoBimestral(_periodoSumados);
+	consumoAnual = consumoAnual(_periodoSumados);
+	consumoDiario = consumoDiario(consumoAnual);
+	promedioConsumosMensuales = promedioConsumosMensuales(_periodoSumados);
+	promedioConsumosBimestrales = promedioConsumosBimestrales(_consumosBimestral);
+
+	objResult = {
+		promedioConsumosMensuales: promedioConsumosMensuales,
+        promConsumosBimestrales: promedioConsumosBimestrales,
+        consumoMensual: _periodoSumados,
+        consumoAnual: consumoAnual,
+        consumoDiario: consumoDiario
+	};
+
+	return objResult;
 }
 
+/****************************-****************************/
 module.exports.firstStepGDMTH = async function(data){
-	const result = await obtenerEnergiaPaneles_Requeridos(data);
+	const result = await firstStep(data);
 	return result;
 }
-
-module.exports.secondStepGDMTH = async function(data){
-	const result = await obtenerInversores_Requeridos(data);
-	return result;
-}
-
-module.exports.thirdStepGDMTH = async function(data){
-	const result = await obtenerViaticos_Totales(data);
-	return result;
-}
-
-
-
-// module.exports.cotizarGDMTH = async function(data){
-//     await cotizacionGDMTH(data);
-// }
-
-
-
-
-//1er. Paso
-// module.exports.obtenerEnergiaReqPanelesReq = async function(data){
-// 	return result = await obtenerEnergiaPaneles_Requeridos(data);
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// module.exports.promedioArray = async function (array, response) {
-// 	const result = await promediarArray(array);
-// 	return result;
-// }
-
-/*#region GDMTO*/
-/*#endregion*/

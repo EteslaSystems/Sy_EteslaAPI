@@ -143,6 +143,7 @@ router.post('/cotizacionIndividual', function(request, response){
 	
 });
 /*#endregion*/
+/*#region mediaTension*/ 
 /*#region GDMTO*/
 /*#endregion*/
 /*#region GDMTH*/
@@ -224,11 +225,8 @@ router.post('/calcularVT', function(request, response){
 		}).end();
 	});
 });
-
-
-
-
 /*#endregion GDMTH*/
+/*#endregion mediaTension*/
 /*#endregion*/
 /*#endregion*/
 

@@ -118,13 +118,13 @@ async function promedio_consumos(consumos){
         promConsumosBimestrales: promConsumosBimestrales,
         consumoMensual: consumoMensual,
         consumoAnual: consumoAnual,
-        consumoDiario: consumoDiario,
+        consumoDiario: consumoDiario
     };
 
     return objResp;
 }
 
-async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){ //2 /*OBSERVAR*/
+async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){ 
     var origen = data.origen;
     var irradiacion = await irradiacionBT.irradiacion_BT(origen);
     var porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
