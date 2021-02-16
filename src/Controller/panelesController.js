@@ -16,7 +16,7 @@ function insertarBD (datas) {
 					message: error
 				}
 
-				resolve (response);
+				reject (response);
 			} else {
 				const response = {
 					status: true,

@@ -14,25 +14,26 @@ async function firstStep(data){
 	var objPropuestaPaneles = {};
 	//Se formatea el array de los periodos cuanto los periodos vengan incompletos (<12)
 	var completarData = (data) => {
+		let pIkwh=0, pBkwh=0, pPkwh=0, pBkw=0, pIkw=0, pPkw=0, pBmxn=0, pImxn=0, pPmxn=0, pPagoTrans=0, pCmxn=0, pDmxn=0;
 		_periodos = data.arrayPeriodos;
 
 		for(var j=0; j<_periodos.length; j++)
 		{
-			ikwh = parseFloat(_periodos[j].ikwh);
-			bkwh = parseFloat(_periodos[j].bkwh);
-			pkwh = parseFloat(_periodos[j].pkwh);
-			bkw= parseFloat(_periodos[j].bkw);
-			ikw= parseFloat(_periodos[j].ikw);	
-			pkw= parseFloat(_periodos[j].pkw);
-			bmxn = parseFloat(_periodos[j].bmxn);
-			imxn = parseFloat(_periodos[j].imxn);
-			pmxn = parseFloat(_periodos[j].pmxn);
-			pagoTransmision = parseFloat(_periodos[j].pagoTransmi);
-			cmxn = parseFloat(_periodos[j].cmxn);
-			dmxn = parseFloat(_periodos[j].dmxn);
+			bkwh = parseFloat(_periodos[j].BkWh);
+			ikwh = parseFloat(_periodos[j].IkWh);
+			pkwh = parseFloat(_periodos[j].PkWh);
+			bkw= parseFloat(_periodos[j].Bkw);
+			ikw= parseFloat(_periodos[j].Ikw);	
+			pkw= parseFloat(_periodos[j].Pkw);
+			bmxn = parseFloat(_periodos[j].B_mxnkWh);
+			imxn = parseFloat(_periodos[j].I_mxnkWh);
+			pmxn = parseFloat(_periodos[j].P_mxnkWh);
+			pagoTransmision = parseFloat(_periodos[j].PagoTransmision);
+			cmxn = parseFloat(_periodos[j].C_mxnkW);
+			dmxn = parseFloat(_periodos[j].D_mxnkW);
 			/*----------------------------------------*/
-			pIkwh += bkwh;
-			pBkwh += ikwh;
+			pIkwh += ikwh;
+			pBkwh += bkwh;
 			pPkwh += pkwh;
 			pBkw += bkw;
 			pIkw += ikw;
@@ -45,42 +46,48 @@ async function firstStep(data){
 			pDmxn += dmxn;
 		}
 
-		pIkwh = pIkwh / _periodos.length;
-		pBkwh = pBkwh / _periodos.length;
-		pPkwh = pPkwh / _periodos.length;
-		pBkw = pBkw / _periodos.length;
-		pIkw = pIkw / _periodos.length;
-		pPkw = pPkw / _periodos.length;
-		pBmxn = pBmxn / _periodos.length;
-		pImxn = pImxn / _periodos.length;
-		pPmxn = pPmxn / _periodos.length;
-		pPagoTrans = pPagoTrans / _periodos.length;
-		pCmxn = pCmxn / _periodos.length;
-		pDmxn = pDmxn / _periodos.length;
+		pIkwh = Math.round((pIkwh / _periodos.length) * 100) / 100;
+		pBkwh = Math.round((pBkwh / _periodos.length) * 100) / 100;
+		pPkwh = Math.round((pPkwh / _periodos.length) * 100) / 100;
+		pBkw = Math.round((pBkw / _periodos.length) * 100) / 100;
+		pIkw = Math.round((pIkw / _periodos.length) * 100) / 100;
+		pPkw = Math.round((pPkw / _periodos.length) * 100) / 100;
+		pBmxn = Math.round((pBmxn / _periodos.length) * 100) / 100;
+		pImxn = Math.round((pImxn / _periodos.length) * 100) / 100;
+		pPmxn = Math.round((pPmxn / _periodos.length) * 100) / 100;
+		pPagoTrans = Math.round((pPagoTrans / _periodos.length) * 100) / 100;
+		pCmxn = Math.round((pCmxn / _periodos.length) * 100) / 100;
+		pDmxn = Math.round((pDmxn / _periodos.length) * 100) / 100;
 		
+		let objPromPerodsIncomp = { 
+			BkWh: pBkwh, 
+			IkWh: pIkwh, 
+			PkWh: pPkwh, 
+			Bkw: pBkw, 
+			Ikw: pIkw, 
+			Pkw: pPkw, 
+			B_mxnkWh: pBmxn, 
+			I_mxnkWh: pImxn, 
+			P_mxnkWh: pPmxn, 
+			pagoTransmision: pPagoTrans, 
+			C_mxnkW: pCmxn, 
+			D_mxnkW: pDmxn, 
+		};
+
 		//Formateada de nueva data => nuevosPeriodos
-		for(var i=(_periodos.length - 1); i<12; i++)
+		for(var i=_periodos.length; i<12; i++)
 		{
-			data.arrayPeriodos[i].bkwh = pIkwh;
-			data.arrayPeriodos[i].ikwh = pBkwh;
-			data.arrayPeriodos[i].pkwh = pPkwh;
-			data.arrayPeriodos[i].bkw = pBkw;
-			data.arrayPeriodos[i].ikw = pIkw;
-			data.arrayPeriodos[i].pkw = pPkw;
-			data.arrayPeriodos[i].bmxn = pBmxn;
-			data.arrayPeriodos[i].imxn = pImxn;
-			data.arrayPeriodos[i].pmxn = pPmxn;
-			data.arrayPeriodos[i].pagoTransmi = pPagoTrans;
-			data.arrayPeriodos[i].cmxn = pCmxn;
-			data.arrayPeriodos[i].dmxn = pDmxn;
+			data.arrayPeriodos.push(objPromPerodsIncomp);
 		}
 	};
 
 	//Validar que en la data vengan los 12 periodos
-	data.arrayPeriodos = data.arrayPeriodos.length === 12 ? data.arrayPeriodos : completarData(data);
+	if(data.arrayPeriodos.length < 12){
+		completarData(data);
+	}
 
 	//Calculo de consumos
-	objEnergiaConsumida = getPeriodosPromedios(data);
+	objEnergiaConsumida = await getPeriodosPromedios(data);
 
 	potenciaNecesaria = await getPotenciaNecesaria(4.6,objEnergiaConsumida.consumoAnual); //Watts
 	
@@ -124,13 +131,13 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 	_periods = data.arrayPeriodos;
 
 	var getPeriodosSumados = (periodos) => { //PeriodoSumado = bkwh + ikwh + pkwh; => [Mes]
-		_periodoSumado = [];
+		let _periodoSumado = [];
 
-		for(var a=0; a<periodos.length; a++)
+		for(let a=0; a<periodos.length; a++)
 		{
-			var bkwh = periodos[a].bkwh;
-			var ikwh = periodos[a].ikwh;
-			var pkwh = periodos[a].pkwh;
+			let bkwh = parseFloat(periodos[a].BkWh);
+			let ikwh = parseFloat(periodos[a].IkWh);
+			let pkwh = parseFloat(periodos[a].PkWh);
 
 			sumaPeriodo = bkwh + ikwh + pkwh;
 
@@ -143,12 +150,13 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 		consAnual = 0;
 
 		periodoSumado.forEach(periodo => { consAnual += periodo });
+		consAnual = Math.round(consAnual * 100)/100;
 
 		return consAnual;
 	};
 
 	var consumoDiario = (consumoAnio) => {
-		consDiario = consumoAnio / 365;
+		consDiario = Math.round((consumoAnio / 365)*100)/100;
 		return consDiario;
 	};
 
@@ -172,23 +180,23 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 	};
 
 	var promedioConsumosMensuales = (periodoSumado) => {
-		promConsumoMensual = 0;
+		let promConsumoMensual = 0;
 
 		periodoSumado.forEach(periodo => { promConsumoMensual += periodo });
 
-		promConsumoMensual = promedioConsumosMensuales / periodoSumado.length;
+		promConsumoMensual = Math.round((promConsumoMensual / periodoSumado.length) * 100) / 100;
 		return promConsumoMensual;
 	};
 
 	var promedioConsumosBimestrales = (consumosBimestrales) => {
-		promConsBimest = 0;
+		let promConsBimest = 0;
 
 		consumosBimestrales.forEach(bimestre => { promConsBimest += bimestre });
-		promConsBimest = promConsBimest / consumosBimestrales.length;
+		promConsBimest = Math.round((promConsBimest / consumosBimestrales.length) * 100)/100;
 		return promConsBimest;
 	};
 
-	_periodoSumados = getPeriodosSumados(periodos); //Consumos mensuales
+	_periodoSumados = getPeriodosSumados(_periods); //Consumos mensuales
 	_consumosBimestral = consumoBimestral(_periodoSumados);
 	consumoAnual = consumoAnual(_periodoSumados);
 	consumoDiario = consumoDiario(consumoAnual);

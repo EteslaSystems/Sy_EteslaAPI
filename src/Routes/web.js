@@ -164,21 +164,6 @@ router.post('/sendPeriods', function(request, response){
 	});
 });
 
-router.post('/firstStepPower', function(request, response){
-	powerController.getCD_DatosConsumo_(request.body)
-	.then(result => {
-		response.json({
-			status: 200,
-			message: result
-		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error
-		}).end();
-	});
-});
 
 //2nd. Step
 router.post('/sendInversorSelected', function(request, response){
