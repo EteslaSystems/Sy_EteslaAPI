@@ -9,6 +9,7 @@ const inversores = require('../Controller/inversorController');
 const viaticos = require('../Controller/opcionesViaticsController');
 const power = require('../Controller/powerController');
 
+/*#region Cotizacion*/
 async function firstStep(data){
 	let _arrayResult = [];
 	var objPropuestaPaneles = {};
@@ -116,6 +117,9 @@ async function firstStep(data){
 
 	return _arrayResult;
 }
+/*#endregion Cotizacion*/
+
+
 
 async function getPotenciaNecesaria(irradiacion, consumoAnual){ //Retorna en watts
 	var porcentajePerdida = 18 / 100;
