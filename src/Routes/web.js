@@ -196,7 +196,7 @@ router.post('/sendInversorSelected', function(request, response){
 //3rd. Step
 ///Calcular Viaticos y Totales
 router.post('/calcularVT', function(request, response){
-	mediaTensionController.thirdStepGDMTH(request.body)
+	mediaTensionController.calcularViaticos(request.body)
 	.then(result => {
 		response.json({
 			status: 200,

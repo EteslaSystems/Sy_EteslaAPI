@@ -12,9 +12,9 @@ const power = require('../Controller/powerController');
 /*#region Cotizacion*/
 async function firstStep(data){
 	let _arrayResult = [];
-	var objPropuestaPaneles = {};
+	let objPropuestaPaneles = {};
 	//Se formatea el array de los periodos cuanto los periodos vengan incompletos (<12)
-	var completarData = (data) => {
+	let completarData = (data) => {
 		let pIkwh=0, pBkwh=0, pPkwh=0, pBkw=0, pIkw=0, pPkw=0, pBmxn=0, pImxn=0, pPmxn=0, pPagoTrans=0, pCmxn=0, pDmxn=0;
 		_periodos = data.arrayPeriodos;
 
@@ -93,10 +93,11 @@ async function firstStep(data){
 	potenciaNecesaria = await getPotenciaNecesaria(4.6,objEnergiaConsumida.consumoAnual); //Watts
 	
 	objPropuestaPaneles = {
-        consumo: {
+        consumo: { //Procesados
             _promCons: objEnergiaConsumida,
             potenciaNecesaria: potenciaNecesaria
-        }
+        },
+		periodos: data
     };
 
 	_arrayResult.push(objPropuestaPaneles);
@@ -221,5 +222,10 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 /****************************-****************************/
 module.exports.firstStepGDMTH = async function(data){
 	const result = await firstStep(data);
+	return result;
+}
+
+module.exports.calcularViaticos = async function(data){
+	const result = await viaticos.mainViaticosMT(data);
 	return result;
 }

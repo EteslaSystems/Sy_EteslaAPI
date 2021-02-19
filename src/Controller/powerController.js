@@ -26,30 +26,32 @@ async function getIrradiacionDiasDeMesesDelAnio(){
 
 //MEDIA TENSION
 /*#region Datos_Consumo*/
-module.exports.getCD_DatosConsumo_ = async function(data){
-    const res = await getCD_DatosConsumo(data);
-    return res;
+///Main Power_MT
+async function getPowerMT(data){
+    await getCD_DatosConsumo(data);
+
+    // arrayResult = await getProduccionIntermedia(data, arrayCD);
 }
 
 //1er. Paso:
 async function getCD_DatosConsumo(data){
-    var objCD = { C:0, D:0 };
-    var C = 0;
-    var D = 0;
-    var tipoCotizacion = data.tipoCotizacion;
-    arrayMeses_ = await getIrradiacionDiasDeMesesDelAnio();
+    let objCD = { C:0, D:0 };
+    let C = 0;
+    let D = 0;
+    let tipoCotizacion = data.tipoCotizacion;
+    let arrayMeses_ = await getIrradiacionDiasDeMesesDelAnio();
 
-    var arrayCD = [];
+    let arrayCD = [];
 
-    for(var i=0; i<data.arrayPeriodosGDMTH.length; i++)
+    for(let i=0; i<data.arrayPeriodosGDMTH.length; i++)
     {
-        var bkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
-        var ikwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
-        var pkwh = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
-        var bkw = Number.parseFloat(data.arrayPeriodosGDMTH[i].bkw) || 0;
-        var ikw = Number.parseFloat(data.arrayPeriodosGDMTH[i].ikw) || 0;
-        var pkw = Number.parseFloat(data.arrayPeriodosGDMTH[i].pkw) || 0;
-        var dias = arrayMeses_[i].dias;
+        let bkwh = parseFloat(data.arrayPeriodosGDMTH[i].bkwh) || 0;
+        let ikwh = parseFloat(data.arrayPeriodosGDMTH[i].ikwh) || 0;
+        let pkwh = parseFloat(data.arrayPeriodosGDMTH[i].pkwh) || 0;
+        let bkw = parseFloat(data.arrayPeriodosGDMTH[i].bkw) || 0;
+        let ikw = parseFloat(data.arrayPeriodosGDMTH[i].ikw) || 0;
+        let pkw = parseFloat(data.arrayPeriodosGDMTH[i].pkw) || 0;
+        let dias = arrayMeses_[i].dias;
         
         if(tipoCotizacion === "GDMTH"){
             C = Math.round(Math.min(pkw, ((bkwh + ikwh + pkwh)/(24 * dias * 0.52)), ((bkwh + ikwh + pkwh)/(24 * dias * 0.52))));
@@ -60,9 +62,6 @@ async function getCD_DatosConsumo(data){
 
         D = Math.round(Math.min(Math.max(bkw, ikw, pkw),((bkwh + ikwh + pkwh)/(24 * dias * 0.52))));
 
-        //console.log('C: '+C+'\nD: '+D);
-        //console.log('-----------------------------');
-
         objCD = {
             C: C,
             D: D
@@ -71,10 +70,7 @@ async function getCD_DatosConsumo(data){
         arrayCD.push(objCD);
     }
     
-    arrayResult = await getProduccionIntermedia(data, arrayCD);
-
-    console.log('respuesta: ');
-    console.log(arrayResult);
+    
 
     return arrayResult;
 }
@@ -110,8 +106,6 @@ async function getProduccionIntermedia(data, arrayCD){ //La data debera traer co
         produccionIntermedia = Math.round(potenciaReal * irradicionMes * diasMes * (1 - porcentajePerdida));
         __produccionIntermedia.push(produccionIntermedia);
     }
-    //console.log('getProduccionIntermedia() says: ');
-    //console.log(__produccionIntermedia);
 
     arrayPagosTotales = await getBIP_DespuesDeSolar(data, arrayCD, __produccionIntermedia);
     arrayProduccionAnual = await getProduccionAnual_KwhMwh(__produccionIntermedia);
@@ -198,9 +192,6 @@ async function getBIP_DespuesDeSolar(data, _arrayCD, _produccionIntermedia){
         _newBIP.push(newBIP);
     }
 
-    // console.log('getBIP_DespuesDeSolar says:\n');
-    // console.log(_newBIP);
-
     arrayPagosTotales = await getBIPMXN_kWh(data, _arrayCD, _newBIP);
     return arrayPagosTotales;
 }
@@ -249,8 +240,6 @@ async function getBIPMXN_kWh(data, arrayCD, newBIP){
 
         _bipMXN_kWh.push(objBIPMXN_kwh);
     }
-    // console.log('getBIPMXN_kWh:\n');
-    // console.log(_bipMXN_kWh);
 
     arrayPagosTotales = getPagosTotales(data, _bipMXN_kWh, arrayCD, newBIP);
 
