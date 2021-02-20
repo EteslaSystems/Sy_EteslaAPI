@@ -271,8 +271,8 @@ async function main_calcularViaticos(data){
     let precioMasIVA = Math.round((precio * confFile.costos.precio_mas_iva) * 100)/100;
     let precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100)/100;
 
-    /*#region POWER*/ ////Falta programar POWER
-    
+    /*#region POWER*/
+    await power.obtenerPowerMT(data);
     /*#endregion POWER*/
 
     let objViaticosCalculados = {
