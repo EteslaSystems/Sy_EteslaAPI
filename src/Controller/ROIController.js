@@ -1,9 +1,16 @@
 module.exports.obtenerROI = async function getROI(objPower, _consums, costoProyectoMXN){
     let costoKwh = 5; //Pesos MXN
-    var tarifa = objPower.dac_o_nodac; //dac o no dac - tarifas
-    var consumoAnual = _consums._promCons.consumoAnual; //*KWH*
-    var generacionAnual = objPower.generacion.generacionAnual; //*KWp* 
-    var costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
+    let tarifa = objPower.dac_o_nodac; //dac o no dac - tarifas
+    let consumoAnual = parseFloat(_consums._promCons.consumoAnual); //*KWH*
+    let generacionAnual = 0; //*KWp* 
+    let costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
+
+    if(objPower.generacion){
+        generacionAnual = objPower.generacion.generacionAnual;
+    }
+    else{
+        generacionAnual = objPower.produccionAnual.produccionAnualKwh;
+    }
 
     /*Ahorro (energia/$$)*/
     ahorroAnual = Math.round((consumoAnual - generacionAnual) * 100)/100; //kwh

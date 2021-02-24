@@ -16,9 +16,9 @@ var objPropuestaPaneles = {};
 
 //1er paso (main).
 async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
-    var consumos = data.consumos;
-    var tarifa = data.tarifa;
-    var _arrayResult = [];
+    let consumos = data.consumos;
+    let tarifa = data.tarifa;
+    let _arrayResult = [];
 
     promedioDeConsumos = await promedio_consumos(consumos);
     objPropuestaPaneles = { consumos: { promedioDeConsumos } }; // Se guarda la informacion referente a los consumos, para una futura implementacion [Hoja: POWER]
@@ -125,10 +125,10 @@ async function promedio_consumos(consumos){
 }
 
 async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){ 
-    var origen = data.origen;
-    var irradiacion = await irradiacionBT.irradiacion_BT(origen);
-    var porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
-    var objCalcularPot = {};
+    let origen = data.origen;
+    let irradiacion = await irradiacionBT.irradiacion_BT(origen);
+    let porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
+    let objCalcularPot = {};
 
     switch(tarifa)
     {
@@ -204,7 +204,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
     objetiveDac = cuanto_menos < objetivoDAC ? cuanto_menos : 0;
     objetiveDac = objetivoDAC > objPromedioDeConsumos.promConsumosBimestrales ? 0 : objetiveDac;
     subsidio_diario = Math.round(((objetiveDac * 6) / 365) * 100)/100;
-    porcentajePerdida = origen == "Veracruz" ? 82 : 73;
+    let porcentajePerdida = origen == "Veracruz" ? 82 : 73;
     porcentajePerdida = await calcularPorcentajePerdida(porcentajePerdida);
     
     if(porcentajePropuesta == 0){

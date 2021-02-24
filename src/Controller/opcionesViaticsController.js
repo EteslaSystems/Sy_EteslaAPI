@@ -3,16 +3,13 @@
 - @author: 				LH420
 - @date: 				09/04/2020
 */
-const { json } = require('body-parser');
 const request = require('request');
-const { config } = require('../../config/database');
 const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
 const dolar = require('../Controller/dolar_tipoCambio');
 const financiamiento = require('../Controller/financiamientoProjController');
 const power = require('../Controller/powerController');
 const roi = require('../Controller/ROIController');
-const { validar } = require('./usuarioController');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -68,11 +65,6 @@ async function calcularViaticosBTI(data){
         _arrayCotizacion = data.arrayBTI;
     }
     else{
-        /*
-            NOTA: -Probar o asegurarse que siempre sera el lugar "0" del arrayBTI.
-                  -Si no... agregar un ciclo for... para iterar el arrayBTI para poder
-                   jalar el ultimo elemnto aunado al array.
-        */
 
         //Equipos seleccionados
         if(data.arrayBTI[0].inversor != null){
@@ -229,6 +221,7 @@ module.exports.calcularViaticosBTI = async function (data){
 
 /*#region Viaticos MediaTension*/
 async function main_calcularViaticos(data){
+    let _resultado = [];
     let origen = data.origen;
     let destino = data.destino;
     let descuento = (parseFloat(data.descuento) / 100) || 0;
@@ -269,11 +262,16 @@ async function main_calcularViaticos(data){
     let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos) * 100)/100;
     let precio = Math.round((totalDeTodo * (1 - descuento)) * 100)/100;
     let precioMasIVA = Math.round((precio * confFile.costos.precio_mas_iva) * 100)/100;
-    let precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100)/100;
+    let precioMXN = Math.round((precio + precioDolar) * 100)/100;
+    let precioMasIVAMXN = Math.round((precioMasIVA * precioDolar)*100)/100;
 
-    /*#region POWER*/
-    await power.obtenerPowerMT(data);
-    /*#endregion POWER*/
+    /*#region POWER - ROI - FINANCIAMIENTO*/
+    let objPower = await power.obtenerPowerMT(data); //Return an Object
+    let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMasIVAMXN);
+
+    let xObjC = { costoTotal: precioMasIVAMXN }; /////Data
+    let objFinanciamiento = await financiamiento.financiamiento(xObjC);
+    /*#endregion POWER - ROI - FINANCIAMIENTO*/
 
     let objViaticosCalculados = {
         panel: panel,
@@ -298,11 +296,19 @@ async function main_calcularViaticos(data){
             totalDeTodo: totalDeTodo,
             precio: precio,
             precioMasIVA: precioMasIVA,
-            precioTotalMXN: precioTotalMXN
-        }
+            precioMXN: precioMXN,
+            precioMasIVAMXN: precioMasIVAMXN
+        },
+        power: objPower,
+        roi: objROI, 
+        financiamiento: objFinanciamiento,
+        descuento: descuento,
+        tipoDeCambio: precioDolar
     };
+    
+    _resultado[0] = objViaticosCalculados;
 
-    return objViaticosCalculados;
+    return _resultado;
 }
 
 /*#region Cuadrilla - Mano de obra*/

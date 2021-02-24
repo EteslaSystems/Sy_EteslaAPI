@@ -18,20 +18,20 @@ async function firstStep(data){
 		let pIkwh=0, pBkwh=0, pPkwh=0, pBkw=0, pIkw=0, pPkw=0, pBmxn=0, pImxn=0, pPmxn=0, pPagoTrans=0, pCmxn=0, pDmxn=0;
 		_periodos = data.arrayPeriodos;
 
-		for(var j=0; j<_periodos.length; j++)
+		for(let j=0; j<_periodos.length; j++)
 		{
-			bkwh = parseFloat(_periodos[j].BkWh);
-			ikwh = parseFloat(_periodos[j].IkWh);
-			pkwh = parseFloat(_periodos[j].PkWh);
-			bkw= parseFloat(_periodos[j].Bkw);
-			ikw= parseFloat(_periodos[j].Ikw);	
-			pkw= parseFloat(_periodos[j].Pkw);
-			bmxn = parseFloat(_periodos[j].B_mxnkWh);
-			imxn = parseFloat(_periodos[j].I_mxnkWh);
-			pmxn = parseFloat(_periodos[j].P_mxnkWh);
-			pagoTransmision = parseFloat(_periodos[j].PagoTransmision);
-			cmxn = parseFloat(_periodos[j].C_mxnkW);
-			dmxn = parseFloat(_periodos[j].D_mxnkW);
+			let bkwh = parseFloat(_periodos[j].BkWh);
+			let ikwh = parseFloat(_periodos[j].IkWh);
+			let pkwh = parseFloat(_periodos[j].PkWh);
+			let bkw= parseFloat(_periodos[j].Bkw);
+			let ikw= parseFloat(_periodos[j].Ikw);	
+			let pkw= parseFloat(_periodos[j].Pkw);
+			let bmxn = parseFloat(_periodos[j].B_mxnkWh);
+			let imxn = parseFloat(_periodos[j].I_mxnkWh);
+			let pmxn = parseFloat(_periodos[j].P_mxnkWh);
+			let pagoTransmision = parseFloat(_periodos[j].pagoTransmision);
+			let cmxn = parseFloat(_periodos[j].C_mxnkW);
+			let dmxn = parseFloat(_periodos[j].D_mxnkW);
 			/*----------------------------------------*/
 			pIkwh += ikwh;
 			pBkwh += bkwh;
@@ -135,7 +135,7 @@ async function getPotenciaNecesaria(irradiacion, consumoAnual){ //Retorna en wat
 async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 	_periods = data.arrayPeriodos;
 
-	var getPeriodosSumados = (periodos) => { //PeriodoSumado = bkwh + ikwh + pkwh; => [Mes]
+	var getPeriodosSumados = (periodos) => { //PeriodoSumado = bkwh + ikwh + pkwh; => [Mes - kwh]
 		let _periodoSumado = [];
 
 		for(let a=0; a<periodos.length; a++)

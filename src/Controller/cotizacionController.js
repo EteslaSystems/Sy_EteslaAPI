@@ -123,17 +123,17 @@ async function getCombinacionEconomica(data, __consumos){
 }
 
 async function getCombinacionMediana(data, __consumos){//Mediana
-    var __paneles = data._paneles || null;
-    var __inversores = data._inversores || null;
-    var _panelesSelectos = [];
-    var _combinacionMediana = [];
+    let __paneles = data._paneles || null;
+    let __inversores = data._inversores || null;
+    let _panelesSelectos = [];
+    let _combinacionMediana = [];
 
-    var marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
+    let marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
     marcaEspecificaPanel = marcaEspecificaPanel.busqueda_inteligente.combinacionMediana_marcaEspecificaPanel.toString();
 
     objCombinacion.combinacion = "mediana";
 
-    var mediaCostoTotPaneles = (_panelSelected) => {
+    let mediaCostoTotPaneles = (_panelSelected) => {
         mediaDePrecios = 0;
         
         for(var k=0; k<_panelSelected.length; k++)
@@ -144,7 +144,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         mediaDePrecios = Math.round((mediaDePrecios / _panelSelected.length) * 100) / 100;
         return mediaDePrecios;
     };
-    var panelCombMediana = (_panelSelecto, mediaCostoTPaneles) => {
+    let panelCombMediana = (_panelSelecto, mediaCostoTPaneles) => {
         acercamiento = 0;
         oldAcercamiento = 0;
         newAcercamiento = 0;
@@ -166,7 +166,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 
     if(__paneles.length > 0){
         //Se seleccionan paneles de la marcaEspecifica
-        for(var i=1; i<__paneles.length; i++)
+        for(let i=1; i<__paneles.length; i++)
         {
             if(__paneles[i].panel.marca === marcaEspecificaPanel){
                 _panelesSelectos.push(__paneles[i].panel);
@@ -177,9 +177,9 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         panelCombMediana(_panelesSelectos, mediaCostoTotPaneles);
     }
 
-    var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
+    __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
 
-    var mediaCostoTotInversores = (_inversoreSelected) => {
+    let mediaCostoTotInversores = (_inversoreSelected) => {
         mediaDePrecios = 0;
         
         for(var k=0; k<_inversoreSelected.length; k++)
@@ -190,13 +190,13 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         mediaDePrecios = Math.round((mediaDePrecios / _inversoreSelected.length) * 100) / 100;
         return mediaDePrecios;
     };
-    var inversorCombMediana = (_inversSelect, mediaCostoTInv) => {
+    let inversorCombMediana = (_inversSelect, mediaCostoTInv) => {
         acercamiento = 0;
         oldAcercamiento = 0;
         newAcercamiento = 0;
         objInversorComb = {};
 
-        for(var u=0; u<_inversSelect.length; u++)
+        for(let u=0; u<_inversSelect.length; u++)
         {
             acercamiento = Math.abs(mediaCostoTInv - _inversSelect[u].precioTotal);
 
