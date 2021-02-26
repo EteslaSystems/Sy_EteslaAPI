@@ -5,11 +5,11 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
     let generacionAnual = 0; //*KWp* 
     let costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
 
-    if(objPower.generacion){
-        generacionAnual = objPower.generacion.generacionAnual;
+    if(objPower.generacion.generacionAnualMwh){
+        generacionAnual = objPower.generacion.produccionAnualKwh;
     }
     else{
-        generacionAnual = objPower.produccionAnual.produccionAnualKwh;
+        generacionAnual = objPower.generacion.generacionAnual;
     }
 
     /*Ahorro (energia/$$)*/

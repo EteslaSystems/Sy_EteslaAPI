@@ -39,7 +39,7 @@ function getPowerMT(data){
     let consumoAnualKwh = parseFloat(data.propuesta.periodos.consumo._promCons.consumoAnual);
     let porcentajePropuesta = Math.floor((ProduccionAnual_KwhMwh.produccionAnualKwh / consumoAnualKwh) * 100);
 
-    let objRespuesta = { produccionAnual: ProduccionAnual_KwhMwh, pagosTotales: PagosTotales, porcentajePotencia: porcentajePropuesta };
+    let objRespuesta = { generacion: ProduccionAnual_KwhMwh, pagosTotales: PagosTotales, porcentajePotencia: porcentajePropuesta };
 
     return objRespuesta;
 }   
@@ -119,20 +119,46 @@ function getProduccionIntermedia(data){ //La data debera traer como dato extra "
     return __produccionIntermedia;
 }
 
-function getProduccionAnual_KwhMwh(_produccionIntermedia){
+function getProduccionAnual_KwhMwh(_produccionIntermedia){ //Generacion
     let produccionAnualKwh = 0;
     let produccionAnualMwh = 0;
+
+    let _generacionMensual = (generacionAnual) => {
+        let _generMens = [];
+        let generacionMes = generacionAnual / 12;
+
+        for(let x=0; x<12; x++)
+        {
+            _generMens[x] = generacionMes;
+        }
+        return _generMens;
+    };
     
+    let promedioGeneracionMensual = (_generacionMensual) => {
+        let promedio = 0;
+
+        _generacionMensual.forEach((mesGeneracion, index)=>{
+            promedio += mesGeneracion;
+        });
+
+        return promedio = promedio/_generacionMensual.length;
+    };
+
     for(let i=0; i<_produccionIntermedia.length; i++)
     {
         produccionAnualKwh += _produccionIntermedia[i];
     }
-    
+
+    _generacionMensual = _generacionMensual(produccionAnualKwh);
+    promedioGeneracionMensual = promedioGeneracionMensual(_generacionMensual);
+    /*-----------*/
     produccionAnualMwh = Math.round(produccionAnualKwh / 1000);
     
     let objProduccionAnual = {
+        _generacionMensual: _generacionMensual,
+        promedioGeneracionMensual: promedioGeneracionMensual,
         produccionAnualKwh: produccionAnualKwh,
-        produccionAnualMwh: produccionAnualMwh
+        generacionAnualMwh: produccionAnualMwh
     };
     
     return objProduccionAnual;
@@ -413,18 +439,18 @@ function getTotales_Ahorro(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    var objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'', dac_o_nodac: '' };
-    var _consumos = data.consumos || null;
-    var tarifa = data.tarifa || null;
-    var origen = data.origen;
-    var potenciaReal = data.potenciaReal; 
-    var promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
+    let objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'', dac_o_nodac: '' };
+    let _consumos = data.consumos || null;
+    let tarifa = data.tarifa || null;
+    let origen = data.origen;
+    let potenciaReal = data.potenciaReal; 
+    let promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
 
-    var _generacion = await getGeneration(origen, potenciaReal); //Generacion en KWp
+    let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
 
     if(_consumos != null){
         _consumosMensuales = _consumos._promCons.consumoMensual;
-        var objNuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
+        let objNuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
         porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
         
         if(tarifa != null){
@@ -441,11 +467,11 @@ async function getPowerBTI(data){
     return objResult;
 }
 
-async function getGeneration(origen, potenciaReal){
+function getGeneration(origen, potenciaReal){
     //Generacion Mensual
-    var _generation = [];
+    let _generation = [];
 
-    for(var i=0; i<12; i++)
+    for(let i=0; i<12; i++)
     {
         if(origen.toString() === "Veracruz"){
             gener = Math.round((Math.floor(/*irradiacion->*/4.6 * potenciaReal) * 0.83 * 30.4) * 100) / 100;
@@ -458,7 +484,7 @@ async function getGeneration(origen, potenciaReal){
         //kwp
     }
 
-    var promeDGeneracionMensual = (_generacn) => {
+    let promeDGeneracionMensual = (_generacn) => {
         promDGeneracion = 0;
 
         for(var i=0; i<_generacn.length; i++)
@@ -470,7 +496,7 @@ async function getGeneration(origen, potenciaReal){
         return promDGeneracion;
     }
 
-    var _generacionBimestral = (_generacionMes) => {
+    let _generacionBimestral = (_generacionMes) => {
         generacionBimestre = 0;
         _generacionBimestrl = [];
 
@@ -486,7 +512,7 @@ async function getGeneration(origen, potenciaReal){
         return _generacionBimestrl;
     };
 
-    var promeDGeneracionBimestral = (_genBimestral) => {
+    let promeDGeneracionBimestral = (_genBimestral) => {
         promedioGB = 0;
 
         for(var i=0; i<_genBimestral.length; i++)
@@ -498,7 +524,7 @@ async function getGeneration(origen, potenciaReal){
         return promedioGB;
     };
 
-    var generacionAnual = (_generacn) => {
+    let generacionAnual = (_generacn) => {
         generationAnual = 0;
         for(var i=0; i<_generacn.length; i++)
         {

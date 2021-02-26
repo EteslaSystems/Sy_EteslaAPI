@@ -229,7 +229,7 @@ async function main_calcularViaticos(data){
     distanciaEnKm = distanciaEnKm.message;
     let propuesta = data.propuesta; //Obj
     let panel = JSON.parse(propuesta.panel); //Obj
-    let inversor = JSON.parse(propuesta.inversor); //Obj
+    let inversor = propuesta.inversor; //Obj
     let pagoPasaje = 0;
     let pagoPasajeTotal = 0;
     let pagoComidaTotal = 0;
@@ -254,7 +254,7 @@ async function main_calcularViaticos(data){
     }
 
     let totalViaticos = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal;
-    let costoTotalPanInvEstr = Math.round((panel.costoTotal + inversor.precioTotal + panel.costoDeEstructuras) * 100) /100;
+    let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.precioTotal) + panel.costoDeEstructuras) * 100) /100;
     let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
     let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
     let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
@@ -264,6 +264,8 @@ async function main_calcularViaticos(data){
     let precioMasIVA = Math.round((precio * confFile.costos.precio_mas_iva) * 100)/100;
     let precioMXN = Math.round((precio + precioDolar) * 100)/100;
     let precioMasIVAMXN = Math.round((precioMasIVA * precioDolar)*100)/100;
+
+    let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potencia)) * 100)/100;
 
     /*#region POWER - ROI - FINANCIAMIENTO*/
     let objPower = await power.obtenerPowerMT(data); //Return an Object
@@ -275,7 +277,7 @@ async function main_calcularViaticos(data){
 
     let objViaticosCalculados = {
         panel: panel,
-        inversor: inversor,
+        inversores: inversor,
         viaticos_costos: {
             noCuadrillas: numeroCuadrillas,
             noPersonasRequeridas: numeroPersonasRequeridas,
@@ -297,7 +299,8 @@ async function main_calcularViaticos(data){
             precio: precio,
             precioMasIVA: precioMasIVA,
             precioMXN: precioMXN,
-            precioMasIVAMXN: precioMasIVAMXN
+            precioMasIVAMXN: precioMasIVAMXN,
+            precio_watt: precio_watt
         },
         power: objPower,
         roi: objROI, 
