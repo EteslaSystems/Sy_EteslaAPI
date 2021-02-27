@@ -13,6 +13,8 @@ const power = require('../Controller/powerController');
 async function firstStep(data){
 	let _arrayResult = [];
 	let objPropuestaPaneles = {};
+	let porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
+
 	//Se formatea el array de los periodos cuanto los periodos vengan incompletos (<12)
 	let completarData = (data) => {
 		let pIkwh=0, pBkwh=0, pPkwh=0, pBkw=0, pIkw=0, pPkw=0, pBmxn=0, pImxn=0, pPmxn=0, pPagoTrans=0, pCmxn=0, pDmxn=0;
@@ -90,7 +92,7 @@ async function firstStep(data){
 	//Calculo de consumos
 	objEnergiaConsumida = await getPeriodosPromedios(data);
 
-	potenciaNecesaria = await getPotenciaNecesaria(4.6,objEnergiaConsumida.consumoAnual); //Watts
+	potenciaNecesaria = await getPotenciaNecesaria(4.6,objEnergiaConsumida.consumoAnual, porcentajePropuesta); //Watts
 	
 	objPropuestaPaneles = {
         consumo: { //Procesados
@@ -122,10 +124,17 @@ async function firstStep(data){
 
 
 
-async function getPotenciaNecesaria(irradiacion, consumoAnual){ //Retorna en watts
-	var porcentajePerdida = 18 / 100;
-	var potenciaNecesaria = Math.round((((consumoAnual / irradiacion) / (1 - porcentajePerdida)) / 365) * 100)/100;
+async function getPotenciaNecesaria(irradiacion, consumoAnual, porcentajePropuesta){ //Retorna en watts
+	let porcentajePerdida = 18 / 100;
+	let potenciaNecesaria = 0;
 	
+	if(porcentajePropuesta === 0){
+		potenciaNecesaria = Math.round((((consumoAnual / irradiacion) / (1 - porcentajePerdida)) / 365) * 100)/100;
+	}
+	else{
+		potenciaNecesaria = Math.round(((((consumoAnual * porcentajePropuesta) / irradiacion) / (1 - porcentajePerdida)) / 365)  * 100)/100;
+	}
+
 	potenciaNecesaria = potenciaNecesaria >= 500 ? 499 : potenciaNecesaria;
 	potenciaNecesaria = potenciaNecesaria * 1000;
 
