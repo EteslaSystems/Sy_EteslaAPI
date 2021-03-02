@@ -238,6 +238,21 @@ async function main_calcularViaticos(data){
     let confFile = await configFile.getArrayOfConfigFile();
     let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
     precioDolar = precioDolar[0].precioDolar;
+    
+    ///#Calcular totales de agregados
+    let costoTotalAgregados = (_agregads) => {
+        let total = 0;
+
+        for(let agregado of _agregads)
+        {
+            subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
+            total += subtotal;
+        }
+        
+        return total;
+    };
+
+    costoTotalAgregados = data._agregados != 'null' ? costoTotalAgregados(data._agregados) : 0;
 
     ////#Procedimiento - Calculo_viaticos
     //Se obtiene numero de cuadrillas
