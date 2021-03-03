@@ -252,7 +252,8 @@ async function main_calcularViaticos(data){
         return total;
     };
 
-    costoTotalAgregados = data._agregados != 'null' ? costoTotalAgregados(data._agregados) : 0;
+    costoTotalAgregados = data._agregados != null ? costoTotalAgregados(data._agregados) : 0; ///CostoTotalAgregados - MXN
+    costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
 
     ////#Procedimiento - Calculo_viaticos
     //Se obtiene numero de cuadrillas
@@ -274,7 +275,7 @@ async function main_calcularViaticos(data){
     let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
     let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
     let margen = Math.round(((subtotOtrFletManObrTPIE / (1 - confFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100)/100;
-    let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos) * 100)/100;
+    let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos + costoTotalAgregados) * 100)/100;
     let precio = Math.round((totalDeTodo * (1 - descuento)) * 100)/100;
     let precioMasIVA = Math.round((precio * confFile.costos.precio_mas_iva) * 100)/100;
     let precioMXN = Math.round((precio + precioDolar) * 100)/100;
@@ -294,6 +295,7 @@ async function main_calcularViaticos(data){
         panel: panel,
         inversores: inversor,
         viaticos_costos: {
+            _agregados: data._agregados,
             noCuadrillas: numeroCuadrillas,
             noPersonasRequeridas: numeroPersonasRequeridas,
             noDias: numeroDias,
