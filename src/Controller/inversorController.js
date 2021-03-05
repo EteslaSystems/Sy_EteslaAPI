@@ -134,12 +134,12 @@ function buscarBD(datas) {
 
 /*#region SI_SIRVE*/
 async function getInversores_cotizacion(data){
-	var arrayInversor = [];
+	let arrayInversor = [];
 	allInversores = await consultaBD();
 	allInversores = allInversores.message;
-	var combinacion = false;
-	var noPaneles = 0; //No paneles a instalar
-	var numeroDeInversores;
+	let combinacion = false;
+	let noPaneles = 0; //No. paneles a instalar
+	let numeroDeInversores;
 
 	if(data.objPanelSelect){
 		data = data.objPanelSelect;
@@ -149,8 +149,10 @@ async function getInversores_cotizacion(data){
 	potenciaReal_= parseFloat(data.potenciaReal);
 	potenciaReal_ = potenciaReal_ * 1000; ///Watss 
 
-	for(var i = 0; i < allInversores.length; i++)
+	for(let i = 0; i < allInversores.length; i++)
 	{
+		let invSoportMay = 0;
+		let invSoportMen = 0;
 		noPaneles = parseFloat(data.noModulos);
 		redimensinoamiento = allInversores[i].fPotencia * 1.25;
 
@@ -159,8 +161,6 @@ async function getInversores_cotizacion(data){
 			numeroDeInversores =  noPaneles / allInversores[i].iPanelSoportados;
 		}
 		else if(allInversores[i].vTipoInversor === 'Combinacion'){
-			var invSoportMay = 0;
-			var invSoportMen = 0;
 			/***Soporte de micros para combinacion *-* QS1 + YC600
 				-QS1 => 4 paneles
 				-YC600 => 2 paneles 
@@ -168,27 +168,12 @@ async function getInversores_cotizacion(data){
 
 			//Se valida el noPaneles, que sea >6, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
 			if(noPaneles >= 6){
-				var j=0;
+				//Cantidad de micros del modelo QS1
+				invSoportMay = Math.floor(noPaneles / 4);
+				noPaneles = noPaneles - (invSoportMay * 4);
 
-				do{
-					if(noPaneles > 0){
-						//Cantidad de micros del modelo QS1
-						if(noPaneles >= 4){
-							//Se agrega un inversor modelo QS1
-							invSoportMay++;
-							//Se reduce el numero de paneles cubiertos
-							noPaneles = noPaneles - 4;
-						}
-
-						if(noPaneles >= 1){
-							//Se agrega un inversor modelo YC600
-							invSoportMen++;
-							//Se reduce el numero de paneles cubiertos
-							noPaneles = noPaneles - 2;
-						}
-					}
-				}
-				while(j<noPaneles);
+				invSoportMen = noPaneles >= 1 ? Math.round(noPaneles / 2) : 0;
+				noPaneles = noPaneles - (invSoportMen * 2);
 
 				cantidadTotalEquipos = invSoportMay+invSoportMen;
 

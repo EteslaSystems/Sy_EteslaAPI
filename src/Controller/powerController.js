@@ -57,22 +57,22 @@ function getCD(data){
 
     for(let i=0; i<_periodos.length; i++)
     {
-        let bkwh = parseFloat(_periodos[i].BkWh);
-        let ikwh = parseFloat(_periodos[i].IkWh);
-        let pkwh = parseFloat(_periodos[i].PkWh);
-        let bkw = parseFloat(_periodos[i].Bkw);
-        let ikw = parseFloat(_periodos[i].Ikw);
-        let pkw = parseFloat(_periodos[i].Pkw);
+        let bkwh = parseFloat(_periodos[i].BkWh) || 0;
+        let ikwh = parseFloat(_periodos[i].IkWh) || 0;
+        let pkwh = parseFloat(_periodos[i].PkWh) || 0;
+        let bkw = parseFloat(_periodos[i].Bkw) || 0;
+        let ikw = parseFloat(_periodos[i].Ikw) || 0;
+        let pkw = parseFloat(_periodos[i].Pkw) || 0;
         let dias = arrayMeses_[i].dias;
 
         if(tipoCotizacion === "GDMTH"){
             C = Math.round(Math.min(pkw, ((bkwh + ikwh + pkwh)/(24 * dias * 0.52)), ((bkwh + ikwh + pkwh)/(24 * dias * 0.52))));
         }
         else{
-            C = (bkwh + ikwh + pkwh)/(24 * dias * 0.52);
+            C = Math.round(((bkwh + ikwh + pkwh)/(24 * dias * 0.52)) * 100)/100;
         }
     
-        D = Math.round(Math.min(Math.max(bkw, ikw, pkw),((bkwh + ikwh + pkwh)/(24 * dias * 0.52))));
+        D = Math.round((Math.min(Math.max(bkw, ikw, pkw),((bkwh + ikwh + pkwh)/(24 * dias * 0.52)))) * 100)/100;
     
         objCD = {
             C: C,
@@ -125,7 +125,7 @@ function getProduccionAnual_KwhMwh(_produccionIntermedia){ //Generacion
 
     let _generacionMensual = (generacionAnual) => {
         let _generMens = [];
-        let generacionMes = generacionAnual / 12;
+        let generacionMes = Math.round((generacionAnual / 12) * 100) / 100;
 
         for(let x=0; x<12; x++)
         {
@@ -141,7 +141,7 @@ function getProduccionAnual_KwhMwh(_produccionIntermedia){ //Generacion
             promedio += mesGeneracion;
         });
 
-        return promedio = promedio/_generacionMensual.length;
+        return promedio = Math.round(( promedio/_generacionMensual.length) * 100) / 100;
     };
 
     for(let i=0; i<_produccionIntermedia.length; i++)
@@ -152,7 +152,7 @@ function getProduccionAnual_KwhMwh(_produccionIntermedia){ //Generacion
     _generacionMensual = _generacionMensual(produccionAnualKwh);
     promedioGeneracionMensual = promedioGeneracionMensual(_generacionMensual);
     /*-----------*/
-    produccionAnualMwh = Math.round(produccionAnualKwh / 1000);
+    produccionAnualMwh = produccionAnualKwh / 1000;
     
     let objProduccionAnual = {
         _generacionMensual: _generacionMensual,
@@ -179,12 +179,12 @@ function getBIP_DespuesDeSolar(data, _produccionIntermedia){
 
     for(let i=0; i<_periodos.length; i++)
     {   
-        let bkwh = parseFloat(_periodos[i].BkWh);
-        let ikwh = parseFloat(_periodos[i].IkWh);
-        let pkwh = parseFloat(_periodos[i].PkWh);
-        let bkw = parseFloat(_periodos[i].Bkw);
-        let ikw = parseFloat(_periodos[i].Ikw);
-        let pkw = parseFloat(_periodos[i].Pkw);
+        let bkwh = parseFloat(_periodos[i].BkWh) || 0;
+        let ikwh = parseFloat(_periodos[i].IkWh) || 0;
+        let pkwh = parseFloat(_periodos[i].PkWh) || 0;
+        let bkw = parseFloat(_periodos[i].Bkw) || 0;
+        let ikw = parseFloat(_periodos[i].Ikw) || 0;
+        let pkw = parseFloat(_periodos[i].Pkw) || 0;
         let diasMes = _meses[i].dias;
         
         let produccionIntermedia = _produccionIntermedia[i];
@@ -220,14 +220,14 @@ function getBIPMXN_kWh(data, arrayCD, __newBIP){
 
     for(let i=0; i<_periodos.length; i++)
     {
-        let bkwh = parseFloat(_periodos[i].BkWh);
-        let ikwh = parseFloat(_periodos[i].IkWh);
-        let pkwh = parseFloat(_periodos[i].PkWh);
-        let bmxn = parseFloat(_periodos[i].B_mxnkWh);
-        let imxn = parseFloat(_periodos[i].I_mxnkWh);
-        let pmxn = parseFloat(_periodos[i].P_mxnkWh);
-        let cmxn = parseFloat(_periodos[i].C_mxnkW);
-        let dmxn = parseFloat(_periodos[i].D_mxnkW);
+        let bkwh = parseFloat(_periodos[i].BkWh) || 0;
+        let ikwh = parseFloat(_periodos[i].IkWh) || 0;
+        let pkwh = parseFloat(_periodos[i].PkWh) || 0;
+        let bmxn = parseFloat(_periodos[i].B_mxnkWh) || 0;
+        let imxn = parseFloat(_periodos[i].I_mxnkWh) || 0;
+        let pmxn = parseFloat(_periodos[i].P_mxnkWh) || 0;
+        let cmxn = parseFloat(_periodos[i].C_mxnkW) || 0;
+        let dmxn = parseFloat(_periodos[i].D_mxnkW) || 0;
 
         let ckw = arrayCD[i].C;
         let dkw = arrayCD[i].D;
@@ -237,10 +237,15 @@ function getBIPMXN_kWh(data, arrayCD, __newBIP){
         let newP = __newBIP[i].newP;
 
         let bmxn_kwh = Math.round((bmxn / bkwh) * 100) / 100;
+        bmxn_kwh = isNaN(bmxn_kwh) == true ? 0 : bmxn_kwh;
         let imxn_kwh = Math.round((imxn / ikwh) * 100) / 100;
+        imxn_kwh = isNaN(imxn_kwh) == true ? 0 : imxn_kwh;
         let pmxn_kwh = Math.round((pmxn / pkwh) * 100) / 100;
+        pmxn_kwh = isNaN(pmxn_kwh) == true ? 0 : pmxn_kwh;
         let cmxn_kw = Math.round((cmxn / ckw) * 100) / 100;
+        cmxn_kw = isNaN(cmxn_kw) == true ? 0 : cmxn_kw;
         let dmxn_kw = Math.round((dmxn / dkw) * 100) / 100;
+        dmxn_kw = isNaN(dmxn_kw) == true ? 0 : dmxn_kw;
 
         let energiaFaltante = newB + newI + newP;
 
@@ -281,10 +286,10 @@ function getPagosTotales(data, _bipMXNkWh, __arrayCD, __newBIP){
     /*#region SIN_SOLAR*/
     for(let i=0; i<_periodos.length; i++)
     {
-        let bkwh = parseFloat(_periodos[i].BkWh);
-        let ikwh = parseFloat(_periodos[i].IkWh);
-        let pkwh = parseFloat(_periodos[i].PkWh);
-        let pagoTransmi = parseFloat(_periodos[i].pagoTransmision);
+        let bkwh = parseFloat(_periodos[i].BkWh) || 0;
+        let ikwh = parseFloat(_periodos[i].IkWh) || 0;
+        let pkwh = parseFloat(_periodos[i].PkWh) || 0;
+        let pagoTransmi = parseFloat(_periodos[i].pagoTransmision) || 0;
 
         let bmxn_kwh = _bipMXNkWh[i].bmxn_kwh;
         let imxn_kwh = _bipMXNkWh[i].imxn_kwh;
@@ -296,10 +301,10 @@ function getPagosTotales(data, _bipMXNkWh, __arrayCD, __newBIP){
         let dkw = __arrayCD[i].D;
 
         if(data.tarifa === "GDMTH"){
-            energia = Math.round((bkwh * bmxn_kwh + ikwh *imxn_kwh + pkwh * pmxn_kwh) * 100) / 100;
+            energia = Math.round((bkwh * bmxn_kwh + ikwh * imxn_kwh + pkwh * pmxn_kwh) * 100) / 100;
         }
         else{
-            energia = Math.round((bkwh * bmxn_kwh + ikwh *imxn_kwh + pkwh) * 100) / 100
+            energia = Math.round((bkwh * bmxn_kwh + ikwh * imxn_kwh + pkwh) * 100) / 100
         }
         
         capacidad = Math.round((dkw * dmxn_kw) * 100) / 100;
@@ -421,6 +426,8 @@ function getTotales_Ahorro(_pagosTotales){
         totalConSolar += _pagosTotales[i].conSolar.total;
     }
 
+    totalSinSolar = Math.round(totalSinSolar * 100)/100;
+    totalConSolar = Math.round(totalConSolar * 100)/100;
     ahorroCifra = totalConSolar > 0 ? Math.round((totalSinSolar - totalConSolar) * 100) / 100 : parseFloat(totalSinSolar - 12000);
     ahorroPorcentaje = Math.round((ahorroCifra / totalSinSolar) * 100) / 100;
     ahorroPorcentaje = ahorroPorcentaje * 100;

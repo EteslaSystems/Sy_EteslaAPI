@@ -215,7 +215,7 @@
                                         {{#with propuesta}}
                                             <td id="subt" class="text-center">{{ 0.totales.totalDeTodo }}$</td>
                                             <td id="iva" class="text-center">{{ 0.totales.precioMasIVA }}$</td>
-                                            <td id="total" class="text-center">${{ 0.totales.precioTotalMXN }}</td>
+                                            <td id="total" class="text-center">${{ 0.totales.precioMasIVAMXN }}</td>
                                         {{/with}}
                                     </tr>
                                 </tbody>
@@ -357,7 +357,7 @@
                                 </tr>
                                 <tr class="compare-row">
                                     <td><strong>Costo (MXN)</strong></td>
-                                    <td class="text-center etqTexto">${{ 0.totales.precioTotalMXN }}</td>
+                                    <td class="text-center etqTexto">${{ 0.totales.precioMasIVAMXN }}</td>
                                 </tr>
                             {{/with}}
                         <!-- #End_EtiquetasComparatiba - Contenido -->

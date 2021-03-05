@@ -12,7 +12,7 @@ const otrosMateriales = require('./otrosMaterialesController');
 var cotizacionInd = [];
 
 async function cotizacionIndividual(data){
-    var objCotiIndividual = { panel: {}, 
+    let objCotiIndividual = { panel: {}, 
     inversor: {
         fISC: 0,
         fPotencia: 0,
@@ -32,19 +32,19 @@ async function cotizacionIndividual(data){
         potenciaNominal: 0,
         potenciaPico: 0
     }};
-    var idPanel = data.idPanel;
-    var idInversor = data.idInversor;
-    var cantidadPaneles = parseInt(data.cantidadPaneles) || 0;
-    var cantidadInversores = parseInt(data.cantidadInversores) || 0;
+    let idPanel = data.idPanel;
+    let idInversor = data.idInversor;
+    let cantidadPaneles = parseInt(data.cantidadPaneles) || 0;
+    let cantidadInversores = parseInt(data.cantidadInversores) || 0;
 
 
-    var cantidadEstructuras = parseInt(data.cantidadEstructuras);
+    let cantidadEstructuras = parseInt(data.cantidadEstructuras);
     // var bMonitoreo = data.monitoreo; //PENDIENTE
 
-    var origen = data.origen;
-    var destino = data.destino;
-    var _costoEstructuras = 0;
-    var _potenciaReal = 0;
+    let origen = data.origen;
+    let destino = data.destino;
+    let _costoEstructuras = 0;
+    let _potenciaReal = 0;
     
 
     if(idPanel != "-1"){
@@ -109,7 +109,6 @@ async function cotizacionIndividual(data){
 		objCotiIndividual.inversor.precioTotal = precioTotalInversores;
 		objCotiIndividual.inversor.numeroDeInversores = cantidadInversores;
 		objCotiIndividual.inversor.potenciaNominal = _potenciaNominalInversor;
-       
 
         if(objCotiIndividual.panel.potenciaPanel == 0 && objCotiIndividual.inversor.potenciaInversor != 0){
             var _cotizacionUnicamenteInversor = [];

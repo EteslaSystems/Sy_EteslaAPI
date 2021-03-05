@@ -13,27 +13,28 @@ const power = require('../Controller/powerController');
 async function firstStep(data){
 	let _arrayResult = [];
 	let objPropuestaPaneles = {};
+	let objPromPerodsIncomp = {};
 	let porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
 
 	//Se formatea el array de los periodos cuanto los periodos vengan incompletos (<12)
 	let completarData = (data) => {
 		let pIkwh=0, pBkwh=0, pPkwh=0, pBkw=0, pIkw=0, pPkw=0, pBmxn=0, pImxn=0, pPmxn=0, pPagoTrans=0, pCmxn=0, pDmxn=0;
-		_periodos = data.arrayPeriodos;
+		let _periodos = data.arrayPeriodos;
 
 		for(let j=0; j<_periodos.length; j++)
 		{
-			let bkwh = parseFloat(_periodos[j].BkWh);
-			let ikwh = parseFloat(_periodos[j].IkWh);
-			let pkwh = parseFloat(_periodos[j].PkWh);
-			let bkw= parseFloat(_periodos[j].Bkw);
-			let ikw= parseFloat(_periodos[j].Ikw);	
-			let pkw= parseFloat(_periodos[j].Pkw);
-			let bmxn = parseFloat(_periodos[j].B_mxnkWh);
-			let imxn = parseFloat(_periodos[j].I_mxnkWh);
-			let pmxn = parseFloat(_periodos[j].P_mxnkWh);
-			let pagoTransmision = parseFloat(_periodos[j].pagoTransmision);
-			let cmxn = parseFloat(_periodos[j].C_mxnkW);
-			let dmxn = parseFloat(_periodos[j].D_mxnkW);
+			let bkwh = parseFloat(_periodos[j].BkWh) || 0;
+			let ikwh = parseFloat(_periodos[j].IkWh) || 0;
+			let pkwh = parseFloat(_periodos[j].PkWh) || 0;
+			let bkw= parseFloat(_periodos[j].Bkw) || 0;
+			let ikw= parseFloat(_periodos[j].Ikw) || 0;	
+			let pkw= parseFloat(_periodos[j].Pkw) || 0;
+			let bmxn = parseFloat(_periodos[j].B_mxnkWh) || 0;
+			let imxn = parseFloat(_periodos[j].I_mxnkWh) || 0;
+			let pmxn = parseFloat(_periodos[j].P_mxnkWh) || 0;
+			let pagoTransmision = parseFloat(_periodos[j].pagoTransmision) || 0;
+			let cmxn = parseFloat(_periodos[j].C_mxnkW) || 0;
+			let dmxn = parseFloat(_periodos[j].D_mxnkW) || 0;
 			/*----------------------------------------*/
 			pIkwh += ikwh;
 			pBkwh += bkwh;
@@ -62,21 +63,32 @@ async function firstStep(data){
 		pCmxn = Math.round((pCmxn / _periodos.length) * 100) / 100;
 		pDmxn = Math.round((pDmxn / _periodos.length) * 100) / 100;
 		
-		let objPromPerodsIncomp = { 
-			BkWh: pBkwh, 
-			IkWh: pIkwh, 
-			PkWh: pPkwh, 
-			Bkw: pBkw, 
-			Ikw: pIkw, 
-			Pkw: pPkw, 
-			B_mxnkWh: pBmxn, 
-			I_mxnkWh: pImxn, 
-			P_mxnkWh: pPmxn, 
-			pagoTransmision: pPagoTrans, 
-			C_mxnkW: pCmxn, 
-			D_mxnkW: pDmxn, 
-		};
-
+		if(data.tarifa === 'GDMTH'){
+			objPromPerodsIncomp = { 
+				BkWh: pBkwh, 
+				IkWh: pIkwh, 
+				PkWh: pPkwh, 
+				Bkw: pBkw, 
+				Ikw: pIkw, 
+				Pkw: pPkw, 
+				B_mxnkWh: pBmxn, 
+				I_mxnkWh: pImxn, 
+				P_mxnkWh: pPmxn, 
+				pagoTransmision: pPagoTrans, 
+				C_mxnkW: pCmxn, 
+				D_mxnkW: pDmxn, 
+			};
+		}
+		else{
+			objPromPerodsIncomp = { 
+				IkWh: pIkwh, 
+				Ikw: pIkw,
+				I_mxnkWh: pImxn,
+				pagoTransmision: pPagoTrans, 
+				C_mxnkW: pCmxn,
+			};
+		}
+		
 		//Formateada de nueva data => nuevosPeriodos
 		for(var i=_periodos.length; i<12; i++)
 		{
@@ -142,16 +154,17 @@ async function getPotenciaNecesaria(irradiacion, consumoAnual, porcentajePropues
 }
 
 async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
-	_periods = data.arrayPeriodos;
+	let _periods = data.arrayPeriodos;
 
-	var getPeriodosSumados = (periodos) => { //PeriodoSumado = bkwh + ikwh + pkwh; => [Mes - kwh]
+	let getPeriodosSumados = (periodos) => { //PeriodoSumado = bkwh + ikwh + pkwh; => [Mes - kwh]
 		let _periodoSumado = [];
+		let sumaPeriodo = 0;
 
 		for(let a=0; a<periodos.length; a++)
 		{
-			let bkwh = parseFloat(periodos[a].BkWh);
-			let ikwh = parseFloat(periodos[a].IkWh);
-			let pkwh = parseFloat(periodos[a].PkWh);
+			let bkwh = parseFloat(periodos[a].BkWh) || 0;
+			let ikwh = parseFloat(periodos[a].IkWh) || 0;
+			let pkwh = parseFloat(periodos[a].PkWh) || 0;
 
 			sumaPeriodo = bkwh + ikwh + pkwh;
 
@@ -160,7 +173,7 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 		return _periodoSumado;
 	};
 
-	var consumoAnual = (periodoSumado) => {
+	let consumoAnual = (periodoSumado) => {
 		consAnual = 0;
 
 		periodoSumado.forEach(periodo => { consAnual += periodo });
@@ -169,12 +182,12 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 		return consAnual;
 	};
 
-	var consumoDiario = (consumoAnio) => {
+	let consumoDiario = (consumoAnio) => {
 		consDiario = Math.round((consumoAnio / 365)*100)/100;
 		return consDiario;
 	};
 
-	var consumoBimestral = (periodoSumado) => {
+	let consumoBimestral = (periodoSumado) => {
 		consBimestral = [];
 		bimestre = 0;
 
@@ -193,7 +206,7 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 		return consBimestral;
 	};
 
-	var promedioConsumosMensuales = (periodoSumado) => {
+	let promedioConsumosMensuales = (periodoSumado) => {
 		let promConsumoMensual = 0;
 
 		periodoSumado.forEach(periodo => { promConsumoMensual += periodo });
@@ -202,7 +215,7 @@ async function getPeriodosPromedios(data){ //Todo esta retornado en KWH
 		return promConsumoMensual;
 	};
 
-	var promedioConsumosBimestrales = (consumosBimestrales) => {
+	let promedioConsumosBimestrales = (consumosBimestrales) => {
 		let promConsBimest = 0;
 
 		consumosBimestrales.forEach(bimestre => { promConsBimest += bimestre });

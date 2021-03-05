@@ -30,11 +30,11 @@ module.exports.mainBusqInteligente = async function(data){
 }
 
 async function mainBusquedaInteligente(data){
-    var tipoCotizacion = data.tipoCotizacion;
-    var _paneles = [];
-    var newData = {};
-    var objCombinaciones = {};
-    var __combinaciones = [];
+    let tipoCotizacion = data.tipoCotizacion;
+    let _paneles = [];
+    let newData = {};
+    let objCombinaciones = {};
+    let __combinaciones = [];
     
     if(tipoCotizacion == 'bajaTension'){
         _paneles = await bajaTension.firstStepBT(data);

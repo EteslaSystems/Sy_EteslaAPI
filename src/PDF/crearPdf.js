@@ -7,15 +7,14 @@ const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 
 async function generarPDF(data){ ///Main()  
-    var dataOrdenada = await ordenarData(data);
-    var fileName = await getNameFile(dataOrdenada);
+    let dataOrdenada = await ordenarData(data);
+    let fileName = await getNameFile(dataOrdenada);
     const fileCreatedPath = path.join(process.cwd(),'src/PDF/PDFs_created/'+fileName);
-
-    console.log(dataOrdenada);
 
     const browser = await puppeteer.launch();
     const html = await compileHandleFile(dataOrdenada);
-    const page = await browser.newPage();
+    const context = await browser.createIncognitoBrowserContext();
+    const page = await context.newPage();
     const configPDFDocument = {
         path: fileCreatedPath,
         format: 'A4',
@@ -26,10 +25,11 @@ async function generarPDF(data){ ///Main()
     await page.setContent(html);
     await page.emulateMediaType('screen');
     const pdf = await page.pdf(configPDFDocument);
-    await browser.close();
-    console.log('PDF creado!!');
+    await context.close();
+    // console.log('PDF creado!!');
 
     objResult = {
+        pdf_: pdf,
         nombreArchivo: fileName,
         rutaArchivo: fileCreatedPath
     };
@@ -38,7 +38,7 @@ async function generarPDF(data){ ///Main()
 }
 
 async function compileHandleFile(data){
-    var fileName = '';
+    let fileName = '';
 
     //Se identifica el tipo de cotizacion
     if(data.tipoPropuesta != "individual"){ ///Cotizacion BajaTension && MediaTension
@@ -48,21 +48,21 @@ async function compileHandleFile(data){
         fileName = 'cotizacion_individual.hbs';
     }
     
-    var plantilla = await configFile.getHandlebarsTemplate(fileName);
+    let plantilla = await configFile.getHandlebarsTemplate(fileName);
     plantilla = plantilla.message;
 
     return handlebars.compile(plantilla)(data);
 }
 
 async function ordenarData(dataa){
-    var objResultDatOrd = { vendedor:''||null, cliente:''||null, combinaciones:''||null, combinacionesPropuesta:null, tipoPropuesta:''};
-    var idCliente = dataa.idCliente;
-    var idVendedor = dataa.idVendedor;
-    var datas = { idPersona: '' };
-    var combinacionEconomica = false;
-    var combinacionMediana = false;
-    var combinacionOptima = false;
-    var propuesta = [];
+    let objResultDatOrd = { vendedor:''||null, cliente:''||null, combinaciones:''||null, combinacionesPropuesta:null, tipoPropuesta:''};
+    let idCliente = dataa.idCliente;
+    let idVendedor = dataa.idVendedor;
+    let datas = { idPersona: '' };
+    let combinacionEconomica = false;
+    let combinacionMediana = false;
+    let combinacionOptima = false;
+    let propuesta = [];
 
     if(dataa.combinacionesPropuesta){
         combinacionesPropuesta = dataa.combinacionesPropuesta;
@@ -70,11 +70,11 @@ async function ordenarData(dataa){
     }
 
     datas.idPersona = idCliente; ///Formating data to consulting BD
-    var uCliente = await cliente.consultarId(datas);
+    let uCliente = await cliente.consultarId(datas);
     uCliente = uCliente.message;
 
     datas.idPersona = idVendedor; ///Formating data to consulting BD
-    var uVendedor = await vendedor.consultarId(datas);
+    let uVendedor = await vendedor.consultarId(datas);
     uVendedor = uVendedor.message;
 
     objResultDatOrd.vendedor = {
@@ -141,10 +141,10 @@ async function ordenarData(dataa){
 }
 
 async function getNameFile(data){
-    var fechaCreacion = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-    var tipoPropuesta = '';
-    var nombreCliente = data.cliente.nombre;
-    var horaCreacion = moment().format('HH:mm:ss');
+    let fechaCreacion = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+    let tipoPropuesta = '';
+    let nombreCliente = data.cliente.nombre;
+    let horaCreacion = moment().format('HH:mm:ss');
 
     horaCreacion = horaCreacion.replace(/:/g,"_"); //Se remplazan ":" por "_" del formato de hora
     nombreCliente = nombreCliente.replace(/\s+/g, ''); //Se borra los espacios en blanco 
