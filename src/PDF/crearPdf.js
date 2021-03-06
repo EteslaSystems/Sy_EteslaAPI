@@ -34,6 +34,8 @@ async function generarPDF(data){ ///Main()
         rutaArchivo: fileCreatedPath
     };
 
+    console.log('PDF creado: '+objResult.nombreArchivo);
+
     return objResult;
 }
 
@@ -78,18 +80,20 @@ async function ordenarData(dataa){
     uVendedor = uVendedor.message;
 
     objResultDatOrd.vendedor = {
-            nombre: uVendedor[0].vNombrePersona +' '+uVendedor[0].vPrimerApellido+' '+uCliente[0].vSegundoApellido,
-            sucursal: uVendedor[0].vOficina
+        nombre: uVendedor[0].vNombrePersona +' '+uVendedor[0].vPrimerApellido+' '+uCliente[0].vSegundoApellido,
+        sucursal: uVendedor[0].vOficina
     };
     objResultDatOrd.cliente = {
         nombre: uCliente[0].vNombrePersona + ' ' + uCliente[0].vPrimerApellido + ' ' + uCliente[0].vSegundoApellido,
         direccion: uCliente[0].vCalle + ' ' + uCliente[0].vMunicipio + ' ' + uCliente[0].vEstado
     };
 
+    //Tipo de propuesta (bajaTension, mediaTension, individual)
+    objResultDatOrd.tipoPropuesta = dataa.tipoPropuesta;
+
     //Se filtra si la propuesta contiene combinaciones o equipos seleccionados
-    if(dataa.combinacionesPropuesta === true){ 
-        ///Combinaciones
-        objCombinaciones = JSON.parse(dataa.dataCombinaciones);
+    if(dataa.combinacionesPropuesta === true){ ///Combinaciones
+        let objCombinaciones = JSON.parse(dataa.dataCombinaciones);
     
         combinacionSeleccionada = dataa.combSeleccionada.toString();
     
@@ -117,11 +121,12 @@ async function ordenarData(dataa){
         };
         objResultDatOrd.combinacionesPropuesta = dataa.combinacionesPropuesta;
     }
-    else if(dataa.combinacionesPropuesta === false){ 
-        ///Equipos seleccionados
+    else if(dataa.combinacionesPropuesta === false){ ///Equipos seleccionados
         //Se obtiene la propuesta calculada
         propuesta = JSON.parse(dataa.propuesta);
-        propuesta = propuesta.message;
+
+        ///Formating microinversor_combinacion [QS1 + YC600]
+        propuesta[0].inversores.combinacion = propuesta[0].inversores.combinacion == 'true' ? true : false;
 
         //Se obtiene los consumos del cliente
         _arrayConsumos = JSON.parse(dataa.consumos);
@@ -134,7 +139,6 @@ async function ordenarData(dataa){
     else{
         //Cotizacion individual
         objResultDatOrd.propuesta = JSON.parse(dataa.propuesta_individual);
-        objResultDatOrd.tipoPropuesta = "individual";
     }
 
     return objResultDatOrd;
@@ -142,7 +146,7 @@ async function ordenarData(dataa){
 
 async function getNameFile(data){
     let fechaCreacion = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-    let tipoPropuesta = '';
+    let tipoPropuesta = ''; //MT, BT, Indv
     let nombreCliente = data.cliente.nombre;
     let horaCreacion = moment().format('HH:mm:ss');
 
@@ -162,11 +166,8 @@ async function getNameFile(data){
             tipoPropuesta = "combinacionOptima";  
         }
     }
-    else if(data.combinacionesPropuesta === false){
-        tipoPropuesta = 'propuestaDe'+data.propuesta[0].paneles.potencia + 'W';
-    }
     else{
-        tipoPropuesta = 'cotizacionIndividual'+data.propuesta[0].paneles.potencia + 'W';
+        tipoPropuesta = 'cotizacion'+data.tipoPropuesta+'_'+data.propuesta[0].paneles.potencia + 'W';
     }
 
     nombrArchivoPDF = nombreCliente+'_'+tipoPropuesta+'_'+fechaCreacion+'_'+horaCreacion+'.pdf';

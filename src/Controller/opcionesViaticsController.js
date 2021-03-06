@@ -43,7 +43,7 @@ async function calcularViaticosBTI(data){
     let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
     precioDolar = precioDolar[0].precioDolar;
 
-    var validarJSON = (objJSON) => { //Valida y procesa de String a Object
+    let validarJSON = (objJSON) => { //Valida y procesa de String a Object
         if(typeof objJSON === 'string'){
             objJSON = JSON.parse(objJSON);
             return objJSON;
@@ -292,7 +292,7 @@ async function main_calcularViaticos(data){
     /*#endregion POWER - ROI - FINANCIAMIENTO*/
 
     let objViaticosCalculados = {
-        panel: panel,
+        paneles: panel,
         inversores: inversor,
         viaticos_costos: {
             _agregados: data._agregados,
