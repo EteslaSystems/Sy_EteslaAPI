@@ -41,7 +41,7 @@ async function calcularViaticosBTI(data){
     distanciaEnKm = distanciaEnKm.message;
 
     let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
+    precioDolar = precioDolar.precioDolar;
 
     let validarJSON = (objJSON) => { //Valida y procesa de String a Object
         if(typeof objJSON === 'string'){
@@ -193,8 +193,8 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIVEM){
     mo_unitario = 12;
     otros_porcentaje = 0.035;
 
-    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
+    let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+    precioDolar = precioDolar.precioDolar;
 
     if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
         costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
@@ -237,8 +237,8 @@ async function main_calcularViaticos(data){
 
     let confFile = await configFile.getArrayOfConfigFile();
     let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
-    
+    precioDolar = precioDolar.precioDolar;
+
     ///#Calcular totales de agregados
     let costoTotalAgregados = (_agregads) => {
         let total = 0;

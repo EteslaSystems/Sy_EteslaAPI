@@ -47,28 +47,25 @@ router.get('/tipoCambioDolar', function(request, response){
 	.then(result => {
 		response.json({
 			status: 200,
-			message: result,
-			alert: 'Archivo respaldado y precio del dolar actualizado'
+			message: result
 		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		}).end();
+		});
 	});
 });
 
 router.get('/manualUpdateDolarPrice', function(request, response){
 	dollar.actualizarManualPrecioDolar()
 	.then(result => {
-		console.log(result);
-		/* response.json({
-		}).end(); */
+		response.json({ status: 200, message: result });
 	})
 	.catch(error => {
-		response.json({ error });
-	}).end();
+		response.json({ status: 500, message: error });
+	});
 });
 /*#endregion*/
 /*#region bajaTension*/

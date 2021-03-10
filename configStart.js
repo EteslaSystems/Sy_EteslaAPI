@@ -8,12 +8,12 @@
 /* const compression = require('compression'); */ //Compression GZIP - Necesaria
 const path = require('path');
 const express = require('express'); //Constante que instancia la libreria 'express'.
-const http = require('http');
+const http = require('http'); /////\\\\
 const exphbs = require('express-handlebars'); //Borrar cuando se deje de utilizar el testeo de la plantilla del PDF
 
 //Initializations
 const app = express(); //Constante que inicializa express para su uso en la aplicacion.
-const server = http.createServer(app); //Constante que crea/inicializa el servidor.
+const server = http.createServer(app); //Constante que crea/inicializa el servidor.  /////\\\\
 
 //Settings
 app.set('port', process.env.PORT || 3000); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
@@ -22,7 +22,7 @@ app.engine('.hbs', exphbs({ layoutsDir: app.get('views'), defaultLayout: 'cotiza
 app.set('view engine','.hbs');//Borrar cuando se deje de utilizar el testeo de la plantilla del PDF
 
 //Middlewares
-app.use(express.static(__dirname + '/src'));
+// app.use(express.static(path.join(__dirname, 'src')));
 app.use(require(__dirname+'/src/Routes/web.js')); //Instancia del archivo de rutas del servidor.
 
 //Arranque
