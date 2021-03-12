@@ -38,7 +38,7 @@ router.get('/', function(requeset, response){
 const bajaTensionController = require('../Controller/bajaTensionController');
 const mediaTensionController = require('../Controller/mediaTensionController');
 const powerController = require('../Controller/powerController');
-
+const propuesta = require('../Controller/propuestaController');
 
 /*#region Cotizador*/
 /*#region PrecioDelDolar*/
@@ -161,7 +161,6 @@ router.post('/sendPeriods', function(request, response){
 	});
 });
 
-
 //2nd. Step
 router.post('/sendInversorSelected', function(request, response){
 	mediaTensionController.secondStepGDMTH(request.body)
@@ -207,9 +206,24 @@ router.post('/calcularVT', function(request, response){
 		}).end();
 	});
 });
-/*#endregion GDMTH*/
-/*#endregion mediaTension*/
 /*#endregion*/
+/*#endregion*/
+/*#region Propuesta*/
+router.post('/guardar-propuesta', function(request, response){
+	propuesta.guardar(request.body)
+	.then(respuesta => {
+		response.json({
+			status: 200,
+			message: respuesta
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
 /*#endregion*/
 
 router.post('/agregar-usuario', function (request, response) {
@@ -335,6 +349,7 @@ const cotizacion = require('../Controller/cotizacionController');
 
 /*#region financiamiento?exp*/
 const financiamiento = require('../Controller/financiamientoProjController');
+const { request } = require('express');
 
 router.post('/finan', function(request, response){
 	financiamiento.financiamiento(request.body)

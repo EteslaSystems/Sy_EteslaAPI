@@ -200,6 +200,7 @@ async function getInversores_cotizacion(data){
 				precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 				
 				inversoresResult = {
+					id: allInversores[i].idInversor,
 					fISC: allInversores[i].fISC,
 					fPotencia: allInversores[i].fPotencia,
 					fPrecio: allInversores[i].fPrecio,
@@ -233,6 +234,7 @@ async function getInversores_cotizacion(data){
 			/*#endregion*/
 
 			inversoresResult = {
+				id: allInversores[i].idInversor,
 				fISC: allInversores[i].fISC,
 				fPotencia: allInversores[i].fPotencia,
 				fPrecio: allInversores[i].fPrecio,

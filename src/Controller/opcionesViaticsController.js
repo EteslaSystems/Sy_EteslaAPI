@@ -34,6 +34,7 @@ async function calcularViaticosBTI(data){
     let destino = data.destino;
     let bInstalacion = data.bInstalacion || null;
     let _consums = data.consumos || null;
+    let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
     let descuento = (parseFloat(data.descuento) / 100) || null;
     let _configFile = await configFile.getArrayOfConfigFile();
@@ -133,6 +134,9 @@ async function calcularViaticosBTI(data){
             dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
             objPower = await power.obtenerPowerBTI(dataPwr) || null;
             objROI = await roi.obtenerROI(objPower, _consums, precioMasIVAMXN);
+
+            //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
+            _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
         }
 
         //F I N A N C I A M I E N T O
@@ -168,11 +172,14 @@ async function calcularViaticosBTI(data){
                 precioMasIVAMXN: precioMasIVAMXN,
                 precio_watt: precio_watt
             },
+            tarifa: tarifa,
             power: objPower,
             roi: objROI, 
             financiamiento: objFinan,
             descuento: descuento,
-            tipoDeCambio: precioDolar
+            tipoDeCambio: precioDolar,
+            promedioConsumosBimestrales: _consums,
+            tipoCotizacion: tipoCotizacion
         };
 
         _result[0] = objCotizacionBTI;
@@ -323,7 +330,8 @@ async function main_calcularViaticos(data){
         roi: objROI, 
         financiamiento: objFinanciamiento,
         descuento: descuento,
-        tipoDeCambio: precioDolar
+        tipoDeCambio: precioDolar,
+        tipoCotizacion: data.tipoCotizacion
     };
     
     _resultado[0] = objViaticosCalculados;

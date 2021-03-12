@@ -7,21 +7,53 @@
 const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
 
-var daysOfExpire = await configFile.getArrayOfConfigFile();
-daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
+async function savePropuesta(objPropuesta/*Obj*/){
+	let daysOfExpire = await configFile.getArrayOfConfigFile();
+	daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
+	let Propuesta = JSON.parse(objPropuesta.propuesta); //Formating to Array
+	Propuesta = Propuesta[0]; //Formating to Object
+
+	///Formating Data to Save PROPUESTA
+	let dataToSave = {
+		idPanel: Propuesta.paneles.idPanel, 
+		idInversor: Propuesta.inversores.id, 
+		idCliente: objPropuesta.idCliente, 
+		idUsuario: objPropuesta.idVendedor, 
+		tipoCotizacion: Propuesta.tipoCotizacion, ////Ver como se puede traer este dato [En 'Viaticos' esta la respuesta]
+		promedioKw: parseFloat(Propuesta.promedioConsumosBimestrales), /*(Bimestral o anual)*/
+		tarifa: Propuesta.tarifa, ////Ver como se puede traer este dato [En 'Viaticos' esta la respuesta]
+		cantidadPaneles: Propuesta.paneles.noModulos, 
+		cantidadInversores: parseInt(Propuesta.inversores.numeroDeInversores), 
+		potenciaPropuesta: Propuesta.paneles.potenciaReal, 
+		nuevoConsumoBimestralKw: Propuesta.power.nuevosConsumos.promedioConsumoBimestral, //Estos son promedios
+		nuevoConsumoAnualKw: Propuesta.power.nuevosConsumos.nuevoConsumoAnual, //Estos son promedios
+		descuento: Propuesta.descuento, 
+		porcentajePropuesta: Propuesta.power.porcentajePotencia,
+		subtotal: Propuesta.totales.precio, //$-USD 
+		total: Propuesta.totales.precioMasIVAMXN, //$-MXN 
+		statusProjectFV: 0, 
+		daysOfExpire: 30
+	};
+
+	let respuesta = await insertarBD(dataToSave);
+
+	return respuesta;
+}
+
+/*----------------------------------------------------------------*/
 
 function insertarBD(datas){
-	const { idPanel, idInversor, idCliente, idUsuario, tipoCotizacion, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, generacionPaneles, nuevoConsumoCFE, descuento, subtotal, precioConIVA, total, statusProjectFV } = datas;
-
+	const { idPanel, idInversor, idCliente, idUsuario, tipoCotizacion, promedioKw,  tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw,  descuento, porcentajePropuesta, subtotal, total, statusProjectFV, daysOfExpire } = datas;
+	
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, idCliente, null, idPanel, idInversor, idUsuario, tipoCotizacion, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, generacionPaneles, nuevoConsumoCFE, descuento, subtotal, precioConIVA, total, 0, daysOfExpire], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, idCliente, null, idPanel, idInversor, idUsuario, tipoCotizacion, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total, statusProjectFV, daysOfExpire], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject (response);
 			} else {
 				const response = {
 					status: true,
@@ -36,7 +68,7 @@ function insertarBD(datas){
 
 function eliminarBD(idPropuesta){
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, null, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, null, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -50,17 +82,17 @@ function eliminarBD(idPropuesta){
 					message: "El registro se ha eliminado con éxito."
 				}
 
-				resolve(response);
+				reject(response);
 			}
 		});
   	});
 }
 
 function editarBD(datas) {
-	const { idPanel, idInversor, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, generacionPaneles, nuevoConsumoCFE, porcentajeDescuento, subtotal, precioConIVA, total } = datas;
+	const { idPanel, idInversor, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, idPropuesta, idPanel, idInversor, idUsuario, null, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, generacionPaneles, nuevoConsumoCFE, porcentajeDescuento, subtotal, precioConIVA, total, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, null, idPanel, idInversor, null, null, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -74,7 +106,7 @@ function editarBD(datas) {
 					message: "El registro se ha editado con éxito."
 				}
 
-				resolve(response);
+				reject(response);
 			}
 		});
   	});
@@ -82,7 +114,7 @@ function editarBD(datas) {
 
 function consultaBD() {
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -96,7 +128,7 @@ function consultaBD() {
 					message: rows[0]
 				}
 
-				resolve(response);
+				reject(response);
 			}
 		});
   	});
@@ -104,7 +136,7 @@ function consultaBD() {
 
 function buscarBD(idPropuesta){
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, null, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, null, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -118,14 +150,14 @@ function buscarBD(idPropuesta){
 					message: rows[0]
 				}
 
-				resolve(response);
+				reject(response);
 			}
 		});
   	});
 }
 
-module.exports.insertar = async function (datas, response) {
-	const result = await insertarBD(datas);
+module.exports.guardar = async function (datas) {
+	const result = await savePropuesta(datas);
 	return result;
 }
 
