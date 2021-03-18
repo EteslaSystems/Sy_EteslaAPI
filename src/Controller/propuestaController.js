@@ -12,28 +12,37 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
 	let Propuesta = JSON.parse(objPropuesta.propuesta); //Formating to Array
 	Propuesta = Propuesta[0]; //Formating to Object
+	let dataToSave = { idPanel: null, idInversor: null, idCliente: null, idUsuario: null, tipoCotizacion: null, promedioKw: null, /*(Bimestral o anual)*/ tarifa: null, cantidadPaneles: null, cantidadInversores: null, potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, subtotal: null, total: null, statusProjectFV: 0, daysOfExpire: 30 };
 
 	///Formating Data to Save PROPUESTA
-	let dataToSave = {
-		idPanel: Propuesta.paneles.idPanel, 
-		idInversor: Propuesta.inversores.id, 
-		idCliente: objPropuesta.idCliente, 
-		idUsuario: objPropuesta.idVendedor, 
-		tipoCotizacion: Propuesta.tipoCotizacion, ////Ver como se puede traer este dato [En 'Viaticos' esta la respuesta]
-		promedioKw: parseFloat(Propuesta.promedioConsumosBimestrales), /*(Bimestral o anual)*/
-		tarifa: Propuesta.tarifa, ////Ver como se puede traer este dato [En 'Viaticos' esta la respuesta]
-		cantidadPaneles: Propuesta.paneles.noModulos, 
-		cantidadInversores: parseInt(Propuesta.inversores.numeroDeInversores), 
-		potenciaPropuesta: Propuesta.paneles.potenciaReal, 
-		nuevoConsumoBimestralKw: Propuesta.power.nuevosConsumos.promedioConsumoBimestral, //Estos son promedios
-		nuevoConsumoAnualKw: Propuesta.power.nuevosConsumos.nuevoConsumoAnual, //Estos son promedios
-		descuento: Propuesta.descuento, 
-		porcentajePropuesta: Propuesta.power.porcentajePotencia,
-		subtotal: Propuesta.totales.precio, //$-USD 
-		total: Propuesta.totales.precioMasIVAMXN, //$-MXN 
-		statusProjectFV: 0, 
-		daysOfExpire: 30
-	};
+	dataToSave.idCliente = objPropuesta.idCliente || null;
+	dataToSave.idUsuario = objPropuesta.idVendedor || null;
+	dataToSave.tipoCotizacion = Propuesta.tipoCotizacion || null;
+	dataToSave.subtotal = Propuesta.totales.precio || null;
+	dataToSave.total = Propuesta.totales.precioMasIVAMXN || null;
+
+	if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension"){
+		dataToSave.promedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
+		dataToSave.tarifa = Propuesta.tarifa || null;
+		dataToSave.descuento = Propuesta.descuento || null;
+		dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
+	}
+
+	if(Propuesta.paneles){
+		dataToSave.idPanel = Propuesta.paneles.idPanel || null;
+		dataToSave.cantidadPaneles = Propuesta.paneles.noModulos || null;
+		dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal || null;
+	}
+	
+	if(Propuesta.inversores){
+		dataToSave.idInversor = Propuesta.inversores.id || null;
+		dataToSave.cantidadInversores = parseInt(Propuesta.inversores.numeroDeInversores) || null;
+	}
+
+	if(Propuesta.power){
+		dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioConsumoBimestral || null;
+		dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
+	}
 
 	let respuesta = await insertarBD(dataToSave);
 

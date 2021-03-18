@@ -128,7 +128,8 @@ async function cotizacionIndividual(data){
         arrayBTI: cotizacionInd,
         origen: origen,
         destino: destino,
-        bInstalacion: data.bInstalacion
+        bInstalacion: data.bInstalacion,
+        tipoCotizacion: data.tipoCotizacion
     };
 
     cotiIndv = await viaticos.calcularViaticosBTI(objeto);
