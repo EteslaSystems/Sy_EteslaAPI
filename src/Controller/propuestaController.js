@@ -6,6 +6,7 @@
 /*#region CRUD*/
 const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
+const agregados = require('../Controller/agregadosController');
 
 async function savePropuesta(objPropuesta/*Obj*/){
 	let daysOfExpire = await configFile.getArrayOfConfigFile();
@@ -40,11 +41,39 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	}
 
 	if(Propuesta.power){
-		dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioConsumoBimestral || null;
-		dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
+		if(Propuesta.tipoCotizacion === "bajaTension"){
+			dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioConsumoBimestral || null;
+			dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
+		}
+		else{
+			dataToSave.nuevoConsumoBimestralKw = Propuesta.power.generacion.promedioGeneracionBimestral || null;
+			dataToSave.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
+		}
 	}
 
 	let respuesta = await insertarBD(dataToSave);
+	
+	/*#region Agregados*/
+	if(Propuesta.tipoCotizacion === "mediaTension"){
+		let idPropuesta = respuesta.idPropuesta;
+
+		//Validar si hay agregados
+		if(Propuesta.agregados._agregados != null){
+			let _agregados = Propuesta.agregados._agregados;
+
+			//Iterar _agregados
+			for(i in _agregados)
+			{
+				let data = { idPropuesta: idPropuesta, cantidad: _agregados[i].cantidadAgregado, agregado: _agregados[i].nombreAgregado, costo: parseFloat(_agregados[i].precioAgregado) };
+				respuesta = await agregados.insertar(data);
+
+				if(respuesta.status === false){
+					break;
+				}
+			}
+		}
+	}
+	/*#endregion*/
 
 	return respuesta;
 }
@@ -65,6 +94,7 @@ function insertarBD(datas){
 				reject (response);
 			} else {
 				const response = {
+					idPropuesta: rows[0][0].xIdPropuesta,
 					status: true,
 					message: "El registro se ha guardado con éxito."
 				}

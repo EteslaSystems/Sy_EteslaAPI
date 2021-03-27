@@ -36,7 +36,7 @@ async function calcularViaticosBTI(data){
     let _consums = data.consumos || null;
     let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
-    let descuento = (parseFloat(data.descuento) / 100) || null;
+    let descuento = (parseFloat(data.descuento) / 100) || 0;
     let _configFile = await configFile.getArrayOfConfigFile();
     let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -176,7 +176,7 @@ async function calcularViaticosBTI(data){
             power: objPower,
             roi: objROI, 
             financiamiento: objFinan,
-            descuento: descuento,
+            descuento: data.descuento,
             tipoDeCambio: precioDolar,
             promedioConsumosBimestrales: _consums,
             tipoCotizacion: tipoCotizacion
@@ -237,6 +237,7 @@ async function main_calcularViaticos(data){
     let propuesta = data.propuesta; //Obj
     let panel = JSON.parse(propuesta.panel); //Obj
     let inversor = propuesta.inversor; //Obj
+    let _agregados = data._agregados || null;
     let pagoPasaje = 0;
     let pagoPasajeTotal = 0;
     let pagoComidaTotal = 0;
@@ -259,7 +260,7 @@ async function main_calcularViaticos(data){
         return total;
     };
 
-    costoTotalAgregados = data._agregados != null ? costoTotalAgregados(data._agregados) : 0; ///CostoTotalAgregados - MXN
+    costoTotalAgregados = _agregados != null ? costoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
     costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
 
     ////#Procedimiento - Calculo_viaticos
@@ -331,7 +332,8 @@ async function main_calcularViaticos(data){
         financiamiento: objFinanciamiento,
         descuento: descuento,
         tipoDeCambio: precioDolar,
-        tipoCotizacion: data.tipoCotizacion
+        tipoCotizacion: data.tipoCotizacion,
+        agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados }
     };
     
     _resultado[0] = objViaticosCalculados;

@@ -36,6 +36,8 @@ BEGIN
 		SET expireAt = DATE_ADD(NOW(),INTERVAL daysOfExpire DAY);
 		INSERT INTO propuesta
 		VALUES(UUID(), UNHEX(xIdPanel), UNHEX(xIdInversor), UNHEX(xIdCliente), UNHEX(xIdUsuario), TipoCotizacion, PromedioKw, Tarifa, CantidadPaneles, CantidadInversores, PotenciaPropuesta, NuevoConsumoBimestral, NuevoConsumoAnual, Descuento, PorcentajePropuesta, SubtotalUSD, Total, StatusProjectFV, now(), null, null, expireAt);
+		SET xIdPropuesta = (SELECT HEX(idPropuesta) FROM propuesta ORDER BY idPropuesta DESC LIMIT 1);
+		SELECT xIdPropuesta;
 	ELSEIF (Opcion = 1) THEN
 		/*Borrado logico*/
 		UPDATE cliente
@@ -51,7 +53,7 @@ BEGIN
 		FROM propuesta
 		WHERE id_Cliente = UNHEX(xIdUsuario) AND deleted_at IS NULL;
 	ELSEIF (Opcion = 4) THEN
-		/*Consulta_filtrada*/
+		/*Consulta filtrada*/
 		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, fPromedioKw, cTarifa, iCantidadPaneles, iCantidadInversores, fPotencialPropuesta, fNuevoConsumoBimestral, fNuevoConsumoAnual, tiPorcentajeDescuento, tiPorcentajePropuesta, fSubtotal, fTotal, siStatusProjejctFV, created_at, deleted_at, updated_at, expire_at
 		FROM propuesta
 		WHERE idPropuesta = UNHEX(xIdPropuesta);

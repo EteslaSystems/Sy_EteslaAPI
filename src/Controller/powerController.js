@@ -134,6 +134,25 @@ function getProduccionAnual_KwhMwh(_produccionIntermedia){ //Generacion
         return _generMens;
     };
     
+    let _generacionBimestral = (genercMensual) => {
+        let bimestre = 0;
+        let genrBimestral = [];
+
+        for(e=0; e<6; e++)
+		{
+			if(e != 0 && e % 2 == 1){
+				bimestre = genercMensual[e+1] + genercMensual[e+2];
+			}
+			else{
+				bimestre = genercMensual[e] + genercMensual[e+1];
+			}
+
+			genrBimestral[e] = bimestre;
+		}
+
+        return genrBimestral;
+    };
+
     let promedioGeneracionMensual = (_generacionMensual) => {
         let promedio = 0;
 
@@ -144,19 +163,32 @@ function getProduccionAnual_KwhMwh(_produccionIntermedia){ //Generacion
         return promedio = Math.round(( promedio/_generacionMensual.length) * 100) / 100;
     };
 
+    let promedioGeneracionBimestral = (_generacBimestrl) => {
+        let promedio = 0;
+
+        _generacBimestrl.forEach((bimestreGeneracion, index)=>{
+            promedio += bimestreGeneracion;
+        });
+
+        return promedio = Math.round(( promedio/_generacBimestrl.length) * 100) / 100;
+    };
+
     for(let i=0; i<_produccionIntermedia.length; i++)
     {
         produccionAnualKwh += _produccionIntermedia[i];
     }
 
     _generacionMensual = _generacionMensual(produccionAnualKwh);
+    _generacionBimestral = _generacionBimestral(_generacionMensual);
     promedioGeneracionMensual = promedioGeneracionMensual(_generacionMensual);
+    promedioGeneracionBimestral = promedioGeneracionBimestral(_generacionBimestral);
     /*-----------*/
     produccionAnualMwh = produccionAnualKwh / 1000;
     
     let objProduccionAnual = {
         _generacionMensual: _generacionMensual,
         promedioGeneracionMensual: promedioGeneracionMensual,
+        promedioGeneracionBimestral: promedioGeneracionBimestral,
         produccionAnualKwh: produccionAnualKwh,
         generacionAnualMwh: produccionAnualMwh
     };

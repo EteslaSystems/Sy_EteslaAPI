@@ -26,7 +26,6 @@ async function generarPDF(data){ ///Main()
     await page.emulateMediaType('screen');
     const pdf = await page.pdf(configPDFDocument);
     await context.close();
-    // console.log('PDF creado!!');
 
     objResult = {
         pdf_: pdf,
