@@ -61,13 +61,13 @@ async function mainBusquedaInteligente(data){
 
 /*#region Combinaciones*/
 async function getCombinacionEconomica(data, __consumos){
-    var __paneles = data._paneles || null;
-    var _combinacionEconomica = [];
+    let __paneles = data._paneles || null;
+    let _combinacionEconomica = [];
 
     objCombinacion.combinacion = "economica";
 
     if(__paneles.length > 0){
-        for(var i=1; i<__paneles.length; i++)
+        for(let i=1; i<__paneles.length; i++)
         {
             newPanelPrice = parseFloat(__paneles[i].panel.costoTotal);
 
@@ -83,10 +83,10 @@ async function getCombinacionEconomica(data, __consumos){
         }
     }
 
-    var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
+    let __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
 
     if(__inversores.length > 0){
-        for(var j=0; j<__inversores.length; j++)
+        for(let j=0; j<__inversores.length; j++)
         {
             newInversorPrice = parseFloat(__inversores[j].precioTotalInversores);
 
@@ -171,7 +171,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         }
 
         mediaCostoTotPaneles = mediaCostoTotPaneles(_panelesSelectos);
-        panelCombMediana(_panelesSelectos, mediaCostoTotPaneles);
+        panelCombMediana(_panelesSelectos, mediaCostoTotPaneles); //:void
     }
 
     __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
@@ -209,7 +209,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
     };
 
     mediaCostoTotInversores = mediaCostoTotInversores(__inversores);
-    inversorCombMediana(__inversores,mediaCostoTotInversores);
+    inversorCombMediana(__inversores,mediaCostoTotInversores);// :void
 
     _combinacionMediana.push(objCombinacion);
     
