@@ -246,14 +246,6 @@
                             {{#with propuesta}}
                                 <tr>
                                     <td></td>
-                                    <td colspan="4">Potencia</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Potencia</strong></td>
-                                    <td class="text-center etqTexto">{{ 0.paneles.potenciaReal }} kW</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
                                     <td colspan="4">Paneles</td>
                                 </tr>
                                 <tr class="compare-row">
@@ -393,11 +385,7 @@
                     <tr>
                         {{#with propuesta}}
                             <th class="tabFinanciamientothtd">Pago de contado</th>
-                            <td class="tabFinanciamientothtd">${{ 0.totales.precioTotalMXN }}</td>
-                            <th class="tabFinanciamientothtd" style="background-color: #03BABE;">Ahorro mensual de luz</th>
-                            <td class="tabFinanciamientothtd" style="background-color: #03BABE;">${{ 0.roi.ahorro.ahorroMensualEnPesosMXN }}</td>
-                            <th class="tabFinanciamientothtd">Retorno de inversión</th>
-                            <td class="tabFinanciamientothtd">{{ 0.roi.roiEnAnios }} años</td>
+                            <td class="tabFinanciamientothtd">${{ 0.totales.precioMXN }}</td>
                         {{/with}}
                     </tr>
                 </table>

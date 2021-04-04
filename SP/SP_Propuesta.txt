@@ -46,15 +46,15 @@ BEGIN
 	ELSEIF (Opcion = 2) THEN
 		/*Editar / Actualizar*/
 		UPDATE propuesta
-		SET id_Panel = HEX(xIdPanel), id_Inversor = HEX(xIdInversor), fPromedioKw = PromedioKw, cTarifa = Tarifa, iCantidadPaneles = CantidadPaneles, iCantidadInversores = CantidadInversores, fPotencialPropuesta = PotenciaPropuesta, fNuevoConsumoBimestral = NuevoConsumoBimestral, fNuevoConsumoAnual = NuevoConsumoAnual, tiPorcentajeDescuento = Descuento, tiPorcentajePropuesta = PorcentajePropuesta, fSubtotal = SubtotalUSD, fTotal = Total, updated_at = now();
+		SET id_Panel = HEX(xIdPanel), id_Inversor = HEX(xIdInversor), fPromedioKw = PromedioKw, cTarifa = Tarifa, iCantidadPaneles = CantidadPaneles, iCantidadInversores = CantidadInversores, fPontenciaPropuesta = PotenciaPropuesta, fNuevoConsumoBimestral = NuevoConsumoBimestral, fNuevoConsumoAnual = NuevoConsumoAnual, tiPorcentajeDescuento = Descuento, tiPorcentajePropuesta = PorcentajePropuesta, fSubtotal = SubtotalUSD, fTotal = Total, updated_at = now();
 	ELSEIF (Opcion = 3) THEN
 		/*Leer => Propuestas pertenecientes a un VENDEDOR*/
-		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, fPromedioKw, cTarifa, iCantidadPaneles, iCantidadInversores, fPotencialPropuesta, fNuevoConsumoBimestral, fNuevoConsumoAnual, tiPorcentajeDescuento, tiPorcentajePropuesta, fSubtotal, fTotal, siStatusProjejctFV, created_at, deleted_at, updated_at, expire_at
+		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Panel) as id_Panel, HEX(id_Inversor) as id_Inversor, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, cTipoCotizacion, fPromedioKw, cTarifa, iCantidadPaneles, iCantidadInversores, fPontenciaPropuesta, fNuevoConsumoBimestral, fNuevoConsumoAnual, tiPorcentajeDescuento, tiPorcentajePropuesta, fSubtotal, fTotal, siStatusProjectFV, created_at, deleted_at, updated_at, expire_at
 		FROM propuesta
-		WHERE id_Cliente = UNHEX(xIdUsuario) AND deleted_at IS NULL;
+		WHERE id_Cliente = UNHEX(xIdCliente) AND deleted_at IS NULL;
 	ELSEIF (Opcion = 4) THEN
 		/*Consulta filtrada*/
-		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, fPromedioKw, cTarifa, iCantidadPaneles, iCantidadInversores, fPotencialPropuesta, fNuevoConsumoBimestral, fNuevoConsumoAnual, tiPorcentajeDescuento, tiPorcentajePropuesta, fSubtotal, fTotal, siStatusProjejctFV, created_at, deleted_at, updated_at, expire_at
+		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, fPromedioKw, cTarifa, iCantidadPaneles, iCantidadInversores, fPontenciaPropuesta, fNuevoConsumoBimestral, fNuevoConsumoAnual, tiPorcentajeDescuento, tiPorcentajePropuesta, fSubtotal, fTotal, siStatusProjectFV, created_at, deleted_at, updated_at, expire_at
 		FROM propuesta
 		WHERE idPropuesta = UNHEX(xIdPropuesta);
 	END IF;

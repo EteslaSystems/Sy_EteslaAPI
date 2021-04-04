@@ -151,23 +151,25 @@ function editarBD(datas) {
   	});
 }
 
-function consultaBD() {
+function consultaBD(data) {
+	const { idCliente } = data;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, idCliente, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
 					message: rows[0]
 				}
 
-				reject(response);
+				resolve(response);
 			}
 		});
   	});
@@ -215,8 +217,9 @@ module.exports.editar = async function (datas, response) {
 	return result;
 }
 
-module.exports.consultar = async function (response) {
-	const result = await consultaBD();
+module.exports.consultar = async function (idCliente) {
+	let result = await consultaBD(idCliente);
+	result = result.message;
 	return result;
 }
 /*#endregion*/

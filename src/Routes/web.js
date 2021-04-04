@@ -224,6 +224,22 @@ router.post('/guardar-propuesta', function(request, response){
 		});
 	});
 });
+
+router.post('/getPropuestaByCliente', function(request, response){
+	propuesta.consultar(request.body)
+	.then(respuesta => {
+		response.json({
+			status: 200,
+			message: respuesta
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
 /*#endregion*/
 
 router.post('/agregar-usuario', function (request, response) {
