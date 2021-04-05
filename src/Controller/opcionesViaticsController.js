@@ -66,7 +66,6 @@ async function calcularViaticosBTI(data){
         _arrayCotizacion = data.arrayBTI;
     }
     else{
-
         //Equipos seleccionados
         if(data.arrayBTI[0].inversor != null){
             formated = data.arrayBTI[0].inversor;

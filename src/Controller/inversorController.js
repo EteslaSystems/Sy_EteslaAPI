@@ -160,7 +160,7 @@ async function getInversores_cotizacion(data){
 		if(allInversores[i].vTipoInversor === 'Microinversor'){
 			numeroDeInversores =  noPaneles / allInversores[i].iPanelSoportados;
 		}
-		else if(allInversores[i].vTipoInversor === 'Combinacion'){
+		else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micros
 			/***Soporte de micros para combinacion *-* QS1 + YC600
 				-QS1 => 4 paneles
 				-YC600 => 2 paneles 
@@ -178,18 +178,18 @@ async function getInversores_cotizacion(data){
 				cantidadTotalEquipos = invSoportMay+invSoportMen;
 
 				numeroDeInversores = { invSoportMay: invSoportMay, invSoportMen:invSoportMen, cantidadTotalEquipos: cantidadTotalEquipos };
+
+				combinacion = true;
 			}
 			else{
 				numeroDeInversores = 0;
 			}
-
-			combinacion = true;
 		}
 		else{
 			numeroDeInversores = potenciaReal_ / redimensinoamiento;
 		}
 
-		if(combinacion != true){
+		if(combinacion === false && numeroDeInversores > 0){
 			numeroDeInversores = numeroDeInversores < 0.9 ? 0 : Math.round(numeroDeInversores);
 			
 			if(numeroDeInversores > 0){
@@ -224,7 +224,7 @@ async function getInversores_cotizacion(data){
 				arrayInversor.push(inversoresResult);
 			}
 		}
-		else{ //combinacion - QS1+YC600
+		else if(combinacion === true){ //combinacion - QS1+YC600
 			/*#region CostoTotal_combinacion - QS1+YC600*/
 			costoTotalInvSMay = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS QS1' });
 			costoTotalInvSMay = Math.round((costoTotalInvSMay[0].fPrecio * invSoportMay)*100)/100;

@@ -52,7 +52,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
     return _arrayResult;
 }
 
-function promedio_consumos(consumos){ 
+function promedio_consumos(consumos){
     //Retorna todo en kwh
     let promConsumosBimestrales = (consumos) => {
         promConsumosBim = 0;
@@ -209,6 +209,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
             0;
         break;
     }
+    
     promedioConsumsMensuales = objPromedioDeConsumos.promedioConsumosMensuales;
     consumoDiario = objPromedioDeConsumos.consumoDiario;
     /*-------*/
@@ -220,12 +221,19 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
 
     let porcentajePerdida = origen == "Veracruz" ? 82 : 73;
     porcentajePerdida = await calcularPorcentajePerdida(porcentajePerdida);
-    
-    if(porcentajePropuesta == 0){
-        potenciaNecesaria = Math.round((((consumoDiario - subsidio_diario) / irradiacion) / porcentajePerdida) * 100) / 100; 
-    }
-    else{
+
+    if(tarifaIndustrial === false && porcentajePropuesta === 0){
+        ///Propuesta NUEVA || EDITADA
+        if(porcentajePropuesta === 0){ 
+            ///Se obtiene un [porcentaje random de =20 a 50=] 
+            porcentajePropuesta = Math.floor(Math.random() * (50 - 20) + 20) / 100;
+        }
+
         potenciaNecesaria = Math.round((((consumoDiario * porcentajePropuesta) / irradiacion) / porcentajePerdida) * 100) / 100 ; 
+    }
+    else{/*PDBT*/
+        ///Propuesta al 100%
+        potenciaNecesaria = Math.round((((consumoDiario - subsidio_diario) / irradiacion) / porcentajePerdida) * 100) / 100;
     }
 
     if(tarifaIndustrial != true){
