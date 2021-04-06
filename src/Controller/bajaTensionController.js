@@ -222,8 +222,8 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
     let porcentajePerdida = origen == "Veracruz" ? 82 : 73;
     porcentajePerdida = await calcularPorcentajePerdida(porcentajePerdida);
 
-    if(tarifaIndustrial === false && porcentajePropuesta === 0){
-        ///Propuesta NUEVA || EDITADA
+    if(tarifaIndustrial === false && porcentajePropuesta === 0 || porcentajePropuesta > 0){
+        ///Propuesta NUEVA
         if(porcentajePropuesta === 0){ 
             ///Se obtiene un [porcentaje random de =20 a 50=] 
             porcentajePropuesta = Math.floor(Math.random() * (50 - 20) + 20) / 100;
