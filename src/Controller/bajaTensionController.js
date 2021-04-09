@@ -135,43 +135,43 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
         //Los datos estan definidos en "bimestral" (limite, objetivoDAC, etc)
         case '1':
             limite = 500;
-            objetivoDAC = 200;
+            objetivoDAC = 250;
             limitepotenciaRequerida = 50500;
             tarifaIndustrial = false;
         break;
         case '1a':
             limite = 600;
-            objetivoDAC = 250;
+            objetivoDAC = 350;
             limitepotenciaRequerida = 50500;
             tarifaIndustrial = false;
         break;
         case '1b':
             limite = 800;
-            objetivoDAC = 300;
+            objetivoDAC = 450;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1c':
             limite = 1700;
-            objetivoDAC = 800;
+            objetivoDAC = 850;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1d':
             limite = 2000;
-            objetivoDAC = 900;
+            objetivoDAC = 1000;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1e':
             limite = 2500;
-            objetivoDAC = 1100;
+            objetivoDAC = 1800;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1f':
             limite = 3000;
-            objetivoDAC = 1250;
+            objetivoDAC = 5000;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
@@ -214,33 +214,29 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
     consumoDiario = objPromedioDeConsumos.consumoDiario;
     /*-------*/
     cuanto_menos = limite - (promedioConsumsMensuales * 2 * 0.10);
-    objetiveDac = cuanto_menos < objetivoDAC ? cuanto_menos : 0;
-    objetiveDac = objetivoDAC > objPromedioDeConsumos.promConsumosBimestrales ? 0 : objetiveDac;
+    
+    if(cuanto_menos < objetivoDAC){
+        objetivoDAC = cuanto_menos;
+    }
 
-    subsidio_diario = tarifaIndustrial == true ? 0 : Math.round(((objetiveDac * 6) / 365) * 100)/100;
+    if(objetivoDAC < 0 || objetivoDAC > (promedioConsumsMensuales * 2)){
+        objetivoDAC = 0;
+    }
+
+    subsidio_diario = Math.round(((objetivoDAC * 6) / 365) * 100) / 100;
 
     let porcentajePerdida = origen == "Veracruz" ? 82 : 73;
     porcentajePerdida = await calcularPorcentajePerdida(porcentajePerdida);
 
-    if(tarifaIndustrial === false && porcentajePropuesta === 0 || porcentajePropuesta > 0){
-        ///Propuesta NUEVA
-        if(porcentajePropuesta === 0){ 
-            ///Se obtiene un [porcentaje random de =20 a 50=] 
-            porcentajePropuesta = Math.floor(Math.random() * (50 - 20) + 20) / 100;
-        }
-
-        potenciaNecesaria = Math.round((((consumoDiario * porcentajePropuesta) / irradiacion) / porcentajePerdida) * 100) / 100 ; 
+    if(porcentajePropuesta == 0){
+        potenciaNecesaria = (Math.round((((consumoDiario - subsidio_diario) / irradiacion) / porcentajePerdida) * 100) / 100) * 1000; 
+        
     }
-    else{/*PDBT*/
-        ///Propuesta al 100%
-        potenciaNecesaria = Math.round((((consumoDiario - subsidio_diario) / irradiacion) / porcentajePerdida) * 100) / 100;
+    else{
+        potenciaNecesaria = (Math.round((((consumoDiario * porcentajePropuesta) / irradiacion) / porcentajePerdida) * 100) / 100) * 1000; 
     }
 
-    if(tarifaIndustrial != true){
-        potenciaNecesaria = potenciaNecesaria >= limite ? limite - 1 : potenciaNecesaria;
-    }
-
-    potenciaNecesaria = potenciaNecesaria * 1000; 
+    // potenciaNecesaria = potenciaNecesaria >= limite ? limite - 1 : potenciaNecesaria;
 
     objCalcularPot = {
         potenciaNecesaria: potenciaNecesaria, //Watts

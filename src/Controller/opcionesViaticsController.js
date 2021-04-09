@@ -121,7 +121,7 @@ async function calcularViaticosBTI(data){
         subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
         costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos + totalFletes)*100)/100;
-        precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD
+        precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
         precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD
         precioMXN = Math.round((precio * precioDolar) * 100)/100;
         precioMasIVAMXN = Math.round((precioMasIVA * precioDolar)*100)/100;
@@ -139,8 +139,8 @@ async function calcularViaticosBTI(data){
         }
 
         //F I N A N C I A M I E N T O
-        data = { costoTotal: precioMasIVAMXN };
-        objFinan = await financiamiento.financiamiento(data);
+        let ddata = { costoTotal: precioMasIVAMXN };
+        objFinan = await financiamiento.financiamiento(ddata);
 
         /*#region Foromating . . .*/
         paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;

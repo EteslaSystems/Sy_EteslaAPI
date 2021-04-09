@@ -139,11 +139,22 @@ async function getInversores_cotizacion(data){
 	allInversores = allInversores.message;
 	let combinacion = false;
 	let noPaneles = 0; //No. paneles a instalar
-	let numeroDeInversores;
+	let numeroDeInversores = 0;
+	let potenciaNecesaria = 0;
 
-	if(data.objPanelSelect){
+	if(data.objPanelSelect.potenciaNecesaria.potenciaNecesaria){
 		data = data.objPanelSelect;
+
+		///potenciaNecesaria
+		potenciaNecesaria = data.potenciaNecesaria.potenciaNecesaria; //watts
+		///panel seleccionado
 		data = data.panel;
+		
+	}
+	else{
+		potenciaNecesaria = JSON.parse(data.objPanelSelect.potenciaNecesaria);
+		potenciaNecesaria = potenciaNecesaria.consumo.potenciaNecesaria;
+		data = data.objPanelSelect.panel.panel;
 	}
 
 	potenciaReal_= parseFloat(data.potenciaReal);
@@ -156,8 +167,7 @@ async function getInversores_cotizacion(data){
 		noPaneles = parseFloat(data.noModulos);
 		redimensinoamiento = allInversores[i].fPotencia * 1.25;
 
-		//Aca se calcula el numero de Inversores/Micros 
-		if(allInversores[i].vTipoInversor === 'Microinversor'){
+		if(allInversores[i].vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
 			numeroDeInversores =  noPaneles / allInversores[i].iPanelSoportados;
 		}
 		else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micros
@@ -185,8 +195,10 @@ async function getInversores_cotizacion(data){
 				numeroDeInversores = 0;
 			}
 		}
-		else{
-			numeroDeInversores = potenciaReal_ / redimensinoamiento;
+		else{//Calculo de inversores
+			if(potenciaNecesaria > allInversores[i].iPMIN && potenciaNecesaria < allInversores[i].iPMAX){
+				numeroDeInversores = Math.ceil(potenciaReal_ / redimensinoamiento);
+			}
 		}
 
 		if(combinacion === false && numeroDeInversores > 0){

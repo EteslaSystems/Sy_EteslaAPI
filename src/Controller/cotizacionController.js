@@ -83,7 +83,9 @@ async function getCombinacionEconomica(data, __consumos){
         }
     }
 
-    let __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
+    let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
+
+    let __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
 
     if(__inversores.length > 0){
         for(let j=0; j<__inversores.length; j++)
@@ -174,7 +176,9 @@ async function getCombinacionMediana(data, __consumos){//Mediana
         panelCombMediana(_panelesSelectos, mediaCostoTotPaneles); //:void
     }
 
-    __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
+    let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
+
+    __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
 
     let mediaCostoTotInversores = (_inversoreSelected) => {
         mediaDePrecios = 0;
@@ -240,7 +244,7 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
         var oldProduccion = 0;
         var newProduccion = 0;
 
-        for(var i=1; i<__paneles.length; i++)
+        for(let i=1; i<__paneles.length; i++)
         {   
             potenciaReal = parseFloat(__paneles[i].panel.potenciaReal);
 
@@ -264,7 +268,9 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
         }
     }
 
-    var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
+    let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
+
+    let __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
 
     if(__inversores.length > 0){
         var oldSobredimension = 0;
