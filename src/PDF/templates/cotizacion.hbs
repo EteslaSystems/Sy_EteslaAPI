@@ -276,7 +276,7 @@
             <div class="container-fluid detalleRecibo">
                 <div class="row">
                     <div class="col-8">
-                        <img height="100px;" width="250px;" src="/PDF/img/LUZ.png" style="align-content: center;">
+                        <img height="100px;" width="250px;" src="https://drive.google.com/thumbnail?id=1OcQ39-BUh14iVhbz7cOvOrauD-UpQpZO" style="align-content: center;">
                         <div class="card dtlReciboCards">
                             <div class="card-header">Cliente</div>
                             <div class="card-body">
@@ -582,10 +582,10 @@
                         <div class="col-8">
                             <div class="form-group row">
                                 <div class="col-sm-5">
-                                    <img width="200" height="75" src="https://document-export.canva.com/gg3GQ/DAEKhGgg3GQ/149/thumbnail/4KuZ0yLjh-bJFeXL9vubVQ-0001-12023840483.png">
+                                    <img width="200" height="90" src="https://drive.google.com/thumbnail?id=1Gy4hr745GxMIfWBRHR-zPl7MV_mgMTo6">
                                 </div>
                                 <div class="col-sm-4">
-                                    <img width="200" height="75" src="https://document-export.canva.com/gg3GQ/DAEKhGgg3GQ/151/thumbnail/6KFGipnBq4HBI2zZSVMC3w-0002-12024682665.png">
+                                    <img width="200" height="90" src="https://drive.google.com/thumbnail?id=18ieAUJCMVate4xnncoKm4Vm5n4BTfO3w">
                                 </div>
                             </div>
                         </div>
@@ -691,16 +691,16 @@
                                 <th class="tl"></th>
                                 {{#with combinaciones}}
                                 <th id="combinacionEconomica" class="compare-heading">
-                                    <img id="imgPanel" width="100" height="70" src="/PDF/img/panel/{{ objCombinaciones.combinacionEconomica.0.paneles.marca }}">
-                                    <img id="imgInversor" width="100" height="70" src="/PDF/img/inversor/{{ objCombinaciones.combinacionEconomica.0.inversores.vMarca }}">
+                                    <img id="imgPanel" width="100" height="70" src="{{{ objCombinaciones.combinacionEconomica.0.paneles.imgRuta }}}">
+                                    <img id="imgInversor" width="100" height="70" src="{{{ objCombinaciones.combinacionEconomica.0.inversores.imgRuta }}}">
                                 </th>
                                 <th id="combinacionMediana" class="compare-heading">
-                                    <img id="imgPanel" width="100" height="70" src="/PDF/img/panel/{{ objCombinaciones.combinacionMediana.0.paneles.marca }}">
-                                    <img id="imgInversor" width="100" height="70" src="/PDF/img/inversor/{{ objCombinaciones.combinacionMediana.0.inversores.vMarca }}">
+                                    <img id="imgPanel" width="100" height="70" src="{{{ objCombinaciones.combinacionMediana.0.paneles.imgRuta }}}">
+                                    <img id="imgInversor" width="100" height="70" src="{{{ objCombinaciones.combinacionMediana.0.inversores.imgRuta }}}">
                                 </th>
                                 <th id="combinacionOptima" class="compare-heading">
-                                    <img id="imgPanel" width="100" height="70" src="/PDF/img/panel/{{ objCombinaciones.combinacionOptima.0.paneles.marca }}">
-                                    <img id="imgInversor" width="100" height="70" src="/PDF/img/inversor/{{ objCombinaciones.combinacionOptima.0.inversores.vMarca }}">
+                                    <img id="imgPanel" width="100" height="70" src="{{{ objCombinaciones.combinacionOptima.0.paneles.imgRuta }}}">
+                                    <img id="imgInversor" width="100" height="70" src="{{{ objCombinaciones.combinacionOptima.0.inversores.imgRuta }}}">
                                 </th>
                             </tr>
                         <!-- #End_Heading - Imagenes/Logos equipos -->
@@ -823,8 +823,8 @@
                                 <th class="tl"></th>
                                 <th id="logosEquipos" class="compare-heading">
                                 {{#with propuesta}}
-                                    <img id="imgPanel" width="60" height="60" src="/PDF/img/panel/{{ 0.paneles.marca }}">
-                                    <img id="imgInversor" width="50" height="50" src="/PDF/img/inversor/{{ 0.inversores.vMarca }}">
+                                    <img id="imgPanel" width="60" height="60" src="{{{ 0.paneles.imgRuta }}}">
+                                    <img id="imgInversor" width="50" height="50" src="{{{ 0.inversores.imgRuta }}}">
                                 </th>
                             </tr>
                         </thead>

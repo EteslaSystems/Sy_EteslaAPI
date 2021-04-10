@@ -230,7 +230,8 @@ async function getInversores_cotizacion(data){
 					porcentajeSobreDimens: porcentajeSobreDimens,
 					potenciaNominal: potenciaNominal,
 					potenciaPico: _potenciaPicoInversor,
-					combinacion: combinacion
+					combinacion: combinacion,
+					imgRuta: null
 				};
 
 				arrayInversor.push(inversoresResult);
@@ -264,7 +265,8 @@ async function getInversores_cotizacion(data){
 				porcentajeSobreDimens: null,
 				potenciaNominal: null,
 				potenciaPico: null,
-				combinacion: combinacion
+				combinacion: combinacion,
+				imgRuta: null
 			};
 			
 			arrayInversor.push(inversoresResult);
