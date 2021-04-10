@@ -196,9 +196,10 @@ async function getInversores_cotizacion(data){
 			}
 		}
 		else{//Calculo de inversores
-			if(potenciaNecesaria > allInversores[i].iPMIN && potenciaNecesaria < allInversores[i].iPMAX){
-				numeroDeInversores = Math.ceil(potenciaReal_ / redimensinoamiento);
-			}
+			// if(potenciaNecesaria >= allInversores[i].iPMIN && potenciaNecesaria <= allInversores[i].iPMAX){
+				
+			// }
+			numeroDeInversores = Math.ceil(potenciaReal_ / redimensinoamiento);
 		}
 
 		if(combinacion === false && numeroDeInversores > 0){

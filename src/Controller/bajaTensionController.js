@@ -135,43 +135,43 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
         //Los datos estan definidos en "bimestral" (limite, objetivoDAC, etc)
         case '1':
             limite = 500;
-            objetivoDAC = 250;
+            objetivoDAC = 200;
             limitepotenciaRequerida = 50500;
             tarifaIndustrial = false;
         break;
         case '1a':
             limite = 600;
-            objetivoDAC = 350;
+            objetivoDAC = 250;
             limitepotenciaRequerida = 50500;
             tarifaIndustrial = false;
         break;
         case '1b':
             limite = 800;
-            objetivoDAC = 450;
+            objetivoDAC = 300;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1c':
             limite = 1700;
-            objetivoDAC = 850;
+            objetivoDAC = 800;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1d':
             limite = 2000;
-            objetivoDAC = 1000;
+            objetivoDAC = 900;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1e':
             limite = 2500;
-            objetivoDAC = 1800;
+            objetivoDAC = 1100;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;
         case '1f':
             limite = 3000;
-            objetivoDAC = 5000;
+            objetivoDAC = 1250;
             limitepotencia = 50500;
             tarifaIndustrial = false;
         break;

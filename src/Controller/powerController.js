@@ -676,7 +676,7 @@ async function dac(tarifa, consumoPromedio){
             tarifa = consumoPromedio >= 1250 ? 'DAC' : tarifa;
         break;
         default:
-            tarifa = -1;
+            tarifa = 0;
         break;
     }
 
