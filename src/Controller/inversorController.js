@@ -140,21 +140,13 @@ async function getInversores_cotizacion(data){
 	let combinacion = false;
 	let noPaneles = 0; //No. paneles a instalar
 	let numeroDeInversores = 0;
-	let potenciaNecesaria = 0;
 
-	if(data.objPanelSelect.potenciaNecesaria.potenciaNecesaria){
-		data = data.objPanelSelect;
-
-		///potenciaNecesaria
-		potenciaNecesaria = data.potenciaNecesaria.potenciaNecesaria; //watts
-		///panel seleccionado
-		data = data.panel;
-		
+	if(data.objPanelSelect){
+		data = data.objPanelSelect.panel;
+		data = data.panel ? data.panel : data;
 	}
 	else{
-		potenciaNecesaria = JSON.parse(data.objPanelSelect.potenciaNecesaria);
-		potenciaNecesaria = potenciaNecesaria.consumo.potenciaNecesaria;
-		data = data.objPanelSelect.panel.panel;
+		data = JSON.parse(data.objPanelSelect.panel);
 	}
 
 	potenciaReal_= parseFloat(data.potenciaReal);
@@ -196,9 +188,6 @@ async function getInversores_cotizacion(data){
 			}
 		}
 		else{//Calculo de inversores
-			// if(potenciaNecesaria >= allInversores[i].iPMIN && potenciaNecesaria <= allInversores[i].iPMAX){
-				
-			// }
 			numeroDeInversores = Math.ceil(potenciaReal_ / redimensinoamiento);
 		}
 

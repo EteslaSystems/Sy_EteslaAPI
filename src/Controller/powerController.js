@@ -1,3 +1,5 @@
+const tarifas = require('../Controller/tarifaController');
+
 function getIrradiacionDiasDeMesesDelAnio(){
     var objMeses = {};
 
@@ -492,11 +494,17 @@ async function getPowerBTI(data){
         let objNuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
         porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
         
+        //Se sabe si es DAC o NO
         if(tarifa != null){
             dac_o_nodac = await dac(tarifa, promedioConsumosMensuales);
             objResult.dac_o_nodac = dac_o_nodac;
+
+            // consumoEnPesos(dac_o_nodac);
+
+
+
         }
-        
+
         objResult.nuevosConsumos = objNuevosConsumos;
         objResult.porcentajePotencia = porcentajePotencia;
     }
@@ -504,6 +512,82 @@ async function getPowerBTI(data){
     objResult.generacion = _generacion;
     
     return objResult;
+}
+
+function consumoEnPesos(dacOnoDac, consumoPromedio){ ///consumoPromedio = promedioConsumosMensuales
+    let _tarifas = tarifas.obtenerTodasLasTarifas();
+    let costoDemanda = 0;
+    let meses = []; //$-MXN
+    let factor = 0;
+    let pagos = [];
+
+    let pago_demanda; ///[] or Numb
+    let demanda = 1;
+    
+    if(dacOnoDac != 'DAC'){
+        let _noVerano = _tarifas.filter(tarifa => tarifa.vNombreTarifa === dacOnoDac);
+        _noVerano = _noVerano.filter(tarifa => tarifa.siVerano === 0); //Se obtienen [] las -NO VERANO- acorde a la tarifa de la propuesta (1, 1c, 1a, etc...)
+        let _verano = _tarifas.filter(tarifa => tarifa.vNombreTarifa === dacOnoDac);
+        _verano = _verano.filter(tarifa => tarifa.siVerano === 1); //Se obtienen [] las -VERANO- acorde a la tarifa de la propuesta (1, 1c, 1a, etc...)
+
+        meses[0,1,2,9,10,11];
+        factor = 0.824;
+        costoDemanda = 0;
+    }
+    else{
+        let demanda = _tarifas.filter(tarifa => tarifa.vNombreTarifa === dacOnoDac); //return: array[]
+        costoDemanda = demanda.fPrecio;
+
+        meses[0,1,2,3,4,5,6,7,8,9,10,11];
+        factor = 1;
+    }
+    
+    for(let i=0; i<12; i++)
+    {
+        let rango_alto = 0;
+        let rango_bajo = 0;
+        pagos[i] = 0;
+        
+        if(meses[i]){
+            for(let x=0; x<_noVerano.length; x++)
+            {
+                rango_bajo = rango_alto;
+                rango_alto = rango_alto + _noVerano[x].iRango;
+
+                if((consumoPromedio * factor) > rango_bajo){
+                    if((consumoPromedio * factor) > rango_alto && _noVerano[x].iRango != 0){
+                        pagos[i] = pagos[i] + _noVerano[x].iRango * _noVerano[x].fPrecio;
+                    }
+                    else{
+                        pagos[i] = pagos[i]+((consumoPromedio * factor) - rango_bajo) * _noVerano[x].fPrecio;
+                    }
+                }
+            }
+        }
+        else{
+            for(let y=0; y<_verano.length; y++)
+            {
+                rango_bajo = rango_alto;
+                rango_alto = rango_alto + _verano[y].iRango;
+
+                if((consumoPromedio * 1.172) > rango_bajo){
+                    if((consumoPromedio * 1.172) > rango_alto && _verano[y].iRango != 0){
+                        pagos[i] = pagos[i] + _verano[x].iRango * _verano[x].fPrecio;
+                    }
+                    else{
+                        pagos[i] = pagos[i] + ((consumoPromedio * 1.172) - rango_bajo) * _verano[x].fPrecio;
+                    }
+                }
+            }
+        }
+    }
+
+    if(demanda.length > 0){ //DAC
+        
+    }
+    else{
+        pago_demanda = Math.floor(demanda * costoDemanda);
+    }
 }
 
 function getGeneration(origen, potenciaReal){
@@ -655,25 +739,25 @@ async function dac(tarifa, consumoPromedio){
     switch(tarifa)
     {
         case '1':
-            tarifa = consumoPromedio >= 200 ? 'DAC' : tarifa;
-        break;
-        case '1a':
             tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
         break;
-        case '1b':
+        case '1a':
             tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
         break;
+        case '1b':
+            tarifa = consumoPromedio >= 400 ? 'DAC' : tarifa;
+        break;
         case '1c':
-            tarifa = consumoPromedio >= 800 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 850 ? 'DAC' : tarifa;
         break;
         case '1d':
-            tarifa = consumoPromedio >= 900 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 1000 ? 'DAC' : tarifa;
         break;
         case '1e':
-            tarifa = consumoPromedio >= 1100 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 2000 ? 'DAC' : tarifa;
         break;
         case '1f':
-            tarifa = consumoPromedio >= 1250 ? 'DAC' : tarifa;
+            tarifa = consumoPromedio >= 2500 ? 'DAC' : tarifa;
         break;
         default:
             tarifa = 0;

@@ -37,7 +37,7 @@ async function mainBusquedaInteligente(data){
         _paneles = await bajaTension.firstStepBT(data);
         _consumos = _paneles[0].consumo;
         _arrayConsumos = _paneles[0];
-        newData = {_paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa};
+        newData = {idCliente: data.idCliente, _paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa};
 
         __combinacionMediana = await getCombinacionMediana(newData, _consumos);
         __combinacionEconomica = await getCombinacionEconomica(newData, _consumos);
@@ -48,6 +48,7 @@ async function mainBusquedaInteligente(data){
     } */
 
     objCombinaciones = {
+        idCliente: data.idCliente,
         _arrayConsumos: _arrayConsumos,
         combinacionMediana: __combinacionMediana,
         combinacionEconomica: __combinacionEconomica,
@@ -107,6 +108,7 @@ async function getCombinacionEconomica(data, __consumos){
     _combinacionEconomica.push(objCombinacion);
     
     newData = {
+        idCliente: data.idCliente,
         arrayBTI: _combinacionEconomica,
         origen: data.origen,
         destino: data.destino,
@@ -217,7 +219,8 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 
     _combinacionMediana.push(objCombinacion);
     
-    newData = {
+    let newData = {
+        idCliente: data.idCliente,
         arrayBTI: _combinacionMediana,
         origen: data.origen,
         destino: data.destino,

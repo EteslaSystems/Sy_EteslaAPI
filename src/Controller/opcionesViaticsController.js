@@ -10,6 +10,7 @@ const dolar = require('../Controller/dolar_tipoCambio');
 const financiamiento = require('../Controller/financiamientoProjController');
 const power = require('../Controller/powerController');
 const roi = require('../Controller/ROIController');
+const cliente = require('../Controller/clienteController');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -30,6 +31,7 @@ async function calcularViaticosBTI(data){
     let objROI=null;
     let objPower=null;
     let objCotizacionBTI = {};
+    let idCliente = data.idCliente;
     let origen = data.origen;
     let destino = data.destino;
     let bInstalacion = data.bInstalacion || null;
@@ -51,6 +53,11 @@ async function calcularViaticosBTI(data){
         }
         return false;
     };
+
+    //Datos cliente
+    let uCliente = await cliente.consultarId({ idPersona: idCliente });
+    uCliente = uCliente.message; 
+    uCliente = uCliente[0];
 
     if(_consums != null){
         //Consumos
@@ -149,6 +156,7 @@ async function calcularViaticosBTI(data){
 
         //Se llena el objetoRespuesta
         objCotizacionBTI = {
+            cliente: uCliente,
             paneles: paneles,
             inversores: inversores,
             viaticos_costos: {
@@ -197,7 +205,7 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIVEM){
     const dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000};
     const dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
     let mo_unitario = 12;
-    otros_porcentaje = 0.035;
+    let otros_porcentaje = 0.035;
 
     // let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
     // precioDolar = precioDolar.precioDolar;
@@ -232,6 +240,7 @@ async function main_calcularViaticos(data){
     let _resultado = [];
     let origen = data.origen;
     let destino = data.destino;
+    let idCliente = data.idCliente;
     let descuento = (parseFloat(data.descuento) / 100) || 0;
     let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -239,10 +248,16 @@ async function main_calcularViaticos(data){
     let panel = JSON.parse(propuesta.panel); //Obj
     let inversor = propuesta.inversor; //Obj
     let _agregados = data._agregados || null;
+    let tarifa = data.tarifa;
     let pagoPasaje = 0;
     let pagoPasajeTotal = 0;
     let pagoComidaTotal = 0;
     let pagoHospedajeTotal = 0;
+
+    //Datos Cliente
+    let uCliente = await cliente.consultarId({ idPersona: idCliente});
+    uCliente = uCliente.message;
+    uCliente = uCliente[0];
 
     let confFile = await configFile.getArrayOfConfigFile();
     let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
@@ -301,6 +316,7 @@ async function main_calcularViaticos(data){
     /*#endregion POWER - ROI - FINANCIAMIENTO*/
 
     let objViaticosCalculados = {
+        cliente: uCliente,
         paneles: panel,
         inversores: inversor,
         viaticos_costos: {
@@ -328,6 +344,7 @@ async function main_calcularViaticos(data){
             precioMasIVAMXN: precioMasIVAMXN,
             precio_watt: precio_watt
         },
+        tarifa: tarifa,
         power: objPower,
         roi: objROI, 
         financiamiento: objFinanciamiento,

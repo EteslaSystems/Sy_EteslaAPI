@@ -3,7 +3,6 @@
 - @author: 				LH420
 - @date: 				20/03/2020
 */
-const irradiacion = require('../Controller/irradiacionController');
 const paneles = require('../Controller/panelesController');
 const inversores = require('../Controller/inversorController');
 const viaticos = require('../Controller/opcionesViaticsController');
@@ -37,9 +36,8 @@ async function cotizacionIndividual(data){
     let cantidadPaneles = parseInt(data.cantidadPaneles) || 0;
     let cantidadInversores = parseInt(data.cantidadInversores) || 0;
 
-
     let cantidadEstructuras = parseInt(data.cantidadEstructuras);
-    // var bMonitoreo = data.monitoreo; //PENDIENTE
+    // let bMonitoreo = data.monitoreo; //PENDIENTE
 
     let origen = data.origen;
     let destino = data.destino;
@@ -125,6 +123,7 @@ async function cotizacionIndividual(data){
     cotizacionInd.push(objCotiIndividual);
     
     objeto = {
+        idCliente: data.idCliente,
         arrayBTI: cotizacionInd,
         origen: origen,
         destino: destino,
