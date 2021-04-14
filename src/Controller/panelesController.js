@@ -134,7 +134,7 @@ var objNoDeModulosPorPotenciaDelPanel = {};
 async function numberOfModuls(potenciaNecesaria){
 	/* potenciaRequeridaEnKwp = await getSystemPowerInKwp(promedioConsumoMensual, irradiation, efficiency, topeProduccion);
 	var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp); */
-	var _arrayTodosPaneles = await getAllPanelsArray();
+	let _arrayTodosPaneles = await getAllPanelsArray();
 	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
 
 	return _arrayObjectsNoOfModuls;
