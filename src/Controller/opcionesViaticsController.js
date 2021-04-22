@@ -75,12 +75,12 @@ async function calcularViaticosBTI(data){
     else{
         //Equipos seleccionados
         if(data.arrayBTI[0].inversor != null){
-            formated = data.arrayBTI[0].inversor;
+            formated = data.arrayBTI[0].inversor; //Formated to get _Inversor
             data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor) === false ? data.arrayBTI[0].inversor : validarJSON(data.arrayBTI[0].inversor);
         }
 
         if(data.arrayBTI[0].panel != null){
-            formated = data.arrayBTI[0].panel;
+            formated = data.arrayBTI[0].panel; //Formated to get _Panel
             data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel) === false ? data.arrayBTI[0].panel : validarJSON(data.arrayBTI[0].panel);
         }
 
@@ -94,7 +94,7 @@ async function calcularViaticosBTI(data){
         if(distanciaEnKm >= km_hospedaje){
             hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
             comida = noDias * comida_dia * noPersonasRequeridas;
-            pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
+            pasaje = Math.round((distanciaEnKm * km * noPersonasRequeridas * 2) * 100) / 100;
         }
         else if(distanciaEnKm >= km_pasaje && noDias < 7){
             pasaje = distanciaEnKm * km * noPersonasRequeridas * 2 * noDias;
@@ -121,7 +121,8 @@ async function calcularViaticosBTI(data){
         manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
 
         if(bInstalacion != null && bInstalacion === 'false'){
-            manoDeObra[0] = 0;
+            manoDeObra[0] = 0; //Mano de Obra
+            manoDeObra[1] = 0; //Costo de Otros
         }
 
         totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
@@ -129,24 +130,23 @@ async function calcularViaticosBTI(data){
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
         costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos + totalFletes)*100)/100;
         precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
-        precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD
-        precioMXN = Math.round((precio * precioDolar) * 100)/100;
-        precioMasIVAMXN = Math.round((precioMasIVA * precioDolar)*100)/100;
+        precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD //Con IVA
+        precioMXN = Math.round((precioMasIVA * precioDolar) * 100)/100; //MXN + IVA
 
-        /*????*/precio_watt = Math.round(((costoTotalProyecto / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+        /*????*/precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
 
         if(_consums != null){
             //P O W E R
             dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
             objPower = await power.obtenerPowerBTI(dataPwr) || null;
-            objROI = await roi.obtenerROI(objPower, _consums, precioMasIVAMXN);
+            objROI = await roi.obtenerROI(objPower, _consums, precioMXN);
 
             //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
             _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
         }
 
         //F I N A N C I A M I E N T O
-        let ddata = { costoTotal: precioMasIVAMXN };
+        let ddata = { costoTotal: precioMXN };
         objFinan = await financiamiento.financiamiento(ddata);
 
         /*#region Foromating . . .*/
@@ -176,7 +176,6 @@ async function calcularViaticosBTI(data){
                 precio: precio,
                 precioMasIVA: precioMasIVA,
                 precioMXN: precioMXN,
-                precioMasIVAMXN: precioMasIVAMXN,
                 precio_watt: precio_watt
             },
             tarifa: tarifa,
@@ -200,28 +199,23 @@ async function getDaysBTI(noPanelesAInstalar){
     return dias;
 }
 
-async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIVEM){
-    //La funcion retorna el costo de la ManoObra, etc. en dolares
+async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIE){//La funcion retorna el costo de la ManoObra, etc. en dolares
+    //[dictionaryMOCost && OtrosCost] => {El *numero de la izquierda* es la cantidad de paneles y el *numero de la derecha* el costo en MXN}
     const dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000};
     const dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
     let mo_unitario = 12;
     let otros_porcentaje = 0.035;
 
-    // let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    // precioDolar = precioDolar.precioDolar;
-
-    let precioDolar = 17; //Borrar ///Esto esta mal, el que sirve es la linea 202 y 203
+    let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+    precioDolar = precioDolar.precioDolar;
 
     if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
         costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
-
-        if(cantidadPaneles <= 45){
-            costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;
-        }
+        costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
     }
     else{
         costoMO = cantidadPaneles * mo_unitario;
-        costoOtros = totalPIVEM * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
+        costoOtros = totalPIE * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
     }
 
     costosManoObraYOtros = [costoMO, costoOtros];

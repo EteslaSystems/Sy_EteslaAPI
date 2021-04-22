@@ -236,8 +236,6 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
         potenciaNecesaria = (Math.round((((consumoDiario * porcentajePropuesta) / irradiacion) / porcentajePerdida) * 100) / 100) * 1000; 
     }
 
-    // potenciaNecesaria = potenciaNecesaria >= limite ? limite - 1 : potenciaNecesaria;
-
     objCalcularPot = {
         potenciaNecesaria: potenciaNecesaria, //Watts
         limite: limite
