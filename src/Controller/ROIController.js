@@ -1,24 +1,23 @@
 module.exports.obtenerROI = async function getROI(objPower, _consums, costoProyectoMXN){
-    let costoKwh = 5; //Pesos MXN
     let tarifa = objPower.dac_o_nodac; //dac o no dac - tarifas
     let consumoAnual = parseFloat(_consums._promCons.consumoAnual); //*KWH*
     let generacionAnual = 0; //*KWp* 
     let costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
-
+  
     if(objPower.generacion.generacionAnualMwh){
         generacionAnual = objPower.generacion.produccionAnualKwh;
     }
     else{
         generacionAnual = objPower.generacion.generacionAnual;
     }
-  
+
     /*$$ - Pago a CFE y Ahorro(s)*/
     ///Pago a CFE
-    consumoAnualPesosMXN = consumoAnual * costoKwh;
-    consumoBimestralPesosMXN = consumoAnualPesosMXN / 6;
-    consumoMensualPesosMXN = consumoAnualPesosMXN / 12;
+    consumoAnualPesosMXN = objPower.objConsumoEnPesos.pagoAnual;
+    consumoBimestralPesosMXN = objPower.objConsumoEnPesos.pagoPromedioBimestralConIva;    
+    consumoMensualPesosMXN = objPower.objConsumoEnPesos.pagoPromedioMensualConIva;
     ///
-    generacionAnualPesosMXN = Math.round((generacionAnual * costoKwh) * 100)/100; //(generacionAnual_kwh) * costoKwh
+    generacionAnualPesosMXN = objPower.objGeneracionEnPesos.pagoAnualIva; //(generacionAnual_kwh) * costoKwh
     ROIenAnios = Math.round((costoDeProyecto / generacionAnualPesosMXN) * 100) / 100;
 
     ahorroAnual = Math.round((consumoAnual - generacionAnual) * 100)/100; //kwh
