@@ -1,10 +1,9 @@
 module.exports.obtenerROI = async function getROI(objPower, _consums, costoProyectoMXN){
-    let tarifa = objPower.dac_o_nodac; //dac o no dac - tarifas
     let consumoAnual = parseFloat(_consums._promCons.consumoAnual); //*KWH*
     let generacionAnual = 0; //*KWp* 
     let costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
   
-    if(objPower.generacion.generacionAnualMwh){
+    if(objPower.generacion.generacionAnualMwh){ ///Kwh
         generacionAnual = objPower.generacion.produccionAnualKwh;
     }
     else{
@@ -13,29 +12,25 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
 
     /*$$ - Pago a CFE y Ahorro(s)*/
     ///Pago a CFE
-    consumoAnualPesosMXN = objPower.objConsumoEnPesos.pagoAnual;
+    consumoAnualPesosMXN = objPower.objConsumoEnPesos.pagoAnualIva;
     consumoBimestralPesosMXN = objPower.objConsumoEnPesos.pagoPromedioBimestralConIva;    
     consumoMensualPesosMXN = objPower.objConsumoEnPesos.pagoPromedioMensualConIva;
     ///
-    generacionAnualPesosMXN = objPower.objGeneracionEnPesos.pagoAnualIva; //(generacionAnual_kwh) * costoKwh
+    generacionAnualPesosMXN = objPower.objGeneracionEnpesos.pagoAnualIva; //(generacionAnual_kwh) * costoKwh
     ROIenAnios = Math.round((costoDeProyecto / generacionAnualPesosMXN) * 100) / 100;
 
-    ahorroAnual = Math.round((consumoAnual - generacionAnual) * 100)/100; //kwh
+    ahorroAnualKw = Math.round((consumoAnual - generacionAnual) * 100)/100; //kwh
 
-    /*$$ - Nuevo pago a CFE*/
-    nuevoPagoAnual = Math.round((ahorroAnual * 1.5) * 100) / 100;
-    nuevoPagoBimestral = Math.round((nuevoPagoAnual / 6) * 100)/100;
-
-    /*Ahorro (energia/$$)*/
-    
+    /*Ahorro (energia/$$)*/    
     /*#region Hipotesis_aboutROI*/
-    ahorroAnualEnPesosMXN = Math.round((ahorroAnual * costoKwh) * 100)/100; //$$
-    ahorroBimestralEnPesosMXN = Math.round((ahorroAnualEnPesosMXN / 6) * 100)/100; //$$
-    ahorroMensualEnPesosMXN = Math.round(((consumoBimestralPesosMXN - nuevoPagoBimestral) / 2) * 100) / 100; //$$
+    ahorroAnualEnPesosMXN = Math.round((consumoAnualPesosMXN - generacionAnualPesosMXN) * 100)/100; //$$
+    ahorroBimestralEnPesosMXN = consumoBimestralPesosMXN - objPower.objGeneracionEnpesos.pagoPromedioBimestralConIva;
+    ahorroMensualEnPesosMXN = Math.round((ahorroBimestralEnPesosMXN / 2) * 100) / 100; //$$
     /*#endregion*/
 
     objRespuesta = {
         ahorro: {
+            ahorroAnualKw: ahorroAnualKw,
             ahorroAnualEnPesosMXN: ahorroAnualEnPesosMXN,
             ahorroBimestralEnPesosMXN: ahorroBimestralEnPesosMXN,
             ahorroMensualEnPesosMXN: ahorroMensualEnPesosMXN
@@ -46,9 +41,8 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
             consumoMensualPesosMXN: consumoMensualPesosMXN
         },
         generacion: {
-            generacionAnualPesosMXN: generacionAnualPesosMXN,
-            nuevoPagoAnual: nuevoPagoAnual,
-            nuevoPagoBimestral: nuevoPagoBimestral
+            nuevoPagoAnual: generacionAnualPesosMXN,
+            nuevoPagoBimestral: objPower.objGeneracionEnpesos.pagoPromedioBimestralConIva
         },
         roiEnAnios: ROIenAnios
     };

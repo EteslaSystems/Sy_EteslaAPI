@@ -47,7 +47,7 @@ async function cotizacionIndividual(data){
 
     if(idPanel != "-1"){
         const datas = { idPanel: idPanel};
-        panel = await paneles.buscar(datas);
+        let panel = await paneles.buscar(datas);
         panel = panel.message;
 
         _potenciaReal = Math.round(((panel[0].fPotencia * cantidadPaneles)/1000) * 100) / 100;
@@ -78,7 +78,7 @@ async function cotizacionIndividual(data){
 
     if(idInversor != "-1"){
         data = {idInversor};
-        inversor = await inversores.buscar(data);
+        let inversor = await inversores.buscar(data);
         inversor = inversor.message;
 
         _potenciaNominalInversor = cantidadInversores * inversor[0].fPotencia; //Watts
@@ -109,7 +109,7 @@ async function cotizacionIndividual(data){
 		objCotiIndividual.inversor.potenciaNominal = _potenciaNominalInversor;
 
         if(objCotiIndividual.panel.potenciaPanel == 0 && objCotiIndividual.inversor.potenciaInversor != 0){
-            var _cotizacionUnicamenteInversor = [];
+            let _cotizacionUnicamenteInversor = [];
 
             _cotizacionUnicamenteInversor.push(objCotiIndividual);
             //console.log(_cotizacionUnicamenteInversor);
@@ -120,7 +120,7 @@ async function cotizacionIndividual(data){
         objCotiIndividual.inversor = null;
     }
 
-    cotizacionInd.push(objCotiIndividual);
+    cotizacionInd[0] = objCotiIndividual;
     
     objeto = {
         idCliente: data.idCliente,

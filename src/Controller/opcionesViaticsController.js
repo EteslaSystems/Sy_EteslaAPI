@@ -120,7 +120,7 @@ async function calcularViaticosBTI(data){
         costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
         manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
 
-        if(bInstalacion != null && bInstalacion === 'false'){
+        if(bInstalacion === null || bInstalacion === 'false' || bInstalacion === '0'){
             manoDeObra[0] = 0; //Mano de Obra
             manoDeObra[1] = 0; //Costo de Otros
         }

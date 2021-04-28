@@ -7,10 +7,10 @@
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas) {
-    const { fConsumo, vNombrePersona, vPrimerApellido, bTienePropuesta, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, vCalle, vMunicipio, vEstado } = datas;
+    const { fConsumo, vNombrePersona, vPrimerApellido, bTienePropuesta, vSegundoApellido, vTelefono, vCelular, vEmail, vCalle, vMunicipio, vEstado } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, fConsumo, bTienePropuesta, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, created_at, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, fConsumo, bTienePropuesta, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -31,10 +31,10 @@ function insertarBD(datas) {
 }
 
 function eliminarBD(datas) {
-	const { idPersona, deleted_at } = datas;
+	const { idPersona } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, null, null, idPersona, null, null, null, null, null, null, null, null, deleted_at, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, null, null, idPersona, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -55,10 +55,10 @@ function eliminarBD(datas) {
 }
 
 function editarBD (datas) {
-	const { fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, updated_at, vCalle, vMunicipio, vEstado } = datas;
+	const { fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, vCalle, vMunicipio, vEstado } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, fConsumo, null, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, updated_at, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, fConsumo, null, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, null, null, null, vCalle, vMunicipio, vEstado], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
