@@ -38,7 +38,8 @@ async function calcularViaticosBTI(data){
     let _consums = data.consumos || null;
     let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
-    let descuento = (parseFloat(data.descuento) / 100) || 0;
+    let descuento = (parseInt(data.descuento) / 100) || 0;
+    let aumento = (parseInt(data.aumento) / 100 + 1) || 0;
     let _configFile = await configFile.getArrayOfConfigFile();
     let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
     distanciaEnKm = distanciaEnKm.message;
@@ -129,7 +130,14 @@ async function calcularViaticosBTI(data){
         subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
         costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos + totalFletes)*100)/100;
-        precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
+       
+        if(aumento > 0){
+            precio = Math.round((costoTotalProyecto * aumento) * 100) / 100;
+        }
+        else{
+            precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
+        }
+
         precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD //Con IVA
         precioMXN = Math.round((precioMasIVA * precioDolar) * 100)/100; //MXN + IVA
 
@@ -202,24 +210,62 @@ async function getDaysBTI(noPanelesAInstalar){
 async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIE){//La funcion retorna el costo de la ManoObra, etc. en dolares
     //[dictionaryMOCost && OtrosCost] => {El *numero de la izquierda* es la cantidad de paneles y el *numero de la derecha* el costo en MXN}
     
-    const dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000};
-    const dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
+    let dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000,46:9200,47:9400,48:9600,49:9800,50:10000,51:10200,52:10400,53:10600,54:10800,55:11000,56:11200,57:11400,58:11600,59:11800,60:12000,61:12200,62:12400,63:12600,64:12800,65:13000,66:13200,67:13400,68:13600,69:13800,70:14000,71:14200,72:14400,73:14600,74:14800,75:15000,76:15200,77:15400,78:15600,79:15800,80:16000,81:16200,82:16400,83:16600,84:16800,85:17000,86:17200,87:17400,88:17600,89:17800,90:18000,91:18200,92:18400,93:18600,94:18800,95:19000,96:19200,97:19400,98:19600,99:19800,100:20000};
+    let dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
     let mo_unitario = 12;
     let otros_porcentaje = 0.035;
 
-    let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar.precioDolar;
+    try{
+        let completeDictionaryMoCost = (objDictionaryMO) => {
+            //Esta funcion amplia el rango de valores (cantidad_paneles <=> costoMXN) hasta iteracion:1300
+            let costoMXN = 20000;
+    
+            for(let i=101; i<=1300; i++)
+            {
+                costoMXN += 200;
+    
+                objDictionaryMO[i] = costoMXN;
+            }
+    
+            return objDictionaryMO;
+        };
 
-    if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
-        costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
-        costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
-    }
-    else{
-        costoMO = cantidadPaneles * mo_unitario;
-        costoOtros = totalPIE * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
-    }
+        let completeDictionaryOtrosCost = (objDictionaryOtros) => {
+            //Esta funcion amplia el rango de valores (cantidad_paneles <=> costoMXN) hasta iteracion:1300
+            let costoMXN = 10800;
 
-    costosManoObraYOtros = [costoMO, costoOtros];
+            for(let x=46; x<=1300; x++)
+            {
+                costoMXN += 100;
+
+                objDictionaryOtros[x] = costoMXN;
+            }
+
+            return objDictionaryOtros;
+        };
+    
+        dictionaryMOCost = completeDictionaryMoCost(dictionaryMOCost);
+        dictionaryOtrosCost = completeDictionaryOtrosCost(dictionaryOtrosCost);
+    
+        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        precioDolar = precioDolar.precioDolar;
+    
+        // let precioDolar = 17;
+    
+        if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
+            costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
+            costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
+        }
+        else{
+            costoMO = cantidadPaneles * mo_unitario;
+            costoOtros = totalPIE * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
+        }
+    
+        costosManoObraYOtros = [costoMO, costoOtros];
+    }
+    catch(error){
+        console.log('Error ManoObra cost: '+error);
+    }
 
     return costosManoObraYOtros;
 }
@@ -546,29 +592,25 @@ module.exports.mainViaticosMT = async function(data){
 /*#endregion*/
 
 function getDays(_numeroPanelesAInstalar, noCuadrillas){
+    let dias = 0;
+
     if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
-        // return 20;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 100 && _numeroPanelesAInstalar <= 299){
-        // return 30;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 300 && _numeroPanelesAInstalar <= 499){
-        // return 33;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 500 && _numeroPanelesAInstalar <= 799){
-        // return 32;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >=800 && _numeroPanelesAInstalar <= 1199){
-        // return 30;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 1200){
-        // return 36;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else{
         dias = -1;

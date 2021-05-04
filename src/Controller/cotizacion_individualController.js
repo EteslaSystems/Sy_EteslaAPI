@@ -35,7 +35,7 @@ async function cotizacionIndividual(data){
     let idInversor = data.idInversor;
     let cantidadPaneles = parseInt(data.cantidadPaneles) || 0;
     let cantidadInversores = parseInt(data.cantidadInversores) || 0;
-
+    let dataa = data;
     let cantidadEstructuras = parseInt(data.cantidadEstructuras);
     // let bMonitoreo = data.monitoreo; //PENDIENTE
 
@@ -123,12 +123,12 @@ async function cotizacionIndividual(data){
     cotizacionInd[0] = objCotiIndividual;
     
     objeto = {
-        idCliente: data.idCliente,
+        idCliente: dataa.idCliente,
         arrayBTI: cotizacionInd,
         origen: origen,
         destino: destino,
-        bInstalacion: data.bInstalacion,
-        tipoCotizacion: data.tipoCotizacion
+        bInstalacion: dataa.bInstalacion,
+        tipoCotizacion: dataa.tipoCotizacion
     };
 
     cotiIndv = await viaticos.calcularViaticosBTI(objeto);
