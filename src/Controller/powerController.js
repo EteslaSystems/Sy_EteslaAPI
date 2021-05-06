@@ -417,7 +417,7 @@ function getPagosTotales(data, _bipMXNkWh, __arrayCD, __newBIP){
     }
     /*#endregion*/
 
-    let ArrayTotalesAhorro = getTotales_Ahorro(__pagTotls); //Return an Object
+    let ArrayTotalesAhorro = getConsumosGeneracionMXN(__pagTotls); //Return an Object
     let radiacion = getRadiacion(); 
 
     let result = {
@@ -447,33 +447,133 @@ function getRadiacion(){
     return radiacion;
 }
 
-function getTotales_Ahorro(_pagosTotales){
-    let pagosTotales_Ahorro = {};
-    let totalSinSolar = 0;
-    let totalConSolar = 0;
-    let ahorroCifra = 0;
+function getConsumosGeneracionMXN(_pagosTotales){
+    let objRespuesta = {};
+    let ahorroCifraAnual = 0;
     let ahorroPorcentaje = 0;
 
-    for(var i=0; i<_pagosTotales.length; i++)
-    {
-        totalSinSolar += _pagosTotales[i].sinSolar.total;
-        totalConSolar += _pagosTotales[i].conSolar.total;
+    try{
+        ///Consumo 
+        let ConsumoMXN = (_pTotales) => { ///MXN
+            let consumoAnualMXN = 0;
+            let _bimestresMXN = [], bimestreMXN = 0, promedioBimes = 0;
+            let promPagosConsumoMes = 0;
+            let objResult = {};
+    
+            ///Consumo anual
+            _pTotales.forEach(pago => { return consumoAnualMXN += pago.sinSolar.total });
+    
+            ///Convert to _pagosConsumoBimestrales (array de pagos de consumoBimestrales)
+            for(let index=0; index<6; index++)
+            {
+                if(index != 0 && index % 2 == 1){
+                    bimestreMXN = _pTotales[index + 1].sinSolar.total + _pTotales[index + 2].sinSolar.total;
+                }
+                else{
+                    bimestreMXN = _pTotales[index].sinSolar.total + _pTotales[index+1].sinSolar.total;
+                }
+    
+                _bimestresMXN[index] = bimestreMXN;
+            }
+    
+            ///Promedio de pagosConsumosBimestrales
+            _bimestresMXN.forEach(consumoBimestreMXN => { return promedioBimes += consumoBimestreMXN });
+            promedioBimes = Math.round((promedioBimes / _bimestresMXN.length) * 100)/100;
+    
+            ///Promedio de pagosConsumosMensuales
+            _pTotales.forEach(pagoConsumoMes => { return promPagosConsumoMes += pagoConsumoMes.sinSolar.total });
+            promPagosConsumoMes = Math.round((promPagosConsumoMes / _pTotales.length) * 100)/100;
+
+            objResult = {
+                promPagosConsumsMes: promPagosConsumoMes,
+                _pagosConsumoBimest: _bimestresMXN,
+                pagoPromedioBimest: promedioBimes,
+                consumoAnualMXN: consumoAnualMXN
+            };
+
+            return objResult;
+        };
+        ConsumoMXN = ConsumoMXN(_pagosTotales);
+    
+        ///Generacion
+        let GeneracionMXN = (_pagsTotales) => {
+            let consumoAnualMXN = 0;
+            let _bimestresMXN = [], bimestreMXN = 0, promedioBimes = 0;
+            let promPagosConsumoMes = 0;
+            let objResult = {};
+    
+            ///Consumo anual
+            _pagsTotales.forEach(pago => { return consumoAnualMXN += pago.conSolar.total });
+            consumoAnualMXN = Math.round(consumoAnualMXN * 100)/100;
+    
+            ///Convert to _pagosConsumoBimestrales (array de pagos de consumoBimestrales)
+            for(let index=0; index<6; index++)
+            {
+                if(index != 0 && index % 2 == 1){
+                    bimestreMXN = _pagsTotales[index + 1].conSolar.total + _pagsTotales[index + 2].conSolar.total;
+                }
+                else{
+                    bimestreMXN = _pagsTotales[index].conSolar.total + _pagsTotales[index + 1].conSolar.total;
+                }
+    
+                _bimestresMXN[index] = bimestreMXN;
+            }
+    
+            ///Promedio de pagosConsumosBimestrales
+            _bimestresMXN.forEach(consumoBimestreMXN => { return promedioBimes += consumoBimestreMXN });
+            promedioBimes = Math.round((promedioBimes / _bimestresMXN.length) * 100)/100;
+    
+            ///Promedio de pagosConsumosMensuales
+            _pagsTotales.forEach(pagoConsumoMes => { return promPagosConsumoMes += pagoConsumoMes.conSolar.total });
+            promPagosConsumoMes = Math.round((promPagosConsumoMes / _pagsTotales.length) * 100)/100;
+
+            objResult = {
+                promPagosConsumsMes: promPagosConsumoMes,
+                _pagosConsumoBimest: _bimestresMXN,
+                pagoPromedioBimest: promedioBimes,
+                consumoAnualMXN: consumoAnualMXN
+            };
+
+            return objResult;
+        };
+        GeneracionMXN = GeneracionMXN(_pagosTotales);
+
+        ///Ahorro
+        let AhorroAnual = (_pTotales) => { ///MXN
+            let totalAnualSinSolar = 0, totalAnualConSolar = 0;
+
+            for(let i=0; i<_pTotales.length; i++)
+            {
+                totalAnualSinSolar += _pTotales[i].sinSolar.total;
+                totalAnualConSolar += _pTotales[i].conSolar.total;
+            }
+        
+            totalAnualSinSolar = Math.round(totalAnualSinSolar * 100)/100;
+            totalAnualConSolar = Math.round(totalAnualConSolar * 100)/100;
+    
+            return objRespuesta = { totalAnualSinSolar, totalAnualConSolar };
+        };
+        AhorroAnual = AhorroAnual(_pagosTotales);
+
+        ahorroCifraAnual = AhorroAnual.totalAnualConSolar > 0 ? Math.round((AhorroAnual.totalAnualSinSolar - AhorroAnual.totalAnualConSolar) * 100) / 100 : parseFloat(AhorroAnual.totalAnualSinSolar - 12000);
+        ahorroPorcentaje = Math.round((ahorroCifraAnual / AhorroAnual.totalAnualSinSolar) * 100) / 100;
+        ahorroPorcentaje = ahorroPorcentaje * 100;
+    
+        objRespuesta = {
+            ConsumoMXN: ConsumoMXN,
+            GeneracionMXN: GeneracionMXN,
+            AhorroAnual: AhorroAnual,
+            totalAnualSinSolar: AhorroAnual.totalAnualSinSolar,
+            totalAnualConSolar: AhorroAnual.totalAnualConSolar,
+            ahorroCifraAnual: ahorroCifraAnual,
+            ahorroPorcentaje: ahorroPorcentaje
+        };
+
+        return objRespuesta;
     }
-
-    totalSinSolar = Math.round(totalSinSolar * 100)/100;
-    totalConSolar = Math.round(totalConSolar * 100)/100;
-    ahorroCifra = totalConSolar > 0 ? Math.round((totalSinSolar - totalConSolar) * 100) / 100 : parseFloat(totalSinSolar - 12000);
-    ahorroPorcentaje = Math.round((ahorroCifra / totalSinSolar) * 100) / 100;
-    ahorroPorcentaje = ahorroPorcentaje * 100;
-
-    pagosTotales_Ahorro = {
-        totalSinSolar: totalSinSolar,
-        totalConSolar: totalConSolar,
-        ahorroCifra: ahorroCifra,
-        ahorroPorcentaje: ahorroPorcentaje
-    };
-
-    return pagosTotales_Ahorro;
+    catch(error){
+        console.log(error);
+    }
 }
 /*#endregion*/
 
@@ -532,13 +632,6 @@ async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio
     
     let consumoPromedio = 0; //Wtts -> Mensual
 
-    if(objConsumoPromedio.hasOwnProperty('promedioConsumoMensual')){
-        consumoPromedio = objConsumoPromedio.promedioConsumoMensual;
-    }
-    else{
-        consumoPromedio = objConsumoPromedio.promedioNuevosConsumosMensuales;
-    }
-
     try{
         let _pagosBimestrales = (_pagosMensuales) => {
             let _pagosBim = [];
@@ -563,7 +656,14 @@ async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio
 
             _pagosMensuales.forEach(pagoMensual => pagoAnl += pagoMensual);
             return pagoAnl;
-         };
+        };
+
+        if(objConsumoPromedio.hasOwnProperty('promedioConsumoMensual')){
+            consumoPromedio = objConsumoPromedio.promedioConsumoMensual;
+        }
+        else{
+            consumoPromedio = objConsumoPromedio.promedioNuevosConsumosMensuales;
+        }
 
         let _noVerano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
         _noVerano = _noVerano.filter(tarifa => { return noVerano = tarifa.siVerano === 0 }); //Se obtienen [] las -NO VERANO- acorde a la tarifa de la propuesta (1, 1c, 1a, etc...)

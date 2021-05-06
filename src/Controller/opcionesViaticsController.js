@@ -15,7 +15,6 @@ const cliente = require('../Controller/clienteController');
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
-var precioDolar = 0;
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
 const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
 const km_hospedaje = 130;
@@ -90,7 +89,7 @@ async function calcularViaticosBTI(data){
     
     for(var x=0; x<_arrayCotizacion.length; x++)
     {
-        noDias = await getDaysBTI(_arrayCotizacion[x].panel.noModulos);
+        let noDias = await getDaysBTI(_arrayCotizacion[x].panel.noModulos);
 
         if(distanciaEnKm >= km_hospedaje){
             hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
@@ -129,7 +128,7 @@ async function calcularViaticosBTI(data){
         totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
         subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
         margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
-        costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos + totalFletes)*100)/100;
+        costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos)*100)/100;
        
         if(aumento > 0){
             precio = Math.round((costoTotalProyecto * aumento) * 100) / 100;
@@ -169,6 +168,7 @@ async function calcularViaticosBTI(data){
             inversores: inversores,
             viaticos_costos: {
                 noDias: noDias,
+                distanciaEnKm: distanciaEnKm,
                 hospedaje: hospedaje,
                 comida: comida,
                 pasaje: pasaje
@@ -250,8 +250,6 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIE){//La funcion 
         let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
         precioDolar = precioDolar.precioDolar;
     
-        // let precioDolar = 17;
-    
         if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
             costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
             costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
@@ -262,12 +260,12 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIE){//La funcion 
         }
     
         costosManoObraYOtros = [costoMO, costoOtros];
+
+        return costosManoObraYOtros;
     }
     catch(error){
         console.log('Error ManoObra cost: '+error);
     }
-
-    return costosManoObraYOtros;
 }
 
 module.exports.calcularViaticosBTI = async function (data){
