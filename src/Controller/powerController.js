@@ -620,8 +620,6 @@ async function getPowerBTI(data){
 }
 
 async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio = promedioConsumosMensuales
-    let _tarifas = await tarifas.obtenerTodasLasTarifas();
-    _tarifas = _tarifas.message;
     let costoDemanda = 0;
     let meses = []; //$-MXN
     let factor = 0;
@@ -633,6 +631,9 @@ async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio
     let consumoPromedio = 0; //Wtts -> Mensual
 
     try{
+        let _tarifas = await tarifas.obtenerTodasLasTarifas();
+        _tarifas = _tarifas.message;
+
         let _pagosBimestrales = (_pagosMensuales) => {
             let _pagosBim = [];
             let bimestre = 0;
@@ -659,10 +660,10 @@ async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio
         };
 
         if(objConsumoPromedio.hasOwnProperty('promedioConsumoMensual')){
-            consumoPromedio = objConsumoPromedio.promedioConsumoMensual;
+            consumoPromedio = parseFloat(objConsumoPromedio.promedioConsumoMensual);
         }
         else{
-            consumoPromedio = objConsumoPromedio.promedioNuevosConsumosMensuales;
+            consumoPromedio = parseFloat(objConsumoPromedio.promedioNuevosConsumosMensuales);
         }
 
         let _noVerano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
@@ -699,10 +700,10 @@ async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio
     
                     if((consumoPromedio * factor) > rango_bajo){
                         if((consumoPromedio * factor) > rango_alto && _noVerano[x].iRango != 0){
-                            pagos[i] = pagos[i] + _noVerano[x].iRango * _noVerano[x].fPrecio;
+                            pagos[i] = Math.round((pagos[i] + _noVerano[x].iRango * _noVerano[x].fPrecio) * 100) / 100;
                         }
                         else{
-                            pagos[i] = pagos[i]+((consumoPromedio * factor) - rango_bajo) * _noVerano[x].fPrecio;
+                            pagos[i] = Math.round((pagos[i]+((consumoPromedio * factor) - rango_bajo) * _noVerano[x].fPrecio) * 100)/100;
                         }
                     }
                 }
@@ -715,10 +716,10 @@ async function consumoEnPesos(dacOnoDac, objConsumoPromedio){ ///consumoPromedio
     
                     if((consumoPromedio * 1.172) > rango_bajo){
                         if((consumoPromedio * 1.172) > rango_alto && _verano[y].iRango != 0){
-                            pagos[i] = pagos[i] + _verano[x].iRango * _verano[x].fPrecio;
+                            pagos[i] = Math.round((pagos[i] + _verano[x].iRango * _verano[x].fPrecio) * 100)/100;
                         }
                         else{
-                            pagos[i] = pagos[i] + ((consumoPromedio * 1.172) - rango_bajo) * _verano[x].fPrecio;
+                            pagos[i] = Math.round((pagos[i] + ((consumoPromedio * 1.172) - rango_bajo) * _verano[x].fPrecio) * 100)/100;
                         }
                     }
                 }
