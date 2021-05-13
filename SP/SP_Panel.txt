@@ -34,7 +34,7 @@ BEGIN
         WHERE idPanel = UNHEX(xIdPanel);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, created_at, updated_at
+        SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at
         FROM panel
         WHERE deleted_at IS NULL
         ORDER BY created_at DESC;

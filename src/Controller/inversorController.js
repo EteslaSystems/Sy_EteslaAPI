@@ -234,7 +234,7 @@ async function getInversores_cotizacion(data){
 						potenciaNominal: potenciaNominal,
 						potenciaPico: _potenciaPicoInversor,
 						combinacion: combinacion,
-						imgRuta: null
+						imgRuta: allInversores[i].imgRuta
 					};
 	
 					arrayInversor.push(inversoresResult);
@@ -269,7 +269,7 @@ async function getInversores_cotizacion(data){
 					potenciaNominal: null,
 					potenciaPico: null,
 					combinacion: combinacion,
-					imgRuta: null
+					imgRuta: allInversores[i].imgRuta
 				};
 				
 				arrayInversor.push(inversoresResult);

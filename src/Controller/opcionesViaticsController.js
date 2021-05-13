@@ -11,6 +11,7 @@ const financiamiento = require('../Controller/financiamientoProjController');
 const power = require('../Controller/powerController');
 const roi = require('../Controller/ROIController');
 const cliente = require('../Controller/clienteController');
+const vendedor = require('../Controller/usuarioController');
 
 var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -30,6 +31,7 @@ async function calcularViaticosBTI(data){
     let objROI=null;
     let objPower=null;
     let objCotizacionBTI = {};
+    let idUsuario = data.idUsuario;
     let idCliente = data.idCliente;
     let origen = data.origen;
     let destino = data.destino;
@@ -39,167 +41,178 @@ async function calcularViaticosBTI(data){
     let tarifa = data.tarifa || null;
     let descuento = (parseInt(data.descuento) / 100) || 0;
     let aumento = (parseInt(data.aumento) / 100 + 1) || 0;
-    let _configFile = await configFile.getArrayOfConfigFile();
-    let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
-    distanciaEnKm = distanciaEnKm.message;
 
-    let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar.precioDolar;
-
-    let validarJSON = (objJSON) => { //Valida y procesa de String a Object
-        if(typeof objJSON === 'string'){
-            objJSON = JSON.parse(objJSON);
-            return objJSON;
-        }
-        return false;
-    };
-
-    //Datos cliente
-    let uCliente = await cliente.consultarId({ idPersona: idCliente });
-    uCliente = uCliente.message; 
-    uCliente = uCliente[0];
-
-    if(_consums != null){
-        //Consumos
-        _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
-
-        //Se adjuntan los consumos al _arrayBTI
-        data.arrayBTI[0]._arrayConsumos = _consums;
-    }
-
-    //ArrayBTI - Equipos seleccionados/Combinaciones
-    if(data.arrayBTI[0].combinacion){
-        //Combinaciones
-        _arrayCotizacion = data.arrayBTI;
-    }
-    else{
-        //Equipos seleccionados
-        if(data.arrayBTI[0].inversor != null){
-            formated = data.arrayBTI[0].inversor; //Formated to get _Inversor
-            data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor) === false ? data.arrayBTI[0].inversor : validarJSON(data.arrayBTI[0].inversor);
-        }
-
-        if(data.arrayBTI[0].panel != null){
-            formated = data.arrayBTI[0].panel; //Formated to get _Panel
-            data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel) === false ? data.arrayBTI[0].panel : validarJSON(data.arrayBTI[0].panel);
-        }
-
-        _arrayCotizacion = data.arrayBTI;
-    }
+    try{
+        let _configFile = await configFile.getArrayOfConfigFile();
+        let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
+        distanciaEnKm = distanciaEnKm.message;
+        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        precioDolar = precioDolar.precioDolar;
     
-    for(var x=0; x<_arrayCotizacion.length; x++)
-    {
-        let noDias = await getDaysBTI(_arrayCotizacion[x].panel.noModulos);
-
-        if(distanciaEnKm >= km_hospedaje){
-            hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
-            comida = noDias * comida_dia * noPersonasRequeridas;
-            pasaje = Math.round((distanciaEnKm * km * noPersonasRequeridas * 2) * 100) / 100;
-        }
-        else if(distanciaEnKm >= km_pasaje && noDias < 7){
-            pasaje = distanciaEnKm * km * noPersonasRequeridas * 2 * noDias;
-        }
-        else if(distanciaEnKm >= km_pasaje && noDias > 7){
-            hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
-            comida = noDias * comida_dia * noPersonasRequeridas;
-            pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
-        }
-        else{
-            hospedaje = 0;
-            comida = 0;
-            pasaje = 0;
-        }
-
-        /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
-        costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
-        costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
-        costoTotalEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
-        /*#endregion*/
-
-        viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
-        costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
-        manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
-
-        if(bInstalacion === null || bInstalacion === 'false' || bInstalacion === '0'){
-            manoDeObra[0] = 0; //Mano de Obra
-            manoDeObra[1] = 0; //Costo de Otros
-        }
-
-        totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
-        subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
-        margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
-        costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos)*100)/100;
-       
-        if(aumento > 0){
-            precio = Math.round((costoTotalProyecto * aumento) * 100) / 100;
-        }
-        else{
-            precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
-        }
-
-        precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD //Con IVA
-        precioMXN = Math.round((precioMasIVA * precioDolar) * 100)/100; //MXN + IVA
-
-        /*????*/precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+        let validarJSON = (objJSON) => { //Valida y procesa de String a Object
+            if(typeof objJSON === 'string'){
+                objJSON = JSON.parse(objJSON);
+                return objJSON;
+            }
+            return false;
+        };
+    
+        //Datos cliente
+        let uCliente = await cliente.consultarId({ idPersona: idCliente });
+        uCliente = uCliente.message; 
+        uCliente = uCliente[0];
+    
+        //Datos vendedor
+        let uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
+        uVendedor = uVendedor.message;
+        uVendedor = uVendedor[0];
 
         if(_consums != null){
-            //P O W E R
-            let dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
-            objPower = await power.obtenerPowerBTI(dataPwr) || null;
-            objROI = await roi.obtenerROI(objPower, _consums, precioMXN);
-
-            //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
-            _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
+            //Consumos
+            _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
+    
+            //Se adjuntan los consumos al _arrayBTI
+            data.arrayBTI[0]._arrayConsumos = _consums;
         }
-
-        //F I N A N C I A M I E N T O
-        let ddata = { costoTotal: precioMXN };
-        objFinan = await financiamiento.financiamiento(ddata);
-
-        /*#region Foromating . . .*/
-        paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
-        inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
-        /*#endregion*/
-
-        //Se llena el objetoRespuesta
-        objCotizacionBTI = {
-            cliente: uCliente,
-            paneles: paneles,
-            inversores: inversores,
-            viaticos_costos: {
-                noDias: noDias,
-                distanciaEnKm: distanciaEnKm,
-                hospedaje: hospedaje,
-                comida: comida,
-                pasaje: pasaje
-            },
-            totales: {
-                totalViaticosMT: viaticos,
-                manoDeObra: manoDeObra[0],
-                otrosTotal: manoDeObra[1],
-                totalFletes: totalFletes,
-                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-                margen: margen,
-                totalDeTodo: costoTotalProyecto,
-                precio: precio,
-                precioMasIVA: precioMasIVA,
-                precioMXN: precioMXN,
-                precio_watt: precio_watt
-            },
-            tarifa: tarifa,
-            power: objPower,
-            roi: objROI, 
-            financiamiento: objFinan,
-            descuento: data.descuento,
-            tipoDeCambio: precioDolar,
-            promedioConsumosBimestrales: _consums,
-            tipoCotizacion: tipoCotizacion
-        };
-
-        _result[0] = objCotizacionBTI;
+    
+        //ArrayBTI - Equipos seleccionados/Combinaciones
+        if(data.arrayBTI[0].combinacion){
+            //Combinaciones
+            _arrayCotizacion = data.arrayBTI;
+        }
+        else{
+            //Equipos seleccionados
+            if(data.arrayBTI[0].inversor != null){
+                formated = data.arrayBTI[0].inversor; //Formated to get _Inversor
+                data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor) === false ? data.arrayBTI[0].inversor : validarJSON(data.arrayBTI[0].inversor);
+            }
+    
+            if(data.arrayBTI[0].panel != null){
+                formated = data.arrayBTI[0].panel; //Formated to get _Panel
+                data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel) === false ? data.arrayBTI[0].panel : validarJSON(data.arrayBTI[0].panel);
+            }
+    
+            _arrayCotizacion = data.arrayBTI;
+        }
+        
+        for(var x=0; x<_arrayCotizacion.length; x++)
+        {
+            let noDias = await getDaysBTI(_arrayCotizacion[x].panel.noModulos);
+    
+            if(distanciaEnKm >= km_hospedaje){
+                hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
+                comida = noDias * comida_dia * noPersonasRequeridas;
+                pasaje = Math.round((distanciaEnKm * km * noPersonasRequeridas * 2) * 100) / 100;
+            }
+            else if(distanciaEnKm >= km_pasaje && noDias < 7){
+                pasaje = distanciaEnKm * km * noPersonasRequeridas * 2 * noDias;
+            }
+            else if(distanciaEnKm >= km_pasaje && noDias > 7){
+                hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
+                comida = noDias * comida_dia * noPersonasRequeridas;
+                pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
+            }
+            else{
+                hospedaje = 0;
+                comida = 0;
+                pasaje = 0;
+            }
+    
+            /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
+            costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
+            costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
+            costoTotalEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
+            /*#endregion*/
+    
+            viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
+            costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
+            manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
+    
+            if(bInstalacion === null || bInstalacion === 'false' || bInstalacion === '0'){
+                manoDeObra[0] = 0; //Mano de Obra
+                manoDeObra[1] = 0; //Costo de Otros
+            }
+    
+            totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
+            subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
+            margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
+            costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos)*100)/100;
+           
+            if(aumento > 0){
+                precio = Math.round((costoTotalProyecto * aumento) * 100) / 100;
+            }
+            else{
+                precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
+            }
+    
+            precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD //Con IVA
+            precioMXN = Math.round((precioMasIVA * precioDolar) * 100)/100; //MXN + IVA
+    
+            /*????*/precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+    
+            if(_consums != null){
+                //P O W E R
+                let dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
+                objPower = await power.obtenerPowerBTI(dataPwr) || null;
+                objROI = await roi.obtenerROI(objPower, _consums, precioMXN);
+    
+                //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
+                _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
+            }
+    
+            //F I N A N C I A M I E N T O
+            let ddata = { costoTotal: precioMXN };
+            objFinan = await financiamiento.financiamiento(ddata);
+    
+            /*#region Foromating . . .*/
+            paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
+            inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
+            /*#endregion*/
+    
+            //Se llena el objetoRespuesta
+            objCotizacionBTI = {
+                vendedor: uVendedor,
+                cliente: uCliente,
+                paneles: paneles,
+                inversores: inversores,
+                viaticos_costos: {
+                    noDias: noDias,
+                    distanciaEnKm: distanciaEnKm,
+                    hospedaje: hospedaje,
+                    comida: comida,
+                    pasaje: pasaje
+                },
+                totales: {
+                    totalViaticosMT: viaticos,
+                    manoDeObra: manoDeObra[0],
+                    otrosTotal: manoDeObra[1],
+                    totalFletes: totalFletes,
+                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                    margen: margen,
+                    totalDeTodo: costoTotalProyecto,
+                    precio: precio,
+                    precioMasIVA: precioMasIVA,
+                    precioMXN: precioMXN,
+                    precio_watt: precio_watt
+                },
+                tarifa: tarifa,
+                power: objPower,
+                roi: objROI, 
+                financiamiento: objFinan,
+                descuento: data.descuento,
+                tipoDeCambio: precioDolar,
+                promedioConsumosBimestrales: _consums,
+                tipoCotizacion: tipoCotizacion
+            };
+    
+            _result[0] = objCotizacionBTI;
+        }
+    
+        return _result;
     }
-
-    return _result;
+    catch(error){
+        console.log(error);
+    }
 }
 
 async function getDaysBTI(noPanelesAInstalar){

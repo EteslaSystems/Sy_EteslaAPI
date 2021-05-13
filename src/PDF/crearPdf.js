@@ -119,8 +119,6 @@ async function ordenarData(dataa){
                 combinacionOptima: combinacionOptima
         };
 
-        objResultDatOrd.combinaciones = servirRutaImagenes(objResultDatOrd.combinaciones);
-
         objResultDatOrd.combinacionesPropuesta = dataa.combinacionesPropuesta;
     }
     else if(dataa.combinacionesPropuesta === false){ ///Equipos seleccionados
@@ -136,15 +134,11 @@ async function ordenarData(dataa){
 
         propuesta.push(_arrayConsumos);
 
-        propuesta = servirRutaImagenes(propuesta);
-
         objResultDatOrd.propuesta = propuesta;
     }
     else{
         //Cotizacion individual
         objResultDatOrd.propuesta = JSON.parse(dataa.propuesta_individual);
-
-        objResultDatOrd.propuesta = servirRutaImagenes(objResultDatOrd.propuesta);
     }
 
     return objResultDatOrd;
@@ -179,74 +173,6 @@ async function getNameFile(data){
     nombrArchivoPDF = nombreCliente+'_'+tipoPropuesta+'_'+fechaCreacion+'_'+horaCreacion+'.pdf';
 
     return nombrArchivoPDF.toString();
-}
- 
-/////
-function servirRutaImagenes(data){
-    /* 
-        -Esta funcion sirve la URL de la imagen alojada en GoogleDrive 'sistemas.etesla@gmail.com'
-        -*Retorna la -data- con las rutas de las imagenes ya incrustadas en su respectiva seccion - especifica
-
-        -*Mantenimiento: 
-            -Agregar imagen al GoogleDrive, extraer la URI y copiarla aqui, junto con el nombre de la marca (panel/inversor)
-
-        -*Futura implementacion:
-            -Pasar el directorio de "marcas" e "rutas_imagenes" a un JSON para que este pueda ser administrado en el clienteWeb
-    */
-    let marcaPanel, marcaInversor;
-    let rImgPanel, rImgInversor; //Rutas de imagenes
-    const uriGoogleDriveImg = 'https://drive.google.com/thumbnail?id=';
-    const diccionarioRutasImagenes = {
-        paneles: {
-            'Axitec': uriGoogleDriveImg+'1M7pCr8DeIAdcjFJiWnjSIMQE537iF77G',
-            'Canadian': uriGoogleDriveImg+'1L-L87jYbe7Q2ZZUUNY9ee8DfLLBVAg_3',
-            'Jinko': uriGoogleDriveImg+'1eFwmZHxzPfu4nJTPdzCE0mx-rbdAh47x',
-            'Suntech': uriGoogleDriveImg+'1N2wEt4wgaqz2iJacrll-WJW8ygDqgfUN'
-        },
-        inversores: {
-            'ABB-Fimer': uriGoogleDriveImg+'1DyGJc-0c2ZAaePFliXzsaZY_sT4cTiwr',
-            'APS': uriGoogleDriveImg+'1IARf84lsXcwBcih6Tlo0q4bCUe3fFbUQ',
-            'Enphase': uriGoogleDriveImg+'1qqa00EE52LwIsgsFtAzX2e9CFopEI37X',
-            'Fronius Solar': uriGoogleDriveImg+'1nGDXlOh2mF-fujGm-9Y1v-fzNemUxx-2',
-            'Goodwe': uriGoogleDriveImg+'1zoXWl60PzT_p5-2CZuFWh2OHuKb_45Ty',
-            'Schneider': uriGoogleDriveImg+'1UKTcIrAZXYlzrHr79vXqTb8Q9Ujaqw4p',
-            'SMA': uriGoogleDriveImg+'1-o-S2T4a2nyHmdRmypah97unrN0okyU4',
-            'Solaredge': uriGoogleDriveImg+'1whPu4lhO85KtszNToPpX8htunLhaQMFY',
-            'Solis': uriGoogleDriveImg+''
-        }
-    };
-
-    //BT
-    if(data.objCombinaciones){ ///Combinaciones
-        for(let propCombi in data.objCombinaciones)
-        {
-            if(propCombi != "_arrayConsumos"){
-                let objCombinacionIterada = data.objCombinaciones[propCombi];
-
-                marcaPanel = objCombinacionIterada[0].paneles.marca;
-                marcaInversor = objCombinacionIterada[0].inversores.vMarca;
-                rImgPanel = diccionarioRutasImagenes.paneles[marcaPanel];
-                rImgInversor = diccionarioRutasImagenes.inversores[marcaInversor];
-
-                //Incrustacion de las rutas_img
-                data.objCombinaciones[propCombi][0].paneles.imgRuta = rImgPanel;
-                data.objCombinaciones[propCombi][0].inversores.imgRuta = rImgInversor;
-            }
-        }
-    }
-    else{ ///EquiposSeleccionados
-        //GetMarcaEquipos
-        marcaPanel = data[0].paneles.marca;
-        marcaInversor = data[0].inversores.vMarca;
-        rImgPanel = diccionarioRutasImagenes.paneles[marcaPanel];
-        rImgInversor = diccionarioRutasImagenes.inversores[marcaInversor];
-
-        //Incrustacion de las rutas_img
-        data[0].paneles.imgRuta = rImgPanel;
-        data[0].inversores.imgRuta = rImgInversor;
-    }
-
-    return data;
 }
 
 module.exports.crearPDF = async function(data){
