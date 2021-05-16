@@ -201,11 +201,13 @@ async function getInversores_cotizacion(data){
 				}
 			}
 			else{//Calculo de inversores
-				numeroDeInversores = potenciaReal_ / redimensinoamiento;
+				if(potenciaReal_ >= allInversores[i].iPMIN && potenciaReal_ <= allInversores[i].iPMAX){
+					numeroDeInversores = potenciaReal_ / redimensinoamiento;
+					numeroDeInversores = numeroDeInversores < 1 && numeroDeInversores > 0.5 ? Math.ceil(numeroDeInversores) : Math.round(numeroDeInversores);
+				}
 			}
 	
 			if(combinacion === false && numeroDeInversores > 0){
-				numeroDeInversores = numeroDeInversores < 1 ? 0 : Math.round(numeroDeInversores);
 				
 				if(numeroDeInversores > 0){
 					_potenciaPicoInversor = Math.round((potenciaReal_ / numeroDeInversores) * 100) / 100;
@@ -235,7 +237,7 @@ async function getInversores_cotizacion(data){
 						potenciaPico: _potenciaPicoInversor,
 						combinacion: combinacion,
 						imgRuta: allInversores[i].imgRuta
-					};
+					}
 	
 					arrayInversor.push(inversoresResult);
 				}
