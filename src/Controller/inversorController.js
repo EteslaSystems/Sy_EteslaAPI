@@ -136,7 +136,6 @@ async function getInversores_cotizacion(data){
 	let arrayInversor = [];
 	let combinacion = false;
 	let noPaneles = 0; //No. paneles a instalar
-	let numeroDeInversores = 0;
 
 	try{
 		let allInversores = await consultaBD();
@@ -167,15 +166,16 @@ async function getInversores_cotizacion(data){
 	
 		for(let i = 0; i < allInversores.length; i++)
 		{
+			let numeroDeInversores = 0;
 			let invSoportMay = 0;
 			let invSoportMen = 0;
 			noPaneles = parseFloat(data.noModulos);
-			redimensinoamiento = allInversores[i].fPotencia * 1.25;
+			let redimensinoamiento = allInversores[i].fPotencia * 1.25;
 	
 			if(allInversores[i].vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
 				numeroDeInversores =  noPaneles / allInversores[i].iPanelSoportados;
 			}
-			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micros
+			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micro-inversores
 				/***Soporte de micros para combinacion *-* QS1 + YC600
 					-QS1 => 4 paneles
 					-YC600 => 2 paneles 
@@ -190,33 +190,29 @@ async function getInversores_cotizacion(data){
 					invSoportMen = noPaneles >= 1 ? Math.round(noPaneles / 2) : 0;
 					noPaneles = noPaneles - (invSoportMen * 2);
 	
-					cantidadTotalEquipos = invSoportMay+invSoportMen;
+					cantidadTotalEquipos = invSoportMay + invSoportMen;
 	
 					numeroDeInversores = { invSoportMay: invSoportMay, invSoportMen:invSoportMen, cantidadTotalEquipos: cantidadTotalEquipos };
 	
 					combinacion = true;
 				}
-				else{
-					numeroDeInversores = 0;
-				}
 			}
 			else{//Calculo de inversores
 				if(potenciaReal_ >= allInversores[i].iPMIN && potenciaReal_ <= allInversores[i].iPMAX){
 					numeroDeInversores = potenciaReal_ / redimensinoamiento;
-					numeroDeInversores = numeroDeInversores < 1 && numeroDeInversores > 0.5 ? Math.ceil(numeroDeInversores) : Math.round(numeroDeInversores);
+					numeroDeInversores = numeroDeInversores < 1 && numeroDeInversores > 0.5 ? Math.ceil(numeroDeInversores) : Math.floor(numeroDeInversores);
 				}
 			}
 	
-			if(combinacion === false && numeroDeInversores > 0){
-				
-				if(numeroDeInversores > 0){
+			if(combinacion === false && numeroDeInversores >= 1){
+				if(numeroDeInversores >= 1){
 					_potenciaPicoInversor = Math.round((potenciaReal_ / numeroDeInversores) * 100) / 100;
 					porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
 					potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
 	
 					precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 					
-					inversoresResult = {
+					let inversoresResult = {
 						id: allInversores[i].idInversor,
 						fISC: allInversores[i].fISC,
 						fPotencia: allInversores[i].fPotencia,
