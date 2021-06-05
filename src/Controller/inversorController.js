@@ -170,10 +170,13 @@ async function getInversores_cotizacion(data){
 			let invSoportMay = 0;
 			let invSoportMen = 0;
 			noPaneles = parseFloat(data.noModulos);
-			let redimensinoamiento = allInversores[i].fPotencia * 1.25;
+			let redimensinoamientoAr = allInversores[i].fPotencia * 1.25; //Redimensionamiento arriba
+			let redimensionamientoAb = allInversores[i].fPotencia - ((allInversores[i].fPotencia * 25) / 100); //Redimensionamiento abajo
 	
 			if(allInversores[i].vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
-				numeroDeInversores =  noPaneles / allInversores[i].iPanelSoportados;
+				if(potenciaReal_ >= redimensionamientoAb && potenciaReal_ <= redimensinoamientoAr){
+					numeroDeInversores =  Math.floor(noPaneles / allInversores[i].iPanelSoportados);
+				}
 			}
 			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micro-inversores
 				/***Soporte de micros para combinacion *-* QS1 + YC600
@@ -182,12 +185,17 @@ async function getInversores_cotizacion(data){
 				*/
 	
 				//Se valida el noPaneles, que sea >6, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
-				if(noPaneles >= 6){
+				if(noPaneles >= 5){
 					//Cantidad de micros del modelo QS1
 					invSoportMay = Math.floor(noPaneles / 4);
+						
+					//Se descuentan/restan los paneles contemplados con el micro anterior
 					noPaneles = noPaneles - (invSoportMay * 4);
-	
+					
+					//Cantidad de micros del modelo YC600
 					invSoportMen = noPaneles >= 1 ? Math.round(noPaneles / 2) : 0;
+
+					//Se descuentan/restan los paneles contemplados con el micro anterior
 					noPaneles = noPaneles - (invSoportMen * 2);
 	
 					cantidadTotalEquipos = invSoportMay + invSoportMen;
@@ -198,13 +206,14 @@ async function getInversores_cotizacion(data){
 				}
 			}
 			else{//Calculo de inversores
-				if(potenciaReal_ >= allInversores[i].iPMIN && potenciaReal_ <= allInversores[i].iPMAX){
-					numeroDeInversores = potenciaReal_ / redimensinoamiento;
-					numeroDeInversores = numeroDeInversores < 1 && numeroDeInversores > 0.5 ? Math.ceil(numeroDeInversores) : Math.floor(numeroDeInversores);
+				if(potenciaReal_ >= redimensionamientoAb && potenciaReal_ <= redimensinoamientoAr){
+					numeroDeInversores = potenciaReal_ / redimensinoamientoAr;
 				}
 			}
 	
-			if(combinacion === false && numeroDeInversores >= 1){
+			if(combinacion === false && numeroDeInversores >= 0.5){ //Inversores && Micros [0.5 => para que se pueda obtener al menos 1 inversor])
+				numeroDeInversores = numeroDeInversores > 0.5 && numeroDeInversores < 1 ? Math.round(numeroDeInversores) : Math.floor(numeroDeInversores);
+
 				if(numeroDeInversores >= 1){
 					_potenciaPicoInversor = Math.round((potenciaReal_ / numeroDeInversores) * 100) / 100;
 					porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;

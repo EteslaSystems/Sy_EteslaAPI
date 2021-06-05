@@ -13,7 +13,6 @@ const roi = require('../Controller/ROIController');
 const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 
-var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual

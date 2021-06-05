@@ -60,7 +60,7 @@ function promedio_consumos(consumos){
         {
             promConsumosBim += parseFloat(consumos[i]);
         }
-        promConsumosBim = promConsumosBim / consumos.length;
+        promConsumosBim = Math.round((promConsumosBim / consumos.length) * 100)/100;
         return promConsumosBim;
     };
     let consumoMensual = (consumos) => {
@@ -82,7 +82,7 @@ function promedio_consumos(consumos){
             promConsums += consumoMensual;
         });
         
-        promConsums = promConsums/_consumMens.length;
+        promConsums = Math.round((promConsums/_consumMens.length)*100)/100;
 
         objResult = {
             promedioConsumoMensual: promConsums,

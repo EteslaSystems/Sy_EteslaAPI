@@ -580,12 +580,13 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'', dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {} };
+    let objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {} };
     let _consumos = data.consumos || null;
     let tarifa = data.tarifa || null;
     let origen = data.origen;
     let potenciaReal = data.potenciaReal; 
     let promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
+    let dac_o_nodac = '';
 
     let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
 
@@ -596,8 +597,8 @@ async function getPowerBTI(data){
         
         //Se sabe si es DAC o NO
         if(tarifa != null){
-            dac_o_nodac = await dac(tarifa, promedioConsumosMensuales);
-            objResult.dac_o_nodac = dac_o_nodac;
+            dac_o_nodac = await dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
+            objResult.old_dac_o_nodac = dac_o_nodac;
 
             //Consumo en pesos
             objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
@@ -607,6 +608,9 @@ async function getPowerBTI(data){
         objResult.nuevosConsumos = objNuevosConsumos;
 
         if(objNuevosConsumos != null){ //Generacion en pesos MXN
+            dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
+            objResult.new_dac_o_nodac = dac_o_nodac;
+
             let objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
             objResult.objGeneracionEnpesos = objGeneracionEnpesos;
         }
@@ -624,14 +628,18 @@ async function proyeccion10anios(kwhAnuales, costoAnualMXN){
     let _proyeccionEnDinero = []; //pesosMXN
 
     try{
-        for(let i=0; i<10; i++)
+        for(let i=0; i<=10; i++)
         {
             if(i > 0)
             {
-                kwhAnuales = Math.round((kwhAnuales * 1.10) * 100)/100;
-                costoAnualMXN = Math.round((costoAnualMXN * 1.10) * 100)/100;
-                _proyeccionEnEnergia[i] = kwhAnuales; //Kw - Incremento de 10%
-                _proyeccionEnDinero[i] = costoAnualMXN; //$$mxn - Incremento de 10%
+                kwhAnuales = Math.round((kwhAnuales * 1.10) * 100)/100; //Kw - Incremento de 10%
+                costoAnualMXN = Math.round((costoAnualMXN * 1.10) * 100)/100; //$$mxn - Incremento de 10%
+                _proyeccionEnEnergia[i] = kwhAnuales;
+                _proyeccionEnDinero[i] = costoAnualMXN;
+            }
+            else{
+                _proyeccionEnEnergia[i] = kwhAnuales; //Kw - Sin incremento
+                _proyeccionEnDinero[i] = costoAnualMXN; //$$mxn - Sin incremento
             }
         }
 
@@ -656,6 +664,11 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
         let _pagosMensuales = (consumoProm, _demanda) => {//[Retorna: Object] *consumoProm: promedio de consumos -MENSUALES- *_demanda: 'Viene la tarifa, escalones y precios $$mxn'
             let kwhACotizar = 0, costoKwhPesos = 0, costo = 0;
             let _pagosAnio = [];
+
+            //Se arregla el array de 'tarifas' para poder ordenar el rango de la tarifa, mas bajo (nivel/escalon #1)
+            if(_demanda.length > 1){
+                _demanda.sort((Tarifa1, Tarifa2) => { return Tarifa1.siNivel - Tarifa2.siNivel });
+            }
 
             ///Se obtiene el costo en pesos mxn equivalente a 1 mes
             _demanda.forEach(Demanda => {
@@ -686,10 +699,11 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             return result;
         };
 
-        let _pagosBimestrales = (_pagosMensuales) => {
+        let _pagosBimestrales = (_pagosMensuales) => { //$$ - Bimestrales
             let _pagosBim = [];
-            let bimestre = 0;
+            let bimestre = 0, promBimst = 0;
     
+            //Sacando bimestres
             for(let i=0; i<6; i++)
             {
                 if(i != 0 && i % 2 == 1){
@@ -701,7 +715,17 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
     
                 _pagosBim[i] = bimestre;
             }
-            return _pagosBim;
+            
+            //Promedio Bimestral
+            _pagosBim.forEach(bimst => promBimst += bimst);
+            promBimst = Math.round((promBimst / _pagosBim.length) * 100)/100;
+
+            let objResult = {
+                _bimestres: _pagosBim,
+                pagsPromBimestrales: promBimst
+            };
+            
+            return objResult;
         };
     
         let pagoAnual = (_pagosMensuales) => { 
@@ -713,53 +737,60 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             return pagoAnl;
         };
 
-        let pagoPromedioMensual = (_pagos) => {
-            let promPagos = 0;
-    
-            _pagos.forEach(pagoMens => promPagos += pagoMens);
-    
-            return promPagos = Math.round((promPagos / _pagos.length) * 100)/100;
-        };
-    
-        let pagoPromedioBimestral = (_pagosBimesetrales) => {
-            let promPagosBim = 0;
-    
-            _pagosBimesetrales.forEach(pagoBims => promPagosBim += pagoBims);
-    
-            return promPagosBim = Math.round((promPagosBim / _pagosBimestrales.length) * 100)/100;
-        };
-
         let _pagosIva = (_pagoMes) => {
+            let promPagsCIva = 0;
             let _pIva = [];
+
             for(let i=0; i<_pagoMes.length; i++)
             {
                 _pIva[i] = Math.floor(_pagoMes[i] * 0.10 + _pagoMes[i] * 1.16);
             }
-            return _pIva;
+
+            //Promedio de pagos con IVA
+            _pIva.forEach(pagoCIva => promPagsCIva += pagoCIva);
+            promPagsCIva = promPagsCIva / _pIva.length;
+
+            let objResult = {
+                _pagosConIva: _pIva,
+                promedioPagosConIva: promPagsCIva
+            };
+
+            return objResult;
         };
 
         let _pagosBimestralesCIva = (_pagsBims) => {
             let _pBimestrales = [];
+            let promPgsBimestralesCIva = 0;
+
             for(let i=0; i<_pagsBims.length; i++)
             {
                 _pBimestrales[i] = Math.floor(_pagsBims[i] * 0.10 + _pagsBims[i] * 1.16);
             }
-            return _pBimestrales;
+
+            _pBimestrales.forEach(pBimestralConIva => promPgsBimestralesCIva += pBimestralConIva);
+            promPgsBimestralesCIva = promPgsBimestralesCIva / _pBimestrales.length;
+
+            let objResult = {
+                _pagosBimestralesConIva: _pBimestrales,
+                promPagosBimestralesConIva: promPgsBimestralesCIva
+            };
+
+            return objResult;
         };
 
         if(dataConsumo.hasOwnProperty('_promCons')){ ///Consumos
             consumoPromedioMens = parseFloat(dataConsumo._promCons.consumoMensual.promedioConsumoMensual);
-            consumoAnual = dataConsumo._promCons.consumoAnual;
+            consumoAnual = parseFloat(dataConsumo._promCons.consumoAnual);
         }
         else{ ///Generacion
             consumoPromedioMens = parseFloat(dataConsumo.promedioNuevosConsumosMensuales);
-            consumoAnual = dataConsumo.nuevoConsumoAnual;
+            consumoAnual = parseFloat(dataConsumo.nuevoConsumoAnual);
         }
 
         let _tarifas = await tarifas.obtenerTodasLasTarifas();
         _tarifas = _tarifas.message;
 
-        if(dacOnoDac != 'DAC'){
+        if(dacOnoDac != 'DAC'){ // <> DAC
             _noVerano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
             _noVerano = _noVerano.filter(tarifa => { return noVerano = tarifa.siVerano === 0 }); //Se obtienen [] las -NO VERANO- acorde a la tarifa de la propuesta (1, 1c, 1a, etc...)
             
@@ -767,53 +798,48 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             _verano = _verano.filter(tarifa => { return verano = tarifa.siVerano === 1 }); 
         }
     
+        //DAC
         let demanda_consulta = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
         demanda_consulta = demanda_consulta.filter(tarifa => { return tarifa = tarifa.siVerano === 0 && tarifa.siNivel === 0 ? tarifa : null; });
 
+        //Validacion tarifa
         if(_noVerano.length > 0){
             __demanda = _noVerano;
         }
         else if(_verano.length > 0){
             __demanda = _verano;
         }
-        else if(demanda_consulta.length > 0){
+        else if(demanda_consulta.length > 0){ //DAC
             __demanda = demanda_consulta;
         }
         
-        //Pagos_mensuales
+        //Pagos_mensuales && Promedio Pagos_mensuales
         _pagosMensuales = _pagosMensuales(consumoPromedioMens, __demanda);
     
-        //Pagos_mensuales *==>To==>* Pagos_bimestrales
+        //Pagos_bimestrales && Promedio Pagos_bimestrales
         _pagosBimestrales = _pagosBimestrales(_pagosMensuales._pagosMensualesAnual);
 
         //PagoAnual
         pagoAnual = pagoAnual(_pagosMensuales._pagosMensualesAnual);  
     
-        //Pagos con IVA *Mensual && Bimestral*
-        _pagosIva = _pagosIva(_pagosMensuales._pagosMensualesAnual); //Pagos mensuales
-        _pagosBimestralesCIva = _pagosBimestralesCIva(_pagosBimestrales);
+        //Pagos con IVA *Mensual && Bimestral* (_array && promedio)
+        _pagosIva = _pagosIva(_pagosMensuales._pagosMensualesAnual);
+        _pagosBimestralesCIva = _pagosBimestralesCIva(_pagosBimestrales._bimestres); //Pagos bimestrales con IVA - MXN
 
-        //PagoPromedio *Mensual*
-        pagoPromedioMensual = pagoPromedioMensual(_pagosIva); //Pago promedio mensual - MXN
-        pagoPromedioBimestral = pagoPromedioBimestral(_pagosBimestralesCIva); //Pago promedio bimestral - MXN
-
-        let pagoPromedioMensualIva = Math.floor(pagoPromedioMensual * 1.16);
-        let pagoPromedioBimestIva = Math.floor(pagoPromedioBimestral * 1.16);
         let pagoAnualIva = Math.floor(pagoAnual * 1.16);
 
         //Proyeccion a 10 anios
         let _proyeccion10anios = await proyeccion10anios(consumoAnual, pagoAnualIva); //Proyeccion en *KW* a 10 años
     
         let objResp = {
-            _pagosMensuales: _pagosMensuales,
-            _pagosBimestrales: _pagosBimestrales,
+            _pagosMensuales: _pagosMensuales._pagosMensualesAnual,
+            _pagosBimestrales: _pagosBimestrales._bimestres,
             pagoAnual: pagoAnual,
-            _pagosConIva: _pagosIva,
-            _pagosBimestralesCIva: _pagosBimestralesCIva,
-            pagoPromedioMensual: pagoPromedioMensual,
-            pagoPromedioBimestral: pagoPromedioBimestral,
-            pagoPromedioMensualConIva: pagoPromedioMensualIva,
-            pagoPromedioBimestralConIva: pagoPromedioBimestIva,
+            _pagosMensualesCIva: _pagosIva._pagosConIva,
+            _pagosBimestralesCIva: _pagosBimestralesCIva._pagosBimestralesConIva,
+            pagoPromedioMensual: _pagosMensuales.costoTotalMensual,
+            pagoPromedioBimestral: _pagosBimestrales.pagsPromBimestrales,
+            pagoPromedioBimestralConIva: _pagosBimestralesCIva.promPagosBimestralesConIva,
             pagoAnualIva: pagoAnualIva,
             _proyeccion10anios: _proyeccion10anios
         };
@@ -981,7 +1007,7 @@ async function getNewConsumption(__consumos, __generacion){
 }
 
 async function dac(tarifa, consumoPromedio){
-    //consumoPromedio = PROMEDIO DE CONSUMOS MENSUALES
+    //consumoPromedio = PROMEDIO DE CONSUMOS *MENSUALES*
     switch(tarifa)
     {
         case '1':
