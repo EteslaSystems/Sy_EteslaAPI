@@ -173,8 +173,7 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 			noModulos: NoOfModuls,
 			precioPorPanel: _precio,
 			costoDeEstructuras: structuresCost,
-			costoTotal: 0,
-			imgRuta: arrayAllOfPanels[i].imgRuta
+			costoTotal: 0
 		};
 
 		arrayNoDeModulosPorPotenciaDelPanel[i] = objNoDeModulosPorPotenciaDelPanel;

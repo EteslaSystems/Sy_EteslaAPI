@@ -138,14 +138,15 @@ async function calcularViaticosBTI(data){
             costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos)*100)/100;
            
             if(aumento > 0){
-                precio = Math.round((costoTotalProyecto * aumento) * 100) / 100;
+                precio = Math.round((costoTotalProyecto * aumento) * 100) / 100; //USD //Sin IVA
             }
             else{
                 precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
             }
     
-            precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100; //USD //Con IVA
-            precioMXN = Math.round((precioMasIVA * precioDolar) * 100)/100; //MXN + IVA
+            precioUSDConIVA = Math.round((precio * 1.16) * 100) / 100; //USD //Con IVA
+            precioMXNSinIVA = Math.round((precio * precioDolar) * 100) / 100; //MXN SIN IVA
+            precioMXNConIVA = Math.round((precioUSDConIVA * precioDolar) * 100)/100; //MXN + IVA
     
             /*????*/precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
     
@@ -153,14 +154,14 @@ async function calcularViaticosBTI(data){
                 //P O W E R
                 let dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
                 objPower = await power.obtenerPowerBTI(dataPwr) || null;
-                objROI = await roi.obtenerROI(objPower, _consums, precioMXN);
+                objROI = await roi.obtenerROI(objPower, _consums, precioMXNConIVA);
     
                 //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
                 _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
             }
     
             //F I N A N C I A M I E N T O
-            let ddata = { costoTotal: precioMXN };
+            let ddata = { costoTotal: precioMXNConIVA };
             objFinan = await financiamiento.financiamiento(ddata);
     
             /*#region Foromating . . .*/
@@ -189,9 +190,10 @@ async function calcularViaticosBTI(data){
                     totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
                     margen: margen,
                     totalDeTodo: costoTotalProyecto,
-                    precio: precio,
-                    precioMasIVA: precioMasIVA,
-                    precioMXN: precioMXN,
+                    precio: precio, //USD sin IVA
+                    precioMasIVA: precioUSDConIVA, //USD con IVA
+                    precioMXNSinIVA: precioMXNSinIVA, //MXN sin IVA
+                    precioMXNConIVA: precioMXNConIVA, //MXN con IVA
                     precio_watt: precio_watt
                 },
                 tarifa: tarifa,

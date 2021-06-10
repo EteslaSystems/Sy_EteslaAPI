@@ -133,6 +133,7 @@ function buscarBD(datas) {
 
 /*#region SI_SIRVE*/
 async function getInversores_cotizacion(data){
+	let inversoresResult = {};
 	let arrayInversor = [];
 	let combinacion = false;
 	let noPaneles = 0; //No. paneles a instalar
@@ -221,7 +222,7 @@ async function getInversores_cotizacion(data){
 	
 					precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 					
-					let inversoresResult = {
+					inversoresResult = {
 						id: allInversores[i].idInversor,
 						fISC: allInversores[i].fISC,
 						fPotencia: allInversores[i].fPotencia,

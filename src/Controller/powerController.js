@@ -592,14 +592,14 @@ async function getPowerBTI(data){
 
     if(_consumos != null){
         let _consumosMensuales = _consumos._promCons.consumoMensual;
-        let objNuevosConsumos = await getNewConsumption(_consumosMensuales, _generacion);
+        let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
         porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
         
         //Se sabe si es DAC o NO
         if(tarifa != null){
-            dac_o_nodac = await dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
+            dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
             objResult.old_dac_o_nodac = dac_o_nodac;
-
+ 
             //Consumo en pesos
             objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
             objResult.objConsumoEnPesos = objConsumoEnPesos;
@@ -623,7 +623,7 @@ async function getPowerBTI(data){
     return objResult;
 }
 
-async function proyeccion10anios(kwhAnuales, costoAnualMXN){
+function proyeccion10anios(kwhAnuales, costoAnualMXN){
     let _proyeccionEnEnergia = []; //kW 
     let _proyeccionEnDinero = []; //pesosMXN
 
@@ -829,7 +829,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
         let pagoAnualIva = Math.floor(pagoAnual * 1.16);
 
         //Proyeccion a 10 anios
-        let _proyeccion10anios = await proyeccion10anios(consumoAnual, pagoAnualIva); //Proyeccion en *KW* a 10 años
+        let _proyeccion10anios = proyeccion10anios(consumoAnual, pagoAnualIva); //Proyeccion en *KW* a 10 años
     
         let objResp = {
             _pagosMensuales: _pagosMensuales._pagosMensualesAnual,
@@ -935,7 +935,7 @@ function getGeneration(origen, potenciaReal){
     return objrespuesta;
 }
 
-async function getNewConsumption(__consumos, __generacion){
+function getNewConsumption(__consumos, __generacion){
     __generacion = __generacion._generacion; //kwp
     __consumos = __consumos._consumosMensuales; //kwh
 
@@ -1006,7 +1006,7 @@ async function getNewConsumption(__consumos, __generacion){
     return objResult; 
 }
 
-async function dac(tarifa, consumoPromedio){
+function dac(tarifa, consumoPromedio){
     //consumoPromedio = PROMEDIO DE CONSUMOS *MENSUALES*
     switch(tarifa)
     {
