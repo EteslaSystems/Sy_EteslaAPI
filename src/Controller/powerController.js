@@ -580,7 +580,7 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {} };
+    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {} };
     let _consumos = data.consumos || null;
     let tarifa = data.tarifa || null;
     let origen = data.origen;
@@ -595,6 +595,8 @@ async function getPowerBTI(data){
         let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
         porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
         
+        objResult._consumos = _consumos;
+
         //Se sabe si es DAC o NO
         if(tarifa != null){
             dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
