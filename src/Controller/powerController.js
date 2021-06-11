@@ -580,7 +580,7 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {} };
+    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {}, objImpactoAmbiental: null };
     let _consumos = data.consumos || null;
     let tarifa = data.tarifa || null;
     let origen = data.origen;
@@ -589,6 +589,8 @@ async function getPowerBTI(data){
     let dac_o_nodac = '';
 
     let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
+
+    objResult.objImpactoAmbiental = getArbolesPlantados(_generacion.generacionAnual);
 
     if(_consumos != null){
         let _consumosMensuales = _consumos._promCons.consumoMensual;
@@ -623,38 +625,6 @@ async function getPowerBTI(data){
     objResult.generacion = _generacion;
     
     return objResult;
-}
-
-function proyeccion10anios(kwhAnuales, costoAnualMXN){
-    let _proyeccionEnEnergia = []; //kW 
-    let _proyeccionEnDinero = []; //pesosMXN
-
-    try{
-        for(let i=0; i<=10; i++)
-        {
-            if(i > 0)
-            {
-                kwhAnuales = Math.round((kwhAnuales * 1.10) * 100)/100; //Kw - Incremento de 10%
-                costoAnualMXN = Math.round((costoAnualMXN * 1.10) * 100)/100; //$$mxn - Incremento de 10%
-                _proyeccionEnEnergia[i] = kwhAnuales;
-                _proyeccionEnDinero[i] = costoAnualMXN;
-            }
-            else{
-                _proyeccionEnEnergia[i] = kwhAnuales; //Kw - Sin incremento
-                _proyeccionEnDinero[i] = costoAnualMXN; //$$mxn - Sin incremento
-            }
-        }
-
-        let objResult = {
-            _proyeccionEnEnergia: _proyeccionEnEnergia,
-            _proyeccionEnDinero: _proyeccionEnDinero
-        };
-
-        return objResult;
-    }
-    catch(error){
-        console.log(error);
-    }
 }
 
 async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = promedioConsumosMensuales    
@@ -847,6 +817,62 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
         };
 
         return objResp;
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+function getArbolesPlantados(generacionAnualKw){
+    /* 
+    1 khw = 0.012 arboles
+    1 khw = 0.458 kg CO2
+    */ 
+    let numeroArboles = 0, co2NogeneradoKg = 0;
+    let objResult = {};
+
+    try{
+        numeroArboles = Math.round(generacionAnualKw / 0.012);
+        co2NogeneradoKg = Math.round(generacionAnualKw / 0.458);
+        
+        objResult = {
+            numeroArboles: numeroArboles,
+            co2NogeneradoKg: co2NogeneradoKg
+        };
+
+        return objResult;
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+function proyeccion10anios(kwhAnuales, costoAnualMXN){
+    let _proyeccionEnEnergia = []; //kW 
+    let _proyeccionEnDinero = []; //pesosMXN
+
+    try{
+        for(let i=0; i<=10; i++)
+        {
+            if(i > 0)
+            {
+                kwhAnuales = Math.round((kwhAnuales * 1.10) * 100)/100; //Kw - Incremento de 10%
+                costoAnualMXN = Math.round((costoAnualMXN * 1.10) * 100)/100; //$$mxn - Incremento de 10%
+                _proyeccionEnEnergia[i] = kwhAnuales;
+                _proyeccionEnDinero[i] = costoAnualMXN;
+            }
+            else{
+                _proyeccionEnEnergia[i] = kwhAnuales; //Kw - Sin incremento
+                _proyeccionEnDinero[i] = costoAnualMXN; //$$mxn - Sin incremento
+            }
+        }
+
+        let objResult = {
+            _proyeccionEnEnergia: _proyeccionEnEnergia,
+            _proyeccionEnDinero: _proyeccionEnDinero
+        };
+
+        return objResult;
     }
     catch(error){
         console.log(error);
