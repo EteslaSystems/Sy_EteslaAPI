@@ -8,7 +8,7 @@ const vendedor = require('../Controller/usuarioController');
 
 async function generarPDF(data){ ///Main()  
     let dataOrdenada = await ordenarData(data);
-    let fileName = await getNameFile(dataOrdenada);
+    let fileName = getNameFile(dataOrdenada);
     const fileCreatedPath = path.join(process.cwd(),'src/PDF/PDFs_created/'+fileName);
 
     const browser = await puppeteer.launch({ headless: false });
@@ -144,7 +144,7 @@ async function ordenarData(dataa){
     return objResultDatOrd;
 }
 
-async function getNameFile(data){
+function getNameFile(data){
     let fechaCreacion = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
     let tipoPropuesta = ''; //MT, BT, Indv
     let nombreCliente = data.cliente.nombre;

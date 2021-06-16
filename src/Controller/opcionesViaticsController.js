@@ -393,8 +393,8 @@ async function main_calcularViaticos(data){
             totalDeTodo: totalDeTodo,
             precio: precio,
             precioMasIVA: precioMasIVA,
-            precioMXN: precioMXN,
-            precioMasIVAMXN: precioMasIVAMXN,
+            precioMXNSinIVA: precioMXN,
+            precioMXNConIVA: precioMasIVAMXN,
             precio_watt: precio_watt
         },
         tarifa: tarifa,

@@ -38,13 +38,13 @@ BEGIN
         WHERE idInversor = UNHEX(xIdInversor);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, updated_at
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, updated_at
         FROM inversor
         WHERE deleted_at IS NULL
         ORDER BY created_at DESC, vMarca;
     /* Leer - filtrado */
     ELSEIF (Opcion = 4) THEN
-        SELECT HEX(xIdInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, updated_at
+        SELECT HEX(xIdInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, updated_at
         FROM inversor
         WHERE deleted_at IS NULL AND idInversor = UNHEX(xIdInversor);
     END IF;
