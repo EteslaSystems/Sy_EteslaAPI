@@ -320,19 +320,19 @@ function getPagosTotales(data, _bipMXNkWh, __arrayCD, __newBIP){
     /*#region SIN_SOLAR*/
     for(let i=0; i<_periodos.length; i++)
     {
-        let bkwh = parseFloat(_periodos[i].BkWh) || 0;
-        let ikwh = parseFloat(_periodos[i].IkWh) || 0;
-        let pkwh = parseFloat(_periodos[i].PkWh) || 0;
-        let pagoTransmi = parseFloat(_periodos[i].pagoTransmision) || 0;
+        let bkwh = parseFloat(_periodos[i].BkWh) || 0; //kw
+        let ikwh = parseFloat(_periodos[i].IkWh) || 0; //kw
+        let pkwh = parseFloat(_periodos[i].PkWh) || 0; //kw
+        let pagoTransmi = parseFloat(_periodos[i].pagoTransmision) || 0; //$$
 
-        let bmxn_kwh = _bipMXNkWh[i].bmxn_kwh;
-        let imxn_kwh = _bipMXNkWh[i].imxn_kwh;
-        let pmxn_kwh = _bipMXNkWh[i].pmxn_kwh;
-        let cmxn_kw = _bipMXNkWh[i].cmxn_kw;
-        let dmxn_kw = _bipMXNkWh[i].dmxn_kw;
+        let bmxn_kwh = _bipMXNkWh[i].bmxn_kwh; //kw
+        let imxn_kwh = _bipMXNkWh[i].imxn_kwh; //kw
+        let pmxn_kwh = _bipMXNkWh[i].pmxn_kwh; //kw
+        let cmxn_kw = _bipMXNkWh[i].cmxn_kw; //kw
+        let dmxn_kw = _bipMXNkWh[i].dmxn_kw; //kw
 
-        let ckw = __arrayCD[i].C;
-        let dkw = __arrayCD[i].D;
+        let ckw = __arrayCD[i].C; //kw
+        let dkw = __arrayCD[i].D; //kw
 
         if(data.tarifa === "GDMTH"){
             energia = Math.round((bkwh * bmxn_kwh + ikwh * imxn_kwh + pkwh * pmxn_kwh) * 100) / 100;
@@ -605,8 +605,7 @@ async function getPowerBTI(data){
             objResult.old_dac_o_nodac = dac_o_nodac;
  
             //Consumo en pesos
-            objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
-            objResult.objConsumoEnPesos = objConsumoEnPesos;
+            objResult.objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
         }
 
         objResult.nuevosConsumos = objNuevosConsumos;
@@ -615,8 +614,7 @@ async function getPowerBTI(data){
             dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
             objResult.new_dac_o_nodac = dac_o_nodac;
 
-            let objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
-            objResult.objGeneracionEnpesos = objGeneracionEnpesos;
+            objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
         }
 
         objResult.porcentajePotencia = porcentajePotencia;

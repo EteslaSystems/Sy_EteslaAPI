@@ -441,16 +441,15 @@ function getNumberOfCrews(_numeroPanelesAInstalar){
 
 function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDelDolar){
     let arrayLaborOtrosPrice = [];
-    let laborPrice = 0;
-    let otros = 0;
+    let laborPrice = 0, otros = 0;
 
     if(cantidadPaneles >= 1 && cantidadPaneles < 8){
         laborPrice = 2000;
         otros = 4100;
 
         if(cantidadPaneles === 1){
-            arrayLaborOtrosPrice[0] = laborPrice / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros / precioDelDolar;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros / precioDelDolar) * 100) / 100;
             
         }else{
             for(var i=2; i <= cantidadPaneles; i++){
@@ -469,10 +468,8 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
                     laborPrice = laborPrice + 192;
                 }
             }
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
-
-            
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
@@ -481,18 +478,16 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
         otros = 4800;
 
         if(cantidadPaneles === 8){
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
             
         }else{
             for(var i=9; i == cantidadPaneles; i++){
                 laborPrice = laborPrice + 50;
                 otros = otros + 100;
             }
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
-            
-            
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
@@ -501,9 +496,8 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
         otros = 6700;
 
         if(cantidadPaneles === 14){
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
-            
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }else{
             for(var i=15; i<=cantidadPaneles; i++){
                 otros = otros + 100;
@@ -523,10 +517,8 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
                     laborPrice = laborPrice + 25;
                 }
             }
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
-
-            
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
@@ -535,8 +527,8 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
         otros = 8500;
         
         if(cantidadPaneles === 22){
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
             
         }else{
             for(var i=23; i <= cantidadPaneles; i++){
@@ -558,10 +550,8 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
                     laborPrice = laborPrice + 222;
                 }
             }
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
-
-            
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
@@ -570,8 +560,8 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
         otros = 10300;
 
         if(cantidadPaneles === 40){
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
             
         }else{
             for(var i=41; i <= cantidadPaneles; i++)
@@ -579,18 +569,16 @@ function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDe
                 laborPrice = laborPrice + 200;
                 otros = otros + 100;
             }
-            arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-            arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
-
-            
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
     if(cantidadPaneles >= 46){
-        laborPrice = Math.floor((cantidadPaneles * 200)/17);
-        otros = Math.ceil(((costoTotalPanInvEstr + laborPrice) * 0.036*17)/17);
-        arrayLaborOtrosPrice[0] = laborPrice  / precioDelDolar;
-        arrayLaborOtrosPrice[1] = otros  / precioDelDolar;
+        laborPrice = Math.floor((cantidadPaneles * 200) / precioDelDolar);
+        otros = Math.ceil(((costoTotalPanInvEstr + laborPrice) * 0.036 * precioDelDolar) / precioDelDolar);
+        arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+        arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
     }
 
     return arrayLaborOtrosPrice;
