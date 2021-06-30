@@ -1,38 +1,38 @@
+DELIMITER //
 CREATE PROCEDURE SP_Opciones_Viatics
 (
 	IN Opcion INT,
 	IN xIdOpcion_Viatics VARCHAR(255),
 	IN NombreOperacion VARCHAR(80),
-	IN Valor FLOAT,
-	IN created TIMESTAMP,
-	IN updated TIMESTAMP,
-	IN deleted TIMESTAMP
+    IN TipoDeMoneda VARCHAR(8),
+	IN Valor FLOAT
 )
 BEGIN
-	IF(Opcion = 0) THEN
 	/*Insertar*/
-	   INSERT INTO Opciones_Viatics
-	   VALUES(UUID(), NombreOperacion, Valor, created, NULL, NULL);
+	IF(Opcion = 0) THEN	
+	   INSERT INTO opciones_viatics
+	   VALUES(UUID(), NombreOperacion, TipoDeMoneda, Valor, NOW(), NULL, NULL);
+    /*Eliminar*/
 	ELSEIF(Opcion = 1) THEN
-	/*Eliminar*/
-	   UPDATE Opciones_Viatics
-	   SET deleted_at = deleted
+	   UPDATE opciones_viatics
+	   SET deleted_at = NOW()
 	   WHERE idOpcion_Viatics = UNHEX(xIdOpcion_Viatics);
+    /*Actualizar*/
 	ELSEIF(Opcion = 2) THEN
-	/*Actualizar*/
-	   UPDATE Opciones_Viatics
-	   SET vNombreOperacion = NombreOperacion, fValor = Valor, updated_at = updated
+	   UPDATE opciones_viatics
+	   SET vNombreOperacion = NombreOperacion, vTipoMoneda=TipoDeMoneda, fValor = Valor, updated_at = NOW()
 	   WHERE idOpcion_Viatics = UNHEX(xIdOpcion_Viatics);
-	ELSEIF(Opcion = 3) THEN
 	/*Leer*/
+    ELSEIF(Opcion = 3) THEN
 	   SELECT HEX(idOpcion_Viatics) AS idOpcion_Viatics, vNombreOperacion, fValor, created_at, updated_at, deleted_at
-	   FROM Opciones_Viatics
+	   FROM opciones_viatics
 	   WHERE deleted_at IS NULL
 	   ORDER BY created_at DESC;
+    /*Leer - filtrado*/
 	ELSEIF(Opcion = 4) THEN
-	/*Leer - filtrado*/
 	   SELECT HEX(idOpcion_Viatics) AS idOpcion_Viatics, vNombreOperacion, fValor, created_at, updated_at, deleted_at
-	   FROM Opciones_Viatics
+	   FROM opciones_viatics
 	   WHERE idOpcion_Viatics = UNHEX(xIdOpcion_Viatics);
 	END IF;
 END
+// DELIMITER;

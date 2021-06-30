@@ -27,9 +27,7 @@ const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
     let _result = [];
-    let objROI=null;
-    let objPower=null;
-    let objCotizacionBTI = {};
+    let objROI = null, objPower = null, objCotizacionBTI = {};
     let idUsuario = data.idUsuario;
     let idCliente = data.idCliente;
     let origen = data.origen;
@@ -42,6 +40,7 @@ async function calcularViaticosBTI(data){
     let aumento = (parseInt(data.aumento) / 100 + 1) || 0;
 
     try{
+        // let _opciones = await consultaOpcionesVPropuestaBD();
         let _configFile = await configFile.getArrayOfConfigFile();
         let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
         distanciaEnKm = distanciaEnKm.message;
@@ -96,7 +95,7 @@ async function calcularViaticosBTI(data){
         
         for(var x=0; x<_arrayCotizacion.length; x++)
         {
-            let noDias = await getDaysBTI(_arrayCotizacion[x].panel.noModulos);
+            let noDias = getDaysBTI(_arrayCotizacion[x].panel.noModulos);
     
             if(distanciaEnKm >= km_hospedaje){
                 hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
@@ -118,24 +117,24 @@ async function calcularViaticosBTI(data){
             }
     
             /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
-            costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
-            costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
-            costoTotalEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
+            let costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
+            let costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
+            let costoTotalEstructuras = _arrayCotizacion[x].panel.costoDeEstructuras;
             /*#endregion*/
     
-            viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
-            costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
-            manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, costoTotalPanInvEstr);
+            let viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
+            let costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
+            let manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, (costoTotalPanInvEstr + viaticos));
     
             if(bInstalacion === null || bInstalacion === 'false' || bInstalacion === '0'){
                 manoDeObra[0] = 0; //Mano de Obra
                 manoDeObra[1] = 0; //Costo de Otros
             }
     
-            totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
-            subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
-            margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
-            costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen + viaticos)*100)/100;
+            let totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
+            let subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
+            let margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
+            let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
            
             if(aumento > 0){
                 precio = Math.round((costoTotalProyecto * aumento) * 100) / 100; //USD //Sin IVA
@@ -144,11 +143,11 @@ async function calcularViaticosBTI(data){
                 precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
             }
     
-            precioUSDConIVA = Math.round((precio * 1.16) * 100) / 100; //USD //Con IVA
-            precioMXNSinIVA = Math.round((precio * precioDolar) * 100) / 100; //MXN SIN IVA
-            precioMXNConIVA = Math.round((precioUSDConIVA * precioDolar) * 100)/100; //MXN + IVA
+            let precioUSDConIVA = Math.round((precio * 1.16) * 100) / 100; //USD //Con IVA
+            let precioMXNSinIVA = Math.round((precio * precioDolar) * 100) / 100; //MXN SIN IVA
+            let precioMXNConIVA = Math.round((precioUSDConIVA * precioDolar) * 100)/100; //MXN + IVA
     
-            /*????*/precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+            /*????*/    precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
     
             if(_consums != null){
                 //P O W E R
@@ -162,11 +161,11 @@ async function calcularViaticosBTI(data){
     
             //F I N A N C I A M I E N T O
             let ddata = { costoTotal: precioMXNConIVA };
-            objFinan = await financiamiento.financiamiento(ddata);
+            let objFinan = await financiamiento.financiamiento(ddata);
     
             /*#region Foromating . . .*/
-            paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
-            inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
+            let paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
+            let inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
             /*#endregion*/
     
             //Se llena el objetoRespuesta
@@ -186,7 +185,7 @@ async function calcularViaticosBTI(data){
                     totalViaticosMT: viaticos,
                     manoDeObra: manoDeObra[0],
                     otrosTotal: manoDeObra[1],
-                    totalFletes: totalFletes,
+                    fletes: totalFletes,
                     totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
                     margen: margen,
                     totalDeTodo: costoTotalProyecto,
@@ -216,14 +215,17 @@ async function calcularViaticosBTI(data){
     }
 }
 
-async function getDaysBTI(noPanelesAInstalar){
-    dias = Math.ceil((noPanelesAInstalar / noPersonasRequeridas) / personas_panel);
+function getDaysBTI(noPanelesAInstalar){
+    let dias = Math.ceil((noPanelesAInstalar / noPersonasRequeridas) / personas_panel);
     return dias;
 }
 
-async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIE){//La funcion retorna el costo de la ManoObra, etc. en dolares
-    //[dictionaryMOCost && OtrosCost] => {El *numero de la izquierda* es la cantidad de paneles y el *numero de la derecha* el costo en MXN}
-    
+async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion retorna el costo de la ManoObra, etc. en dolares
+    /*
+        ->[dictionaryMOCost && OtrosCost] => {El *numero de la izquierda* es la cantidad de paneles y el *numero de la derecha* el costo en MXN}
+        ->totalPIEV = [PIEV] Paneles Inversores Estructuras Viaticos
+    */
+
     let dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000,46:9200,47:9400,48:9600,49:9800,50:10000,51:10200,52:10400,53:10600,54:10800,55:11000,56:11200,57:11400,58:11600,59:11800,60:12000,61:12200,62:12400,63:12600,64:12800,65:13000,66:13200,67:13400,68:13600,69:13800,70:14000,71:14200,72:14400,73:14600,74:14800,75:15000,76:15200,77:15400,78:15600,79:15800,80:16000,81:16200,82:16400,83:16600,84:16800,85:17000,86:17200,87:17400,88:17600,89:17800,90:18000,91:18200,92:18400,93:18600,94:18800,95:19000,96:19200,97:19400,98:19600,99:19800,100:20000};
     let dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
     let mo_unitario = 12;
@@ -260,17 +262,17 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIE){//La funcion 
     
         dictionaryMOCost = completeDictionaryMoCost(dictionaryMOCost);
         dictionaryOtrosCost = completeDictionaryOtrosCost(dictionaryOtrosCost);
-    
+
         let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
         precioDolar = precioDolar.precioDolar;
     
-        if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
+        if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){ //Se busca coincidencia en los diccionarios (Sobre la cantidad de paneles a instalar)
             costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
             costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
         }
-        else{
+        else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
             costoMO = cantidadPaneles * mo_unitario;
-            costoOtros = totalPIE * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
+            costoOtros = (totalPIEV + costoMO) * otros_porcentaje;
         }
     
         costosManoObraYOtros = [costoMO, costoOtros];
@@ -794,7 +796,7 @@ function editarOpcionesVPropuestaBD (datas) {
 
 function consultaOpcionesVPropuestaBD () {
     return new Promise((resolve, reject) => {
-        mysqlConnection.query('CALL SP_OpcionesV_Propuesta(?, ?, ?, ?)', [3, null, null, null], (error, rows) => {
+        mysqlConnection.query('CALL SP_Opciones_Viatics(?, ?, ?, ?, ?)', [3, null, null, null, null], (error, rows) => {
             if (error) {
                 const response = {
                     status: false,

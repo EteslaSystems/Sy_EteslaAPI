@@ -214,7 +214,6 @@ module.exports.eliminar = async function (datas, response) {
 
 module.exports.buscar = async function (datas) {
 	const result = await buscarBD(datas);
-
 	return result;
 }
 

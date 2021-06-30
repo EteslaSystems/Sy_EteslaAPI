@@ -137,6 +137,7 @@ async function getInversores_cotizacion(data){
 	let arrayInversor = [];
 	let combinacion = false;
 	let noPaneles = 0; //No. paneles a instalar
+	let precioTotal = 0;
 
 	try{
 		let allInversores = await consultaBD();
@@ -162,7 +163,7 @@ async function getInversores_cotizacion(data){
 			data = data = data.objPanelSelect.panel;
 		}
 	
-		potenciaReal_= parseFloat(data.potenciaReal);
+		let potenciaReal_= parseFloat(data.potenciaReal);
 		potenciaReal_ = potenciaReal_ * 1000; ///Watss 
 	
 		for(let i = 0; i < allInversores.length; i++)
@@ -171,13 +172,10 @@ async function getInversores_cotizacion(data){
 			let invSoportMay = 0;
 			let invSoportMen = 0;
 			noPaneles = parseFloat(data.noModulos);
-			let redimensinoamientoAr = allInversores[i].fPotencia * 1.25; //Redimensionamiento arriba
-			let redimensionamientoAb = allInversores[i].fPotencia - ((allInversores[i].fPotencia * 25) / 100); //Redimensionamiento abajo
 	
+			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
 			if(allInversores[i].vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
-				if(potenciaReal_ >= redimensionamientoAb && potenciaReal_ <= redimensinoamientoAr){
-					numeroDeInversores =  Math.floor(noPaneles / allInversores[i].iPanelSoportados);
-				}
+				numeroDeInversores =  Math.floor(noPaneles / allInversores[i].iPanelSoportados);
 			}
 			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micro-inversores
 				/***Soporte de micros para combinacion *-* QS1 + YC600
@@ -207,11 +205,10 @@ async function getInversores_cotizacion(data){
 				}
 			}
 			else{//Calculo de inversores
-				if(potenciaReal_ >= redimensionamientoAb && potenciaReal_ <= redimensinoamientoAr){
-					numeroDeInversores = potenciaReal_ / redimensinoamientoAr;
-				}
+				numeroDeInversores = potenciaReal_ / allInversores[i].fPotencia;
 			}
 	
+			//CALCULO DE COSTO_TOTAL DE INVERSORES
 			if(combinacion === false && numeroDeInversores >= 0.5){ //Inversores && Micros [0.5 => para que se pueda obtener al menos 1 inversor])
 				numeroDeInversores = numeroDeInversores > 0.5 && numeroDeInversores < 1 ? Math.round(numeroDeInversores) : Math.floor(numeroDeInversores);
 
@@ -220,7 +217,24 @@ async function getInversores_cotizacion(data){
 					porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
 					potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
 	
-					precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
+					if(allInversores[i].vMarca === 'APS'){
+						if(allInversores[i].vNombreMaterialFot === 'YC600'){
+							precioTotal = Math.round(((((numeroDeInversores - 1) * 300) + 170.9) + (parseInt(data.noModulos) * 13.775) + 144.9)  * 100) / 100;
+						}
+						else{
+							precioTotal = Math.round(((numeroDeInversores * 300) + (parseInt(data.noModulos) * 13.775) + 144.9) * 100) / 100;
+						}
+					}
+					else if(allInversores[i].vMarca === 'Enphase'){
+						precioTotal = Math.round(((numeroDeInversores * allInversores[i].fPrecio) + 232.3 + (parseInt(data.noModulos) / 4) * 33) * 100) / 100;
+					}
+					else if(allInversores[i].vMarca === 'Solaredge'){
+						precioTotal = Math.round(((numeroDeInversores * allInversores[i].fPrecio) + (parseInt(data.noModulos) * 54.83)) * 100) / 100;
+					}
+					else{
+						//Calculo de precioTotal -Normal-
+						precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
+					}
 					
 					inversoresResult = {
 						id: allInversores[i].idInversor,

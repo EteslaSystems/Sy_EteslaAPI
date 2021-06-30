@@ -37,7 +37,7 @@ BEGIN
         SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at
         FROM panel
         WHERE deleted_at IS NULL
-        ORDER BY created_at DESC;
+        ORDER BY vMarca, fPotencia ASC;
     /* Leer - filtrado */
     ELSEIF (Opcion = 4) THEN
         SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at

@@ -41,7 +41,7 @@ BEGIN
         SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, updated_at
         FROM inversor
         WHERE deleted_at IS NULL
-        ORDER BY created_at DESC, vMarca;
+        ORDER BY vMarca, fPotencia ASC;
     /* Leer - filtrado */
     ELSEIF (Opcion = 4) THEN
         SELECT HEX(xIdInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, updated_at

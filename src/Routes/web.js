@@ -19,6 +19,8 @@ const dollar = require('../Controller/dolar_tipoCambio');
 const viaticosController = require('../Controller/opcionesViaticsController.js');
 const archivoPDF = require('../PDF/crearPdf');  // Ruta del PDF.
 
+const estructura = require('../Controller/estructuraController.js');
+
 //Initializations
 router.use(express.json());
 
@@ -582,8 +584,55 @@ router.put('/editar-panel', function (request, response) {
 });
 
 /*
+- @section: 		Rutas para la sección de estructuras.
+*/
+router.get('/lista-estructuras', function(request, response){
+	estructura.leer()
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.get('/buscar-estructura', function(request, response){
+	estructura.buscar(request.body)
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+/*
 - @section: 		Rutas para la sección de clientes.
 */
+router.get('/lista-clientes', function (request, response) {
+	clienteBL.consultar()
+	.then(cliente => {
+		response.json(cliente).end();
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		}).end();
+	});
+});
 
 router.post('/agregar-cliente', function (request, response) {
 	clienteBL.insertar(request.body)
@@ -624,19 +673,6 @@ router.put('/editar-cliente', function (request, response) {
 			status: 200,
 			message: cliente,
 		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message,
-		}).end();
-	});
-});
-
-router.get('/lista-clientes', function (request, response) {
-	clienteBL.consultar()
-	.then(cliente => {
-		response.json(cliente).end();
 	})
 	.catch(error => {
 		response.json({
