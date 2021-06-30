@@ -127,17 +127,22 @@ function buscarBD (datas) {
 - @author: 				LH420
 - @date: 				01/04/2020
 */
-const otrosMateriales = require('./otrosMaterialesController');
 
 var objNoDeModulosPorPotenciaDelPanel = {};
 
 async function numberOfModuls(potenciaNecesaria){
 	/* potenciaRequeridaEnKwp = await getSystemPowerInKwp(promedioConsumoMensual, irradiation, efficiency, topeProduccion);
 	var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp); */
-	let _arrayTodosPaneles = await getAllPanelsArray();
-	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
+	
+	try{
+		let _arrayTodosPaneles = await getAllPanelsArray();
+		let _arrayObjectsNoOfModuls = getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
 
-	return _arrayObjectsNoOfModuls;
+		return _arrayObjectsNoOfModuls;
+	}
+	catch(error){
+		console.log(error);
+	}
 }
 
 async function getAllPanelsArray(){
@@ -146,10 +151,10 @@ async function getAllPanelsArray(){
 	return consultaPaneles;
 }
 
-async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
+function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
-	for(var i = 0; i < arrayAllOfPanels.length; i++)
+	for(let i = 0; i < arrayAllOfPanels.length; i++)
 	{
 		idPanel = arrayAllOfPanels[i].idPanel;
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
@@ -159,7 +164,6 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 		garantia = arrayAllOfPanels[i].vGarantia;
 		potenciaDelPanel = parseFloat(arrayAllOfPanels[i].fPotencia);
 		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel);
-		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
 		_potenciaReal = Math.round(((potenciaDelPanel * NoOfModuls) / 1000) * 100) / 100; //KWp - wtts ===> kwp
 
 		objNoDeModulosPorPotenciaDelPanel = {
@@ -172,7 +176,6 @@ async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 			potenciaReal: _potenciaReal,
 			noModulos: NoOfModuls,
 			precioPorPanel: _precio,
-			costoDeEstructuras: structuresCost,
 			costoTotal: 0,
 			imgRuta: arrayAllOfPanels[i].imgRuta
 		};
