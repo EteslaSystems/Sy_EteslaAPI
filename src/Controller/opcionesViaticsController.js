@@ -39,6 +39,7 @@ async function calcularViaticosBTI(data){
     let tarifa = data.tarifa || null;
     let descuento = (parseInt(data.descuento) / 100) || 0;
     let aumento = (parseInt(data.aumento) / 100 + 1) || 0;
+    let costoTotalEstructuras = 0;
 
     try{
         // let _opciones = await consultaOpcionesVPropuestaBD();
@@ -70,14 +71,22 @@ async function calcularViaticosBTI(data){
         let _estructuras = await estructura.leer();
         _estructuras = _estructuras.message;
 
-        if(data.estructura){
+        //BajaTension && MediaTension
+        if(data.hasOwnProperty('estructura')){ //Estructura seleccionada
             //Filtrar estructura
             _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.estructura) });
             _estructuras = _estructuras[0]; //Formating Wto Object
         }
-        else{ //Default 'Everest'
+        else{ //*Default 'Everest'*
             _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes('Everest') });
             _estructuras = _estructuras[0]; //Formating to Object
+
+            //Individual
+            if(data.hasOwnProperty('estructura')){
+                if(data.estructura === null){
+                    _estructuras = null;
+                }
+            }
         }
 
         if(_consums != null){
@@ -134,7 +143,28 @@ async function calcularViaticosBTI(data){
             /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
             let costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
             let costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
-            let costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
+            
+            if(_estructuras != null){
+                if(tipoCotizacion === 'CombinacionCotizacion'){
+                    costoTotalEstructuras = data.arrayBTI[0].panel.noModulos * _estructuras.fPrecio;
+                }
+                else if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension'){ //BajaTension
+                    costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
+                }
+                else if(tipoCotizacion === 'individual'){ //Individual
+                    // let cantidadEstructuras = data.arrayBTI[0].estructura.
+
+                    costoTotalEstructuras = cantidadEstructuras * _estructuras.fPrecio;
+                }
+
+                //Se agrega la propiedad 'costoTotalEstructuras' al objeto de respuesta
+                Object.defineProperty(_estructuras, 'costoTotalEstructuras', {
+                    value: costoTotalEstructuras
+                });
+            }
+            else if(_estructuras === null){ //Sin estructuras
+                costoTotalEstructuras = 0;
+            }
             /*#endregion*/
     
             let viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
@@ -189,6 +219,7 @@ async function calcularViaticosBTI(data){
                 cliente: uCliente,
                 paneles: paneles,
                 inversores: inversores,
+                estructura: _estructuras,
                 viaticos_costos: {
                     noDias: noDias,
                     distanciaEnKm: distanciaEnKm,

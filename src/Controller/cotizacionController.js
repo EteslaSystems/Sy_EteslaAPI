@@ -12,9 +12,9 @@ var newPanelPrice = 0;
 var oldInversorPrice = 0;
 var newInversorPrice = 0;
 var objCombinacion = {
-    combinacion: '',
-    panel: '', 
-    inversor: ''
+    combinacion: null,
+    panel: null, 
+    inversor: null
 };
 
 
@@ -32,6 +32,7 @@ async function mainBusquedaInteligente(data){
     let newData = {};
     let objCombinaciones = {};
     let __combinaciones = [];
+    let __combinacionMediana = [], __combinacionEconomica = [], __combinacionOptima = [];
     
     try{
         if(tipoCotizacion == 'bajaTension'){
@@ -56,7 +57,7 @@ async function mainBusquedaInteligente(data){
             combinacionOptima: __combinacionOptima
         };
     
-        __combinaciones.push(objCombinaciones);
+        __combinaciones[0] = objCombinaciones;
     
         return __combinaciones;
     }
@@ -113,14 +114,15 @@ async function getCombinacionEconomica(data, __consumos){
         
         _combinacionEconomica.push(objCombinacion);
         
-        newData = {
+        let newData = {
             idUsuario: data.idUsuario,
             idCliente: data.idCliente,
             arrayBTI: _combinacionEconomica,
             origen: data.origen,
             destino: data.destino,
             tarifa: data.tarifa,
-            consumos: __consumos
+            consumos: __consumos,
+            tipoCotizacion: 'CombinacionCotizacion'
         };
     
         ///Se calculan viaticos
@@ -238,7 +240,8 @@ async function getCombinacionMediana(data, __consumos){//Mediana
             origen: data.origen,
             destino: data.destino,
             tarifa: data.tarifa,
-            consumos: __consumos
+            consumos: __consumos,
+            tipoCotizacion: 'CombinacionCotizacion'
         };
 
         ///Se calculan viaticos
@@ -255,7 +258,6 @@ async function getCombinacionMediana(data, __consumos){//Mediana
 async function getCombinacionOptima(data, __consumos){//MayorProduccion
     let origen = data.origen || null;
     let __paneles = data._paneles || null;
-    let newData = {};
     let _combinacionOptima = [];
 
     objCombinacion.combinacion = "optima";
@@ -271,7 +273,7 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
     
                 objCombinacionOptima = { consumos:__consumos, origen, potenciaReal, tarifa: data.tarifa };
     
-                newData = await bajaTension.getPowerBTI(objCombinacionOptima);
+                let newData = await bajaTension.getPowerBTI(objCombinacionOptima);
                 _generacionPower = newData.generacion;
     
                 newProduccion = _generacionPower.generacionAnual;
@@ -297,7 +299,7 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
             var oldSobredimension = 0;
             var newSobredimension = 0;
     
-            for(var x=0; x<__inversores.length; x++)
+            for(let x=0; x<__inversores.length; x++)
             {
                 newSobredimension = parseFloat(__inversores[x].porcentajeSobreDimens);
                 newInversorPrice = parseFloat(__inversores[x].precioTotalInversores);
@@ -319,14 +321,15 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
     
         _combinacionOptima.push(objCombinacion);
         
-        newData = {
+        let newData = {
             idUsuario: data.idUsuario,
             idCliente: data.idCliente,
             arrayBTI: _combinacionOptima,
             origen: data.origen,
             destino: data.destino,
             tarifa: data.tarifa,
-            consumos: __consumos
+            consumos: __consumos,
+            tipoCotizacion: 'CombinacionCotizacion'
         };
     
         ///Se calculan viaticos
