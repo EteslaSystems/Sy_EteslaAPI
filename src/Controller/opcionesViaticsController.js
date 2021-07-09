@@ -78,14 +78,18 @@ async function calcularViaticosBTI(data){
             _estructuras = _estructuras[0]; //Formating Wto Object
         }
         else{ //*Default 'Everest'*
-            _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes('Everest') });
-            _estructuras = _estructuras[0]; //Formating to Object
-
-            //Individual
-            if(data.hasOwnProperty('estructura')){
-                if(data.estructura === null){
+            if(tipoCotizacion === 'indivual'){
+                if(data.arrayBTI[0].estructura === null){
                     _estructuras = null;
                 }
+                else{
+                    _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.arrayBTI[0].estructura.vMarca) });
+                    _estructuras = _estructuras[0]; //Formating to Object
+                }
+            }
+            else{
+                _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes('Everest') });
+                _estructuras = _estructuras[0]; //Formating to Object
             }
         }
 
@@ -151,8 +155,8 @@ async function calcularViaticosBTI(data){
                 else if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension'){ //BajaTension
                     costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
                 }
-                else if(tipoCotizacion === 'individual'){ //Individual
-                    // let cantidadEstructuras = data.arrayBTI[0].estructura.
+                else if(tipoCotizacion === 'indivual'){ //Individual
+                    let cantidadEstructuras = data.arrayBTI[0].estructura.cantidad;
 
                     costoTotalEstructuras = cantidadEstructuras * _estructuras.fPrecio;
                 }
@@ -192,7 +196,7 @@ async function calcularViaticosBTI(data){
             let precioMXNSinIVA = Math.round((precio * precioDolar) * 100) / 100; //MXN SIN IVA
             let precioMXNConIVA = Math.round((precioUSDConIVA * precioDolar) * 100)/100; //MXN + IVA
     
-            /*????*/    precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+            /*????*/ precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
     
             if(_consums != null){
                 //P O W E R
@@ -220,6 +224,7 @@ async function calcularViaticosBTI(data){
                 paneles: paneles,
                 inversores: inversores,
                 estructura: _estructuras,
+                costoTotalEstructuras: costoTotalEstructuras,
                 viaticos_costos: {
                     noDias: noDias,
                     distanciaEnKm: distanciaEnKm,

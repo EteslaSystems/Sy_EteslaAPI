@@ -73,8 +73,8 @@ async function cotizacionIndividual(data){
             objCotiIndividual.panel = null;
         }
     
-        if(data.Estructura != null || data.Estructura != "null"){
-            let cantidadEstructuras = parseInt(data.Estructura.cantidadEstructuras);
+        if(data.Estructura != null){
+            let cantidadEstructuras = parseInt(data.Estructura.cantidad);
             let marcaEstructura = data.Estructura.marca;
 
             objCotiIndividual.estructura = {
