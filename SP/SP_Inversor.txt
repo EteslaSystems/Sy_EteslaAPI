@@ -9,7 +9,6 @@ CREATE PROCEDURE SP_Inversor
 	IN Potencia FLOAT,
 	IN PanelesSoportados INT,
 	IN Precio FLOAT,
-	IN TipoMoneda VARCHAR(20),
 	IN Garantia VARCHAR(50),
 	IN Origen VARCHAR(100),
 	IN ISC FLOAT,
@@ -17,24 +16,22 @@ CREATE PROCEDURE SP_Inversor
 	IN VMAX FLOAT,
 	IN PMAX FLOAT,
 	IN PMIN FLOAT,
-	IN created TIMESTAMP,
-	IN updated TIMESTAMP,
-	IN deleted TIMESTAMP
+    IN ImgRuta VARCHAR(100)
 )
 BEGIN
-    /* Insertar nuevo Panel */
+    /* Insertar nuevo Inversor*/
     IF (Opcion = 0) THEN
         INSERT INTO inversor
-        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, TipoMoneda, Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, NOW(), NULL, NULL);
+        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, 'Dolar', Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, ImgRuta, NOW(), NULL, NULL);
     /* Eliminar Panel */
     ELSEIF (Opcion = 1) THEN
         UPDATE inversor
-        SET deleted_at = deleted
+        SET deleted_at = NOW()
         WHERE idInversor = UNHEX(xIdInversor);
     /* Editar Panel */
     ELSEIF (Opcion = 2) THEN
         UPDATE inversor
-        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, iPanelSoportados = PanelesSoportados, fPrecio = Precio, vTipoMoneda = TipoMoneda, vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, updated_at = updated
+        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, iPanelSoportados = PanelesSoportados, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, imgRuta = ImgRuta, updated_at = NOW()
         WHERE idInversor = UNHEX(xIdInversor);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN
@@ -44,7 +41,7 @@ BEGIN
         ORDER BY vMarca, fPotencia ASC;
     /* Leer - filtrado */
     ELSEIF (Opcion = 4) THEN
-        SELECT HEX(xIdInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, updated_at
+        SELECT HEX(xIdInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, deleted_at, updated_at
         FROM inversor
         WHERE deleted_at IS NULL AND idInversor = UNHEX(xIdInversor);
     END IF;

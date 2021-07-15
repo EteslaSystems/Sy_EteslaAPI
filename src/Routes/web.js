@@ -586,6 +586,38 @@ router.put('/editar-panel', function (request, response) {
 /*
 - @section: 		Rutas para la sección de estructuras.
 */
+router.post('/agregar-estructura', function(request, response){
+	estructura.insertar(request.body)
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/eliminar-estructura', function (request, response) {
+	estructura.eliminar(request.body)
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message,
+		}).end();
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		}).end();
+	});
+});
+
 router.get('/lista-estructuras', function(request, response){
 	estructura.leer()
 	.then(estructura => {
@@ -602,12 +634,12 @@ router.get('/lista-estructuras', function(request, response){
 	});
 });
 
-router.get('/buscar-estructura', function(request, response){
+router.put('/buscar-estructura', function(request, response){
 	estructura.buscar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,
-			message: estructura
+			message: estructura.message
 		});
 	})
 	.catch(error => {

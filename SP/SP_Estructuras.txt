@@ -6,13 +6,15 @@ CREATE PROCEDURE SP_Estructuras
 	IN NombreEstructura	VARCHAR(80),
 	IN Marca VARCHAR(50),
 	IN Precio FLOAT,
-    IN TipoDeMoneda VARCHAR(8)
+	IN Garantia VARCHAR(50),
+	IN Origen VARCHAR(100),
+	IN ImgRuta VARCHAR(100)
 )
 BEGIN
 	/*Insertar*/
 	IF(Opcion = 0) THEN	
 	   INSERT INTO estructura
-	   VALUES(UUID(), NombreEstructura, Marca, Precio, TipoDeMoneda, NULL, NOW(), NULL, NULL);
+	   VALUES(UUID(), NombreEstructura, Marca, Precio, 'Dolar', Garantia, Origen, ImgRuta, NOW(), NULL, NULL);
     /*Eliminar*/
 	ELSEIF(Opcion = 1) THEN
 	   UPDATE estructura
@@ -21,17 +23,17 @@ BEGIN
     /*Actualizar*/
 	ELSEIF(Opcion = 2) THEN
 	   UPDATE estructura
-	   SET vNombreMaterialFot = NombreEstructura, vMarca = Marca, fPrecio = Precio, vTipoMoneda = TipoDeMoneda, updated_at = NOW()
+	   SET vNombreMaterialFot = NombreEstructura, vMarca = Marca, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, imgRuta = ImgRuta, updated_at = NOW()
 	   WHERE idEstructura = UNHEX(xIdEstructura);
 	/*Leer*/
     ELSEIF(Opcion = 3) THEN
-	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, imgRuta, created_at, updated_at, deleted_at
+	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, vGarantia, vOrigen, imgRuta, created_at, updated_at, deleted_at
 	   FROM estructura
 	   WHERE deleted_at IS NULL
 	   ORDER BY created_at DESC;
     /*Leer - filtrado*/
 	ELSEIF(Opcion = 4) THEN
-	   SELECT HEX(idEstructura) AS idEstructura, vNombreOperacion, vMarca, fPrecio, vTipoMoneda, imgRuta, created_at, updated_at, deleted_at
+	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, vGarantia, vOrigen, imgRuta, created_at, updated_at, deleted_at
 	   FROM estructura
 	   WHERE idEstructura = UNHEX(xIdEstructura);
 	END IF;

@@ -7,30 +7,27 @@ CREATE PROCEDURE SP_Panel
 	IN Marca VARCHAR(50),
 	IN Potencia FLOAT,
 	IN Precio FLOAT,
-	IN TipoMoneda VARCHAR(20),
 	IN Garantia VARCHAR(50),
 	IN Origen VARCHAR(100),
 	IN ISC FLOAT,
 	IN VOC FLOAT,
 	IN VMP FLOAT,
-	IN created TIMESTAMP,
-	IN updated TIMESTAMP,
-	IN deleted TIMESTAMP
+    IN ImgRuta VARCHAR(100)
 )
 BEGIN
     /* Insertar nuevo Panel */
     IF (Opcion = 0) THEN
         INSERT INTO panel
-        VALUES (UUID(), NombreMaterialFot, Marca, Potencia, Precio, TipoMoneda, Garantia, Origen, ISC, VOC, VMP, NOW(), NULL, NULL);
+        VALUES (UUID(), NombreMaterialFot, Marca, Potencia, Precio, 'Dolar', Garantia, Origen, ISC, VOC, VMP, ImgRuta, NOW(), NULL, NULL);
     /* Eliminar Panel */
     ELSEIF (Opcion = 1) THEN
         UPDATE panel
-        SET deleted_at = deleted
+        SET deleted_at = NOW()
         WHERE idPanel = UNHEX(xIdPanel);
     /* Editar Panel */
     ELSEIF (Opcion = 2) THEN
         UPDATE panel
-        SET vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, fPrecio = Precio, vTipoMoneda = TipoMoneda, vGarantia = Garantia, vOrigen = Origen, fISC = ISC, fVOC = VOC, fVMP = VMP, updated_at = updated
+        SET vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, fVOC = VOC, fVMP = VMP, updated_at = NOW()
         WHERE idPanel = UNHEX(xIdPanel);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN

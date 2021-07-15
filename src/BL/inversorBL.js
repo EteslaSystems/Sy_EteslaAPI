@@ -14,23 +14,21 @@ module.exports.insertar = async function (request, response) {
 	let validate = await validations.inversorValidation(request);
 
 	if (validate.status == true) {
-		let now = moment().tz("America/Mexico_City").format();
-		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
-
 		const datas = {
 			vNombreMaterialFot: request.nombrematerial,
 			vMarca: request.marca,
 			fPotencia: parseFloat(request.potencia),
 			fPrecio: parseFloat(request.precio),
-			vTipoMoneda: request.moneda,
 			vGarantia: request.garantia,
-			vOrige: request.origen,
+			vOrigen: request.origen,
 			fISC: parseFloat(request.isc),
 			iVMIN: parseInt(request.ivmin),
 			iVMAX: parseInt(request.ivmax),
 			iPMAX: parseInt(request.ipmax),
 			iPMIN: parseInt(request.ipmin),
-			created_at: fecha
+			vTipoInversor: request.vTipoInversor,
+			imgRuta: request.imgRuta,
+			iPanelSoportados: request.panelesSoportados != null ? parseInt(request.panelesSoportados) : null
 		};
 
 		result = await inversor.insertar(datas);

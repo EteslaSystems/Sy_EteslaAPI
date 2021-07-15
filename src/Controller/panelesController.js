@@ -5,18 +5,18 @@
 */
 const mysqlConnection = require('../../config/database');
 
-function insertarBD (datas) {
-	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, created_at } = datas;
+function insertarBD(datas){
+	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, created_at, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				reject (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -30,17 +30,17 @@ function insertarBD (datas) {
 }
 
 function eliminarBD(datas) {
-	const { idPanel, deleted_at } = datas;
+	const { idPanel } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null, null, null, deleted_at], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -54,17 +54,17 @@ function eliminarBD(datas) {
 }
 
 function editarBD (datas) {
-	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, updated_at } = datas;
+	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, null, updated_at, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -79,14 +79,14 @@ function editarBD (datas) {
 
 function consultaBD () {
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -102,14 +102,14 @@ function consultaBD () {
 function buscarBD (datas) {
 	const { idPanel } = datas;
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -128,12 +128,7 @@ function buscarBD (datas) {
 - @date: 				01/04/2020
 */
 
-var objNoDeModulosPorPotenciaDelPanel = {};
-
 async function numberOfModuls(potenciaNecesaria){
-	/* potenciaRequeridaEnKwp = await getSystemPowerInKwp(promedioConsumoMensual, irradiation, efficiency, topeProduccion);
-	var _potenciaRequeridaEnW = await getSystemPowerInWatts(potenciaRequeridaEnKwp); */
-	
 	try{
 		let _arrayTodosPaneles = await getAllPanelsArray();
 		let _arrayObjectsNoOfModuls = getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
@@ -152,6 +147,7 @@ async function getAllPanelsArray(){
 }
 
 function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
+	let objNoDeModulosPorPotenciaDelPanel = {};
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
 	for(let i = 0; i < arrayAllOfPanels.length; i++)
@@ -205,13 +201,11 @@ module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion,
 
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
-
 	return result;
 }
 
-module.exports.eliminar = async function (datas, response) {
+module.exports.eliminar = async function (datas) {
 	const result = await eliminarBD(datas);
-
 	return result;
 }
 
