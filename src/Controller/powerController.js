@@ -648,7 +648,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
                     
                     //Costo total del kwh de 1 mes
                     costo += costoKwhPesos;
-                    costo = Math.round(costo * 100)/100; //Redondeamos
+                    costo = Math.round(costo); //Redondeamos
 
                     //Restar los kwh cotizados a 'consumoProm'
                     consumoProm -= kwhACotizar;
@@ -688,7 +688,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             
             //Promedio Bimestral
             _pagosBim.forEach(bimst => promBimst += bimst);
-            promBimst = Math.round((promBimst / _pagosBim.length) * 100)/100;
+            promBimst = Math.round(promBimst / _pagosBim.length);
 
             let objResult = {
                 _bimestres: _pagosBim,
@@ -702,7 +702,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             let pagoAnl = 0;
 
             _pagosMensuales.forEach(pagoMensual => pagoAnl += pagoMensual);
-            pagoAnl = Math.round(pagoAnl * 100)/100;
+            pagoAnl = Math.round(pagoAnl);
 
             return pagoAnl;
         };
@@ -718,7 +718,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
 
             //Promedio de pagos con IVA
             _pIva.forEach(pagoCIva => promPagsCIva += pagoCIva);
-            promPagsCIva = promPagsCIva / _pIva.length;
+            promPagsCIva = Math.round(promPagsCIva / _pIva.length);
 
             let objResult = {
                 _pagosConIva: _pIva,
@@ -738,7 +738,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             }
 
             _pBimestrales.forEach(pBimestralConIva => promPgsBimestralesCIva += pBimestralConIva);
-            promPgsBimestralesCIva = promPgsBimestralesCIva / _pBimestrales.length;
+            promPgsBimestralesCIva = Math.round(promPgsBimestralesCIva / _pBimestrales.length);
 
             let objResult = {
                 _pagosBimestralesConIva: _pBimestrales,
