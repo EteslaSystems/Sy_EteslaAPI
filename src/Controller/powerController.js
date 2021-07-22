@@ -580,7 +580,7 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: {}, objGeneracionEnpesos: {}, objImpactoAmbiental: null };
+    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null, objNuevosPagosEnPesos: null };
     let _consumos = data.consumos || null;
     let tarifa = data.tarifa || null;
     let origen = data.origen;
@@ -614,6 +614,7 @@ async function getPowerBTI(data){
             dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
             objResult.new_dac_o_nodac = dac_o_nodac;
 
+            //Generacion en pesos
             objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
         }
 
@@ -930,7 +931,7 @@ function getGeneration(origen, potenciaReal){
             promedioGB += _genBimestral[i];
         }
         
-        promedioGB = promedioGB / _genBimestral.length;
+        promedioGB = Math.round(promedioGB / _genBimestral.length);
         return promedioGB;
     };
 
@@ -962,74 +963,100 @@ function getGeneration(origen, potenciaReal){
 }
 
 function getNewConsumption(__consumos, __generacion){
-    __generacion = __generacion._generacion; //kwp
-    __consumos = __consumos._consumosMensuales; //kwh
+    try{
+        __generacion = __generacion._generacion; //kwp
+        __consumos = __consumos._consumosMensuales; //kwh
 
-    let _consumosNuevosMensuales = (consumos) => {
-        consumosMensuales = [];
-        for(let x=0; x<consumos.length; x++)
-        {
-            ///Consumos nuevos Mensuales - Kw
-            consumosMensuales[x] = Math.floor(__consumos[x] - __generacion[x]);
-        }
-        return consumosMensuales;
-    };
-
-    let promedioNuevosConsumosMensuales = (_nuevosConsumosMensuales) => {
-        let promConsMes = 0;
-
-        _nuevosConsumosMensuales.forEach(consumoMensual => promConsMes += consumoMensual);
-
-        return promConsMes = promConsMes / _nuevosConsumosMensuales.length;
-    };
-
-    let promedioConsumoBimestral = (consumosMensuales) => {
-        bimestre = 0;
-        _bimestres = [];
-        sumBimestres = 0;
-
-        for(let x=0; x<12; x++)
-        {
-            bimestre += consumosMensuales[x];
-            if(x != 0 && x % 2 == 1){
-                _bimestres.push(bimestre);
-                bimestre = 0;
+        let _consumosNuevosMensuales = (consumos) => {
+            consumosMensuales = [];
+            for(let x=0; x<consumos.length; x++)
+            {
+                ///Consumos nuevos Mensuales - Kw
+                consumosMensuales[x] = Math.floor(__consumos[x] - __generacion[x]);
             }
-        }
+            return consumosMensuales;
+        };
 
-        _bimestres.forEach(function(bimestre){
-            sumBimestres += bimestre;
-        });
+        let _consumosNuevosBimestrales = (_consumosNuevosMensuales) => {
+            let nuevoConsumoBimestral = 0;
+            let _newConsumsBimestrales = [];
 
-        promedioConsumBimest = Math.round((sumBimestres / _bimestres.length) * 100) / 100;
+            for(let i=0; i<6; i++)
+            {
+                if(i != 0 && i % 2 == 1){
+                    nuevoConsumoBimestral = _consumosNuevosMensuales[i+1] + _consumosNuevosMensuales[i+2];
+                }
+                else{
+                    nuevoConsumoBimestral = _consumosNuevosMensuales[i] + _consumosNuevosMensuales[i+1];
+                }
 
-        return promedioConsumBimest;
-    };
+                _newConsumsBimestrales[i] = nuevoConsumoBimestral;
+            }
 
-    let nuevoConsumoAnual = (consumosMens) => {
-        nwConsumosMnsuales = 0;
+            return _newConsumsBimestrales;
+        };
 
-        consumosMens.forEach(function(nwConsumoMensual){
-            nwConsumosMnsuales += nwConsumoMensual
-        });
-        
-        return nwConsumosMnsuales; //Retorna - KW
-    };
+        let promedioNuevosConsumosMensuales = (_nuevosConsumosMensuales) => {
+            let promConsMes = 0;
 
-    _consumosNuevosMensuales = _consumosNuevosMensuales(__consumos);
-    promedioNuevosConsumosMensuales = promedioNuevosConsumosMensuales(_consumosNuevosMensuales);
-    nuevoConsumoAnual = nuevoConsumoAnual(_consumosNuevosMensuales);
-    promedioConsumoBimestral = promedioConsumoBimestral(_consumosNuevosMensuales);
+            _nuevosConsumosMensuales.forEach(consumoMensual => promConsMes += consumoMensual);
 
-    objResult = {
-        ////Todo es retornado en Kw
-        _consumosNuevosMensuales: _consumosNuevosMensuales,
-        nuevoConsumoAnual: nuevoConsumoAnual,
-        promedioNuevosConsumosMensuales: promedioNuevosConsumosMensuales,
-        promedioNuevoConsumoBimestral: promedioConsumoBimestral
-    };
+            return promConsMes = promConsMes / _nuevosConsumosMensuales.length;
+        };
 
-    return objResult; 
+        let promedioConsumoBimestral = (consumosMensuales) => {
+            bimestre = 0;
+            _bimestres = [];
+            sumBimestres = 0;
+
+            for(let x=0; x<12; x++)
+            {
+                bimestre += consumosMensuales[x];
+                if(x != 0 && x % 2 == 1){
+                    _bimestres.push(bimestre);
+                    bimestre = 0;
+                }
+            }
+
+            _bimestres.forEach(function(bimestre){
+                sumBimestres += bimestre;
+            });
+
+            promedioConsumBimest = Math.round((sumBimestres / _bimestres.length) * 100) / 100;
+
+            return promedioConsumBimest;
+        };
+
+        let nuevoConsumoAnual = (consumosMens) => {
+            nwConsumosMnsuales = 0;
+
+            consumosMens.forEach(function(nwConsumoMensual){
+                nwConsumosMnsuales += nwConsumoMensual
+            });
+            
+            return nwConsumosMnsuales; //Retorna - KW
+        };
+
+        _consumosNuevosMensuales = _consumosNuevosMensuales(__consumos);
+        _consumosNuevosBimestrales = _consumosNuevosBimestrales(_consumosNuevosMensuales);
+        promedioNuevosConsumosMensuales = promedioNuevosConsumosMensuales(_consumosNuevosMensuales);
+        nuevoConsumoAnual = nuevoConsumoAnual(_consumosNuevosMensuales);
+        promedioConsumoBimestral = promedioConsumoBimestral(_consumosNuevosMensuales);
+
+        objResult = {
+            ////Todo es retornado en Kw
+            _consumosNuevosMensuales: _consumosNuevosMensuales,
+            _consumosNuevosBimestrales: _consumosNuevosBimestrales,
+            nuevoConsumoAnual: nuevoConsumoAnual,
+            promedioNuevosConsumosMensuales: promedioNuevosConsumosMensuales,
+            promedioNuevoConsumoBimestral: promedioConsumoBimestral
+        };
+
+        return objResult;
+    }
+    catch(error){
+        console.log('Error getNewConsumption():\n'+error);
+    }
 }
 
 function dac(tarifa, consumoPromedio){

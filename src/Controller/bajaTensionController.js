@@ -118,7 +118,8 @@ function promedio_consumos(consumos){
         promConsumosBimestrales: promConsumosBimestrales,
         consumoMensual: consumoMensual,
         consumoAnual: consumoAnual,
-        consumoDiario: consumoDiario
+        consumoDiario: consumoDiario,
+        _consumosBimestrales: consumos
     };
 
     return objResp;

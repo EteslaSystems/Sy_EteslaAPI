@@ -137,6 +137,7 @@ async function getInversores_cotizacion(data){
 	let arrayInversor = [];
 	let combinacion = false;
 	let noPaneles = 0; //No. paneles a instalar
+
 	let precioTotal = 0;
 
 	try{
@@ -264,11 +265,14 @@ async function getInversores_cotizacion(data){
 			}
 			else if(combinacion === true){ //combinacion - QS1+YC600
 				/*#region CostoTotal_combinacion - QS1+YC600*/
-				costoTotalInvSMay = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS QS1' });
-				costoTotalInvSMay = Math.round((costoTotalInvSMay[0].fPrecio * invSoportMay)*100)/100;
-				costoTotalInvSMen = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS YC600' });
-				costoTotalInvSMen = Math.round((costoTotalInvSMen[0].fPrecio * invSoportMen)*100)/100;
-				precioTotal = costoTotalInvSMay + costoTotalInvSMen;
+				// costoTotalInvSMay = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS QS1' });
+				// costoTotalInvSMay = Math.round((costoTotalInvSMay[0].fPrecio * invSoportMay)*100)/100;
+				// costoTotalInvSMen = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS YC600' });
+				// costoTotalInvSMen = Math.round((costoTotalInvSMen[0].fPrecio * invSoportMen)*100)/100;
+				// precioTotal = costoTotalInvSMay + costoTotalInvSMen;
+				
+				let costo = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'QS1+YC600' });;
+				precioTotal = Math.round((costo[0].fPrecio * numeroDeInversores.cantidadTotalEquipos) * 100) / 100;
 				/*#endregion*/
 	
 				inversoresResult = {

@@ -37,8 +37,8 @@ async function calcularViaticosBTI(data){
     let _consums = data.consumos || null;
     let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
-    let descuento = (parseInt(data.descuento) / 100) || 0;
-    let aumento = (parseInt(data.aumento) / 100 + 1) || 0;
+    let descuento = (data.descuento / 100) || 0;
+    let aumento = (data.aumento / 100) || 0;
     let costoTotalEstructuras = 0;
 
     try{
@@ -186,15 +186,15 @@ async function calcularViaticosBTI(data){
             let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
            
             if(aumento > 0){
-                precio = Math.round((costoTotalProyecto * aumento) * 100) / 100; //USD //Sin IVA
+                precio = Math.round((costoTotalProyecto * (1 + aumento)) * 100) / 100; //USD //Sin IVA
             }
             else{
                 precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
             }
     
-            let precioUSDConIVA = Math.round((precio * 1.16) * 100) / 100; //USD //Con IVA
-            let precioMXNSinIVA = Math.round((precio * precioDolar) * 100) / 100; //MXN SIN IVA
-            let precioMXNConIVA = Math.round((precioUSDConIVA * precioDolar) * 100)/100; //MXN + IVA
+            let precioUSDConIVA = Math.round((precio * 1.16)); //USD //Con IVA
+            let precioMXNSinIVA = Math.round(precio * precioDolar); //MXN SIN IVA
+            let precioMXNConIVA = Math.round(precioUSDConIVA * precioDolar); //MXN + IVA
     
             /*????*/ precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
     
@@ -251,6 +251,7 @@ async function calcularViaticosBTI(data){
                 roi: objROI, 
                 financiamiento: objFinan,
                 descuento: data.descuento,
+                aumento: data.aumento,
                 tipoDeCambio: precioDolar,
                 promedioConsumosBimestrales: _consums,
                 tipoCotizacion: tipoCotizacion
