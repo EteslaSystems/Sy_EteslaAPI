@@ -71,7 +71,7 @@ async function calcularViaticosBTI(data){
         let _estructuras = await estructura.leer();
         _estructuras = _estructuras.message;
 
-        //BajaTension && MediaTension
+        /* Se filtra la marca/modelo de estructura segun sea el caso */
         if(data.hasOwnProperty('estructura')){ //Estructura seleccionada
             //Filtrar estructura
             _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.estructura) });
@@ -148,6 +148,7 @@ async function calcularViaticosBTI(data){
             let costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
             let costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
             
+            /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
             if(_estructuras != null){
                 if(tipoCotizacion === 'CombinacionCotizacion'){
                     costoTotalEstructuras = data.arrayBTI[0].panel.noModulos * _estructuras.fPrecio;
@@ -313,126 +314,147 @@ module.exports.calcularViaticosBTI = async function (data){
 
 /*#region Viaticos MediaTension*/
 async function main_calcularViaticos(data){
-    let _resultado = [];
-    let origen = data.origen;
-    let destino = data.destino;
-    let idCliente = data.idCliente;
-    let descuento = (parseFloat(data.descuento) / 100) || 0;
-    let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
-    distanciaEnKm = distanciaEnKm.message;
-    let propuesta = data.propuesta; //Obj
-    let panel = JSON.parse(propuesta.panel); //Obj
-    let inversor = propuesta.inversor; //Obj
-    let _agregados = data._agregados || null;
-    let tarifa = data.tarifa;
-    let pagoPasaje = 0;
-    let pagoPasajeTotal = 0;
-    let pagoComidaTotal = 0;
-    let pagoHospedajeTotal = 0;
+    let _resultado = [], objViaticosCalculados = {};
+    let pagoPasaje = 0, pagoPasajeTotal = 0, pagoComidaTotal = 0, pagoHospedajeTotal = 0;
 
-    //Datos Cliente
-    let uCliente = await cliente.consultarId({ idPersona: idCliente});
-    uCliente = uCliente.message;
-    uCliente = uCliente[0];
+    try{
+        let origen = data.origen;
+        let destino = data.destino;
+        let idCliente = data.idCliente;
+        let descuento = (parseFloat(data.descuento) / 100) || 0;
+        let propuesta = data.propuesta; //Obj
+        let panel = JSON.parse(propuesta.panel); //Obj
+        let inversor = propuesta.inversor; //Obj
+        let _agregados = data._agregados || null;
+        let tarifa = data.tarifa;
 
-    let confFile = await configFile.getArrayOfConfigFile();
-    let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar.precioDolar;
+        //Distancia KM
+        let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
+        distanciaEnKm = distanciaEnKm.message;
 
-    ///#Calcular totales de agregados
-    let costoTotalAgregados = (_agregads) => {
-        let total = 0;
+        //Datos Cliente
+        let uCliente = await cliente.consultarId({ idPersona: idCliente});
+        uCliente = uCliente.message;
+        uCliente = uCliente[0];
 
-        for(let agregado of _agregads)
-        {
-            subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
-            total += subtotal;
+        //Estructuras
+        let _estructuras = await estructura.leer();
+        _estructuras = _estructuras.message;
+
+        //
+        let confFile = await configFile.getArrayOfConfigFile();
+        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        precioDolar = precioDolar.precioDolar;
+
+        ///#Calcular totales de agregados
+        let costoTotalAgregados = (_agregads) => {
+            let total = 0;
+
+            for(let agregado of _agregads)
+            {
+                subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
+                total += subtotal;
+            }
+            
+            return total;
+        };
+
+        costoTotalAgregados = _agregados != null ? costoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
+        costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
+
+        //Se obtiene numero de cuadrillas
+        let numeroCuadrillas = getNumberOfCrews(panel.noModulos);
+        let numeroDias = getDays(panel.noModulos, numeroCuadrillas);
+        let numeroDiasReales = getRealDays(panel.noModulos, numeroDias);
+        let numeroPersonasRequeridas = numeroCuadrillas * parseInt(confFile.cuadrilla.numeroDePersonas);
+
+        if(distanciaEnKm > 30){ ///Si la distanciaEnKm supera los 30Km, se cobran viaticos...
+            pagoPasaje = Math.round((getBusPayment(distanciaEnKm)/precioDolar) * 100)/100;
+            pagoPasajeTotal = Math.ceil(pagoPasaje * numeroPersonasRequeridas);
+            pagoComidaTotal = Math.round((((comida * numeroPersonasRequeridas) * numeroDiasReales) / precioDolar) * 100)/100;
+            pagoHospedajeTotal = Math.round(((hospedaje * numeroPersonasRequeridas) * numeroDiasReales / precioDolar) * 100)/100;
         }
+
+        //Estructura seleccionada por el usuario
+        if(data.propuesta.hasOwnProperty('estructura')){ 
+            //Filtrar estructura
+            _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.propuesta.estructura) });
+            _estructuras = _estructuras[0]; //Formating Wto Object
+        }
+        else{ //Estructura *Default por el sistema* => 'Everest'
+            _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes("Everest") });
+            _estructuras = _estructuras[0]; //Formating to Object
+        }
+
+        let costoTotalEstructuras = _estructuras.fPrecio * panel.noModulos;
+        let totalViaticos = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal;
+        let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.precioTotal) + costoTotalEstructuras) * 100) /100;
+        let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
+        let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
+        let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
+        let margen = Math.round(((subtotOtrFletManObrTPIE / (1 - confFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100)/100;
+        let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos + costoTotalAgregados) * 100)/100;
+        let precio = Math.round(totalDeTodo * (1 - descuento)); //USD
+        let precioMasIVA = Math.round(precio * confFile.costos.precio_mas_iva); //USD + IVA
+        let precioMXN = Math.round(precio * precioDolar); //MXN
+        let precioMasIVAMXN = Math.round(precioMasIVA * precioDolar); //MXN + IVA
+
+        let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potencia)) * 100)/100;
+
+        /*#region POWER - ROI - FINANCIAMIENTO*/
+        let objPower = await power.obtenerPowerMT(data); //Return an Object
+        let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMasIVAMXN);
+
+        let xObjC = { costoTotal: precioMasIVAMXN }; /////Data
+        let objFinanciamiento = await financiamiento.financiamiento(xObjC);
+        /*#endregion POWER - ROI - FINANCIAMIENTO*/
+
+        objViaticosCalculados = {
+            cliente: uCliente,
+            paneles: panel,
+            inversores: inversor,
+            viaticos_costos: {
+                _agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados },
+                noCuadrillas: numeroCuadrillas,
+                noPersonasRequeridas: numeroPersonasRequeridas,
+                noDias: numeroDias,
+                noDiasReales: numeroDiasReales,
+                pagoPasaje: pagoPasaje,
+                pagoTotalPasaje: pagoPasajeTotal,
+                pagoTotalComida: pagoComidaTotal,
+                pagoTotalHospedaje: pagoHospedajeTotal
+            },
+            totales: {
+                manoDeObra: costoManoDeObra[0] || null,
+                otrosTotal: costoManoDeObra[1] || null,
+                costoTotalFletes: costoTotalFletes,
+                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
+                margen: margen,
+                precio: precio,
+                precioMasIVA: precioMasIVA,
+                precioMXNSinIVA: precioMXN,
+                precioMXNConIVA: precioMasIVAMXN,
+                precio_watt: precio_watt
+            },
+            estructura: { estructura: _estructuras, costoTotal: costoTotalEstructuras },
+            tarifa: tarifa,
+            power: objPower,
+            roi: objROI, 
+            financiamiento: objFinanciamiento,
+            descuento: descuento,
+            tipoDeCambio: precioDolar,
+            tipoCotizacion: data.tipoCotizacion
+        };
         
-        return total;
-    };
+        _resultado[0] = objViaticosCalculados;
 
-    costoTotalAgregados = _agregados != null ? costoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
-    costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
-
-    ////#Procedimiento - Calculo_viaticos
-    //Se obtiene numero de cuadrillas
-    let numeroCuadrillas = getNumberOfCrews(panel.noModulos);
-    let numeroDias = getDays(panel.noModulos, numeroCuadrillas);
-    let numeroDiasReales = getRealDays(panel.noModulos, numeroDias);
-    let numeroPersonasRequeridas = numeroCuadrillas * parseInt(confFile.cuadrilla.numeroDePersonas);
-
-    if(distanciaEnKm > 30){ ///Si la distanciaEnKm supera los 30Km, se cobran viaticos...
-        pagoPasaje = Math.round((getBusPayment(distanciaEnKm)/precioDolar) * 100)/100;
-        pagoPasajeTotal = Math.ceil(pagoPasaje * numeroPersonasRequeridas);
-        pagoComidaTotal = Math.round((((comida * numeroPersonasRequeridas) * numeroDiasReales) / precioDolar) * 100)/100;
-        pagoHospedajeTotal = Math.round(((hospedaje * numeroPersonasRequeridas) * numeroDiasReales / precioDolar) * 100)/100;
+        return _resultado;
     }
-
-    let totalViaticos = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal;
-    let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.precioTotal) + panel.costoDeEstructuras) * 100) /100;
-    let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
-    let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
-    let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
-    let margen = Math.round(((subtotOtrFletManObrTPIE / (1 - confFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100)/100;
-    let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos + costoTotalAgregados) * 100)/100;
-    let precio = Math.round((totalDeTodo * (1 - descuento)) * 100)/100;
-    let precioMasIVA = Math.round((precio * confFile.costos.precio_mas_iva) * 100)/100;
-    let precioMXN = Math.round((precio + precioDolar) * 100)/100;
-    let precioMasIVAMXN = Math.round((precioMasIVA * precioDolar)*100)/100;
-
-    let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potencia)) * 100)/100;
-
-    /*#region POWER - ROI - FINANCIAMIENTO*/
-    let objPower = await power.obtenerPowerMT(data); //Return an Object
-    let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMasIVAMXN);
-
-    let xObjC = { costoTotal: precioMasIVAMXN }; /////Data
-    let objFinanciamiento = await financiamiento.financiamiento(xObjC);
-    /*#endregion POWER - ROI - FINANCIAMIENTO*/
-
-    let objViaticosCalculados = {
-        cliente: uCliente,
-        paneles: panel,
-        inversores: inversor,
-        viaticos_costos: {
-            _agregados: data._agregados,
-            noCuadrillas: numeroCuadrillas,
-            noPersonasRequeridas: numeroPersonasRequeridas,
-            noDias: numeroDias,
-            noDiasReales: numeroDiasReales,
-            pagoPasaje: pagoPasaje,
-            pagoTotalPasaje: pagoPasajeTotal,
-            pagoTotalComida: pagoComidaTotal,
-            pagoTotalHospedaje: pagoHospedajeTotal
-        },
-        totales: {
-            manoDeObra: costoManoDeObra[0] || -1,
-            otrosTotal: costoManoDeObra[1] || -1,
-            costoTotalFletes: costoTotalFletes,
-            totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-            subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
-            margen: margen,
-            totalDeTodo: totalDeTodo,
-            precio: precio,
-            precioMasIVA: precioMasIVA,
-            precioMXNSinIVA: precioMXN,
-            precioMXNConIVA: precioMasIVAMXN,
-            precio_watt: precio_watt
-        },
-        tarifa: tarifa,
-        power: objPower,
-        roi: objROI, 
-        financiamiento: objFinanciamiento,
-        descuento: descuento,
-        tipoDeCambio: precioDolar,
-        tipoCotizacion: data.tipoCotizacion,
-        agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados }
-    };
-    
-    _resultado[0] = objViaticosCalculados;
-
-    return _resultado;
+    catch(error){
+        console.log('main_calcularViaticos() => MediaTension:');
+        console.log(error);
+    }
 }
 
 /*#region Cuadrilla - Mano de obra*/

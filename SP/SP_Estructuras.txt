@@ -29,8 +29,7 @@ BEGIN
     ELSEIF(Opcion = 3) THEN
 	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, vGarantia, vOrigen, imgRuta, created_at, updated_at, deleted_at
 	   FROM estructura
-	   WHERE deleted_at IS NULL
-	   ORDER BY created_at DESC;
+	   WHERE deleted_at IS NULL;
     /*Leer - filtrado*/
 	ELSEIF(Opcion = 4) THEN
 	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, vGarantia, vOrigen, imgRuta, created_at, updated_at, deleted_at
