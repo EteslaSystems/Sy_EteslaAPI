@@ -632,7 +632,7 @@ router.get('/lista-estructuras', function(request, response){
 			message: error.message
 		});
 	});
-});
+});	
 
 router.put('/buscar-estructura', function(request, response){
 	estructura.buscar(request.body)

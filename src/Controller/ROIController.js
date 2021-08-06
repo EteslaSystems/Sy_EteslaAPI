@@ -37,11 +37,11 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
         ahorroAnualKw = Math.round((consumoAnualKwh - generacionAnualKwp) * 100)/100; //kwh
     
         /*Ahorro (energia/$$)*/    
-        ahorroAnualEnPesosMXN = Math.round((consumoAnualPesosMXN - generacionAnualPesosMXN) * 100)/100; //$$
-        ahorroBimestralEnPesosMXN = consumoBimestralPesosMXN - generacionBimestralPesosMXN;
-        ahorroMensualEnPesosMXN = Math.round((ahorroBimestralEnPesosMXN / 2) * 100) / 100; //$$
+        ahorroAnualEnPesosMXN = Math.round(consumoAnualPesosMXN - generacionAnualPesosMXN); //$$
+        ahorroBimestralEnPesosMXN = Math.round(consumoBimestralPesosMXN - generacionBimestralPesosMXN);
+        ahorroMensualEnPesosMXN = Math.round(ahorroBimestralEnPesosMXN / 2); //$$
     
-        ROIenAnios = Math.round((costoDeProyecto / ahorroAnualEnPesosMXN) * 100) / 100;
+        ROIenAnios = Math.round(costoDeProyecto / ahorroAnualEnPesosMXN);
         ROIcnDeduccion = Math.round(ROIenAnios * 0.7);
 
         objRespuesta = {

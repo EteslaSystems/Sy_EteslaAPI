@@ -203,14 +203,14 @@ async function calcularViaticosBTI(data){
                 //P O W E R
                 let dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
                 objPower = await power.obtenerPowerBTI(dataPwr) || null;
-                objROI = await roi.obtenerROI(objPower, _consums, precioMXNConIVA);
+                objROI = await roi.obtenerROI(objPower, _consums, precioMXNSinIVA);
     
                 //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
                 _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
             }
     
             //F I N A N C I A M I E N T O
-            let ddata = { costoTotal: precioMXNConIVA };
+            let ddata = { costoTotal: precioMXNSinIVA };
             let objFinan = await financiamiento.financiamiento(ddata);
     
             /*#region Foromating . . .*/
@@ -403,9 +403,9 @@ async function main_calcularViaticos(data){
 
         /*#region POWER - ROI - FINANCIAMIENTO*/
         let objPower = await power.obtenerPowerMT(data); //Return an Object
-        let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMasIVAMXN);
+        let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMXN);
 
-        let xObjC = { costoTotal: precioMasIVAMXN }; /////Data
+        let xObjC = { costoTotal: precioMXN }; /////Data
         let objFinanciamiento = await financiamiento.financiamiento(xObjC);
         /*#endregion POWER - ROI - FINANCIAMIENTO*/
 
