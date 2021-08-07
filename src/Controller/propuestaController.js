@@ -13,31 +13,51 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
 	let Propuesta = JSON.parse(objPropuesta.propuesta); //Formating to Array
 	Propuesta = Propuesta[0]; //Formating to Object
-	let dataToSave = { idPanel: null, idInversor: null, idCliente: null, idUsuario: null, tipoCotizacion: null, promedioKw: null, /*(Bimestral o anual)*/ tarifa: null, cantidadPaneles: null, cantidadInversores: null, potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, subtotal: null, total: null, statusProjectFV: 0, daysOfExpire: 30 };
+	let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, promedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: 15 /* Dias de expiracion */ };
 
 	///Formating Data to Save PROPUESTA
-	dataToSave.idCliente = objPropuesta.idCliente || null;
-	dataToSave.idUsuario = objPropuesta.idVendedor || null;
+	dataToSave.cliente = { 
+		nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido, 
+		direccion: Propuesta.cliente.vCalle + ' ' + Propuesta.cliente.vMunicipio + ' ' + Propuesta.cliente.vEstado, 
+		telefono: Propuesta.cliente.vTelefono
+	} || null;
+	dataToSave.usuario = Propuesta.vendedor.vNombrePersona + ' ' + Propuesta.vendedor.vPrimerApellido + ' ' + Propuesta.vendedor.vSegundoApellido || null;
 	dataToSave.tipoCotizacion = Propuesta.tipoCotizacion || null;
-	dataToSave.subtotal = Propuesta.totales.precio || null;
-	dataToSave.total = Propuesta.totales.precioMasIVAMXN || null;
+	dataToSave.totalSinIvaMXN = Propuesta.totales.precioMXNSinIVA || null;
+	dataToSave.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
+	dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
+	dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
 
 	if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension"){
 		dataToSave.promedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
-		dataToSave.tarifa = Propuesta.tarifa || null;
+		dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
 		dataToSave.descuento = Propuesta.descuento || null;
 		dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
 	}
 
 	if(Propuesta.paneles){
-		dataToSave.idPanel = Propuesta.paneles.idPanel || null;
-		dataToSave.cantidadPaneles = Propuesta.paneles.noModulos || null;
-		dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal || null;
+		dataToSave.panel = {
+			marca: Propuesta.paneles.marca,
+			modelo: Propuesta.paneles.nombre,
+			potencia: Propuesta.paneles.potencia,
+			cantidad: Propuesta.paneles.noModulos
+		} || null;
 	}
 	
+	if(Propuesta.estructura){
+		dataToSave.estructura = {
+			marca: Propuesta.estructura.vMarca,
+			cantidad: Propuesta.paneles.noModulos
+		} || null;
+	}
+
 	if(Propuesta.inversores){
-		dataToSave.idInversor = Propuesta.inversores.id || null;
-		dataToSave.cantidadInversores = parseInt(Propuesta.inversores.numeroDeInversores) || null;
+		dataToSave.inversor = {
+			marca: Propuesta.inversores.vMarca,
+			modelo: Propuesta.inversores.vNombreMaterialFot,
+			potencia: Propuesta.inversores.fPotencia,
+			cantidad: Propuesta.inversores.numeroDeInversores
+		} || null;
 	}
 
 	if(Propuesta.power){
@@ -83,6 +103,26 @@ async function savePropuesta(objPropuesta/*Obj*/){
 function insertarBD(datas){
 	const { idPanel, idInversor, idCliente, idUsuario, tipoCotizacion, promedioKw,  tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw,  descuento, porcentajePropuesta, subtotal, total, statusProjectFV, daysOfExpire } = datas;
 	
+	/* Cliente */
+	let nombreCliente = ;
+	let direccionCliente = ;
+	let telefonoCliente = ;
+	/* Vendedor */
+	let usuario = datas.usuario;
+	/* Panel */
+	let marcaPanel = datas.panel.marca;
+	let modeloPanel = datas.panel.modelo;
+	let potenciaPanel = datas.panel.potencia;
+	let cantidadPanel = datas.panel.cantidad;
+	/* Inversor */
+	let marcaInversor = datas.inversor.marca;
+	let modeloInversor = datas.inversor.modelo;
+	let potenciaInversor = datas.inversor.potencia;
+	let cantidadInversor = datas.inversor.cantidad;
+	/* Estructura */
+	let marcaEstructura = datas.estructura.marca;
+	let cantidadEstructura = datas.estructura.cantidad;
+
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, idCliente, null, idPanel, idInversor, idUsuario, tipoCotizacion, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total, statusProjectFV, daysOfExpire], (error, rows) => {
 			if (error) {

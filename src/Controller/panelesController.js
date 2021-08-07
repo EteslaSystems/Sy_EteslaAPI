@@ -222,6 +222,5 @@ module.exports.editar = async function (datas, response) {
 
 module.exports.consultar = async function (response) {
 	const result = await consultaBD();
-
 	return result;
 }

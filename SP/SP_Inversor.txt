@@ -16,13 +16,13 @@ CREATE PROCEDURE SP_Inversor
 	IN VMAX FLOAT,
 	IN PMAX FLOAT,
 	IN PMIN FLOAT,
-    IN ImgRuta VARCHAR(100)
+    IN ImageRuta VARCHAR(100)
 )
 BEGIN
     /* Insertar nuevo Inversor*/
     IF (Opcion = 0) THEN
         INSERT INTO inversor
-        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, 'Dolar', Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, ImgRuta, NOW(), NULL, NULL);
+        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, 'Dolar', Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, ImageRuta, NOW(), NULL, NULL);
     /* Eliminar Panel */
     ELSEIF (Opcion = 1) THEN
         UPDATE inversor
@@ -31,7 +31,7 @@ BEGIN
     /* Editar Panel */
     ELSEIF (Opcion = 2) THEN
         UPDATE inversor
-        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, iPanelSoportados = PanelesSoportados, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, imgRuta = ImgRuta, updated_at = NOW()
+        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, iPanelSoportados = PanelesSoportados, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, imgRuta = ImageRuta, updated_at = NOW()
         WHERE idInversor = UNHEX(xIdInversor);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN

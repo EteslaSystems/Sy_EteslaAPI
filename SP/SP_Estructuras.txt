@@ -8,13 +8,13 @@ CREATE PROCEDURE SP_Estructuras
 	IN Precio FLOAT,
 	IN Garantia VARCHAR(50),
 	IN Origen VARCHAR(100),
-	IN ImgRuta VARCHAR(100)
+	IN ImageRuta VARCHAR(100)
 )
 BEGIN
 	/*Insertar*/
 	IF(Opcion = 0) THEN	
 	   INSERT INTO estructura
-	   VALUES(UUID(), NombreEstructura, Marca, Precio, 'Dolar', Garantia, Origen, ImgRuta, NOW(), NULL, NULL);
+	   VALUES(UUID(), NombreEstructura, Marca, Precio, 'Dolar', Garantia, Origen, ImageRuta, NOW(), NULL, NULL);
     /*Eliminar*/
 	ELSEIF(Opcion = 1) THEN
 	   UPDATE estructura
@@ -23,7 +23,7 @@ BEGIN
     /*Actualizar*/
 	ELSEIF(Opcion = 2) THEN
 	   UPDATE estructura
-	   SET vNombreMaterialFot = NombreEstructura, vMarca = Marca, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, imgRuta = ImgRuta, updated_at = NOW()
+	   SET vNombreMaterialFot = NombreEstructura, vMarca = Marca, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, imgRuta = ImageRuta, updated_at = NOW()
 	   WHERE idEstructura = UNHEX(xIdEstructura);
 	/*Leer*/
     ELSEIF(Opcion = 3) THEN
