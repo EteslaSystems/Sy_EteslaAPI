@@ -13,15 +13,19 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
 	let Propuesta = JSON.parse(objPropuesta.propuesta); //Formating to Array
 	Propuesta = Propuesta[0]; //Formating to Object
-	let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, promedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: 15 /* Dias de expiracion */ };
+	let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: 15 /* Dias de expiracion */ };
 
-	///Formating Data to Save PROPUESTA
+	/* #region Formating Data to Save PROPUESTA */
 	dataToSave.cliente = { 
-		nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido, 
-		direccion: Propuesta.cliente.vCalle + ' ' + Propuesta.cliente.vMunicipio + ' ' + Propuesta.cliente.vEstado, 
-		telefono: Propuesta.cliente.vTelefono
+		id: Propuesta.cliente.idPersona,
+		nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido
 	} || null;
-	dataToSave.usuario = Propuesta.vendedor.vNombrePersona + ' ' + Propuesta.vendedor.vPrimerApellido + ' ' + Propuesta.vendedor.vSegundoApellido || null;
+
+	dataToSave.usuario = {
+		id: Propuesta.vendedor.idPersona,
+		nombre: Propuesta.vendedor.vNombrePersona + ' ' + Propuesta.vendedor.vPrimerApellido + ' ' + Propuesta.vendedor.vSegundoApellido
+	} || null;
+
 	dataToSave.tipoCotizacion = Propuesta.tipoCotizacion || null;
 	dataToSave.totalSinIvaMXN = Propuesta.totales.precioMXNSinIVA || null;
 	dataToSave.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
@@ -29,7 +33,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
 
 	if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension"){
-		dataToSave.promedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
+		dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
 		dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
 		dataToSave.descuento = Propuesta.descuento || null;
 		dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
@@ -37,11 +41,11 @@ async function savePropuesta(objPropuesta/*Obj*/){
 
 	if(Propuesta.paneles){
 		dataToSave.panel = {
-			marca: Propuesta.paneles.marca,
 			modelo: Propuesta.paneles.nombre,
-			potencia: Propuesta.paneles.potencia,
 			cantidad: Propuesta.paneles.noModulos
 		} || null;
+
+		dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal;
 	}
 	
 	if(Propuesta.estructura){
@@ -53,23 +57,22 @@ async function savePropuesta(objPropuesta/*Obj*/){
 
 	if(Propuesta.inversores){
 		dataToSave.inversor = {
-			marca: Propuesta.inversores.vMarca,
 			modelo: Propuesta.inversores.vNombreMaterialFot,
-			potencia: Propuesta.inversores.fPotencia,
 			cantidad: Propuesta.inversores.numeroDeInversores
 		} || null;
 	}
 
 	if(Propuesta.power){
-		if(Propuesta.tipoCotizacion === "bajaTension"){
-			dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioConsumoBimestral || null;
+		if(Propuesta.tipoCotizacion === "bajaTension"){ //BajaTension
+			dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
 			dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
 		}
-		else{
+		else{ //MediaTension
 			dataToSave.nuevoConsumoBimestralKw = Propuesta.power.generacion.promedioGeneracionBimestral || null;
 			dataToSave.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
 		}
 	}
+	/* #endregion */
 
 	let respuesta = await insertarBD(dataToSave);
 	
@@ -101,30 +104,41 @@ async function savePropuesta(objPropuesta/*Obj*/){
 /*----------------------------------------------------------------*/
 
 function insertarBD(datas){
-	const { idPanel, idInversor, idCliente, idUsuario, tipoCotizacion, promedioKw,  tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw,  descuento, porcentajePropuesta, subtotal, total, statusProjectFV, daysOfExpire } = datas;
-	
 	/* Cliente */
-	let nombreCliente = ;
-	let direccionCliente = ;
-	let telefonoCliente = ;
+	let idCliente = datas.cliente.id;
+	let nombreCliente = datas.cliente.nombre;
+	/* Consumos - Cliente */
+	let consumoPromedio = datas.consumoPromedioKw; //Bimestral
+	let actualTarifa = datas.tarifa.vieja;
 	/* Vendedor */
-	let usuario = datas.usuario;
+	let idVendedor = datas.usuario.id;
+	let usuario = datas.usuario.nombre;
 	/* Panel */
-	let marcaPanel = datas.panel.marca;
 	let modeloPanel = datas.panel.modelo;
-	let potenciaPanel = datas.panel.potencia;
 	let cantidadPanel = datas.panel.cantidad;
 	/* Inversor */
-	let marcaInversor = datas.inversor.marca;
 	let modeloInversor = datas.inversor.modelo;
-	let potenciaInversor = datas.inversor.potencia;
 	let cantidadInversor = datas.inversor.cantidad;
 	/* Estructura */
 	let marcaEstructura = datas.estructura.marca;
 	let cantidadEstructura = datas.estructura.cantidad;
+	/* Energia */
+	let nuevoConsumoMensual = datas.nuevoConsumoMensual || null;
+	let nuevoConsumoBimestral = datas.nuevoConsumoBimestralKw || null;
+	let nuevoConsumoAnual = datas.nuevoConsumoAnualKw || null;
+	let nuevaTarifa = datas.tarifa.nueva;
+	/* Propuesta */
+	let tipoCotizacion = datas.tipoCotizacion;
+	let descuento = datas.descuento;
+	let potenciaPropuesta = datas.potenciaPropuesta; //PotenciaPropuesta
+	let porcentajeDePropuesta = datas.porcentajePropuesta;
+	let totalSinIvaMXN = datas.totalSinIvaMXN;
+	let totalConIvaMXN = datas.totalConIvaMXN;
+	let totalSinIvaUSD = datas.totalSinIvaUSD;
+	let totalConIvaUSD = datas.totalConIvaUSD;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, idCliente, null, idPanel, idInversor, idUsuario, tipoCotizacion, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total, statusProjectFV, daysOfExpire], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, idCliente, idVendedor, nombreCliente, actualTarifa, consumoPromedio, usuario, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaPropuesta, nuevoConsumoMensual, nuevoConsumoBimestral, nuevoConsumoAnual, nuevaTarifa, tipoCotizacion, descuento, porcentajeDePropuesta, totalSinIvaMXN, totalConIvaMXN, totalSinIvaUSD, totalConIvaUSD, 0, 15]/* 15 = Dias de expiracion */, (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -132,7 +146,8 @@ function insertarBD(datas){
 				}
 
 				reject (response);
-			} else {
+			} 
+			else {
 				const response = {
 					idPropuesta: rows[0][0].xIdPropuesta,
 					status: true,
