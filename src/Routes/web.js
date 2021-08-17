@@ -131,13 +131,13 @@ router.post('/cotizacionIndividual', function(request, response){
 		response.json({
 			status: 200,
 			message: cotizacion_individual
-		}).end();
+		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		}).end();
+		});
 	});
 	
 });

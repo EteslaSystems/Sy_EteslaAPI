@@ -33,13 +33,12 @@ async function calcularViaticosBTI(data){
     let idCliente = data.idCliente;
     let origen = data.origen;
     let destino = data.destino;
-    let bInstalacion = data.bInstalacion || null;
     let _consums = data.consumos || null;
     let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
     let descuento = (data.descuento / 100) || 0;
     let aumento = (data.aumento / 100) || 0;
-    let costoTotalEstructuras = 0;
+    let costoTotalEstructuras, costoTotalPaneles, costoTotalInversores;
 
     try{
         // let _opciones = await consultaOpcionesVPropuestaBD();
@@ -78,7 +77,7 @@ async function calcularViaticosBTI(data){
             _estructuras = _estructuras[0]; //Formating Wto Object
         }
         else{ //*Default 'Everest'*
-            if(tipoCotizacion === 'indivual'){
+            if(tipoCotizacion === 'individual'){
                 if(data.arrayBTI[0].estructura === null){
                     _estructuras = null;
                 }
@@ -143,45 +142,54 @@ async function calcularViaticosBTI(data){
                 comida = 0;
                 pasaje = 0;
             }
-    
-            /*#region Formating... Costo totales -Paneles, -Inversor & -Estructuras*/
-            let costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
-            let costoTotalInversores = _arrayCotizacion[x].inversor != null ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : 0;
+
+            //Cotizacion Individual
+            if(tipoCotizacion === 'individual'){
+                if(data.data.cotizacionIndividual.complementos.viaticos.viaticos == '1'){ //Con viaticos
+                    hospedaje = data.data.cotizacionIndividual.complementos.viaticos.hospedaje === '1' ? hospedaje : 0;
+                    comida = data.data.cotizacionIndividual.complementos.viaticos.comida === '1' ? comida : 0;
+                    pasaje = data.data.cotizacionIndividual.complementos.viaticos.pasaje === '1' ? pasaje : 0;
+                }
+                else{ //Sin viaticos
+                    hospedaje = 0;
+                    comida = 0;
+                    pasaje = 0;
+                }
+            }
             
             /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
-            if(_estructuras != null){
-                if(tipoCotizacion === 'CombinacionCotizacion'){
-                    costoTotalEstructuras = data.arrayBTI[0].panel.noModulos * _estructuras.fPrecio;
-                }
-                else if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension'){ //BajaTension
-                    costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
-                }
-                else if(tipoCotizacion === 'indivual'){ //Individual
-                    let cantidadEstructuras = data.arrayBTI[0].estructura.cantidad;
-
-                    costoTotalEstructuras = cantidadEstructuras * _estructuras.fPrecio;
-                }
-
-                //Se agrega la propiedad 'costoTotalEstructuras' al objeto de respuesta
-                Object.defineProperty(_estructuras, 'costoTotalEstructuras', {
-                    value: costoTotalEstructuras
-                });
+            if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'CombinacionCotizacion'){ //BajaTension
+                costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
+                costoTotalInversores = typeof _arrayCotizacion[x].inversor.precioTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : _arrayCotizacion[x].inversor.precioTotal;
+                costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
             }
-            else if(_estructuras === null){ //Sin estructuras
-                costoTotalEstructuras = 0;
+            else if(tipoCotizacion === 'individual'){ //Individual
+                costoTotalPaneles = _arrayCotizacion[x].panel === null ? 0 : _arrayCotizacion[x].panel.costoTotal;
+                costoTotalInversores = _arrayCotizacion[x].inversor === null ? 0 : _arrayCotizacion[x].inversor.precioTotal;
+                costoTotalEstructuras = _arrayCotizacion[x].estructura === null ? 0 : _arrayCotizacion[x].estructura.costoTotal;
             }
             /*#endregion*/
     
             let viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
             let costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
             let manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, (costoTotalPanInvEstr + viaticos));
-    
-            if(bInstalacion === null || bInstalacion === 'false' || bInstalacion === '0'){
-                manoDeObra[0] = 0; //Mano de Obra
-                manoDeObra[1] = 0; //Costo de Otros
-            }
-    
             let totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
+
+            if(tipoCotizacion === 'individual'){
+                if(data.data.cotizacionIndividual.complementos.manoDeObra === '0'){
+                    manoDeObra[0] = 0; //Mano de Obra 
+                }
+                
+                if(data.data.cotizacionIndividual.complementos.otros === '0'){
+                    manoDeObra[1] = 0; //Costo de Otros
+                }
+
+                if(data.data.cotizacionIndividual.complementos.fletes === '0'){
+                    totalFletes = 0; //Fletes
+                }
+            }
+
+            
             let subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
             let margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
             let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
@@ -452,8 +460,8 @@ async function main_calcularViaticos(data){
         return _resultado;
     }
     catch(error){
-        console.log('main_calcularViaticos() => MediaTension:');
         console.log(error);
+        throw error;
     }
 }
 
