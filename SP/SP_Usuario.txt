@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE PROCEDURE SP_Usuario
+CREATE OR REPLACE PROCEDURE SP_Usuario
 (
     /* Variables para Usuario */
     IN Opcion INT,
@@ -16,33 +16,30 @@ CREATE PROCEDURE SP_Usuario
     IN SegundoApellido VARCHAR(50),
     IN Telefono VARCHAR(13),
     IN Celular VARCHAR(13),
-    IN Email VARCHAR(60),
-    IN created TIMESTAMP,
-    IN updated TIMESTAMP,
-    IN deleted TIMESTAMP
+    IN Email VARCHAR(60)
 )
 BEGIN
     /* Insertar nueva Persona y Usuario  */
     IF (Opcion = 0) THEN
         INSERT INTO persona
-        VALUES (UUID(), NombrePersona, PrimerApellido, SegundoApellido, Telefono, Celular, Email, created, updated, deleted);
+        VALUES (UUID(), NombrePersona, PrimerApellido, SegundoApellido, Telefono, Celular, Email, NOW(), NULL, NULL);
         SET xId_Persona = (SELECT HEX(idPersona) AS idPersona FROM persona WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 1);
         INSERT INTO usuario
-        VALUES (UUID(), UNHEX(xId_Persona), Rol, TipoUsuario, AES_ENCRYPT(Contrasenia, 'EteslaPanelesSolares'), Oficina);
+        VALUES (UUID(), UNHEX(xId_Persona), Rol, TipoUsuario, AES_ENCRYPT(Contrasenia, 'AES'), Oficina);
     /* Eliminar Usuario */
     ELSEIF (Opcion = 1) THEN
         UPDATE persona
-        SET deleted_at = deleted
+        SET deleted_at = NOW()
         WHERE idPersona = UNHEX(xIdPersona);
     /* Editar Usuario */
     ELSEIF (Opcion = 2) THEN
         UPDATE usuario
         INNER JOIN persona ON usuario.id_Persona = persona.idPersona
         SET persona.vNombrePersona = NombrePersona, persona.vPrimerApellido = PrimerApellido, persona.vSegundoApellido = SegundoApellido,
-        usuario.vOficina = Oficina, usuario.vContrasenia = AES_ENCRYPT(Contrasenia, 'EteslaPanelesSolares'), persona.updated_at = updated
+        usuario.vOficina = Oficina, usuario.vContrasenia = AES_ENCRYPT(Contrasenia, 'AES'), persona.updated_at = NOW()
         WHERE persona.idPersona = UNHEX(xIdPersona) AND persona.deleted_at IS NULL;
 
-        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.ttTipoUsuario, 
+        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.sTipoUsuario, 
         HEX(usuario.vContrasenia) AS vContrasenia, usuario.vOficina,
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, 
         persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at
@@ -51,8 +48,8 @@ BEGIN
         WHERE persona.idPersona = UNHEX(xIdPersona) AND persona.deleted_at IS NULL;
     /* Consultar todos los registros de Usuario */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.ttTipoUsuario, 
-        AES_DECRYPT(usuario.vContrasenia,'EteslaPanelesSolares') AS vContrasenia, usuario.vOficina,
+        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.sTipoUsuario, 
+        AES_DECRYPT(usuario.vContrasenia,'AES') AS vContrasenia, usuario.vOficina,
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, 
         persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at
         FROM usuario
@@ -60,22 +57,22 @@ BEGIN
         WHERE persona.deleted_at IS NULL;
     /* Validar el usuario */
     ELSEIF (Opcion = 4) THEN
-        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.ttTipoUsuario, 
+        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.sTipoUsuario, 
         HEX(usuario.vContrasenia) AS vContrasenia, usuario.vOficina,
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, 
         persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at
         FROM usuario
         INNER JOIN persona ON usuario.id_Persona = persona.idPersona
-        WHERE persona.vEmail = Email AND usuario.vContrasenia = AES_ENCRYPT(Contrasenia, 'EteslaPanelesSolares') AND persona.deleted_at IS NULL;
+        WHERE persona.vEmail = Email AND usuario.vContrasenia = AES_ENCRYPT(Contrasenia, 'AES') AND persona.deleted_at IS NULL;
     /* Recuperar la contrasenia del usuario mediante su correo */
     ELSEIF (Opcion = 5) THEN
-        SELECT AES_DECRYPT(usuario.vContrasenia,'EteslaPanelesSolares') AS vContrasenia
+        SELECT AES_DECRYPT(usuario.vContrasenia,'AES') AS vContrasenia
         FROM usuario
         INNER JOIN persona ON usuario.id_Persona = persona.idPersona
         WHERE persona.vEmail = Email AND persona.deleted_at IS NULL;
     /* Leer - filtrado */
     ELSEIF (Opcion = 6) THEN
-        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.ttTipoUsuario, AES_DECRYPT(usuario.vContrasenia,'EteslaPanelesSolares') AS vContrasenia, usuario.vOficina,
+        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.sTipoUsuario, AES_DECRYPT(usuario.vContrasenia,'AES') AS vContrasenia, usuario.vOficina,
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at
         FROM usuario
         INNER JOIN persona ON usuario.id_Persona = persona.idPersona

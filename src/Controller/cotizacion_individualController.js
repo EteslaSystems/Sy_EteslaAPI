@@ -49,6 +49,7 @@ async function cotizacionIndividual(data){
             origen: data.origen,
             destino: data.cotizacionIndividual.cliente.direccion,
             tipoCotizacion: 'individual',
+            idUsuario: data.idUsuario,
             data
         };
 
