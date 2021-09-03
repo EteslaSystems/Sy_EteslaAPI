@@ -176,12 +176,12 @@ async function calcularViaticosBTI(data){
             let totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes)); //USD
 
             if(tipoCotizacion === 'individual'){
-                if(data.data.cotizacionIndividual.complementos.manoDeObra === '0'){
+                if(data.data.cotizacionIndividual.complementos.manoObra === '0'){
                     manoDeObra[0] = 0; //Mano de Obra 
                 }
                 
                 if(data.data.cotizacionIndividual.complementos.otros === '0'){
-                    manoDeObra[1] = 0; //Costo de Otros
+                    manoDeObra[1] = 0; //Otros
                 }
 
                 if(data.data.cotizacionIndividual.complementos.fletes === '0'){
@@ -248,7 +248,6 @@ async function calcularViaticosBTI(data){
                     fletes: totalFletes,
                     totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
                     margen: margen,
-                    totalDeTodo: costoTotalProyecto,
                     precio: precio, //USD sin IVA
                     precioMasIVA: precioUSDConIVA, //USD con IVA
                     precioMXNSinIVA: precioMXNSinIVA, //MXN sin IVA
