@@ -161,7 +161,11 @@ async function getInversores_cotizacion(data){
 		}
 		else{ ///MediaTension
 			///panel seleccionado
-			data = data = data.objPanelSelect.panel;
+			if(data.objPanelSelect.panel){
+				data = data.objPanelSelect.panel
+			}
+			//BT
+			data = data.objPanelSelect;
 		}
 	
 		let potenciaReal_= parseFloat(data.potenciaReal);

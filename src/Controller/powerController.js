@@ -580,7 +580,7 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null, objNuevosPagosEnPesos: null };
+    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null };
     let _consumos = data.consumos || null;
     let tarifa = data.tarifa || null;
     let origen = data.origen;
