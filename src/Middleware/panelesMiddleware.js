@@ -35,10 +35,6 @@ function panelValidation (data) {
             .string(message.string)
             .matches(/^[0-9]+\.?[0-9]*$/, message.number)
             .required(message.required),
-        moneda: yup
-            .string(message.string)
-            .matches(/^[A-Za-z\s]+$/g, message.letter)
-            .required(message.required),
         isc: yup
             .string(message.string)
             .matches(/^[0-9]+\.?[0-9]*$/, message.number)

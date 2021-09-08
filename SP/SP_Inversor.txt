@@ -1,0 +1,49 @@
+DELIMITER //
+CREATE PROCEDURE SP_Inversor
+(
+	IN Opcion INT,
+	IN xIdInversor VARCHAR(255),
+	IN TipoInversor VARCHAR(14),
+	IN NombreMaterialFot VARCHAR(50),
+	IN Marca VARCHAR(50),
+	IN Potencia FLOAT,
+	IN PanelesSoportados INT,
+	IN Precio FLOAT,
+	IN Garantia VARCHAR(50),
+	IN Origen VARCHAR(100),
+	IN ISC FLOAT,
+	IN VMIN FLOAT,
+	IN VMAX FLOAT,
+	IN PMAX FLOAT,
+	IN PMIN FLOAT,
+    IN ImageRuta VARCHAR(100)
+)
+BEGIN
+    /* Insertar nuevo Inversor*/
+    IF (Opcion = 0) THEN
+        INSERT INTO inversor
+        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, 'Dolar', Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, ImageRuta, NOW(), NULL, NULL);
+    /* Eliminar Panel */
+    ELSEIF (Opcion = 1) THEN
+        UPDATE inversor
+        SET deleted_at = NOW()
+        WHERE idInversor = UNHEX(xIdInversor);
+    /* Editar Panel */
+    ELSEIF (Opcion = 2) THEN
+        UPDATE inversor
+        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, iPanelSoportados = PanelesSoportados, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, imgRuta = ImageRuta, updated_at = NOW()
+        WHERE idInversor = UNHEX(xIdInversor);
+    /* Consultar todos los registros de Paneles */
+    ELSEIF (Opcion = 3) THEN
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, updated_at
+        FROM inversor
+        WHERE deleted_at IS NULL
+        ORDER BY vMarca, fPotencia ASC;
+    /* Leer - filtrado */
+    ELSEIF (Opcion = 4) THEN
+        SELECT HEX(xIdInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, deleted_at, updated_at
+        FROM inversor
+        WHERE deleted_at IS NULL AND idInversor = UNHEX(xIdInversor);
+    END IF;
+END
+// DELIMITER ;

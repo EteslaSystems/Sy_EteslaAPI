@@ -31,15 +31,18 @@ module.exports.insertar = async function (request, response) {
 	        created_at: fecha,
 	        vCalle: request.calle,
 	        vMunicipio: request.municipio,
-	        vEstado: request.estado
+			vEstado: request.estado,
+			bTienePropuesta: 0
+			/////
+			// bTienePropuesta: request.tienePropuesta
 		};
 
 		result = await cliente.insertar(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / CLIENTES.', result.message);
+			log.errores('INSERTAR / CLIENTES.', result.message.sqlMessage);
 
-			throw new Error('Error al insertar los datos.');
+			throw new Error('Error al insertar los datos: '+result.message.sqlMessage.toString());
 		}
 
 		const dCliente = {
@@ -94,9 +97,11 @@ module.exports.editar = async function (request, response) {
 		let now = moment().tz("America/Mexico_City").format();
 		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
 
+		fConsumo = request.consumo === null ? 0 : parseFloat(request.consumo);
+
 		const datas = {
 	        idPersona: request.idPersona,
-			fConsumo: parseFloat(request.consumo),
+			fConsumo: fConsumo,
 	        vNombrePersona: request.nombrePersona,
 	        vPrimerApellido: request.primerApellido,
 	        vSegundoApellido: request.segundoApellido,
@@ -167,7 +172,7 @@ module.exports.consultarUser = async function (request, response) {
 	if(result.status !== true) {
 		log.errores('BUSQUEDA / CLIENTES POR USUARIO.', result.message);
 
-		throw new Error('Error al consultar los datos.');
+		throw new Error('Error al consultar los datos: '+result.message.sqlMessage);
 	}
 
 	log.eventos('BUSQUEDA / CLIENTES POR USUARIO.', result.message.length + ' filas consultadas.');

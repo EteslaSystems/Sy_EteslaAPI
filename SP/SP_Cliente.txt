@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE PROCEDURE SP_Cliente
+CREATE OR REPLACE PROCEDURE SP_Cliente
 (
     /* Variables para Cliente */
     IN Opcion INT,
@@ -13,9 +13,6 @@ CREATE PROCEDURE SP_Cliente
     IN Telefono VARCHAR(13),
     IN Celular VARCHAR(13),
     IN Email VARCHAR(60),
-    IN created TIMESTAMP,
-    IN updated TIMESTAMP,
-    IN deleted TIMESTAMP,
     /* Variables para Direccion */
     IN xIdDireccion VARCHAR(255),
     IN Calle VARCHAR(60),
@@ -27,11 +24,11 @@ BEGIN
     IF (Opcion = 0) THEN
         /*Persona*/
         INSERT INTO persona
-        VALUES (UUID(), NombrePersona, PrimerApellido, SegundoApellido, Telefono, Celular, Email, created, updated, deleted);
+        VALUES (UUID(), NombrePersona, PrimerApellido, SegundoApellido, Telefono, Celular, Email, NOW(), NULL, NULL);
         SET xIdPersona = (SELECT HEX(idPersona) AS idPersona FROM persona WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 1);
         /*Cliente*/
         INSERT INTO cliente
-        VALUES (UUID(), UNHEX(xIdPersona), Consumo);
+        VALUES (UUID(), UNHEX(xIdPersona), Consumo, 0);
         SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente INNER JOIN persona ON cliente.id_Persona = persona.idPersona WHERE deleted_at IS NULL ORDER BY persona.created_at DESC LIMIT 1);
         /*Direccion*/
         INSERT INTO direccion
@@ -43,13 +40,13 @@ BEGIN
     /* Eliminar Persona del Cliente */
     ELSEIF (Opcion = 1) THEN
         UPDATE persona
-        SET deleted_at = deleted
+        SET deleted_at = NOW()
         WHERE idPersona = UNHEX(xIdPersona);
     /* Editar Persona y Cliente */
     ELSEIF (Opcion = 2) THEN
         /*Persona*/
         UPDATE persona
-        SET vNombrePersona = NombrePersona, vPrimerApellido = PrimerApellido, vSegundoApellido = SegundoApellido, vTelefono = Telefono, vCelular = Celular, vEmail = Email, updated_at = updated
+        SET vNombrePersona = NombrePersona, vPrimerApellido = PrimerApellido, vSegundoApellido = SegundoApellido, vTelefono = Telefono, vCelular = Celular, vEmail = Email, updated_at = NOW()
         WHERE idPersona = UNHEX(xIdPersona);
         /*Cliente*/
         UPDATE cliente

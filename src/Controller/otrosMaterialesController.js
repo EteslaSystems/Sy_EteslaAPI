@@ -15,7 +15,7 @@ async function getCostPanelsStructures(numberOfPanels){
 	costoEstructura = costoEstructura.message;
 	costoEstructura = costoEstructura[0].fPrecioUnitario;
 	
-    structuresCost = numberOfPanels * costoEstructura;
+    structuresCost = numberOfPanels * 65;
     return structuresCost;
 }
 /*#endregion*/

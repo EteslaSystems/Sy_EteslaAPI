@@ -1,0 +1,40 @@
+DELIMITER //
+CREATE PROCEDURE SP_Estructuras
+(
+	IN Opcion INT,
+	IN xIdEstructura VARCHAR(255),
+	IN NombreEstructura	VARCHAR(80),
+	IN Marca VARCHAR(50),
+	IN Precio FLOAT,
+	IN Garantia VARCHAR(50),
+	IN Origen VARCHAR(100),
+	IN ImageRuta VARCHAR(100)
+)
+BEGIN
+	/*Insertar*/
+	IF(Opcion = 0) THEN	
+	   INSERT INTO estructura
+	   VALUES(UUID(), NombreEstructura, Marca, Precio, 'Dolar', Garantia, Origen, ImageRuta, NOW(), NULL, NULL);
+    /*Eliminar*/
+	ELSEIF(Opcion = 1) THEN
+	   UPDATE estructura
+	   SET deleted_at = NOW()
+	   WHERE idEstructura = UNHEX(xIdEstructura);
+    /*Actualizar*/
+	ELSEIF(Opcion = 2) THEN
+	   UPDATE estructura
+	   SET vNombreMaterialFot = NombreEstructura, vMarca = Marca, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, imgRuta = ImageRuta, updated_at = NOW()
+	   WHERE idEstructura = UNHEX(xIdEstructura);
+	/*Leer*/
+    ELSEIF(Opcion = 3) THEN
+	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, vGarantia, vOrigen, imgRuta, created_at, updated_at, deleted_at
+	   FROM estructura
+	   WHERE deleted_at IS NULL;
+    /*Leer - filtrado*/
+	ELSEIF(Opcion = 4) THEN
+	   SELECT HEX(idEstructura) AS idEstructura, vNombreMaterialFot, vMarca, fPrecio, vTipoMoneda, vGarantia, vOrigen, imgRuta, created_at, updated_at, deleted_at
+	   FROM estructura
+	   WHERE idEstructura = UNHEX(xIdEstructura);
+	END IF;
+END
+// DELIMITER;

@@ -1,8 +1,5 @@
 /*
-- @description: 		Archivo que filtra que tipo de cotizacion esta solicitando el webClient:
-                            -Individual (solo por cantidad de paneles e inversores)
-                            -BajaTensión
-                            -Media tensión
+- @description: 		Combinaciones (Busqueda inteligente)
 - @author: 				LH420
 - @date: 				20/03/2020
 */
@@ -15,9 +12,9 @@ var newPanelPrice = 0;
 var oldInversorPrice = 0;
 var newInversorPrice = 0;
 var objCombinacion = {
-    combinacion: '',
-    panel:{ idPanel:0, nombrePanel:'', marcaPanel:'', potenciaPanel:'', cantidadPaneles:0, potenciaReal:0, costoDeEstructuras:0, precioPorWatt:0, costoTotalPaneles:0 }, 
-    inversor:{ idInversor:0, nombreInversor:'', marcaInversor:'', potenciaInversor:0, potenciaNominalInversor:0, precioInversor:0, potenciaMaximaInversor:0, numeroDeInversores:0, potenciaPicoInversor:0, porcentajeSobreDimens:0, costoTotalInversores:0 }
+    combinacion: null,
+    panel: null, 
+    inversor: null
 };
 
 
@@ -30,303 +27,320 @@ module.exports.mainBusqInteligente = async function(data){
 }
 
 async function mainBusquedaInteligente(data){
-    var _consumos = data.consumos;
-    var tipoCotizacion = data.tipoCotizacion;
-    var _paneles = [];
-    var newData = {};
-    var objCombinaciones = {};
-    var __combinaciones = [];
+    let tipoCotizacion = data.tipoCotizacion;
+    let _paneles = [];
+    let newData = {};
+    let objCombinaciones = {};
+    let __combinaciones = [];
+    let __combinacionMediana = [], __combinacionEconomica = [], __combinacionOptima = [];
     
-    if(tipoCotizacion == 'bajaTension'){
-        _paneles = await bajaTension.firstStepBT(data);
-        newData = {_paneles: _paneles, origen: data.origen, destino: data.destino};
-
-        __combinacionMediana = await getCombinacionMediana(newData);
-        __combinacionEconomica = await getCombinacionEconomica(newData);
-        __combinacionOptima = await getCombinacionOptima(newData, _consumos);
+    try{
+        if(tipoCotizacion == 'bajaTension'){
+            _paneles = await bajaTension.firstStepBT(data);
+            _consumos = _paneles[0].consumo;
+            _arrayConsumos = _paneles[0];
+            newData = {idUsuario: data.idUsuario, idCliente: data.idCliente, _paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa};
+    
+            __combinacionMediana = await getCombinacionMediana(newData, _consumos);
+            __combinacionEconomica = await getCombinacionEconomica(newData, _consumos);
+            __combinacionOptima = await getCombinacionOptima(newData, _consumos);
+        }
+        /* else{
+    
+        } */
+    
+        objCombinaciones = {
+            idCliente: data.idCliente,
+            _arrayConsumos: _arrayConsumos,
+            combinacionMediana: __combinacionMediana,
+            combinacionEconomica: __combinacionEconomica,
+            combinacionOptima: __combinacionOptima
+        };
+    
+        __combinaciones[0] = objCombinaciones;
+    
+        return __combinaciones;
     }
-    /* else{
-
-    } */
-
-    objCombinaciones = {
-        combinacionMediana: __combinacionMediana,
-        combinacionEconomica: __combinacionEconomica,
-        combinacionOptima: __combinacionOptima
-    };
-
-    __combinaciones.push(objCombinaciones);
-
-    return __combinaciones;
+    catch(error){
+        console.log(error);
+    }
 }
 
 /*#region Combinaciones*/
-async function getCombinacionEconomica(data){
-    var __paneles = data._paneles || null;
-    var _combinacionEconomica = [];
+async function getCombinacionEconomica(data, __consumos){
+    let __paneles = data._paneles || null;
+    let _combinacionEconomica = [];
 
     objCombinacion.combinacion = "economica";
 
-    if(__paneles.length > 0){
-        for(var i=1; i<__paneles.length; i++)
-        {
-            newPanelPrice = parseFloat(__paneles[i].panel.costoTotalPaneles);
-
-            if(i == 1){
-                oldPanelPrice = newPanelPrice;
-            }
-
-            if(oldPanelPrice >= newPanelPrice){
-                oldPanelPrice = newPanelPrice;
-                
-                objCombinacion.panel.idPanel = __paneles[i].panel.idPanel;
-                objCombinacion.panel.nombrePanel = __paneles[i].panel.nombre;
-                objCombinacion.panel.marcaPanel = __paneles[i].panel.marca;
-                objCombinacion.panel.potenciaPanel = __paneles[i].panel.potencia;
-                objCombinacion.panel.cantidadPaneles = __paneles[i].panel.noModulos;
-                objCombinacion.panel.potenciaReal = __paneles[i].panel.potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = __paneles[i].panel.costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = __paneles[i].panel.costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = __paneles[i].panel.costoTotalPaneles;
+    try{
+        if(__paneles.length > 0){
+            for(let i=1; i<__paneles.length; i++)
+            {
+                newPanelPrice = parseFloat(__paneles[i].panel.costoTotal);
+    
+                if(i == 1){
+                    oldPanelPrice = newPanelPrice;
+                }
+    
+                if(oldPanelPrice >= newPanelPrice){
+                    oldPanelPrice = newPanelPrice;
+                    
+                    objCombinacion.panel = __paneles[i].panel;
+                }
             }
         }
-    }
-
-    var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
-
-    if(__inversores.length > 0){
-        for(var j=0; j<__inversores.length; j++)
-        {
-            newInversorPrice = parseFloat(__inversores[j].precioTotalInversores);
-
-            if(j === 0){
-                oldInversorPrice = newInversorPrice;
-            }
-
-            if(oldInversorPrice >= newInversorPrice){
-                oldInversorPrice = newInversorPrice;
-
-                objCombinacion.inversor.idInversor = __inversores[j].idInversor;
-                objCombinacion.inversor.nombreInversor = __inversores[j].nombreInversor;
-                objCombinacion.inversor.marcaInversor = __inversores[j].marcaInversor;
-                objCombinacion.inversor.potenciaInversor = __inversores[j].potenciaInversor;
-                objCombinacion.inversor.potenciaNominalInversor = __inversores[j].potenciaNominalInversor;
-                objCombinacion.inversor.precioInversor = __inversores[j].precioInversor;
-                objCombinacion.inversor.potenciaMaximaInversor = __inversores[j].potenciaMaximaInversor;
-                objCombinacion.inversor.numeroDeInversores = __inversores[j].numeroDeInversores;
-                objCombinacion.inversor.potenciaPicoInversor = __inversores[j].potenciaPicoInversor;
-                objCombinacion.inversor.porcentajeSobreDimens = parseFloat(__inversores[j].porcentajeSobreDimens);
-                objCombinacion.inversor.costoTotalInversores = __inversores[j].precioTotalInversores;
-            }
-        }
-    }
     
-    _combinacionEconomica.push(objCombinacion);
+        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
     
-    newData = {
-        arrayBTI: _combinacionEconomica,
-        origen: data.origen,
-        destino: data.destino
-    };
-
-    ///Se calculan viaticos
-    _combinacionEconomica = await bajaTension.obtenerViaticos_Totales(newData);
-    _combinacionEconomica.push(objCombinacion.combinacion);
-
-    return _combinacionEconomica;
-}
-
-async function getCombinacionMediana(data){//Mediana
-    var __paneles = data._paneles || null;
-    var __inversores = data._inversores || null;
-    var _panelesSelectos = [];
-    var _combinacionMediana = [];
-
-    var marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
-    marcaEspecificaPanel = marcaEspecificaPanel.busqueda_inteligente.combinacionMediana_marcaEspecificaPanel.toString();
-
-    objCombinacion.combinacion = "mediana";
-
-    if(__paneles.length > 0){
-        //Se seleccionan paneles de la marcaEspecifica
-        for(var i=1; i<__paneles.length; i++)
-        {
-            if(__paneles[i].panel.marca === marcaEspecificaPanel){
-                _panelesSelectos.push(__paneles[i].panel);
+        let __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
+    
+        if(__inversores.length > 0){
+            for(let j=0; j<__inversores.length; j++)
+            {
+                newInversorPrice = parseFloat(__inversores[j].precioTotalInversores);
+    
+                if(j === 0){
+                    oldInversorPrice = newInversorPrice;
+                }
+    
+                if(oldInversorPrice >= newInversorPrice){
+                    oldInversorPrice = newInversorPrice;
+    
+                    objCombinacion.inversor = __inversores[j];
+                }
             }
         }
         
-        //Se selecciona el panel mas caro
-        for(var x=0; x<_panelesSelectos.length; x++)
-        {
-            newPanelPrice = parseFloat(_panelesSelectos[x].costoTotalPaneles);
-
-            if(x === 0){
-                oldPanelPrice = parseFloat(_panelesSelectos[x].costoTotalPaneles);
-            }
-            else if(oldPanelPrice >= newPanelPrice){
-                oldPanelPrice = newPanelPrice;
-                
-                objCombinacion.panel.idPanel = __paneles[x].panel.idPanel;
-                objCombinacion.panel.nombrePanel = __paneles[x].panel.nombre;
-                objCombinacion.panel.marcaPanel = __paneles[x].panel.marca;
-                objCombinacion.panel.potenciaPanel = __paneles[x].panel.potencia;
-                objCombinacion.panel.cantidadPaneles = __paneles[x].panel.noModulos;
-                objCombinacion.panel.potenciaReal = __paneles[x].panel.potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = __paneles[x].panel.costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = __paneles[x].panel.costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = __paneles[x].panel.costoTotalPaneles;
-            }
-        }
-    }
-
-    var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
-
-    if(__inversores.length > 0){
-        //Se selecciona el inversor mas barato
-        for(var j=0; j<__inversores.length; j++)
-        {
-            newInversorPrice = parseFloat(__inversores[j].precioTotalInversores);
-
-            if(j === 0){
-                oldInversorPrice = newInversorPrice;
-            }
-            else if(oldInversorPrice >= newInversorPrice){
-                oldInversorPrice = 0;
-                oldInversorPrice += newInversorPrice;
-
-                objCombinacion.inversor.idInversor = __inversores[j].idInversor;
-                objCombinacion.inversor.nombreInversor = __inversores[j].nombreInversor;
-                objCombinacion.inversor.marcaInversor = __inversores[j].marcaInversor;
-                objCombinacion.inversor.potenciaInversor = __inversores[j].potenciaInversor;
-                objCombinacion.inversor.potenciaNominalInversor = __inversores[j].potenciaNominalInversor;
-                objCombinacion.inversor.precioInversor = __inversores[j].precioInversor;
-                objCombinacion.inversor.potenciaMaximaInversor = __inversores[j].potenciaMaximaInversor;
-                objCombinacion.inversor.numeroDeInversores = __inversores[j].numeroDeInversores;
-                objCombinacion.inversor.potenciaPicoInversor = __inversores[j].potenciaPicoInversor;
-                objCombinacion.inversor.porcentajeSobreDimens = parseFloat(__inversores[j].porcentajeSobreDimens);
-                objCombinacion.inversor.costoTotalInversores = __inversores[j].precioTotalInversores;
-            }
-        }
-    }
+        _combinacionEconomica.push(objCombinacion);
+        
+        let newData = {
+            idUsuario: data.idUsuario,
+            idCliente: data.idCliente,
+            arrayBTI: _combinacionEconomica,
+            origen: data.origen,
+            destino: data.destino,
+            tarifa: data.tarifa,
+            consumos: __consumos,
+            tipoCotizacion: 'CombinacionCotizacion'
+        };
     
-    _combinacionMediana.push(objCombinacion);
+        ///Se calculan viaticos
+        _combinacionEconomica = await bajaTension.obtenerViaticos_Totales(newData);
+        _combinacionEconomica.push(objCombinacion.combinacion);
     
-    newData = {
-        arrayBTI: _combinacionMediana,
-        origen: data.origen,
-        destino: data.destino
-    };
+        return _combinacionEconomica;
+    }
+    catch(error){
+        console.log(error);
+    }
+}
 
-    ///Se calculan viaticos
-    _combinacionMediana = await bajaTension.obtenerViaticos_Totales(newData);
-    _combinacionMediana.push(objCombinacion.combinacion);
+async function getCombinacionMediana(data, __consumos){//Mediana
+    let __paneles = data._paneles || null;
+    let __inversores = data._inversores || null;
+    let _panelesSelectos = [];
+    let _combinacionMediana = [];
 
-    return _combinacionMediana;
+    try{
+        let marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
+        marcaEspecificaPanel = marcaEspecificaPanel.busqueda_inteligente.combinacionMediana_marcaEspecificaPanel.toString();
+
+        objCombinacion.combinacion = "mediana";
+
+        let mediaCostoTotPaneles = (_panelSelected) => {
+            mediaDePrecios = 0;
+            
+            for(var k=0; k<_panelSelected.length; k++)
+            {
+                mediaDePrecios += parseFloat(_panelSelected[k].costoTotal);
+            }
+
+            mediaDePrecios = Math.round((mediaDePrecios / _panelSelected.length) * 100) / 100;
+            return mediaDePrecios;
+        };
+        let panelCombMediana = (_panelSelecto, mediaCostoTPaneles) => {
+            acercamiento = 0;
+            oldAcercamiento = 0;
+            newAcercamiento = 0;
+
+            for(var u=0; u<_panelSelecto.length; u++)
+            {
+                acercamiento = Math.abs(Math.round((mediaCostoTPaneles - _panelSelecto[u].costoTotal) * 100) / 100);
+
+                if(u === 0){
+                    oldAcercamiento = acercamiento;
+                }
+                if(oldAcercamiento >= newAcercamiento){
+                    oldAcercamiento = newAcercamiento;
+
+                    objCombinacion.panel = _panelSelecto[u];
+                }
+            }
+        };
+
+        if(__paneles.length > 0){
+            //Se seleccionan paneles de la marcaEspecifica
+            for(let i=1; i<__paneles.length; i++)
+            {
+                if(__paneles[i].panel.marca === marcaEspecificaPanel){
+                    _panelesSelectos.push(__paneles[i].panel);
+                }
+            }
+
+            mediaCostoTotPaneles = mediaCostoTotPaneles(_panelesSelectos);
+            panelCombMediana(_panelesSelectos, mediaCostoTotPaneles); //:void
+        }
+
+        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
+
+        __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
+
+        let mediaCostoTotInversores = (_inversoreSelected) => {
+            mediaDePrecios = 0;
+            
+            for(var k=0; k<_inversoreSelected.length; k++)
+            {
+                mediaDePrecios += parseFloat(_inversoreSelected[k].precioTotal);
+            }
+
+            mediaDePrecios = Math.round((mediaDePrecios / _inversoreSelected.length) * 100) / 100;
+            return mediaDePrecios;
+        };
+        let inversorCombMediana = (_inversSelect, mediaCostoTInv) => {
+            acercamiento = 0;
+            oldAcercamiento = 0;
+            newAcercamiento = 0;
+            objInversorComb = {};
+
+            for(let u=0; u<_inversSelect.length; u++)
+            {
+                acercamiento = Math.abs(mediaCostoTInv - _inversSelect[u].precioTotal);
+
+                if(u === 0){
+                    oldAcercamiento = acercamiento;
+                }
+                if(oldAcercamiento >= newAcercamiento){
+                    oldAcercamiento = newAcercamiento;
+
+                    objCombinacion.inversor = __inversores[u];
+                }
+            }
+        };
+
+        mediaCostoTotInversores = mediaCostoTotInversores(__inversores);
+        inversorCombMediana(__inversores,mediaCostoTotInversores);// :void
+
+        _combinacionMediana.push(objCombinacion);
+        
+        let newData = {
+            idUsuario: data.idUsuario,
+            idCliente: data.idCliente,
+            arrayBTI: _combinacionMediana,
+            origen: data.origen,
+            destino: data.destino,
+            tarifa: data.tarifa,
+            consumos: __consumos,
+            tipoCotizacion: 'CombinacionCotizacion'
+        };
+
+        ///Se calculan viaticos
+        _combinacionMediana = await bajaTension.obtenerViaticos_Totales(newData);
+        _combinacionMediana.push(objCombinacion.combinacion);
+
+        return _combinacionMediana;
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 async function getCombinacionOptima(data, __consumos){//MayorProduccion
-    var origen = data.origen || null;
-    var __paneles = data._paneles || null;
-    var newData = {};
-    var _combinacionOptima = [];
+    let origen = data.origen || null;
+    let __paneles = data._paneles || null;
+    let _combinacionOptima = [];
 
     objCombinacion.combinacion = "optima";
 
-    if(__paneles.length > 0){
-        var oldProduccion = 0;
-        var newProduccion = 0;
-
-        for(var i=1; i<__paneles.length; i++)
-        {   
-            potenciaReal = parseFloat(__paneles[i].panel.potenciaReal);
-
-            objCombinacionOptima = { consumos:__consumos, origen, potenciaReal };
-
-            newData = await bajaTension.getPowerBTI(objCombinacionOptima);
-            _generacionPower = newData.generacion;
-
-            var totalNewGeneration = (_arr) => {
-                generation = 0;
-
-                for(var a=0; a<_arr.length; a++)
-                {
-                    generation += _arr[a];
-                }
-                return generation;
-            };
-
-            newProduccion = totalNewGeneration(_generacionPower);
-
-            //Comparacion de mayor produccion
-            if(i === 1){
-                oldProduccion = newProduccion;
-            }
-            
-            if(oldProduccion <= newProduccion){
-                oldProduccion = newProduccion;
-
-                objCombinacion.panel.idPanel = __paneles[i].panel.idPanel;
-                objCombinacion.panel.nombrePanel = __paneles[i].panel.nombre;
-                objCombinacion.panel.marcaPanel = __paneles[i].panel.marca;
-                objCombinacion.panel.potenciaPanel = __paneles[i].panel.potencia;
-                objCombinacion.panel.cantidadPaneles = __paneles[i].panel.noModulos;
-                objCombinacion.panel.potenciaReal = __paneles[i].panel.potenciaReal;
-                objCombinacion.panel.costoDeEstructuras = __paneles[i].panel.costoDeEstructuras;
-                objCombinacion.panel.precioPorWatt = __paneles[i].panel.costoPorWatt;
-                objCombinacion.panel.costoTotalPaneles = __paneles[i].panel.costoTotalPaneles;
-            }
-        }
-    }
-
-    var __inversores = await bajaTension.obtenerInversores_Requeridos(objCombinacion.panel);
-
-    if(__inversores.length > 0){
-        var oldSobredimension = 0;
-        var newSobredimension = 0;
-
-        for(var x=0; x<__inversores.length; x++)
-        {
-            newSobredimension = parseFloat(__inversores[x].porcentajeSobreDimens);
-            newInversorPrice = parseFloat(__inversores[x].precioTotalInversores);
-
-            if(x == 0){
-                oldSobredimension = newSobredimension;
-                oldInversorPrice = newInversorPrice;
-            }
-            
-            if(oldSobredimension <= newSobredimension && oldInversorPrice >= newInversorPrice){
-                oldSobredimension = newSobredimension;
-                oldInversorPrice = newInversorPrice;
-
-                objCombinacion.inversor.idInversor = __inversores[x].idInversor;
-                objCombinacion.inversor.nombreInversor = __inversores[x].nombreInversor;
-                objCombinacion.inversor.marcaInversor = __inversores[x].marcaInversor;
-                objCombinacion.inversor.potenciaInversor = __inversores[x].potenciaInversor;
-                objCombinacion.inversor.potenciaNominalInversor = __inversores[x].potenciaNominalInversor;
-                objCombinacion.inversor.precioInversor = __inversores[x].precioInversor;
-                objCombinacion.inversor.potenciaMaximaInversor = __inversores[x].potenciaMaximaInversor;
-                objCombinacion.inversor.numeroDeInversores = __inversores[x].numeroDeInversores;
-                objCombinacion.inversor.potenciaPicoInversor = __inversores[x].potenciaPicoInversor;
-                objCombinacion.inversor.porcentajeSobreDimens = parseFloat(__inversores[x].porcentajeSobreDimens);
-                objCombinacion.inversor.costoTotalInversores = parseFloat(__inversores[x].precioTotalInversores);
-            }
-        }
-    }
-
-    _combinacionOptima.push(objCombinacion);
+    try{
+        if(__paneles.length > 0){
+            let oldProduccion = 0;
+            let newProduccion = 0;
     
-    newData = {
-        arrayBTI: _combinacionOptima,
-        origen: origen,
-        destino: data.destino
-    };
-
-    ///Se calculan viaticos
-    _combinacionOptima = await bajaTension.obtenerViaticos_Totales(newData);
-    _combinacionOptima.push(objCombinacion.combinacion);
-
-    return _combinacionOptima;
+            for(let i=1; i<__paneles.length; i++)
+            {   
+                potenciaReal = parseFloat(__paneles[i].panel.potenciaReal);
+    
+                objCombinacionOptima = { consumos:__consumos, origen, potenciaReal, tarifa: data.tarifa };
+    
+                let newData = await bajaTension.getPowerBTI(objCombinacionOptima);
+                _generacionPower = newData.generacion;
+    
+                newProduccion = _generacionPower.generacionAnual;
+    
+                //Comparacion de mayor produccion
+                if(i === 1){
+                    oldProduccion = newProduccion;
+                }
+                
+                if(oldProduccion <= newProduccion){
+                    oldProduccion = newProduccion;
+    
+                    objCombinacion.panel = __paneles[i].panel;
+                }
+            }
+        }
+    
+        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
+    
+        let __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
+    
+        if(__inversores.length > 0){
+            var oldSobredimension = 0;
+            var newSobredimension = 0;
+    
+            for(let x=0; x<__inversores.length; x++)
+            {
+                newSobredimension = parseFloat(__inversores[x].porcentajeSobreDimens);
+                newInversorPrice = parseFloat(__inversores[x].precioTotalInversores);
+    
+                //Filtro para seleccionar el inversor con mayor sobredimensionamiento y menor precio
+                if(x == 0){
+                    oldSobredimension = newSobredimension;
+                    oldInversorPrice = newInversorPrice;
+                }
+                
+                if(oldSobredimension <= newSobredimension /* && oldInversorPrice >= newInversorPrice */){
+                    oldSobredimension = newSobredimension;
+                    /* oldInversorPrice = newInversorPrice; */
+    
+                    objCombinacion.inversor = __inversores[x];
+                }
+            }
+        }
+    
+        _combinacionOptima.push(objCombinacion);
+        
+        let newData = {
+            idUsuario: data.idUsuario,
+            idCliente: data.idCliente,
+            arrayBTI: _combinacionOptima,
+            origen: data.origen,
+            destino: data.destino,
+            tarifa: data.tarifa,
+            consumos: __consumos,
+            tipoCotizacion: 'CombinacionCotizacion'
+        };
+    
+        ///Se calculan viaticos
+        _combinacionOptima = await bajaTension.obtenerViaticos_Totales(newData);
+        _combinacionOptima.push(objCombinacion.combinacion);
+    
+        return _combinacionOptima;
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 /*#endregion*/
 /*#endregion*/

@@ -2,58 +2,89 @@ DELIMITER //
 CREATE PROCEDURE SP_Propuesta
 (
 	IN Opcion INT,
-	/*Variables de Cliente*/
-	IN xIdCliente VARCHAR(255),
-	/*Variables para Propuesta*/
-	IN xIdPropuesta VARCHAR(255),
-	IN xIdPanel VARCHAR(255),
-	IN xIdInversor VARCHAR(255),
-	IN xIdUsuario VARCHAR(255),
+	IN xIdPropuesta VARCHAR(255), /* PK */
+	IN xIdCliente VARCHAR(255), /* FK - id_Persona*/
+	IN xIdVendedor VARCHAR(255), /* FK - id_Persona*/
+
+	/* Variables de Cliente */
+	IN nombreCliente VARCHAR(200),
+	IN tarifaActual CHAR(6),
+	IN consumoPromedio FLOAT,
+
+	/* Variables para Vendedor */
+	IN nombreVendedor VARCHAR(200),
+
+	/* Variables para Panel */
+	IN modeloPanel VARCHAR(50),
+	IN cantidadPanel INT,
+
+	/* Variables para Inversor */
+	IN modeloInversor VARCHAR(50),
+	IN cantidadInversor INT,
+	
+	/* Variables para Estructura */
+	IN marcaEstructura VARCHAR(50),
+	IN cantidadEstructura INT,
+	
+	/* Variables para Energia */
+	IN potenciaInstalada FLOAT,
+	IN promedioNuevoConsumoMensual FLOAT,
+	IN promedioNuevoConsumoBimestral FLOAT,
+	IN promedioNuevoConsumoAnual FLOAT,
+	IN nuevaTarifa CHAR(6),
+	
+	/* Variables para Propuesta */
 	IN TipoCotizacion CHAR(12),
-	IN Tarifa CHAR(10),
-	IN CantidadPaneles INT,
-	IN CantidadInversores INT,
-	IN PotenciaPropuesta FLOAT,
-	IN GeneracionPaneles FLOAT,
-	IN NuevoConsumoCFE FLOAT,
-	IN Descuento INT,
-	IN Subtotal FLOAT,
-	IN PrecioConIVA FLOAT,
-	IN Total FLOAT,
-	IN StatusProjectFV TINYINT,
-	IN daysOfExpire INT
+	IN porcentajeDescuento TINYINT,
+	IN porcentajePropuesta TINYINT,
+	IN costoSinIVAMXN FLOAT,
+	IN costoConIVAMXN FLOAT,
+	IN costoSinIVAUSD FLOAT,
+	IN costoConIVAUSD FLOAT,
+
+	/*  */
+	IN StatusProjectFV SMALLINT,
+	IN daysOfExpire SMALLINT
 )
 BEGIN
 	DECLARE expireAt TIMESTAMP;
+    DECLARE expireAtModified TIMESTAMP;
 
 	IF(Opcion = 0) THEN
 		/*Insertar*/
 		UPDATE cliente
 		SET bTienePropuesta = 1
-		WHERE idCliente = UNHEX(xIdCliente);
+		WHERE id_Persona = UNHEX(xIdCliente);
 		/*-----------------------------*/
 		SET expireAt = DATE_ADD(NOW(),INTERVAL daysOfExpire DAY);
-		INSERT INTO Propuesta
-		VALUES(UUID(), UNHEX(xIdInversorPanel), UNHEX(xIdInversor), UNHEX(xIdCliente), UNHEX(xIdUsuario), TipoCotizacion, Tarifa, CantidadPaneles, CantidadInversores, PotenciaPropuesta, GeneracionPaneles, NuevoConsumoCFE, Descuento, Subtotal, PrecioConIVA, Total, StatusProjectFV, now(), null, null, expireAt);
-	ELSEIF (Opcion = 1) THEN
+		INSERT INTO propuesta
+		VALUES(UUID(), UNHEX(xIdCliente), UNHEX(xIdVendedor), nombreCliente, consumoPromedio, tarifaActual, nuevaTarifa, nombreVendedor, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaInstalada, promedioNuevoConsumoMensual, promedioNuevoConsumoBimestral, promedioNuevoConsumoAnual, TipoCotizacion, porcentajeDescuento, porcentajePropuesta, costoSinIVAMXN, costoConIVAMXN, costoSinIVAUSD, costoConIVAUSD, 0, NOW(), NULL, NULL, expireAt);
+		SET xIdPropuesta = (SELECT HEX(idPropuesta) FROM propuesta ORDER BY idPropuesta DESC LIMIT 1);
+		SELECT xIdPropuesta;
+	ELSEIF(Opcion = 1) THEN
 		/*Borrado logico*/
 		UPDATE cliente
 		SET deleted_at = now()
 		WHERE idPropuesta = UNHEX(xIdPropuesta);
-	ELSEIF (Opcion = 2) THEN
-		/*Editar / Actualizar*/
-		UPDATE Propuesta
-		SET id_Panel = HEX(xIdPanel), id_Inversor = HEX(xIdInversor), cTarifa = Tarifa, iCantidadPaneles = CantidadPaneles, iCantidadInversores = CantidadInversores, fPotencialPropuesta = PotenciaPropuesta, fGeneracionPaneles = GeneracionPaneles, fNuevoConsumoCFE = NuevoConsumoCFE, iPorcentajeDescuento = Descuento, fSubtotal = Subtotal, fprecioConIVA = PrecioConIVA, fTotal = Total, updated_at = now();
-	ELSEIF (Opcion = 3) THEN
-		/*Leer*/
-		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, cTarifa, iCantidadPaneles, iCantidadInversores, fPotencialPropuesta, fGeneracionPaneles, fNuevoConsumoCFE, Descuento, fSubtotal, fprecioConIVA, fTotal, siStatusProjejctFV, created_at, deleted_at, updated_at, expire_at
-		FROM Propuesta
-		WHERE deleted_at IS NULL;
+	ELSEIF(Opcion = 2) THEN
+		/*Actualizar*/
+		SET expireAtModified = DATE_ADD(NOW(),INTERVAL daysOfExpire DAY);
+		UPDATE propuesta
+		SET fConsumoPromedio = consumoPromedio, cTarifaActual = tarifaActual, cNuevaTarifa = nuevaTarifa, vModeloPanel = modeloPanel, iCantidadPanel = cantidadPanel, vModeloInversor = modeloInversor, iCantidadInversor = cantidadInversor, vMarcaEstructura = marcaEstructura, iCantidadEstructura = cantidadEstructura, fPotenciaInstalada = potenciaInstalada, fPromedioNuevoConsumoMes = promedioNuevoConsumoMensual, fPromedioNuevoConsumoBim = promedioNuevoConsumoBimestral, fPromedioNuevoConsumoAnual = promedioNuevoConsumoAnual, cTipoCotizacion = TipoCotizacion, tPorcentajeDescuento = porcentajeDescuento, tPorcentajePropuesta = porcentajePropuesta, fCostoSinIvaMxn = costoSinIVAMXN, fCostoConIvaMxn = costoConIVAMXN, fCostoSinIvaUsd = costoSinIVAUSD, fCostoConIvaUsd = costoConIVAUSD, updated_at = NOW(), expired_at = expireAtModified;
+	ELSEIF(Opcion = 3) THEN
+		/*Leer[Vendedor] => TODAS LAS PROPUESTAS PERTENECIENTES A UN CLIENTE_ESPECIFICO*/
+		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
+		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
+		FROM propuesta
+		WHERE id_Cliente = UNHEX(xIdCliente)
+		AND deleted_at IS NULL
+		ORDER BY created_at DESC;
 	ELSEIF (Opcion = 4) THEN
-		/*Consulta_filtrada*/
-		SELECT HEX(idPropuesta), HEX(id_Panel), HEX(id_Inversor), HEX(id_Cliente), HEX(id_Usuario), cTipoCotizacion, cTarifa, iCantidadPaneles, iCantidadInversores, fPotencialPropuesta, fGeneracionPaneles, fNuevoConsumoCFE, Descuento, fSubtotal, fprecioConIVA, fTotal, siStatusProjejctFV, created_at, deleted_at, updated_at, expire_at
-		FROM Propuesta
-		WHERE idPropuesta = HEX(xIdPropuesta);
+		/*Consulta filtrada*/
+		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
+		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
+		FROM propuesta
+		WHERE idPropuesta = UNHEX(xIdPropuesta);
 	END IF;
 END
 // DELIMITER;

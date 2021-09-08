@@ -14,12 +14,12 @@
 */
 const request = require('request-promise');
 const cheerio = require('cheerio');
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const process = require('process'); 
 const cronJob = require('node-cron');
 
-var moment = require('moment-timezone');
+const moment = require('moment-timezone');
 const configFile = require('../Controller/configFileController');
 
 /*                               -Tarea Programada_Obtener precio del dolar-
@@ -40,87 +40,55 @@ const configFile = require('../Controller/configFileController');
 }); */
 
 //Salvar precio del dolar en un archivo local
-async function saveDollarPrice(){
-    var directoryRoute = path.dirname(require.main.filename || process.mainModule.filename) + '/dirDollarPrice';
-    const rutaArchivo = '\\Sy_EteslaAPI\\config\\dirDollarPrice\\'; //(ruta_absoluta)
-    var objDolarPriceRegistered = {};
-    var _dollarPrices = [];
+async function saveDollarPrice(){    
+    let objPrecioDelDolar = {};
+    let uriFile = path.join(process.cwd(), 'config','dirDollarPrice');
+    let precioDolar = await scrapDollarPrice();
+    let fechaToday = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
     
+    try{
+        //Creando directorio
+        await fs.mkdir(uriFile, {recursive: true});
+        
+        //Objeto del precio del dolar
+        objPrecioDelDolar = {
+            fuente: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
+            precioDolar: precioDolar,
+            fechaUpdate: fechaToday
+        };
 
-    precioDolar = await scrapDollarPrice();
+        objPrecioDelDolar = JSON.stringify(objPrecioDelDolar, null, 2);
 
-    /*Se verifica/crea el directorio "__dirDollarPrice"*/
-    fs.mkdir(path.join(directoryRoute), { recursive: true }, async (err) => {
-        if(!err){
-            //Objeto del -Registro Precio_Dolar-
-            uri = 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx';
-            now = moment().tz("America/Mexico_City").format();
-
-            objDolarPriceRegistered = {
-                precioDolar: precioDolar,
-                fuente: uri,
-                fechaUpdate: now
-            };
-
-            now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-            fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
-
-            /* fileExist = await configFile.ifExistConfigFile(rutaArchivo, fileName);
-
-            json_dollarPrices = await configFile.getArrayJSONDollarPrice(rutaArchivo, fileName);
-            _dollarPrices = JSON.parse(json_dollarPrices); 
-            
-            //Falta agregar la funcionalidad para que se pueda generar un historial de los precios
-            //del dolar descargados en el dia. (Se debe de generar un tipo *log*)
-
-            */
-
-            _dollarPrices.push(objDolarPriceRegistered);
-            json_dollarPrices = JSON.stringify(_dollarPrices, null, 2);
-
-            //Creacion del archivo (log - pdl) : .JSON
-            fs.appendFile(rutaArchivo+fileName, json_dollarPrices, 'utf-8', function(err){
-                if(!err){
-                    console.log('Precio del dolar actualizado, correctamente.');
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            });
-        }
-        else{
-            console.log('Hubo un error al intentar crear un directorio!');
-        }
-    });
+        //Nombre del futuro archivo-log
+        let fileName = 'pdl_'+fechaToday.toString()+'.json';
+        
+        await fs.writeFile(uriFile+'/'+fileName, objPrecioDelDolar, { encoding: 'utf-8' });
+        
+        return 'Precio del dolar actualizado';
+    }
+    catch(error){
+        console.log("Error (1):\n"+error);
+    }
 }
 
 //Scrapping para obtener precio del dolar
 async function scrapDollarPrice(){
-    var priceDolar = 0;
+    const precioDolarRequest = await request({
+        uri: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
+        headers: {},
+        gzip: true
+    });
 
-    try
-    {
-        const $ = await request({
-            uri: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
-            transform: body => cheerio.load(body)
-        });
-    
-        priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
-        priceDolar = Math.round(parseFloat(priceDolar) * 100) / 100;
+    let $ = cheerio.load(precioDolarRequest);
+    let priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
+    priceDolar = Math.round(parseFloat(priceDolar) * 100) / 100;
 
-        return priceDolar;
-    }
-    catch(error)
-    {
-        console.log(error);
-    }
+    return priceDolar;
 }
 
 //Obtener precio del dolar $local
 async function getDollarPrice(){
-    const response = {};
-    var dollarPrice = 0;
+    let dollarPrice = 0;
 
     now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
     fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log

@@ -5,18 +5,18 @@
 */
 const mysqlConnection = require('../../config/database');
 
-function insertarBD (datas) {
-	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, created_at } = datas;
+function insertarBD(datas){
+	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, created_at, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -30,17 +30,17 @@ function insertarBD (datas) {
 }
 
 function eliminarBD(datas) {
-	const { idPanel, deleted_at } = datas;
+	const { idPanel } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null, deleted_at], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -54,17 +54,17 @@ function eliminarBD(datas) {
 }
 
 function editarBD (datas) {
-	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, updated_at } = datas;
+	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, fISC, fVOC, fVMP, null, updated_at, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -79,14 +79,14 @@ function editarBD (datas) {
 
 function consultaBD () {
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -102,14 +102,14 @@ function consultaBD () {
 function buscarBD (datas) {
 	const { idPanel } = datas;
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -127,19 +127,17 @@ function buscarBD (datas) {
 - @author: 				LH420
 - @date: 				01/04/2020
 */
-const otrosMateriales = require('./otrosMaterialesController');
 
-var objNoDeModulosPorPotenciaDelPanel = {};
+async function numberOfModuls(potenciaNecesaria){
+	try{
+		let _arrayTodosPaneles = await getAllPanelsArray();
+		let _arrayObjectsNoOfModuls = getArrayObjectsNoOfModuls(_arrayTodosPaneles,potenciaNecesaria);
 
-async function numberOfModuls(powerNeeded, irradiation, efficiency, topeProduccion){
-	var _potenciaRequeridaEnKwp = await getSystemPowerInKwp(powerNeeded, irradiation, efficiency, topeProduccion);
-	// console.log('Potencia requerida en Kwp: '+_potenciaRequeridaEnKwp);
-	var _potenciaRequeridaEnW = getSystemPowerInWatts(_potenciaRequeridaEnKwp);
-	// console.log('Potencia requerida en Watts: '+_potenciaRequeridaEnW);
-	var _arrayTodosPaneles = await getAllPanelsArray();
-	_arrayObjectsNoOfModuls = await getArrayObjectsNoOfModuls(_arrayTodosPaneles,_potenciaRequeridaEnW);
-
-	return _arrayObjectsNoOfModuls;
+		return _arrayObjectsNoOfModuls;
+	}
+	catch(error){
+		console.log(error);
+	}
 }
 
 async function getAllPanelsArray(){
@@ -148,46 +146,49 @@ async function getAllPanelsArray(){
 	return consultaPaneles;
 }
 
-async function getArrayObjectsNoOfModuls(arrayAllOfPanels, energyRequiredInW){
+function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
+	let objNoDeModulosPorPotenciaDelPanel = {};
 	arrayNoDeModulosPorPotenciaDelPanel = [];
 
-	for(var i = 0; i < arrayAllOfPanels.length; i++)
+	for(let i = 0; i < arrayAllOfPanels.length; i++)
 	{
 		idPanel = arrayAllOfPanels[i].idPanel;
 		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
-		_marca = arrayAllOfPanels[i].vMarca
-		_precio = arrayAllOfPanels[i].fPrecio;
-		potenciaDelPanel = arrayAllOfPanels[i].fPotencia;
-		NoOfModuls = Math.ceil(energyRequiredInW / potenciaDelPanel);
-		structuresCost = await otrosMateriales.obtenerCostoDeEstructuras(NoOfModuls);
-		_potenciaReal = (potenciaDelPanel * NoOfModuls)/1000;
+		_marca = arrayAllOfPanels[i].vMarca;
+		_precio = parseFloat(arrayAllOfPanels[i].fPrecio);
+		origen = arrayAllOfPanels[i].vOrigen;
+		garantia = arrayAllOfPanels[i].vGarantia;
+		potenciaDelPanel = parseFloat(arrayAllOfPanels[i].fPotencia);
+		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel);
+		_potenciaReal = Math.round(((potenciaDelPanel * NoOfModuls) / 1000) * 100) / 100; //KWp - wtts ===> kwp
 
 		objNoDeModulosPorPotenciaDelPanel = {
 			idPanel: idPanel,
 			nombre: _nombre,
 			marca: _marca,
 			potencia: potenciaDelPanel,
+			origen: origen,
+			garantia: garantia,
 			potenciaReal: _potenciaReal,
 			noModulos: NoOfModuls,
 			precioPorPanel: _precio,
-			costoDeEstructuras: structuresCost
+			costoTotal: 0,
+			imgRuta: arrayAllOfPanels[i].imgRuta
 		};
 
-		arrayNoDeModulosPorPotenciaDelPanel.push(objNoDeModulosPorPotenciaDelPanel);
+		arrayNoDeModulosPorPotenciaDelPanel[i] = objNoDeModulosPorPotenciaDelPanel;
 	}
 	return arrayNoDeModulosPorPotenciaDelPanel;
 }
 
-function getSystemPowerInWatts(powerRequired){
-	potenciaRequeridaEnW = powerRequired * 1000;
-	potenciaRequeridaEnW = parseFloat(Math.round(potenciaRequeridaEnW * 100) / 100).toFixed(2);
+async function getSystemPowerInWatts(powerRequired){
+	potenciaRequeridaEnW = Math.round((powerRequired/1000) * 100)/100;
 	return potenciaRequeridaEnW;
 }
 
 async function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency, topeProduccion){
-	potenciaRequeridaEnKwp = monthlyAvarageConsumption / (irradiation * efficiency);
-	potenciaRequeridaEnKwp = parseFloat(Math.round(potenciaRequeridaEnKwp * 100) / 100).toFixed(2);
-	potenciaRequeridaEnKwp >= topeProduccion ? potenciaRequeridaEnKwp = topeProduccion : potenciaRequeridaEnKwp;
+	potenciaRequeridaEnKwp = Math.round((monthlyAvarageConsumption / (irradiation * efficiency * 30/*dias*/)) * 100) / 100;
+	potenciaRequeridaEnKwp = potenciaRequeridaEnKwp >= topeProduccion ? topeProduccion : potenciaRequeridaEnKwp;
 	return potenciaRequeridaEnKwp;
 }
 
@@ -200,19 +201,16 @@ module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion,
 
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
-
 	return result;
 }
 
-module.exports.eliminar = async function (datas, response) {
+module.exports.eliminar = async function (datas) {
 	const result = await eliminarBD(datas);
-
 	return result;
 }
 
 module.exports.buscar = async function (datas) {
 	const result = await buscarBD(datas);
-
 	return result;
 }
 
@@ -224,6 +222,5 @@ module.exports.editar = async function (datas, response) {
 
 module.exports.consultar = async function (response) {
 	const result = await consultaBD();
-
 	return result;
 }

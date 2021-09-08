@@ -2,10 +2,10 @@
   "name": "api_etesla",
   "version": "0.0.1x",
   "description": "API del sistema de gestion eTesla",
-  "main": "config/configStart.js",
+  "main": "configStart.js",
   "scripts": {
-    "start": "node config/configStart.js",
-    "dev": "nodemon config/configStart.js",
+    "start": "node configStart.js",
+    "dev": "nodemon configStart.js",
     "desarrollo": "pm2 start config/configStart.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,7 +17,7 @@
     "Sistema",
     "Gestion"
   ],
-  "author": "[Jesus Daniel Carrera Falcon (https://github.com/JesusDCF)] [Benny Yael Ramirez Herrerias] [Eduardo Herrera Aldaraca]",
+  "author": "[Eduardo Herrera Aldaraca], [Jesus Daniel Carrera Falcon], [Benny Yael Ramirez Herrerias]",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -31,9 +31,11 @@
     "moment-timezone": "^0.5.28",
     "mysql": "^2.18.1",
     "node-cron": "^2.0.3",
+    "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.6",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "puppeteer": "^5.3.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "requests": "^0.3.0",

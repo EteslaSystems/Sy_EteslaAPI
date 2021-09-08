@@ -7,14 +7,15 @@ const request = require('request');
 const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
 const dolar = require('../Controller/dolar_tipoCambio');
-const { array } = require('yup');
+const financiamiento = require('../Controller/financiamientoProjController');
+const power = require('../Controller/powerController');
+const roi = require('../Controller/ROIController');
+const cliente = require('../Controller/clienteController');
+const vendedor = require('../Controller/usuarioController');
+const estructura = require('../Controller/estructuraController');
 
-var distanciaEnKm = 0;
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
-var descuento = 0; //Este valor tiene que ser dinamico y pasado por parametro a la funcion 'main_calcularViaticos'
-var precioDolar = 0;
-
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
 const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
 const km_hospedaje = 130;
@@ -26,169 +27,290 @@ const comida_dia = 9.5; //Cotizador - viejo (??)
 const viaticos_otros = 0.05; //Cotizador - viejo (??)
 
 async function calcularViaticosBTI(data){
-    var objCotizacionBTI = {};
-    var arrayCotizacionBTI = [];
-    var origen = data.origen;
-    var destino = data.destino;
-    var bInstalacion = data.bInstalacion || null;
-    _configFile = await configFile.getArrayOfConfigFile();
-    distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
-    distanciaEnKm = distanciaEnKm.message;
+    let _result = [];
+    let objROI = null, objPower = null, objCotizacionBTI = {};
+    let idUsuario = data.idUsuario;
+    let idCliente = data.idCliente;
+    let origen = data.origen;
+    let destino = data.destino;
+    let _consums = data.consumos || null;
+    let tipoCotizacion = data.tipoCotizacion || null;
+    let tarifa = data.tarifa || null;
+    let descuento = (data.descuento / 100) || 0;
+    let aumento = (data.aumento / 100) || 0;
+    let costoTotalEstructuras, costoTotalPaneles, costoTotalInversores;
 
-    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
-
-    _arrayCotizacion = data.arrayBTI;
+    try{
+        // let _opciones = await consultaOpcionesVPropuestaBD();
+        let _configFile = await configFile.getArrayOfConfigFile();
+        let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
+        distanciaEnKm = distanciaEnKm.message;
+        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        precioDolar = precioDolar.precioDolar;
     
-    for(var x=0; x<_arrayCotizacion.length; x++)
-    {
-        /*#region Iteracion_Paneles*/
-        __no = _arrayCotizacion[x].no || 0;
-        __nombrePanel = _arrayCotizacion[x].panel.nombrePanel || null;
-        __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
-        __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
-        __cantidadPaneles = parseInt(_arrayCotizacion[x].panel.cantidadPaneles) || 0; //numeroDeModulos
-        __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
-        __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
-        __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
-        // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-        // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
-        costoTotalPaneles = Math.round(parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles) * 100) / 100;
-        /*#endregion*/
-        /*#region Iteracion_Inversores*/
-        __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
-        __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-        __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor || 0;
-        __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor || 0;
-        __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
-        __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
-        __numeroDeInversores = parseInt(_arrayCotizacion[x].inversor.numeroDeInversores) || 0;
-        __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
-        __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
-        costoTotalInversores = _arrayCotizacion[x].inversor.costoTotalInversores || 0;
-        /*#endregion*/
-        
-        noDias = await getDaysBTI(__cantidadPaneles);
+        let validarJSON = (objJSON) => { //Valida y procesa de String a Object
+            if(typeof objJSON === 'string'){
+                objJSON = JSON.parse(objJSON);
+                return objJSON;
+            }
+            return false;
+        };
+    
+        //Datos cliente
+        let uCliente = await cliente.consultarId({ idPersona: idCliente });
+        uCliente = uCliente.message; 
+        uCliente = uCliente[0];
+    
+        //Datos vendedor
+        let uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
+        uVendedor = uVendedor.message;
+        uVendedor = uVendedor[0];
 
-        if(distanciaEnKm >= km_hospedaje){
-            hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
-            comida = noDias * comida_dia * noPersonasRequeridas;
-            pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
+        //Estructuras
+        let _estructuras = await estructura.leer();
+        _estructuras = _estructuras.message;
+
+        /* Se filtra la marca/modelo de estructura segun sea el caso */
+        if(data.hasOwnProperty('estructura')){ //Estructura seleccionada
+            //Filtrar estructura
+            _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.estructura) });
+            _estructuras = _estructuras[0]; //Formating Wto Object
         }
-        else if(distanciaEnKm >= km_pasaje && noDias < 7){
-            pasaje = distanciaEnKm * km * noPersonasRequeridas * 2 * noDias;
+        else{ //*Default 'Everest'*
+            if(tipoCotizacion === 'individual'){
+                if(data.arrayBTI[0].estructura === null){
+                    _estructuras = null;
+                }
+                else{
+                    _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.arrayBTI[0].estructura.vMarca) });
+                    _estructuras = _estructuras[0]; //Formating to Object
+                }
+            }
+            else{
+                _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes('Everest') });
+                _estructuras = _estructuras[0]; //Formating to Object
+            }
         }
-        else if(distanciaEnKm >= km_pasaje && noDias > 7){
-            hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
-            comida = noDias * comida_dia * noPersonasRequeridas;
-            pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
+
+        if(_consums != null){
+            //Consumos
+            _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
+    
+            //Se adjuntan los consumos al _arrayBTI
+            data.arrayBTI[0]._arrayConsumos = _consums;
+        }
+    
+        //ArrayBTI - Equipos seleccionados/Combinaciones
+        if(data.arrayBTI[0].combinacion){
+            //Combinaciones
+            _arrayCotizacion = data.arrayBTI;
         }
         else{
-            hospedaje = 0;
-            comida = 0;
-            pasaje = 0;
-        }
-
-        viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
-        costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
-        manoDeObra = await getPrecioDeManoDeObraBTI(__cantidadPaneles, costoTotalPanInvEstr);
-
-        if(bInstalacion != null && bInstalacion === 'false'){
-            manoDeObra[0] = 0;
-        }
-
-        totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
-        subtotOtrFletManObrTPIE = parseFloat(manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos);
-        margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
-        costoTotalProyecto = Math.ceil(subtotOtrFletManObrTPIE + margen) + (descuento * (subtotOtrFletManObrTPIE + margen));
-        precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100;
-        precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
-        precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
-
-        /*????*/precio_watt = parseFloat(costoTotalProyecto / (__cantidadPaneles * __potenciaPanel));
-
-        objCotizacionBTI = {
-            no: _arrayCotizacion[x].no || 0,
-            paneles: {
-                nombrePanel: __nombrePanel || null,
-                marcaPanel: __marcaPanel || null,
-                potenciaPanel: __potenciaPanel || null,
-                cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
-                potenciaReal: __potenciaReal || null,
-                costoDeEstructuras:  __costoDeEstructuras || null,
-                precioPorWatt: __precioPorWattPanel || null,
-                // precioPorModulo: __precioPorModulo || null,
-                costoTotalPaneles: costoTotalPaneles || null
-            },
-            inversores: {
-                nombreInversor:  __nombreInversor || null,
-                marcaInversor: __marcaInversor || null,
-                potenciaInversor: __potenciaInversor || null,
-                potenciaNominalInversor: __potenciaNominalInversor || null,
-                potenciaPicoPorInversor: __potenciaPicoInversor || null,
-                precioInversor: __precioInversor || null,
-                potenciaMaximaInversor:  __potenciaMaximaInversor || null,
-                numeroDeInversores: __numeroDeInversores || null,
-                porcentajeSobreDimens: __porcentajeSobreDimens || null,
-                costoTotalInversores: costoTotalInversores || null
-            },
-            viaticos_costos: {
-                noDias: noDias,
-                hospedaje: hospedaje,
-                comida: comida,
-                pasaje: pasaje
-            },
-            totales: {
-                totalViaticosMT: viaticos,
-                manoDeObra: manoDeObra[0],
-                otrosTotal: manoDeObra[1],
-                totalFletes: totalFletes,
-                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
-                margen: margen,
-                totalDeTodo: costoTotalProyecto,
-                precio: precio,
-                precioMasIVA: precioMasIVA,
-                precio_watt: precio_watt,
-                precioTotalMXN: precioTotalMXN
+            //Equipos seleccionados
+            if(data.arrayBTI[0].inversor != null){
+                formated = data.arrayBTI[0].inversor; //Formated to get _Inversor
+                data.arrayBTI[0].inversor = validarJSON(data.arrayBTI[0].inversor) === false ? data.arrayBTI[0].inversor : validarJSON(data.arrayBTI[0].inversor);
             }
-        };
+    
+            if(data.arrayBTI[0].panel != null){
+                formated = data.arrayBTI[0].panel; //Formated to get _Panel
+                data.arrayBTI[0].panel = validarJSON(data.arrayBTI[0].panel) === false ? data.arrayBTI[0].panel : validarJSON(data.arrayBTI[0].panel);
+            }
+    
+            _arrayCotizacion = data.arrayBTI;
+        }
+        
+        for(var x=0; x<_arrayCotizacion.length; x++)
+        {
+            let noDias = getDaysBTI(_arrayCotizacion[x].panel.noModulos);
+    
+            if(distanciaEnKm >= km_hospedaje){
+                hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
+                comida = noDias * comida_dia * noPersonasRequeridas;
+                pasaje = Math.round((distanciaEnKm * km * noPersonasRequeridas * 2) * 100) / 100;
+            }
+            else if(distanciaEnKm >= km_pasaje && noDias < 7){
+                pasaje = distanciaEnKm * km * noPersonasRequeridas * 2 * noDias;
+            }
+            else if(distanciaEnKm >= km_pasaje && noDias > 7){
+                hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
+                comida = noDias * comida_dia * noPersonasRequeridas;
+                pasaje = distanciaEnKm * km * noPersonasRequeridas * 2;
+            }
+            else{
+                hospedaje = 0;
+                comida = 0;
+                pasaje = 0;
+            }
 
-        arrayCotizacionBTI.push(objCotizacionBTI);
+            //Cotizacion Individual
+            if(tipoCotizacion === 'individual'){
+                if(data.data.cotizacionIndividual.complementos.viaticos.viaticos == '1'){ //Con viaticos
+                    hospedaje = data.data.cotizacionIndividual.complementos.viaticos.hospedaje === '1' ? hospedaje : 0;
+                    comida = data.data.cotizacionIndividual.complementos.viaticos.comida === '1' ? comida : 0;
+                    pasaje = data.data.cotizacionIndividual.complementos.viaticos.pasaje === '1' ? pasaje : 0;
+                }
+                else{ //Sin viaticos
+                    hospedaje = 0;
+                    comida = 0;
+                    pasaje = 0;
+                }
+            }
+            
+            /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
+            if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'CombinacionCotizacion'){ //BajaTension
+                costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
+                costoTotalInversores = typeof _arrayCotizacion[x].inversor.precioTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : _arrayCotizacion[x].inversor.precioTotal;
+                costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
+            }
+            else if(tipoCotizacion === 'individual'){ //Individual
+                costoTotalPaneles = _arrayCotizacion[x].panel === null ? 0 : _arrayCotizacion[x].panel.costoTotal;
+                costoTotalInversores = _arrayCotizacion[x].inversor === null ? 0 : _arrayCotizacion[x].inversor.precioTotal;
+                costoTotalEstructuras = _arrayCotizacion[x].estructura === null ? 0 : _arrayCotizacion[x].estructura.costoTotal;
+            }
+            /*#endregion*/
+    
+            let viaticos = Math.round((hospedaje + comida + pasaje) * (1 + viaticos_otros) * 100) / 100;
+            let costoTotalPanInvEstr = Math.round((costoTotalPaneles + costoTotalInversores + costoTotalEstructuras) * 100) / 100;
+            let manoDeObra = await getPrecioDeManoDeObraBTI(_arrayCotizacion[x].panel.noModulos, (costoTotalPanInvEstr + viaticos));
+            let totalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes)); //USD
+
+            if(tipoCotizacion === 'individual'){
+                if(data.data.cotizacionIndividual.complementos.manoObra === '0'){
+                    manoDeObra[0] = 0; //Mano de Obra 
+                }
+                
+                if(data.data.cotizacionIndividual.complementos.otros === '0'){
+                    manoDeObra[1] = 0; //Otros
+                }
+
+                if(data.data.cotizacionIndividual.complementos.fletes === '0'){
+                    totalFletes = 0; //Fletes
+                }
+            }
+
+            
+            let subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
+            let margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
+            let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
+           
+            if(aumento > 0){
+                precio = Math.round((costoTotalProyecto * (1 + aumento)) * 100) / 100; //USD //Sin IVA
+            }
+            else{
+                precio = Math.round(costoTotalProyecto * (1 - descuento) * 100)/100; //USD //Sin IVA
+            }
+    
+            let precioUSDConIVA = Math.round((precio * 1.16)); //USD //Con IVA
+            let precioMXNSinIVA = Math.round(precio * precioDolar); //MXN SIN IVA
+            let precioMXNConIVA = Math.round(precioUSDConIVA * precioDolar); //MXN + IVA
+    
+            /*????*/ precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+    
+            if(_consums != null){
+                //P O W E R
+                let dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
+                objPower = await power.obtenerPowerBTI(dataPwr) || null;
+                objROI = await roi.obtenerROI(objPower, _consums, precioMXNSinIVA);
+    
+                //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion
+                _consums =  _consums._promCons.promConsumosBimestrales;///Promedio de consumos
+            }
+    
+            //F I N A N C I A M I E N T O
+            let ddata = { costoTotal: precioMXNSinIVA };
+            let objFinan = await financiamiento.financiamiento(ddata);
+    
+            /*#region Foromating . . .*/
+            let paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
+            let inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
+            /*#endregion*/
+    
+            //Se llena el objetoRespuesta
+            objCotizacionBTI = {
+                vendedor: uVendedor,
+                cliente: uCliente,
+                paneles: paneles,
+                inversores: inversores,
+                estructura: _estructuras,
+                costoTotalEstructuras: costoTotalEstructuras,
+                viaticos_costos: {
+                    noDias: noDias,
+                    distanciaEnKm: distanciaEnKm,
+                    hospedaje: hospedaje,
+                    comida: comida,
+                    pasaje: pasaje
+                },
+                totales: {
+                    totalViaticosMT: viaticos,
+                    manoDeObra: manoDeObra[0],
+                    otrosTotal: manoDeObra[1],
+                    fletes: totalFletes,
+                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                    margen: margen,
+                    precio: precio, //USD sin IVA
+                    precioMasIVA: precioUSDConIVA, //USD con IVA
+                    precioMXNSinIVA: precioMXNSinIVA, //MXN sin IVA
+                    precioMXNConIVA: precioMXNConIVA, //MXN con IVA
+                    precio_watt: precio_watt
+                },
+                tarifa: tarifa,
+                power: objPower,
+                roi: objROI, 
+                financiamiento: objFinan,
+                descuento: data.descuento,
+                aumento: data.aumento,
+                tipoDeCambio: precioDolar,
+                promedioConsumosBimestrales: _consums,
+                tipoCotizacion: tipoCotizacion
+            };
+    
+            _result[0] = objCotizacionBTI;
+        }
+    
+        return _result;
     }
-
-    return arrayCotizacionBTI;
+    catch(error){
+        console.log(error);
+    }
 }
 
-async function getDaysBTI(noPanelesAInstalar){
-    dias = Math.ceil((noPanelesAInstalar / noPersonasRequeridas) / personas_panel);
+function getDaysBTI(noPanelesAInstalar){
+    let dias = Math.ceil((noPanelesAInstalar / noPersonasRequeridas) / personas_panel);
     return dias;
 }
 
-async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIVEM){
-    const dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000};
-    const dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
-    mo_unitario = 12;
-    otros_porcentaje = 0.035;
+async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion retorna el costo de la ManoObra, etc. en dolares
+    /*
+        ->[dictionaryMOCost && OtrosCost] => {El *numero de la izquierda* es la cantidad de paneles y el *numero de la derecha* el costo en MXN}
+        ->totalPIEV = [PIEV] Paneles Inversores Estructuras Viaticos
+    */
 
-    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
+    let dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000};
+    let dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
+    let mo_unitario = 12;
+    let otros_porcentaje = 0.035;
 
-    if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){
-        costoMO = dictionaryMOCost[cantidadPaneles] / precioDolar;
-
-        if(cantidadPaneles <= 45){
-            otrosPrecioInicial = 4000;
-            costoOtros = dictionaryOtrosCost[cantidadPaneles] / precioDolar;
+    try{
+        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        precioDolar = precioDolar.precioDolar;
+    
+        if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){ //Se busca coincidencia en los diccionarios (Sobre la cantidad de paneles a instalar)
+            costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;
+            costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
         }
-    }
-    else{
-        costoMO = cantidadPaneles * mo_unitario;
-        costoOtros = totalPIVEM * otros_porcentaje; //PIVEM = Paneles Inversores Viaticos Estructuras ManoDeObra
-    }
+        else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
+            costoMO = cantidadPaneles * mo_unitario;
+            costoOtros = (totalPIEV + costoMO) * otros_porcentaje;
+        }
+    
+        costosManoObraYOtros = [costoMO, costoOtros];
 
-    costosManoObraYOtros = [costoMO, costoOtros];
-
-    return costosManoObraYOtros;
+        return costosManoObraYOtros;
+    }
+    catch(error){
+        console.log('Error ManoObra cost: '+error);
+    }
 }
 
 module.exports.calcularViaticosBTI = async function (data){
@@ -199,238 +321,151 @@ module.exports.calcularViaticosBTI = async function (data){
 
 /*#region Viaticos MediaTension*/
 async function main_calcularViaticos(data){
-    var _arrayCotizacion = data.arrayPeriodosGDMTH;
-    var origen = data.origen;
-    var destino = data.destino;
-    distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
-    distanciaEnKm = distanciaEnKm.message;
-    // distanciaEnKm = 93; //Descomentar la linea de arriba y eliminar esta, para que la funcionalidad sea dinamica
+    let _resultado = [], objViaticosCalculados = {};
+    let pagoPasaje = 0, pagoPasajeTotal = 0, pagoComidaTotal = 0, pagoHospedajeTotal = 0;
 
-    // if(Array.isArray(_arrayCotizacion) != true){
-    //     _arrayCotizacion = Object.values(_arrayCotizacion);
-    // }
+    try{
+        let origen = data.origen;
+        let destino = data.destino;
+        let idCliente = data.idCliente;
+        let descuento = (parseFloat(data.descuento) / 100) || 0;
+        let propuesta = data.propuesta; //Obj
+        let panel = JSON.parse(propuesta.panel); //Obj
+        let inversor = propuesta.inversor; //Obj
+        let _agregados = data._agregados || null;
+        let tarifa = data.tarifa;
 
-    console.log('Distancia en km, de la cotizacion: '+distanciaEnKm);
+        //Distancia KM
+        let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
+        distanciaEnKm = distanciaEnKm.message;
 
-    _arrayCotizacion = await calcularNoDeCuadrillas(_arrayCotizacion, distanciaEnKm);
-    
-    return _arrayCotizacion;
+        //Datos Cliente
+        let uCliente = await cliente.consultarId({ idPersona: idCliente});
+        uCliente = uCliente.message;
+        uCliente = uCliente[0];
+
+        //Estructuras
+        let _estructuras = await estructura.leer();
+        _estructuras = _estructuras.message;
+
+        //
+        let confFile = await configFile.getArrayOfConfigFile();
+        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        precioDolar = precioDolar.precioDolar;
+
+        ///#Calcular totales de agregados
+        let costoTotalAgregados = (_agregads) => {
+            let total = 0;
+
+            for(let agregado of _agregads)
+            {
+                subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
+                total += subtotal;
+            }
+            
+            return total;
+        };
+
+        costoTotalAgregados = _agregados != null ? costoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
+        costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
+
+        //Se obtiene numero de cuadrillas
+        let numeroCuadrillas = getNumberOfCrews(panel.noModulos);
+        let numeroDias = getDays(panel.noModulos, numeroCuadrillas);
+        let numeroDiasReales = getRealDays(panel.noModulos, numeroDias);
+        let numeroPersonasRequeridas = numeroCuadrillas * parseInt(confFile.cuadrilla.numeroDePersonas);
+
+        if(distanciaEnKm > 30){ ///Si la distanciaEnKm supera los 30Km, se cobran viaticos...
+            pagoPasaje = Math.round((getBusPayment(distanciaEnKm)/precioDolar) * 100)/100;
+            pagoPasajeTotal = Math.ceil(pagoPasaje * numeroPersonasRequeridas);
+            pagoComidaTotal = Math.round((((comida * numeroPersonasRequeridas) * numeroDiasReales) / precioDolar) * 100)/100;
+            pagoHospedajeTotal = Math.round(((hospedaje * numeroPersonasRequeridas) * numeroDiasReales / precioDolar) * 100)/100;
+        }
+
+        //Estructura seleccionada por el usuario
+        if(data.propuesta.hasOwnProperty('estructura')){ 
+            //Filtrar estructura
+            _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.propuesta.estructura) });
+            _estructuras = _estructuras[0]; //Formating Wto Object
+        }
+        else{ //Estructura *Default por el sistema* => 'Everest'
+            _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes("Everest") });
+            _estructuras = _estructuras[0]; //Formating to Object
+        }
+
+        let costoTotalEstructuras = _estructuras.fPrecio * panel.noModulos;
+        let totalViaticos = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal;
+        let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.precioTotal) + costoTotalEstructuras) * 100) /100;
+        let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
+        let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
+        let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
+        let margen = Math.round(((subtotOtrFletManObrTPIE / (1 - confFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100)/100;
+        let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos + costoTotalAgregados) * 100)/100;
+        let precio = Math.round(totalDeTodo * (1 - descuento)); //USD
+        let precioMasIVA = Math.round(precio * confFile.costos.precio_mas_iva); //USD + IVA
+        let precioMXN = Math.round(precio * precioDolar); //MXN
+        let precioMasIVAMXN = Math.round(precioMasIVA * precioDolar); //MXN + IVA
+
+        let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potencia)) * 100)/100;
+
+        /*#region POWER - ROI - FINANCIAMIENTO*/
+        let objPower = await power.obtenerPowerMT(data); //Return an Object
+        let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMXN);
+
+        let xObjC = { costoTotal: precioMXN }; /////Data
+        let objFinanciamiento = await financiamiento.financiamiento(xObjC);
+        /*#endregion POWER - ROI - FINANCIAMIENTO*/
+
+        objViaticosCalculados = {
+            cliente: uCliente,
+            paneles: panel,
+            inversores: inversor,
+            viaticos_costos: {
+                _agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados },
+                noCuadrillas: numeroCuadrillas,
+                noPersonasRequeridas: numeroPersonasRequeridas,
+                noDias: numeroDias,
+                noDiasReales: numeroDiasReales,
+                pagoPasaje: pagoPasaje,
+                pagoTotalPasaje: pagoPasajeTotal,
+                pagoTotalComida: pagoComidaTotal,
+                pagoTotalHospedaje: pagoHospedajeTotal
+            },
+            totales: {
+                manoDeObra: costoManoDeObra[0] || null,
+                otrosTotal: costoManoDeObra[1] || null,
+                costoTotalFletes: costoTotalFletes,
+                totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
+                margen: margen,
+                precio: precio,
+                precioMasIVA: precioMasIVA,
+                precioMXNSinIVA: precioMXN,
+                precioMXNConIVA: precioMasIVAMXN,
+                precio_watt: precio_watt
+            },
+            estructura: { estructura: _estructuras, costoTotal: costoTotalEstructuras },
+            tarifa: tarifa,
+            power: objPower,
+            roi: objROI, 
+            financiamiento: objFinanciamiento,
+            descuento: descuento,
+            tipoDeCambio: precioDolar,
+            tipoCotizacion: data.tipoCotizacion
+        };
+        
+        _resultado[0] = objViaticosCalculados;
+
+        return _resultado;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
 }
 
 /*#region Cuadrilla - Mano de obra*/
-async function calcularNoDeCuadrillas(_arrayCotizacion, _distanciaEnKm){
-    var _cotizacion = [];
-    var _configFile = await configFile.getArrayOfConfigFile();
-    var distanciaEnKm = parseFloat(_distanciaEnKm);
 
-    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
-
-    if(distanciaEnKm > 30)
-    {
-        for(var x = 0; x < _arrayCotizacion.length; x++)
-        {
-            /*#region iteracionArray_panel*/
-            __no = _arrayCotizacion[x].no || 0;
-            __nombrePanel = _arrayCotizacion[x].panel.nombrePanel || null;
-            __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
-            __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
-            __cantidadPaneles = parseInt(_arrayCotizacion[x].panel.cantidadPaneles) || 0; //numeroDeModulos
-            __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
-            __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
-            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
-            // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-            // __precioPorModulo = parseFloat(_arrayCotizacion[x].panel.precioPorWatt);
-            costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
-            /*#endregion*/
-
-            /*#region iteracionArray_inversor*/
-            __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
-            __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor || 0;
-            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor || 0;
-            __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
-            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
-            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
-            __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
-            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
-            costoTotalInversores = _arrayCotizacion[x].inversor.costoTotalInversores || 0;
-            /*#endregion*/
-            _numeroCuadrillas = parseInt(getNumberOfCrews(__cantidadPaneles)) || 0;
-            numeroDePersonasRequeridas = _numeroCuadrillas * parseInt(_configFile.cuadrilla.numeroDePersonas) || 0;
-            numeroDias = getDays(__cantidadPaneles, _numeroCuadrillas);
-            numeroDiasReales = getRealDays(__cantidadPaneles, numeroDias);
-            pagoPasaje = Math.round((getBusPayment(distanciaEnKm) / precioDolar) * 100) / 100;
-            pagoPasajeTotal = Math.ceil(pagoPasaje * numeroDePersonasRequeridas);
-            // pagoPasajeTotal = Math.ceil(pagoPasajeTotal);
-            pagoComidaTotal = Math.round(((((comida * numeroDePersonasRequeridas) * numeroDiasReales) / precioDolar) * 100) / 100);
-            pagoHospedajeTotal = Math.round(((((hospedaje * numeroDePersonasRequeridas) * numeroDiasReales) / precioDolar) * 100) / 100);
-            totalViaticosMT = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal; //MT = MediaTension
-
-            costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras);
-
-            costoTotalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes));
-            
-            costoManoDeObra = getPrecioDeManoDeObraMT(__cantidadPaneles, costoTotalPanInvEstr);
-            subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr); //TPIE = Total Paneles Inversores Estructuras
-            margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100;
-            totalDeTodo = subtotOtrFletManObrTPIE + margen + totalViaticosMT;
-            precio = Math.round(totalDeTodo * (1 - descuento) * 100)/100;
-            precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
-            precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
-
-            cotizacion = {
-                no: _arrayCotizacion[x].no || 0,
-                paneles: {
-                    nombrePanel: __nombrePanel || null,
-                    marcaPanel: __marcaPanel || null,
-                    potenciaPanel: __potenciaPanel || null,
-                    cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
-                    potenciaReal: __potenciaReal || null,
-                    costoDeEstructuras:  __costoDeEstructuras || null,
-                    precioPorWatt: __precioPorWattPanel || null,
-                    // precioPorModulo: __precioPorModulo || null,
-                    costoTotalPaneles: costoTotalPaneles || null
-                },
-                inversores: {
-                    nombreInversor:  __nombreInversor || null,
-                    marcaInversor: __marcaInversor || null,
-                    potenciaInversor: __potenciaInversor || null,
-                    potenciaNominalInversor: __potenciaNominalInversor || null,
-                    potenciaPicoPorInversor: __potenciaPicoInversor || null,
-                    precioInversor: __precioInversor || null,
-                    potenciaMaximaInversor:  __potenciaMaximaInversor || null,
-                    numeroDeInversores: __numeroDeInversores || null,
-                    porcentajeSobreDimens: __porcentajeSobreDimens || null,
-                    costoTotalInversores: costoTotalInversores || null
-                },
-                viaticos_costos: {
-                    noCuadrillas: _numeroCuadrillas || null,
-                    noPersonasRequeridas: numeroDePersonasRequeridas || null,
-                    noDias: numeroDias || null,
-                    noDiasReales: numeroDiasReales || null,
-                    pagoPasaje: pagoPasaje || null,
-                    pagoTotalPasaje: pagoPasajeTotal || null,
-                    pagoTotalComida: pagoComidaTotal || null,
-                    pagoTotalHospedaje: pagoHospedajeTotal || null
-                },
-                totales: {
-                    manoDeObra: costoManoDeObra[0] || null,
-                    otrosTotal: costoManoDeObra[1] || null,
-                    costoTotalFletes: costoTotalFletes || null,
-                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr || null,
-                    subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE || null,
-                    margen: margen || null,
-                    totalDeTodo: totalDeTodo || null,
-                    precio: precio || null,
-                    precioMasIVA: precioMasIVA || null,
-                    // costForWatt: costForWatt || null,
-                    totalViaticosMT: totalViaticosMT || null,
-                    precioTotalMXN: precioTotalMXN || null
-                }
-            }
-
-            _cotizacion.push(cotizacion);
-        }
-    }
-    else{
-        /*Si la cotizacion es menor a 30 km de distancia, no se cobran viaticos. Solo MANO DE OBRA*/
-        // F A LT A   T E S T E A R
-        for(var x = 0; x < _arrayCotizacion.length; x++)
-        {
-            /*#region Panel_info*/
-            __no = _arrayCotizacion[x].no || 0;
-            __nombrePanel = _arrayCotizacion[x].panel.nombrePanel || null;
-            __marcaPanel = _arrayCotizacion[x].panel.marcaPanel || null;
-            __potenciaPanel = _arrayCotizacion[x].panel.potenciaPanel || 0;
-            __cantidadPaneles = _arrayCotizacion[x].panel.cantidadPaneles || 0; //numeroDeModulos
-            __potenciaReal =  _arrayCotizacion[x].panel.potenciaReal || 0;
-            __costoDeEstructuras = parseFloat(_arrayCotizacion[x].panel.costoDeEstructuras) || 0;
-
-
-            __precioPorWattPanel = _arrayCotizacion[x].panel.precioPorWatt || 0;
-            // __precioPorModulo = Math.round((__potenciaPanel * __precioPorWattPanel) * 100) / 100 || 0;
-            // __precioPorModulo = _arrayCotizacion[x].panel.
-            costoTotalPaneles = parseFloat(_arrayCotizacion[x].panel.costoTotalPaneles);
-            /*#endregion*/
-            /*#region Inversores_info*/
-            __nombreInversor =  _arrayCotizacion[x].inversor.nombreInversor || null;
-            __marcaInversor = _arrayCotizacion[x].inversor.marcaInversor || null;
-            __potenciaInversor = _arrayCotizacion[x].inversor.potenciaInversor || 0;
-            __potenciaNominalInversor = _arrayCotizacion[x].inversor.potenciaNominalInversor || 0;
-            __precioInversor = _arrayCotizacion[x].inversor.precioInversor || 0;
-            __potenciaMaximaInversor = _arrayCotizacion[x].inversor.potenciaMaximaInversor || 0;
-            __numeroDeInversores = _arrayCotizacion[x].inversor.numeroDeInversores || 0;
-            __potenciaPicoInversor = Math.round(parseFloat(_arrayCotizacion[x].inversor.potenciaPicoInversor)) || 0;
-            __porcentajeSobreDimens = _arrayCotizacion[x].inversor.porcentajeSobreDimens || 0;
-            costoTotalInversores = _arrayCotizacion[x].inversor.costoTotalInversores || 0;
-            /*#endregion*/
-            _numeroCuadrillas = parseInt(getNumberOfCrews(__cantidadPaneles)) || 0;
-            numeroDePersonasRequeridas = _numeroCuadrillas * parseInt(_configFile.cuadrilla.numeroDePersonas) || 0;
-            numeroDias = getDays(__cantidadPaneles, _numeroCuadrillas) || 0;
-            numeroDiasReales = getRealDays(__cantidadPaneles, numeroDias) || 0;
-
-            costoTotalPanInvEstr = parseFloat(costoTotalPaneles + costoTotalInversores + __costoDeEstructuras) || 0;
-            costoTotalFletes = Math.floor(costoTotalPanInvEstr * parseFloat(_configFile.costos.porcentaje_fletes)) || 0;
-            costoManoDeObra = getPrecioDeManoDeObraMT(__cantidadPaneles, costoTotalPanInvEstr) || 0;
-            subtotOtrFletManObrTPIE = parseFloat(costoManoDeObra[1]+ costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) || 0; //TPIE = Total Paneles Inversores Estructuras
-            margen = Math.round(((subtotOtrFletManObrTPIE / (1 - _configFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100) / 100 || 0;
-            totalDeTodo = subtotOtrFletManObrTPIE + margen || 0;
-            precio = Math.round(totalDeTodo * (1 - descuento) * 100)/100;
-            precioMasIVA = Math.round((precio * _configFile.costos.precio_mas_iva) * 100) / 100;
-            precioTotalMXN = Math.round((precioMasIVA * precioDolar) * 100) / 100;
-
-            cotizacion = {
-                no: _arrayCotizacion[x].no || 0,
-                paneles: {
-                    nombrePanel: __nombrePanel || null,
-                    marcaPanel: __marcaPanel || null,
-                    potenciaPanel: __potenciaPanel || null,
-                    cantidadPaneles: __cantidadPaneles || null, //numeroDeModulos
-                    potenciaReal: __potenciaReal || null,
-                    costoDeEstructuras:  __costoDeEstructuras || null,
-                    precioPorWatt: __precioPorWattPanel || null,
-                    // precioPorModulo: __precioPorModulo || null,
-                    costoTotalPaneles: costoTotalPaneles || null
-                },
-                inversores: {
-                    nombreInversor:  __nombreInversor || null,
-                    marcaInversor: __marcaInversor || null,
-                    potenciaInversor: __potenciaInversor || null,
-                    potenciaNominalInversor: __potenciaNominalInversor || null,
-                    potenciaPicoPorInversor: __potenciaPicoInversor || null,
-                    precioInversor: __precioInversor || null,
-                    potenciaMaximaInversor:  __potenciaMaximaInversor || null,
-                    numeroDeInversores: __numeroDeInversores || null,
-                    porcentajeSobreDimens: __porcentajeSobreDimens || null,
-                    costoTotalInversores: costoTotalInversores || null
-                },
-                viaticos_costos: {
-                    noCuadrillas: _numeroCuadrillas || null,
-                    noPersonasRequeridas: numeroDePersonasRequeridas || null,
-                    noDias: numeroDias || null,
-                    noDiasReales: numeroDiasReales || null
-                },
-                totales: {
-                    manoDeObra: costoManoDeObra[0] || null,
-                    otrosTotal: costoManoDeObra[1] || null,
-                    costoTotalFletes: costoTotalFletes || null,
-                    totalPanelesInversoresEstructuras: costoTotalPanInvEstr || null,
-                    subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE || null,
-                    margen: margen || null,
-                    totalDeTodo: totalDeTodo || null,
-                    precio: precio || null,
-                    precioMasIVA: precioMasIVA || null,
-                    precioTotalMXN: precioTotalMXN || null
-                }
-            }
-
-            _cotizacion.push(cotizacion);
-        }
-    }
-
-    return _cotizacion;
-}
 
 function getNumberOfCrews(_numeroPanelesAInstalar){
     if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
@@ -456,24 +491,20 @@ function getNumberOfCrews(_numeroPanelesAInstalar){
     }
 }
 
-async function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr){
-    var arrayLaborOtrosPrice = [];
-    var laborPrice = 0;
-    var otros = 0;
+function getPrecioDeManoDeObraMT(cantidadPaneles, costoTotalPanInvEstr, precioDelDolar){
+    let arrayLaborOtrosPrice = [];
+    let laborPrice = 0, otros = 0;
 
-    precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-    precioDolar = precioDolar[0].precioDolar;
-
-    if(__cantidadPaneles >= 1 && __cantidadPaneles < 8){
+    if(cantidadPaneles >= 1 && cantidadPaneles < 8){
         laborPrice = 2000;
         otros = 4100;
 
-        if(__cantidadPaneles === 1){
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros / precioDolar);
-            return arrayLaborOtrosPrice;
+        if(cantidadPaneles === 1){
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros / precioDelDolar) * 100) / 100;
+            
         }else{
-            for(var i=2; i <= __cantidadPaneles; i++){
+            for(var i=2; i <= cantidadPaneles; i++){
                 otros = otros + 100;
 
                 if(i === 2){
@@ -489,43 +520,38 @@ async function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr)
                     laborPrice = laborPrice + 192;
                 }
             }
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-
-            return arrayLaborOtrosPrice;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
-    if(__cantidadPaneles >= 8 && __cantidadPaneles < 14){
+    if(cantidadPaneles >= 8 && cantidadPaneles < 14){
         laborPrice = 3350;
         otros = 4800;
 
-        if(__cantidadPaneles === 8){
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-            return arrayLaborOtrosPrice;
+        if(cantidadPaneles === 8){
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
+            
         }else{
-            for(var i=9; i == __cantidadPaneles; i++){
+            for(var i=9; i == cantidadPaneles; i++){
                 laborPrice = laborPrice + 50;
                 otros = otros + 100;
             }
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-            
-            return arrayLaborOtrosPrice;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
-    if(__cantidadPaneles >= 14 && __cantidadPaneles < 22){
+    if(cantidadPaneles >= 14 && cantidadPaneles < 22){
         laborPrice = 3650;
         otros = 6700;
 
-        if(__cantidadPaneles === 14){
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-            return arrayLaborOtrosPrice;
+        if(cantidadPaneles === 14){
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }else{
-            for(var i=15; i<=__cantidadPaneles; i++){
+            for(var i=15; i<=cantidadPaneles; i++){
                 otros = otros + 100;
 
                 if(i === 17){
@@ -543,23 +569,21 @@ async function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr)
                     laborPrice = laborPrice + 25;
                 }
             }
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-
-            return arrayLaborOtrosPrice;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
-    if(__cantidadPaneles >= 22 && __cantidadPaneles < 40){
+    if(cantidadPaneles >= 22 && cantidadPaneles < 40){
         laborPrice = 4000;
         otros = 8500;
         
-        if(__cantidadPaneles === 22){
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-            return arrayLaborOtrosPrice;
+        if(cantidadPaneles === 22){
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
+            
         }else{
-            for(var i=23; i <= __cantidadPaneles; i++){
+            for(var i=23; i <= cantidadPaneles; i++){
                 otros = otros + 100;
 
                 if(i === 25){
@@ -578,117 +602,100 @@ async function getPrecioDeManoDeObraMT(__cantidadPaneles, _costoTotalPanInvEstr)
                     laborPrice = laborPrice + 222;
                 }
             }
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-
-            return arrayLaborOtrosPrice;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
-    if(__cantidadPaneles >= 40 && __cantidadPaneles < 46){
+    if(cantidadPaneles >= 40 && cantidadPaneles < 46){
         laborPrice = 8000;
         otros = 10300;
 
-        if(__cantidadPaneles === 40){
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-            return arrayLaborOtrosPrice;
+        if(cantidadPaneles === 40){
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
+            
         }else{
-            for(var i=41; i <= __cantidadPaneles; i++)
+            for(var i=41; i <= cantidadPaneles; i++)
             {
                 laborPrice = laborPrice + 200;
                 otros = otros + 100;
             }
-            arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-
-            return arrayLaborOtrosPrice;
+            arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+            arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
         }
     }
 
-    if(__cantidadPaneles >= 46){
-        laborPrice = Math.floor((__cantidadPaneles * 200)/17);
-        otros = Math.ceil(((_costoTotalPanInvEstr + laborPrice) * 0.036*17)/17);
-        arrayLaborOtrosPrice[0] = parseFloat(laborPrice  / precioDolar);
-            arrayLaborOtrosPrice[1] = parseFloat(otros  / precioDolar);
-
-        return arrayLaborOtrosPrice;
+    if(cantidadPaneles >= 46){
+        laborPrice = Math.floor((cantidadPaneles * 200) / precioDelDolar);
+        otros = Math.ceil(((costoTotalPanInvEstr + laborPrice) * 0.036 * precioDelDolar) / precioDelDolar);
+        arrayLaborOtrosPrice[0] = Math.round((laborPrice  / precioDelDolar) * 100) / 100;
+        arrayLaborOtrosPrice[1] = Math.round((otros  / precioDelDolar) * 100) / 100;
     }
+
+    return arrayLaborOtrosPrice;
 }
 /*#endregion*/
 
-module.exports.mainViaticos = async function(data){
+module.exports.mainViaticosMT = async function(data){
     const result = await main_calcularViaticos(data);
     return result;
 }
 /*#endregion*/
 
 function getDays(_numeroPanelesAInstalar, noCuadrillas){
+    let dias = 0;
+
     if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
-        // return 20;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
-        return dias;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 100 && _numeroPanelesAInstalar <= 299){
-        // return 30;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
-        return dias;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 300 && _numeroPanelesAInstalar <= 499){
-        // return 33;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
-        return dias;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 500 && _numeroPanelesAInstalar <= 799){
-        // return 32;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
-        return dias;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >=800 && _numeroPanelesAInstalar <= 1199){
-        // return 30;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
-        return dias;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else if(_numeroPanelesAInstalar >= 1200){
-        // return 36;
-        dias = _numeroPanelesAInstalar / 40 / noCuadrillas * 8;
-        return dias;
+        dias = (_numeroPanelesAInstalar / 40) / noCuadrillas * 8;
     }
     else{
-        return -1;
+        dias = -1;
     }
+
+    dias = Math.round(dias * 100)/100;
+    return dias;
 }
 
 function getRealDays(_numeroPanelesAInstalar, _numeroDias){
     if(_numeroPanelesAInstalar >= 0 && _numeroPanelesAInstalar <= 99){
         // return 244;
-        diasReales = Math.ceil(_numeroPanelesAInstalar / 100 * _numeroDias);
-        return diasReales;
+        return diasReales = Math.ceil(_numeroPanelesAInstalar / 100 * _numeroDias);
     }
     else if(_numeroPanelesAInstalar >= 100 && _numeroPanelesAInstalar <= 299){
         // return 122;
-        diasReales = Math.ceil(_numeroPanelesAInstalar / 300 * _numeroDias);
-        return diasReales;
+        return diasReales = Math.ceil(_numeroPanelesAInstalar / 300 * _numeroDias);
     }
     else if(_numeroPanelesAInstalar >= 300 && _numeroPanelesAInstalar <= 499){
         // return 82;
-        diasReales = Math.ceil(_numeroPanelesAInstalar / 500 * _numeroDias);
-        return diasReales;
+        return diasReales = Math.ceil(_numeroPanelesAInstalar / 500 * _numeroDias);
     }
     else if(_numeroPanelesAInstalar >= 500 && _numeroPanelesAInstalar <= 799){
         // return 49;
-        diasReales = Math.ceil(_numeroPanelesAInstalar / 800 * _numeroDias);
-        return diasReales;
+        return diasReales = Math.ceil(_numeroPanelesAInstalar / 800 * _numeroDias);
     }
     else if(_numeroPanelesAInstalar >=800 && _numeroPanelesAInstalar <= 1199){
         // return 31;
-        diasReales = Math.ceil(_numeroPanelesAInstalar / 1200 * _numeroDias);
-        return diasReales;
+        return diasReales = Math.ceil(_numeroPanelesAInstalar / 1200 * _numeroDias);
     }
     else if(_numeroPanelesAInstalar >= 1200){
         // return 23;
-        diasReales = Math.ceil(_numeroPanelesAInstalar / 2000 * _numeroDias);
-        return diasReales;
+        return diasReales = Math.ceil(_numeroPanelesAInstalar / 2000 * _numeroDias);
     }
     else{
         return -1;
@@ -710,59 +717,62 @@ function getBusPayment(_distanciaEnKm){
 
 /*#region API-GoogleMaps*/
 function obtenerDistanciaEnKm(origen, destino){
-    var apikey = 'AIzaSyD0cJDO0IwwolWkvCCnzVFTmbsvQjsdOyo';
-    var distanciaEnKm = 0;
+    let apikey = 'AIzaSyD0cJDO0IwwolWkvCCnzVFTmbsvQjsdOyo';
+    let distanciaEnKm = 0;
 
-    switch(origen)
-    {
-        case 'Veracruz':
-            origen = 'Avenida Ricardo Flores Magón, Ignacio Zaragoza, Veracruz, Ver.';
-        break;
-        case 'CDMX':
-            origen = 'Oso, Col del Valle Sur, Benito Juárez, 03100 Ciudad de México, CDMX';
-        break;
-        case 'Puebla':
-            origen = 'Avenida 25 Oriente, Bella Vista, Puebla, Pue.';
-        break;
-        default: 
-            -1
-        break;
-    }
-
-    origen = origen.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    origen = origen.replace(/\s/g,"+");
-    destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    destino = destino.replace(/\s/g,"+");
-
-    console.log('Origen: '+origen+' Destino: '+destino);
-
-    return new Promise((resolve, reject) => {
-        request.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins="+origen+"&destinations="+destino+"&key="+apikey, (error, response, body) => {
-            if(!error){
-                body = JSON.parse(body);
-                body = body.rows[0].elements;
-
-                for(var i=0; i<body.length; i++){
-                    distanciaEnKm = body[i].distance.value;
+    try{
+        switch(origen)
+        {
+            case 'Veracruz':
+                origen = 'Avenida Ricardo Flores Magón, Ignacio Zaragoza, Veracruz, Ver.';
+            break;
+            case 'CDMX':
+                origen = 'Oso, Col del Valle Sur, Benito Juárez, 03100 Ciudad de México, CDMX';
+            break;
+            case 'Puebla':
+                origen = 'Avenida 25 Oriente, Bella Vista, Puebla, Pue.';
+            break;
+            default: 
+                -1
+            break;
+        }
+    
+        origen = origen.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        origen = origen.replace(/\s/g,"+");
+        destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        destino = destino.replace(/\s/g,"+");
+    
+        return new Promise((resolve, reject) => {
+            request.get("https://maps.googleapis.com/maps/api/distancematrix/json?key="+apikey+"&origins="+origen+"&destinations="+destino, (error, response, body) => {
+                if(!error){
+                    body = JSON.parse(body);
+                    body = body.rows[0].elements;
+    
+                    for(var i=0; i<body.length; i++){
+                        distanciaEnKm = body[i].distance.value;
+                    }
+    
+                    distanciaEnKm = Math.ceil(distanciaEnKm / 1000);
+    
+                    response = {
+                        status: true,
+                        message: distanciaEnKm
+                    };
+                    resolve(response);
                 }
-
-                distanciaEnKm = Math.ceil(distanciaEnKm / 1000);
-
-                response = {
-                    status: true,
-                    message: distanciaEnKm
-                };
-                resolve(response);
-            }
-            else{
-                response = {
-                    status: false,
-                    message: 'Hubo un error al intentar calcular la distancia, revisa tu destino (direccion_cliente)'
-                };
-                resolve(response);
-            }
-        });   
-    });
+                else{
+                    response = {
+                        status: false,
+                        message: 'Hubo un error al intentar calcular la distancia, revisa tu destino (direccion_cliente): '+error
+                    };
+                    reject(response);
+                }
+            });   
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 /* #region Opciones Viaticos Propuesta [CRUD]*/
@@ -839,7 +849,7 @@ function editarOpcionesVPropuestaBD (datas) {
 
 function consultaOpcionesVPropuestaBD () {
     return new Promise((resolve, reject) => {
-        mysqlConnection.query('CALL SP_OpcionesV_Propuesta(?, ?, ?, ?)', [3, null, null, null], (error, rows) => {
+        mysqlConnection.query('CALL SP_Opciones_Viatics(?, ?, ?, ?, ?)', [3, null, null, null, null], (error, rows) => {
             if (error) {
                 const response = {
                     status: false,

@@ -5,6 +5,7 @@
 */
 //Requires
 const express = require('express');
+const fs = require('fs');
 const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');
@@ -17,6 +18,8 @@ const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 const dollar = require('../Controller/dolar_tipoCambio');
 const viaticosController = require('../Controller/opcionesViaticsController.js');
 const archivoPDF = require('../PDF/crearPdf');  // Ruta del PDF.
+
+const estructura = require('../Controller/estructuraController.js');
 
 //Initializations
 router.use(express.json());
@@ -37,7 +40,7 @@ router.get('/', function(requeset, response){
 const bajaTensionController = require('../Controller/bajaTensionController');
 const mediaTensionController = require('../Controller/mediaTensionController');
 const powerController = require('../Controller/powerController');
-
+const propuesta = require('../Controller/propuestaController');
 
 /*#region Cotizador*/
 /*#region PrecioDelDolar*/
@@ -46,28 +49,25 @@ router.get('/tipoCambioDolar', function(request, response){
 	.then(result => {
 		response.json({
 			status: 200,
-			message: result,
-			alert: 'Archivo respaldado y precio del dolar actualizado'
+			message: result
 		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		}).end();
+		});
 	});
 });
 
 router.get('/manualUpdateDolarPrice', function(request, response){
 	dollar.actualizarManualPrecioDolar()
 	.then(result => {
-		console.log(result);
-		/* response.json({
-		}).end(); */
+		response.json({ status: 200, message: result });
 	})
 	.catch(error => {
-		response.json({ error });
-	}).end();
+		response.json({ status: 500, message: error });
+	});
 });
 /*#endregion*/
 /*#region bajaTension*/
@@ -104,6 +104,23 @@ router.post('/calcularViaticosBTI',function(request, response){
 		});
 	});
 });
+
+//[HOJA: POWER]
+router.post('/obtenerPowerBT',function(request, response){
+	powerController.obtenerPowerBTI(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		})
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
 /*#endregion*/
 /*#region individual*/
 const cotizIndiv = require('../Controller/cotizacion_individualController');
@@ -114,39 +131,24 @@ router.post('/cotizacionIndividual', function(request, response){
 		response.json({
 			status: 200,
 			message: cotizacion_individual
-		}).end();
+		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error
-		}).end();
+		});
 	});
 	
 });
 /*#endregion*/
+/*#region mediaTension*/ 
 /*#region GDMTO*/
 /*#endregion*/
 /*#region GDMTH*/
 //1st. Step
 router.post('/sendPeriods', function(request, response){
 	mediaTensionController.firstStepGDMTH(request.body)
-	.then(result => {
-		response.json({
-			status: 200,
-			message: result
-		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error
-		}).end();
-	});
-});
-
-router.post('/firstStepPower', function(request, response){
-	powerController.getCD_DatosConsumo_(request.body)
 	.then(result => {
 		response.json({
 			status: 200,
@@ -192,7 +194,7 @@ router.post('/sendInversorSelected', function(request, response){
 //3rd. Step
 ///Calcular Viaticos y Totales
 router.post('/calcularVT', function(request, response){
-	mediaTensionController.thirdStepGDMTH(request.body)
+	mediaTensionController.calcularViaticos(request.body)
 	.then(result => {
 		response.json({
 			status: 200,
@@ -206,14 +208,40 @@ router.post('/calcularVT', function(request, response){
 		}).end();
 	});
 });
-
-
-
-
-
-
-/*#endregion GDMTH*/
 /*#endregion*/
+/*#endregion*/
+/*#region Propuesta*/
+router.post('/guardar-propuesta', function(request, response){
+	propuesta.guardar(request.body)
+	.then(respuesta => {
+		response.json({
+			status: 200,
+			message: respuesta
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
+router.post('/getPropuestaByCliente', function(request, response){
+	propuesta.consultar(request.body)
+	.then(respuesta => {
+		response.json({
+			status: 200,
+			message: respuesta
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
 /*#endregion*/
 
 router.post('/agregar-usuario', function (request, response) {
@@ -336,6 +364,27 @@ router.post('/verificar-email', function (request, response) {
 /*#regionLH420_experimental*/
 const inversor = require('../Controller/inversorController');
 const cotizacion = require('../Controller/cotizacionController');
+
+/*#region financiamiento?exp*/
+const financiamiento = require('../Controller/financiamientoProjController');
+const { request } = require('express');
+
+router.post('/finan', function(request, response){
+	financiamiento.financiamiento(request.body)
+	.then(result => {
+		response.json({
+			status: 200,
+			message: result
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+/*#end region*/
 
 router.post('/inversores-selectos', function(request, response){
 	inversor.obtenerInversores_cotizacion(request.body)
@@ -535,8 +584,87 @@ router.put('/editar-panel', function (request, response) {
 });
 
 /*
+- @section: 		Rutas para la sección de estructuras.
+*/
+router.post('/agregar-estructura', function(request, response){
+	estructura.insertar(request.body)
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+router.put('/eliminar-estructura', function (request, response) {
+	estructura.eliminar(request.body)
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message,
+		}).end();
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		}).end();
+	});
+});
+
+router.get('/lista-estructuras', function(request, response){
+	estructura.leer()
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});	
+
+router.put('/buscar-estructura', function(request, response){
+	estructura.buscar(request.body)
+	.then(estructura => {
+		response.json({
+			status: 200,
+			message: estructura.message
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message
+		});
+	});
+});
+
+/*
 - @section: 		Rutas para la sección de clientes.
 */
+router.get('/lista-clientes', function (request, response) {
+	clienteBL.consultar()
+	.then(cliente => {
+		response.json(cliente).end();
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		}).end();
+	});
+});
 
 router.post('/agregar-cliente', function (request, response) {
 	clienteBL.insertar(request.body)
@@ -577,19 +705,6 @@ router.put('/editar-cliente', function (request, response) {
 			status: 200,
 			message: cliente,
 		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message,
-		}).end();
-	});
-});
-
-router.get('/lista-clientes', function (request, response) {
-	clienteBL.consultar()
-	.then(cliente => {
-		response.json(cliente).end();
 	})
 	.catch(error => {
 		response.json({
@@ -984,13 +1099,22 @@ router.put('/buscar-opcionesViatics', function (request, response) {
 - @section: 		Ruta para la creación del archivo PDF.
 */
 
-router.post('/pdf', function (request, response) {
+router.post('/pdf',function (request, response) {
 	archivoPDF.crearPDF(request.body)
-	.then(pdf => {
+	.then(objPdf => {
+		pdf64 = fs.readFileSync(objPdf.rutaArchivo, { encoding: 'base64' });
+
+		if(objPdf.nombreArchivo != null){
+			var respuesta = {
+				fileName: objPdf.nombreArchivo,
+				pdfBase64: pdf64
+			};
+		}
+		
 		response.json({
 			status: 200,
-			message: pdf,
-		}).end();
+			message: respuesta
+		});
 	})
 	.catch(error => {
 		response.json({
@@ -999,5 +1123,7 @@ router.post('/pdf', function (request, response) {
 		}).end();
 	});
 });
+
+/*#endregion*/
 
 module.exports = router; //Exportar la constate 'router' con el fin de que esta clase pueda ser ocupada por las demas

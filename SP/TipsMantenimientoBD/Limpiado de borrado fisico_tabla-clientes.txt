@@ -1,0 +1,9 @@
+///Script de mantenimiento (Borrado fisico de cliente (Vaciado de todos los registros))
+1.-Se borran las direcciones ligadas a los clientes
+
+2.-Se borra la union (registro/relacion) que tiene el vendedor_cliente
+
+3.-Se hace un borrado en paralelo (Todos los registros que tengan de la tabla hijo con la padre)
+DELETE cliente.*, persona.*  FROM cliente
+JOIN persona
+ON cliente.id_Persona = persona.idPersona;
