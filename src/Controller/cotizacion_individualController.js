@@ -7,9 +7,6 @@ const paneles = require('../Controller/panelesController');
 const inversores = require('../Controller/inversorController');
 const estructuras = require('../Controller/estructuraController');
 const viaticos = require('../Controller/opcionesViaticsController');
-const otrosMateriales = require('./otrosMaterialesController');
-
-var cotizacionInd = [];
 
 async function cotizacionIndividual(data){
     let panel = null, inversor = null, estructura = null;
@@ -50,6 +47,9 @@ async function cotizacionIndividual(data){
             destino: data.cotizacionIndividual.cliente.direccion,
             tipoCotizacion: 'individual',
             idUsuario: data.idUsuario,
+            aumento: data.cotizacionIndividual.ajustePropuesta.aumento,
+            descuento: data.cotizacionIndividual.ajustePropuesta.descuento,
+            _agregados: data.cotizacionIndividual.agregados,
             data
         };
 

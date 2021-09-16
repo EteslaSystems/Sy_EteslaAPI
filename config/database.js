@@ -8,10 +8,6 @@
 const mysql = require ('mysql'); //Constante que instancia la dependencia de MySQL
 
 const mysqlConnection = mysql.createConnection({ //Cadena de conexión a la base de datos de MySQL
-	// host: 'etesla.mx',
-	// user: 'eteslamx_chucho',
-	// password: 'gpO7DIlzfU*c',
-	// database: 'eteslamx_eteslapanelessolares_sy',
 	host: 'localhost',
 	user: 'root',
 	password: '',
