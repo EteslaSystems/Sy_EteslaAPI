@@ -39,7 +39,8 @@ async function calcularViaticosBTI(data){
     let tarifa = data.tarifa || null;
     let descuento = (data.descuento / 100) || 0;
     let aumento = (data.aumento / 100) || 0;
-    let costoTotalEstructuras, costoTotalPaneles, costoTotalInversores, costoTotalAgregados;
+    let cantidadEstructuras = 0;
+    let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
 
     try{
         // let _opciones = await consultaOpcionesVPropuestaBD();
@@ -167,11 +168,16 @@ async function calcularViaticosBTI(data){
                 costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
                 costoTotalInversores = typeof _arrayCotizacion[x].inversor.precioTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : _arrayCotizacion[x].inversor.precioTotal;
                 costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
+                cantidadEstructuras = _arrayCotizacion[x].panel.noModulos;
             }
             else if(tipoCotizacion === 'individual'){ //Individual
                 costoTotalPaneles = _arrayCotizacion[x].panel === null ? 0 : _arrayCotizacion[x].panel.costoTotal;
                 costoTotalInversores = _arrayCotizacion[x].inversor === null ? 0 : _arrayCotizacion[x].inversor.precioTotal;
-                costoTotalEstructuras = _arrayCotizacion[x].estructura === null ? 0 : _arrayCotizacion[x].estructura.costoTotal;
+
+                if(_arrayCotizacion[x].estructura != null){
+                    costoTotalEstructuras = _arrayCotizacion[x].estructura.costoTotal;
+                    cantidadEstructuras = _arrayCotizacion[x].estructura.cantidad;
+                }
             }
             /*#endregion*/
     
@@ -236,7 +242,7 @@ async function calcularViaticosBTI(data){
                 cliente: uCliente,
                 paneles: paneles,
                 inversores: inversores,
-                estructura: { _estructuras: _estructuras, costoTotal: costoTotalEstructuras },
+                estructura: { _estructuras: _estructuras, costoTotal: costoTotalEstructuras, cantidad: cantidadEstructuras },
                 agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados },
                 viaticos_costos: {
                     noDias: noDias,
@@ -634,11 +640,11 @@ module.exports.mainViaticosMT = async function(data){
 }
 /*#endregion*/
 function getCostoTotalAgregados(__agregados){
-    let total = 0;
+    let total = 0, subtotal = 0;
 
     for(let agregado of __agregados)
     {
-        subtotal = Math.round((parseFloat(agregado.cantidadAgregado * agregado.precioAgregado)) * 100) / 100;    
+        subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
         total += subtotal;
     }
     
