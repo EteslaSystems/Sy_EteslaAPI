@@ -52,7 +52,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		if(Propuesta.estructura){
 			dataToSave.estructura = {
 				marca: Propuesta.estructura.vMarca,
-				cantidad: Propuesta.paneles.noModulos
+				cantidad: Propuesta.estructura.cantidad
 			} || null;
 		}
 
@@ -78,22 +78,20 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		let respuesta = await insertarBD(dataToSave);
 		
 		/*#region Agregados*/
-		if(Propuesta.tipoCotizacion === "mediaTension"){
+		//Se valida que la propuesta tenga -Agregados-
+		if(Propuesta.agregados._agregados != null){
 			let idPropuesta = respuesta.idPropuesta;
 
-			//Validar si hay agregados
-			if(Propuesta.agregados._agregados != null){
-				let _agregados = Propuesta.agregados._agregados;
+			let _agregados = Propuesta.agregados._agregados;
 
-				//Iterar _agregados
-				for(i in _agregados)
-				{
-					let data = { idPropuesta: idPropuesta, cantidad: _agregados[i].cantidadAgregado, agregado: _agregados[i].nombreAgregado, costo: parseFloat(_agregados[i].precioAgregado) };
-					respuesta = await agregados.insertar(data);
+			//Iterar _agregados
+			for(i in _agregados)
+			{
+				let data = { idPropuesta: idPropuesta, cantidad: _agregados[i].cantidadAgregado, agregado: _agregados[i].nombreAgregado, costo: parseFloat(_agregados[i].precioAgregado) };
+				respuesta = await agregados.insertar(data);
 
-					if(respuesta.status === false){
-						break;
-					}
+				if(respuesta.status === false){
+					throw 'Algo salio mal al intentar insertar -Agregados- en la BD.\n'+respuesta.message;
 				}
 			}
 		}
