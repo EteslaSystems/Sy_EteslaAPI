@@ -12,9 +12,9 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	try{
 		let daysOfExpire = await configFile.getArrayOfConfigFile();
 		daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
-		let Propuesta = JSON.parse(objPropuesta.propuesta); //Formating to Array
+		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
 		Propuesta = Array.isArray(Propuesta) === true ? Propuesta[0] : Propuesta; //Formating
-		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: 15 /* Dias de expiracion */ };
+		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: daysOfExpire /* Dias de expiracion */ };
 
 		/* #region Formating Data to Save PROPUESTA */
 		dataToSave.cliente = { 
