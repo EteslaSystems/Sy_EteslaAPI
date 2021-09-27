@@ -33,7 +33,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
 		dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
 
-		if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension"){
+		if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension" || Propuesta.tipoCotizacion === "CombinacionCotizacion"){
 			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
 			dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
 			dataToSave.descuento = Propuesta.descuento || null;
@@ -49,9 +49,9 @@ async function savePropuesta(objPropuesta/*Obj*/){
 			dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal;
 		}
 		
-		if(Propuesta.estructura){
+		if(Propuesta.estructura._estructuras != null){
 			dataToSave.estructura = {
-				marca: Propuesta.estructura.vMarca,
+				marca: Propuesta.estructura._estructuras.vMarca,
 				cantidad: Propuesta.estructura.cantidad
 			} || null;
 		}
@@ -64,7 +64,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		}
 
 		if(Propuesta.power){
-			if(Propuesta.tipoCotizacion === "bajaTension"){ //BajaTension
+			if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipCotizacion === "bajaTension" && Propuesta.tipoCotizacion === "CombinacionCotizacion"){ //BajaTension || BajaTension c/Commbinaciones
 				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
 				dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
 			}
@@ -78,30 +78,34 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		let respuesta = await insertarBD(dataToSave);
 		
 		/*#region Agregados*/
-		//Se valida que la propuesta tenga -Agregados-
-		if(Propuesta.agregados._agregados != null){
-			let idPropuesta = respuesta.idPropuesta;
+		try{
+			//Se valida que la propuesta tenga -Agregados-
+			if(Propuesta.agregados._agregados != null){
+				let idPropuesta = respuesta.idPropuesta;
 
-			let _agregados = Propuesta.agregados._agregados;
+				let _agregados = Propuesta.agregados._agregados;
 
-			//Iterar _agregados
-			for(i in _agregados)
-			{
-				let data = { idPropuesta: idPropuesta, cantidad: _agregados[i].cantidadAgregado, agregado: _agregados[i].nombreAgregado, costo: parseFloat(_agregados[i].precioAgregado) };
-				respuesta = await agregados.insertar(data);
+				//Iterar _agregados
+				for(i in _agregados)
+				{
+					let data = { idPropuesta: idPropuesta, cantidad: _agregados[i].cantidadAgregado, agregado: _agregados[i].nombreAgregado, costo: parseFloat(_agregados[i].precioAgregado) };
+					respuesta = await agregados.insertar(data);
 
-				if(respuesta.status === false){
-					throw 'Algo salio mal al intentar insertar -Agregados- en la BD.\n'+respuesta.message;
+					if(respuesta.status === false){
+						throw 'Algo salio mal al intentar insertar -Agregados- en la BD.\n'+respuesta.message;
+					}
 				}
 			}
+		}
+		catch(error){
+			throw error;
 		}
 		/*#endregion*/
 
 		return respuesta;
 	}
 	catch(error){
-		console.log(error);
-		throw error;
+		throw 'Algo salio mal al intenetar guardar la propuesta:\n'+error;
 	}
 }
 
