@@ -35,7 +35,7 @@ async function mainBusquedaInteligente(data){
     let __combinacionMediana = [], __combinacionEconomica = [], __combinacionOptima = [];
     
     try{
-        if(tipoCotizacion == 'bajaTension'){
+        if(tipoCotizacion == 'bajaTension'){ //BajaTension
             _paneles = await bajaTension.firstStepBT(data);
             _consumos = _paneles[0].consumo;
             _arrayConsumos = _paneles[0];
@@ -45,7 +45,7 @@ async function mainBusquedaInteligente(data){
             __combinacionEconomica = await getCombinacionEconomica(newData, _consumos);
             __combinacionOptima = await getCombinacionOptima(newData, _consumos);
         }
-        /* else{
+        /* else{ //MediaTension
     
         } */
     
@@ -54,7 +54,9 @@ async function mainBusquedaInteligente(data){
             _arrayConsumos: _arrayConsumos,
             combinacionMediana: __combinacionMediana,
             combinacionEconomica: __combinacionEconomica,
-            combinacionOptima: __combinacionOptima
+            combinacionOptima: __combinacionOptima,
+            tipoCotizacion: data.tipoCotizacion,
+            combinaciones: true
         };
     
         __combinaciones[0] = objCombinaciones;

@@ -4,9 +4,10 @@ src/Logs/*
 package-lock.json
 package.json
 LICENSE
-*.pdf
 
 
 
+/.vscode
 /config/dirDollarPrice/*.json
-/src/PDF/PDFs_created
+/src/PDF/*
+*.pdf

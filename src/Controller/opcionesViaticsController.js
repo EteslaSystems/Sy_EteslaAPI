@@ -34,11 +34,13 @@ async function calcularViaticosBTI(data){
     let origen = data.origen;
     let destino = data.destino;
     let _consums = data.consumos || null;
+    let _agregados = data._agregados || null;
     let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
     let descuento = (data.descuento / 100) || 0;
     let aumento = (data.aumento / 100) || 0;
-    let costoTotalEstructuras, costoTotalPaneles, costoTotalInversores;
+    let cantidadEstructuras = 0;
+    let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
 
     try{
         // let _opciones = await consultaOpcionesVPropuestaBD();
@@ -69,6 +71,10 @@ async function calcularViaticosBTI(data){
         //Estructuras
         let _estructuras = await estructura.leer();
         _estructuras = _estructuras.message;
+
+        //Agregados
+        costoTotalAgregados = _agregados != null ? getCostoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN;
+        costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
 
         /* Se filtra la marca/modelo de estructura segun sea el caso */
         if(data.hasOwnProperty('estructura')){ //Estructura seleccionada
@@ -162,11 +168,16 @@ async function calcularViaticosBTI(data){
                 costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
                 costoTotalInversores = typeof _arrayCotizacion[x].inversor.precioTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : _arrayCotizacion[x].inversor.precioTotal;
                 costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
+                cantidadEstructuras = _arrayCotizacion[x].panel.noModulos;
             }
             else if(tipoCotizacion === 'individual'){ //Individual
                 costoTotalPaneles = _arrayCotizacion[x].panel === null ? 0 : _arrayCotizacion[x].panel.costoTotal;
                 costoTotalInversores = _arrayCotizacion[x].inversor === null ? 0 : _arrayCotizacion[x].inversor.precioTotal;
-                costoTotalEstructuras = _arrayCotizacion[x].estructura === null ? 0 : _arrayCotizacion[x].estructura.costoTotal;
+
+                if(_arrayCotizacion[x].estructura != null){
+                    costoTotalEstructuras = _arrayCotizacion[x].estructura.costoTotal;
+                    cantidadEstructuras = _arrayCotizacion[x].estructura.cantidad;
+                }
             }
             /*#endregion*/
     
@@ -188,9 +199,8 @@ async function calcularViaticosBTI(data){
                     totalFletes = 0; //Fletes
                 }
             }
-
             
-            let subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos)) * 100) / 100;
+            let subtotOtrFletManObrTPIE = Math.round(((manoDeObra[1] + totalFletes + manoDeObra[0] + costoTotalPanInvEstr + viaticos + costoTotalAgregados)) * 100) / 100;
             let margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
             let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
            
@@ -232,8 +242,8 @@ async function calcularViaticosBTI(data){
                 cliente: uCliente,
                 paneles: paneles,
                 inversores: inversores,
-                estructura: _estructuras,
-                costoTotalEstructuras: costoTotalEstructuras,
+                estructura: { _estructuras: _estructuras, costoTotal: costoTotalEstructuras, cantidad: cantidadEstructuras },
+                agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados },
                 viaticos_costos: {
                     noDias: noDias,
                     distanciaEnKm: distanciaEnKm,
@@ -348,26 +358,14 @@ async function main_calcularViaticos(data){
         let _estructuras = await estructura.leer();
         _estructuras = _estructuras.message;
 
+        //AGREGADOS
+        costoTotalAgregados = _agregados != null ? getCostoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
+        costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
+
         //
         let confFile = await configFile.getArrayOfConfigFile();
         let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
         precioDolar = precioDolar.precioDolar;
-
-        ///#Calcular totales de agregados
-        let costoTotalAgregados = (_agregads) => {
-            let total = 0;
-
-            for(let agregado of _agregads)
-            {
-                subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
-                total += subtotal;
-            }
-            
-            return total;
-        };
-
-        costoTotalAgregados = _agregados != null ? costoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
-        costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
 
         //Se obtiene numero de cuadrillas
         let numeroCuadrillas = getNumberOfCrews(panel.noModulos);
@@ -398,9 +396,9 @@ async function main_calcularViaticos(data){
         let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.precioTotal) + costoTotalEstructuras) * 100) /100;
         let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
         let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
-        let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
+        let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr + costoTotalAgregados) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
         let margen = Math.round(((subtotOtrFletManObrTPIE / (1 - confFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100)/100;
-        let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos + costoTotalAgregados) * 100)/100;
+        let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos) * 100)/100;
         let precio = Math.round(totalDeTodo * (1 - descuento)); //USD
         let precioMasIVA = Math.round(precio * confFile.costos.precio_mas_iva); //USD + IVA
         let precioMXN = Math.round(precio * precioDolar); //MXN
@@ -408,20 +406,19 @@ async function main_calcularViaticos(data){
 
         let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potencia)) * 100)/100;
 
-        /*#region POWER - ROI - FINANCIAMIENTO*/
+        /* POWER - ROI - FINANCIAMIENTO */
         let objPower = await power.obtenerPowerMT(data); //Return an Object
         let objROI = await roi.obtenerROI(objPower, propuesta.periodos.consumo, precioMXN);
 
         let xObjC = { costoTotal: precioMXN }; /////Data
         let objFinanciamiento = await financiamiento.financiamiento(xObjC);
-        /*#endregion POWER - ROI - FINANCIAMIENTO*/
 
         objViaticosCalculados = {
             cliente: uCliente,
             paneles: panel,
             inversores: inversor,
+            agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados },
             viaticos_costos: {
-                _agregados: { _agregados: _agregados, costoTotal: costoTotalAgregados },
                 noCuadrillas: numeroCuadrillas,
                 noPersonasRequeridas: numeroPersonasRequeridas,
                 noDias: numeroDias,
@@ -642,6 +639,17 @@ module.exports.mainViaticosMT = async function(data){
     return result;
 }
 /*#endregion*/
+function getCostoTotalAgregados(__agregados){
+    let total = 0, subtotal = 0;
+
+    for(let agregado of __agregados)
+    {
+        subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
+        total += subtotal;
+    }
+    
+    return total;
+}
 
 function getDays(_numeroPanelesAInstalar, noCuadrillas){
     let dias = 0;

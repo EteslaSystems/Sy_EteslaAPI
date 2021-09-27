@@ -1,5 +1,5 @@
 /*
-- @description: 		Archivo correspondiente al Financiamiento - PDF page.
+- @description: 		Archivo correspondiente al Financiamiento.
 - @author: 				LH420
 - @date: 				27/10/2020
 */

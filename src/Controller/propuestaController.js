@@ -12,9 +12,9 @@ async function savePropuesta(objPropuesta/*Obj*/){
 	try{
 		let daysOfExpire = await configFile.getArrayOfConfigFile();
 		daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
-		let Propuesta = JSON.parse(objPropuesta.propuesta); //Formating to Array
+		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
 		Propuesta = Array.isArray(Propuesta) === true ? Propuesta[0] : Propuesta; //Formating
-		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: 15 /* Dias de expiracion */ };
+		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: daysOfExpire /* Dias de expiracion */ };
 
 		/* #region Formating Data to Save PROPUESTA */
 		dataToSave.cliente = { 
@@ -33,7 +33,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
 		dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
 
-		if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension"){
+		if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension" || Propuesta.tipoCotizacion === "CombinacionCotizacion"){
 			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
 			dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
 			dataToSave.descuento = Propuesta.descuento || null;
@@ -49,10 +49,10 @@ async function savePropuesta(objPropuesta/*Obj*/){
 			dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal;
 		}
 		
-		if(Propuesta.estructura){
+		if(Propuesta.estructura._estructuras != null){
 			dataToSave.estructura = {
-				marca: Propuesta.estructura.vMarca,
-				cantidad: Propuesta.paneles.noModulos
+				marca: Propuesta.estructura._estructuras.vMarca,
+				cantidad: Propuesta.estructura.cantidad
 			} || null;
 		}
 
@@ -64,7 +64,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		}
 
 		if(Propuesta.power){
-			if(Propuesta.tipoCotizacion === "bajaTension"){ //BajaTension
+			if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipCotizacion === "bajaTension" && Propuesta.tipoCotizacion === "CombinacionCotizacion"){ //BajaTension || BajaTension c/Commbinaciones
 				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
 				dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
 			}
@@ -78,11 +78,11 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		let respuesta = await insertarBD(dataToSave);
 		
 		/*#region Agregados*/
-		if(Propuesta.tipoCotizacion === "mediaTension"){
-			let idPropuesta = respuesta.idPropuesta;
-
-			//Validar si hay agregados
+		try{
+			//Se valida que la propuesta tenga -Agregados-
 			if(Propuesta.agregados._agregados != null){
+				let idPropuesta = respuesta.idPropuesta;
+
 				let _agregados = Propuesta.agregados._agregados;
 
 				//Iterar _agregados
@@ -92,18 +92,20 @@ async function savePropuesta(objPropuesta/*Obj*/){
 					respuesta = await agregados.insertar(data);
 
 					if(respuesta.status === false){
-						break;
+						throw 'Algo salio mal al intentar insertar -Agregados- en la BD.\n'+respuesta.message;
 					}
 				}
 			}
+		}
+		catch(error){
+			throw error;
 		}
 		/*#endregion*/
 
 		return respuesta;
 	}
 	catch(error){
-		console.log(error);
-		throw error;
+		throw 'Algo salio mal al intenetar guardar la propuesta:\n'+error;
 	}
 }
 

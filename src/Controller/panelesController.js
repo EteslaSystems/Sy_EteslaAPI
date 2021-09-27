@@ -181,17 +181,6 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 	return arrayNoDeModulosPorPotenciaDelPanel;
 }
 
-async function getSystemPowerInWatts(powerRequired){
-	potenciaRequeridaEnW = Math.round((powerRequired/1000) * 100)/100;
-	return potenciaRequeridaEnW;
-}
-
-async function getSystemPowerInKwp(monthlyAvarageConsumption, irradiation, efficiency, topeProduccion){
-	potenciaRequeridaEnKwp = Math.round((monthlyAvarageConsumption / (irradiation * efficiency * 30/*dias*/)) * 100) / 100;
-	potenciaRequeridaEnKwp = potenciaRequeridaEnKwp >= topeProduccion ? topeProduccion : potenciaRequeridaEnKwp;
-	return potenciaRequeridaEnKwp;
-}
-
 module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion, eficiencia, topeProduccion){
 	const result = await numberOfModuls(potenciaNecesaria, irradiacion, eficiencia, topeProduccion);
 
@@ -199,7 +188,7 @@ module.exports.numeroDePaneles = async function (potenciaNecesaria, irradiacion,
 }
 /*#endregion*/
 
-module.exports.insertar = async function (datas, response) {
+module.exports.insertar = async function (datas) {
 	const result = await insertarBD(datas);
 	return result;
 }
@@ -214,13 +203,13 @@ module.exports.buscar = async function (datas) {
 	return result;
 }
 
-module.exports.editar = async function (datas, response) {
+module.exports.editar = async function (datas) {
 	const result = await editarBD(datas);
 
 	return result;
 }
 
-module.exports.consultar = async function (response) {
+module.exports.consultar = async function(){
 	const result = await consultaBD();
 	return result;
 }
