@@ -7,10 +7,10 @@
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas) {
-    const { fConsumo, vNombrePersona, vPrimerApellido, bTienePropuesta, vSegundoApellido, vTelefono, vCelular, vEmail, vCalle, vMunicipio, vEstado } = datas;
+    const { vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, vCalle, vMunicipio, vEstado, id_Usuario } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, fConsumo, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, vCalle, vMunicipio, vEstado], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, null, vCalle, vMunicipio, vEstado, id_Usuario], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -148,6 +148,30 @@ function consultaUserBD (datas) {
   	});
 }
 
+function consultaPorNombre(datas){
+	const { nombre, idUsuario } = datas;
+
+	return new Promise((resolve, reject) => {
+	  mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [6, null, null, nombre, null, null, null, null, null, null, null, null, null, idUsuario], (error, rows) => {
+		  if (error) {
+			  const response = {
+				  status: false,
+				  message: error
+			  }
+
+			  reject (response);
+		  } else {
+			  const response = {
+				  status: true,
+				  message: rows[0]
+			  }
+
+			  resolve(response);
+		  }
+	  });
+	});
+}
+
 function destruirBD(datas) {
 	const { idCliente } = datas;
 
@@ -198,6 +222,12 @@ module.exports.consultar = async function (response) {
 
 module.exports.consultarId = async function (datas, response) {
 	const result = await consultaIdBD(datas);
+
+	return result;
+}
+
+module.exports.consultarPorNombre = async function (datas, response) {
+	const result = await consultaPorNombre(datas);
 
 	return result;
 }

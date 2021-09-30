@@ -47,17 +47,17 @@ function clienteValidation (data) {
             .string(message.string)
             .matches(/^[a-z0-9_.]+@[a-z0-9]+\.[a-z0-9_.]+$/, message.email)
             .required(message.required),
-        calle: yup
-            .string(message.string)
-            .required(message.required),
-        municipio: yup
-            .string(message.string)
-            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
-            .required(message.required),
-        estado: yup
-            .string(message.string)
-            .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
-            .required(message.required),
+        // calle: yup
+        //     .string(message.string)
+        //     .required(message.required),
+        // municipio: yup
+        //     .string(message.string)
+        //     .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
+        //     .required(message.required),
+        // estado: yup
+        //     .string(message.string)
+        //     .matches(/^[a-zA-ZÀ-ÿ\u00f1\u00d1]+(\s*[a-zA-ZÀ-ÿ\u00f1\u00d1]*)*[a-zA-ZÀ-ÿ\u00f1\u00d1]+$/g, message.letter)
+        //     .required(message.required),
     });
 
     // Retornamos los resultados mediante una promesa, incluyendo los mensajes o resultados.

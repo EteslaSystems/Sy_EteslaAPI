@@ -12,59 +12,65 @@ const vendedor_clienteBL = require('./vendedor_clienteBL');
 var moment = require('moment-timezone');
 
 module.exports.insertar = async function (request, response) {
-	let validate = await validations.clienteValidation(request);
+	// let validate = await validations.clienteValidation(request);
+	let validate = { status: true }; //Borrar y modificar validaciones
 
-	if (validate.status == true) {
-		let now = moment().tz("America/Mexico_City").format();
-		let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
-
-		const datas = {
-	        id_Usuario: request.idUsuario,
-			id_Cliente: '',
-			fConsumo: parseFloat(request.consumo),
-	        vNombrePersona: request.nombrePersona,
-	        vPrimerApellido: request.primerApellido,
-	        vSegundoApellido: request.segundoApellido,
-	        vTelefono: request.telefono,
-	        vCelular: request.celular,
-	        vEmail: request.email.toLowerCase(),
-	        created_at: fecha,
-	        vCalle: request.calle,
-	        vMunicipio: request.municipio,
-			vEstado: request.estado,
-			bTienePropuesta: 0
-			/////
-			// bTienePropuesta: request.tienePropuesta
-		};
-
-		result = await cliente.insertar(datas);
-
-		if(result.status !== true) {
-			log.errores('INSERTAR / CLIENTES.', result.message.sqlMessage);
-
-			throw new Error('Error al insertar los datos: '+result.message.sqlMessage.toString());
-		}
-
-		const dCliente = {
-			idUsuario: datas.id_Usuario,
-			idCliente: result.message[0].idCliente
-		} 
-
-		new_result = await vendedor_clienteBL.insertar(dCliente);
-		
-		if(new_result.status !== 200) {
-			const eCliente = {
-				idCliente: new_result.message
+	try{
+		if (validate.status == true) {
+			let now = moment().tz("America/Mexico_City").format();
+			let fecha = now.replace(/T/, ' ').replace(/\..+/, '') ;
+	
+			const datas = {
+				id_Usuario: request.idUsuario || null,
+				id_Cliente: null,
+				vNombrePersona: request.nombre || null,
+				vPrimerApellido: request.primerApellido || null,
+				vSegundoApellido: request.segundoApellido || null,
+				vTelefono: request.telefono || null,
+				vCelular: request.celular || null,
+				vEmail: request.email != null ? request.email.toLowerCase() : null,
+				vCalle: request.calle || null,
+				vMunicipio: request.municipio || null,
+				vEstado: request.estado || null,
+				bTienePropuesta: 0
+				/////
+				// bTienePropuesta: request.tienePropuesta
 			};
-
-			del_result = await cliente.destruir(eCliente);
-
-			return del_result.message;
+	
+			result = await cliente.insertar(datas);
+	
+			if(result.status !== true) {
+				log.errores('INSERTAR / CLIENTES.', result.message.sqlMessage);
+	
+				throw new Error('Error al insertar los datos: '+result.message.sqlMessage.toString());
+			}
+	
+			const dCliente = {
+				idUsuario: datas.id_Usuario,
+				idCliente: result.message[0].idCliente
+			} 
+	
+			new_result = await vendedor_clienteBL.insertar(dCliente);
+			
+			if(new_result.status !== 200) {
+				const eCliente = {
+					idCliente: new_result.message
+				};
+	
+				del_result = await cliente.destruir(eCliente);
+	
+				return del_result.message;
+			}
+	
+			return new_result.message;
 		}
-
-		return new_result.message;
-	} else {
-		throw new Error(validate.message);
+		else{
+			throw validate.message;
+		}
+	}
+	catch(error){
+		console.log(error);
+		// throw 'Ocurrio un problema en clienteBL:\n'+error;
 	}
 }
 
