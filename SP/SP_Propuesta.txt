@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE PROCEDURE SP_Propuesta
+CREATE OR REPLACE PROCEDURE SP_Propuesta
 (
 	IN Opcion INT,
 	IN xIdPropuesta VARCHAR(255), /* PK */
@@ -51,11 +51,6 @@ BEGIN
     DECLARE expireAtModified TIMESTAMP;
 
 	IF(Opcion = 0) THEN
-		/*Insertar*/
-		UPDATE cliente
-		SET bTienePropuesta = 1
-		WHERE id_Persona = UNHEX(xIdCliente);
-		/*-----------------------------*/
 		SET expireAt = DATE_ADD(NOW(),INTERVAL daysOfExpire DAY);
 		INSERT INTO propuesta
 		VALUES(UUID(), UNHEX(xIdCliente), UNHEX(xIdVendedor), nombreCliente, consumoPromedio, tarifaActual, nuevaTarifa, nombreVendedor, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaInstalada, promedioNuevoConsumoMensual, promedioNuevoConsumoBimestral, promedioNuevoConsumoAnual, TipoCotizacion, porcentajeDescuento, porcentajePropuesta, costoSinIVAMXN, costoConIVAMXN, costoSinIVAUSD, costoConIVAUSD, 0, NOW(), NULL, NULL, expireAt);

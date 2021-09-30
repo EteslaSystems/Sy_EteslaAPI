@@ -10,7 +10,6 @@ const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
-const clienteBL = require('../BL/clienteBL');
 const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 //const mediaTensionBL = require('../BL/mediaTensionBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
@@ -20,6 +19,9 @@ const viaticosController = require('../Controller/opcionesViaticsController.js')
 const archivoPDF = require('../PDF/crearPdf');  // Ruta del PDF.
 
 const estructura = require('../Controller/estructuraController.js');
+
+const clienteBL = require('../BL/clienteBL');
+const clienteCont = require('../Controller/clienteController');
 
 //Initializations
 router.use(express.json());
@@ -720,6 +722,22 @@ router.put('/lista-clientes-id', function (request, response) {
 		response.json({
 			status: 200,
 			message: cliente,
+		}).end();
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		}).end();
+	});
+});
+
+router.put('/busqueda-cliente-nombre', function (request, response) {
+	clienteCont.consultarPorNombre(request.body)
+	.then(cliente => {
+		response.json({
+			status: 200,
+			message: cliente.message,
 		}).end();
 	})
 	.catch(error => {
