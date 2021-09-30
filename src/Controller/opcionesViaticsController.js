@@ -732,13 +732,13 @@ function obtenerDistanciaEnKm(origen, destino){
         switch(origen)
         {
             case 'Veracruz':
-                origen = 'Avenida Ricardo Flores Magón, Ignacio Zaragoza, Veracruz, Ver.';
+                origen = 'Av. Ricardo Flores Magón 1181, Ignacio Zaragoza, 91910 Veracruz, Ver.';
             break;
             case 'CDMX':
                 origen = 'Oso, Col del Valle Sur, Benito Juárez, 03100 Ciudad de México, CDMX';
             break;
             case 'Puebla':
-                origen = 'Avenida 25 Oriente, Bella Vista, Puebla, Pue.';
+                origen = 'Av. 25 Ote. & C. 18 Sur, Bella Vista, 72500 Puebla, Pue.';
             break;
             default: 
                 -1
@@ -780,6 +780,7 @@ function obtenerDistanciaEnKm(origen, destino){
     }
     catch(error){
         console.log(error);
+        throw error;
     }
 }
 

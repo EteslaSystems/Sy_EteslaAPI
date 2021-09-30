@@ -14,8 +14,10 @@ CREATE OR REPLACE PROCEDURE SP_Cliente
     IN Email VARCHAR(60),
     /* Variables para Direccion */
     IN xIdDireccion VARCHAR(255),
+    IN CP CHAR(5), /*CodigoPostal*/
     IN Calle VARCHAR(60),
     IN Municipio VARCHAR(60),
+    IN Ciudad VARCHAR(100),
     IN Estado VARCHAR(60),
     /* Variables para Usuario */
     IN xIdUsuario VARCHAR(255)
@@ -33,7 +35,7 @@ BEGIN
         SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente INNER JOIN persona ON cliente.id_Persona = persona.idPersona WHERE deleted_at IS NULL ORDER BY persona.created_at DESC LIMIT 1);
         /*Direccion*/
         INSERT INTO direccion
-        VALUES (UUID(), UNHEX(xIdCliente), Calle, Municipio, Estado);
+        VALUES (UUID(), UNHEX(xIdCliente), CP, Calle, Municipio, Ciudad, Estado);
         /*Consultar el ID del Cliente registrado*/
         SELECT HEX(cliente.idCliente) AS idCliente FROM cliente
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona
@@ -66,14 +68,16 @@ BEGIN
         WHERE persona.deleted_at IS NULL;
     /* Leer - Clientes filtrados por Nombre_Apellidos, por Vendedor */
     ELSEIF (Opcion = 4) THEN
-        SELECT HEX(cliente.idCliente) AS idCliente, HEX(persona.idPersona) AS idPersona, CONCAT(persona.vNombrePersona, " ", persona.vPrimerApellido, " ", persona.vSegundoApellido) AS NombreCompleto, persona.vTelefono, persona.vCelular, persona.vEmail, HEX(direccion.idDireccion) AS idDireccion, CONCAT(direccion.vCalle, ", ", direccion.vMunicipio, ", ", direccion.vEstado) AS Direccion, persona.created_at, persona.updated_at FROM cliente INNER JOIN persona ON cliente.id_Persona = persona.idPersona INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
+        SELECT HEX(cliente.idCliente) AS idCliente, HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado, persona.created_at, persona.updated_at FROM cliente 
+        INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
+        INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
         WHERE persona.deleted_at IS NULL 
-        AND persona.idPersona = UNHEX(xIdPersona);
+        AND cliente.idCliente = UNHEX(xIdPersona);
     /* Leer - Clientes por Id de Vendedor */
     ELSEIF (Opcion = 5) THEN
-        SELECT HEX(cliente.idCliente) AS idCliente, cliente.fConsumo, 
+        SELECT HEX(cliente.idCliente) AS idCliente, 
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at, 
-        HEX(direccion.idDireccion) AS idDireccion, direccion.vCalle, direccion.vMunicipio, direccion.vEstado
+        HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado
         FROM cliente
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
@@ -82,11 +86,11 @@ BEGIN
         ORDER BY persona.created_at DESC;
     /* Consultar - Clientes pertenecientes a un Vendedor, *Por Nombre* */
     ELSEIF (Opcion = 6) THEN
-        SELECT HEX(cliente.idCliente) AS idCliente, HEX(persona.idPersona) AS idPersona, CONCAT(persona.vNombrePersona, " ", persona.vPrimerApellido, " ", persona.vSegundoApellido) AS NombreCompleto, persona.vTelefono, persona.vCelular, persona.vEmail, HEX(direccion.idDireccion) AS idDireccion, CONCAT(direccion.vCalle, ", ", direccion.vMunicipio, ", ", direccion.vEstado) AS Direccion, persona.created_at, persona.deleted_at, persona.updated_at 
+        SELECT HEX(cliente.idCliente) AS idCliente, HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado, persona.created_at, persona.deleted_at, persona.updated_at 
         FROM cliente 
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
-        WHERE cliente.id_Usuario = UNHEX('36323062653964312D323134612D3131')
+        WHERE cliente.id_Usuario = UNHEX(xIdUsuario)
         AND persona.deleted_at IS NULL
         AND persona.vNombrePersona LIKE CONCAT(NombrePersona,'%');
     END IF;

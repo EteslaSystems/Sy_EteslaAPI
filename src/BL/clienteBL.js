@@ -29,7 +29,9 @@ module.exports.insertar = async function (request, response) {
 				vTelefono: request.telefono || null,
 				vCelular: request.celular || null,
 				vEmail: request.email != null ? request.email.toLowerCase() : null,
+				cCodigoPostal: request.codigoPostal || null,
 				vCalle: request.calle || null,
+				vCiudad: request.ciudad || null,
 				vMunicipio: request.municipio || null,
 				vEstado: request.estado || null,
 				bTienePropuesta: 0
