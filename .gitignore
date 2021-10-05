@@ -8,6 +8,7 @@ LICENSE
 
 
 /.vscode
-/config/dirDollarPrice/*.json
+/config/dirDollarPrice
+/config/database.js
 /src/PDF/*
 *.pdf
