@@ -61,7 +61,7 @@ BEGIN
     ELSEIF (Opcion = 3) THEN
         SELECT HEX(cliente.idCliente) AS idCliente, 
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at, 
-        HEX(direccion.idDireccion) AS idDireccion, direccion.vCalle, direccion.vMunicipio, direccion.vEstado
+        HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado
         FROM cliente
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente

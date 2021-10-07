@@ -71,8 +71,7 @@ BEGIN
 		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
 		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
 		FROM propuesta
-		WHERE id_Cliente = UNHEX(xIdCliente)
-		AND deleted_at IS NULL
+		WHERE deleted_at IS NULL
 		ORDER BY created_at DESC;
 	ELSEIF (Opcion = 4) THEN
 		/*Consulta filtrada*/
@@ -80,6 +79,13 @@ BEGIN
 		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
 		FROM propuesta
 		WHERE idPropuesta = UNHEX(xIdPropuesta);
+	ELSEIF (Opcion = 5) THEN
+		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
+		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
+		FROM propuesta
+		WHERE id_Cliente = UNHEX(xIdCliente)
+		AND deleted_at IS NULL
+		ORDER BY created_at DESC;
 	END IF;
 END
 // DELIMITER;

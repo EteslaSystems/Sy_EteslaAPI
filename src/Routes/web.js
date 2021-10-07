@@ -229,7 +229,7 @@ router.post('/guardar-propuesta', function(request, response){
 	});
 });
 
-router.post('/getPropuestaByCliente', function(request, response){
+router.put('/getPropuestaByCliente', function(request, response){
 	propuesta.consultar(request.body)
 	.then(respuesta => {
 		response.json({
@@ -716,7 +716,7 @@ router.put('/editar-cliente', function (request, response) {
 	});
 });
 
-router.put('/lista-clientes-id', function (request, response) {
+router.put('/cliente-por-id', function (request, response) {
 	clienteBL.consultarId(request.body)
 	.then(cliente => {
 		response.json({
