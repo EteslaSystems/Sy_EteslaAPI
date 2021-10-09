@@ -18,7 +18,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 
 		/* #region Formating Data to Save PROPUESTA */
 		dataToSave.cliente = { 
-			id: Propuesta.cliente.idPersona,
+			id: Propuesta.cliente.idCliente,
 			nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido
 		} || null;
 
@@ -234,7 +234,7 @@ function consultaBD(data) {
 	const { id } = data;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, id, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, id, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,

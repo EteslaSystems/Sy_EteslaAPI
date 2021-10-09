@@ -11,23 +11,27 @@ const validations = require('../Middleware/inversorMiddleware');
 var moment = require('moment-timezone');
 
 module.exports.insertar = async function (request, response) {
-	let validate = await validations.inversorValidation(request);
+	// let validate = await validations.inversorValidation(request);
+
+	let validate = { status: true };
 
 	if (validate.status == true) {
 		const datas = {
-			vNombreMaterialFot: request.nombrematerial,
-			vMarca: request.marca,
-			fPotencia: parseFloat(request.potencia),
-			fPrecio: parseFloat(request.precio),
-			vGarantia: request.garantia,
-			vOrigen: request.origen,
-			fISC: parseFloat(request.isc),
-			iVMIN: parseInt(request.ivmin),
-			iVMAX: parseInt(request.ivmax),
-			iPMAX: parseInt(request.ipmax),
-			iPMIN: parseInt(request.ipmin),
-			vTipoInversor: request.vTipoInversor,
-			imgRuta: request.imgRuta,
+			vNombreMaterialFot: request.nombrematerial || null,
+			vMarca: request.marca || null,
+			fPotencia: request.potencia != null ? parseFloat(request.potencia) : null,
+			fPrecio: request.precio != null ? parseFloat(request.precio) : null,
+			vGarantia: request.garantia || null,
+			vOrigen: request.origen || null,
+			fISC: request.isc != null ? parseFloat(request.isc) : null,
+			iVMIN: request.ivmin != null ? parseInt(request.ivmin) : null,
+			iVMAX: request.ivmax != null ? parseInt(request.ivmax) : null,
+			iPMAX: request.ipmax != null ? parseInt(request.ipmax) : null,
+			iPMIN: request.ipmin != null ? parseInt(request.ipmin) : null,
+			vTipoInversor: request.vTipoInversor || null,
+			vInversor1: request.microInversor1 || null,
+			vInversor2: request.microInversor2 || null,
+			imgRuta: request.imgRuta || null,
 			iPanelSoportados: request.panelesSoportados != null ? parseInt(request.panelesSoportados) : null
 		};
 
@@ -137,6 +141,24 @@ module.exports.buscar = async function (request, response) {
 	}
 
 	log.eventos('BUSQUEDA / INVERSORES.', result.message.length + ' filas consultadas.');
+
+	return result.message;
+}
+
+module.exports.obtenerEquiposTipo = async function (request, response) {
+	const datas = {
+		vTipoInversor: request.vTipoInversor
+	};
+
+	result = await inversor.consultarTipoEquipos(datas);
+
+	if(result.status !== true) {
+		log.errores('BUSQUEDA[vTipoInversor] / INVERSORES.', result.message);
+
+		throw new Error('Error en BUSQUEDA[vTipoInversor].');
+	}
+
+	log.eventos('BUSQUEDA[vTipoInversor] / INVERSORES.', result.message.length + ' filas consultadas.');
 
 	return result.message;
 }

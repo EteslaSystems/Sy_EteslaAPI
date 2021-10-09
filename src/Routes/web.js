@@ -426,17 +426,32 @@ router.get('/cotizacionView', (request, response) => {
 	response.render('cotizacion');
 });
 /*#endregion*/
-
-router.get('/lista-inversores', function (request, response) {
-	inversorBL.consultar()
-	.then(inversor => {
-		response.json(inversor).end();
+router.put('/listar-micros', function(request, response){
+	inversorBL.obtenerEquiposTipo(request.body)
+	.then(vTipoEquipos => {
+		response.json({
+			status: 200,
+			message: vTipoEquipos
+		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error.message,
-		}).end();
+		});
+	});
+});
+
+router.get('/lista-inversores', function (request, response) {
+	inversorBL.consultar()
+	.then(inversor => {
+		response.json(inversor);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
 	});
 });
 
