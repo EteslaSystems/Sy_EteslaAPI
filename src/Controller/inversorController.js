@@ -346,7 +346,8 @@ async function getInversores_cotizacion(data){
 
 async function getEquiposCombinacionMicros(vNombreMaterialFotovoltaico){ ///Return: [Object]
 	/* [Descripcion]
-		Se extraen los equipos -MicroInversores(2)- de la combinacion para ser consultados
+		Se extraen los equipos -MicroInversores(2)- de la combinacion para ser consultados.
+		Devuelve un objeto con los microInversores y su data de los equipos.
 	*/
 	let NombresEquipos = { primerEquipo: null, segundoEquipo: null };
 	let totalDeCaracteres = 0, indice = 0;
@@ -402,5 +403,10 @@ module.exports.consultar = async function () {
 
 module.exports.consultarTipoEquipos = async function(vTipoInversor){
 	const result = await buscarTipoInversor(vTipoInversor);
+	return result;
+}
+
+module.exports.consultarEquipoPorNombre = async function(vNombreMaterialFot){
+	const result = await buscarInversorPorNombre(vNombreMaterialFot);
 	return result;
 }

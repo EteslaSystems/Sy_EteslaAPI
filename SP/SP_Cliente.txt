@@ -32,7 +32,10 @@ BEGIN
         /*Cliente*/
         INSERT INTO cliente
         VALUES (UUID(), UNHEX(xIdPersona), UNHEX(xIdUsuario));
-        SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente INNER JOIN persona ON cliente.id_Persona = persona.idPersona WHERE deleted_at IS NULL ORDER BY persona.created_at DESC LIMIT 1);
+        SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente
+        INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
+        WHERE deleted_at IS NULL 
+        ORDER BY persona.created_at DESC LIMIT 1);
         /*Direccion*/
         INSERT INTO direccion
         VALUES (UUID(), UNHEX(xIdCliente), CP, Calle, Municipio, Ciudad, Estado);
