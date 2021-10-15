@@ -10,11 +10,9 @@ const agregados = require('../Controller/agregadosController');
 
 async function savePropuesta(objPropuesta/*Obj*/){
 	try{
-		let daysOfExpire = await configFile.getArrayOfConfigFile();
-		daysOfExpire = parseInt(daysOfExpire.propuesta_cotizacion.tiempoExpiracion);
 		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
 		Propuesta = Array.isArray(Propuesta) === true ? Propuesta[0] : Propuesta; //Formating
-		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, daysOfExpire: daysOfExpire /* Dias de expiracion */ };
+		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, expiracion: 0 /* Dias de expiracion */ };
 
 		/* #region Formating Data to Save PROPUESTA */
 		dataToSave.cliente = { 
@@ -32,6 +30,8 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		dataToSave.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
 		dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
 		dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
+
+		dataToSave.expiracion = Propuesta.expiracion || null;
 
 		if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension" || Propuesta.tipoCotizacion === "CombinacionCotizacion"){
 			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
@@ -144,6 +144,7 @@ function insertarBD(datas){
 	let totalConIvaMXN = datas.totalConIvaMXN;
 	let totalSinIvaUSD = datas.totalSinIvaUSD;
 	let totalConIvaUSD = datas.totalConIvaUSD;
+	let diasExpiracion = datas.expiracion.cantidad;
 
 	//Validation != null
 	if(datas.panel){
@@ -162,7 +163,7 @@ function insertarBD(datas){
 	}
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, idCliente, idVendedor, nombreCliente, actualTarifa, consumoPromedio, usuario, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaPropuesta, nuevoConsumoMensual, nuevoConsumoBimestral, nuevoConsumoAnual, nuevaTarifa, tipoCotizacion, descuento, porcentajeDePropuesta, totalSinIvaMXN, totalConIvaMXN, totalSinIvaUSD, totalConIvaUSD, 0, 30]/* 15 = Dias de expiracion */, (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, idCliente, idVendedor, nombreCliente, actualTarifa, consumoPromedio, usuario, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaPropuesta, nuevoConsumoMensual, nuevoConsumoBimestral, nuevoConsumoAnual, nuevaTarifa, tipoCotizacion, descuento, porcentajeDePropuesta, totalSinIvaMXN, totalConIvaMXN, totalSinIvaUSD, totalConIvaUSD, 0, diasExpiracion], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -184,23 +185,25 @@ function insertarBD(datas){
   	});
 }
 
-function eliminarBD(idPropuesta){
+function eliminarBD(data){
+	const { idPropuesta } = data;
+
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, null, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
+				reject (response);
 			} else {
 				const response = {
 					status: true,
 					message: "El registro se ha eliminado con éxito."
 				}
 
-				reject(response);
+				resolve(response);
 			}
 		});
   	});
@@ -281,8 +284,8 @@ module.exports.guardar = async function (datas) {
 	return result;
 }
 
-module.exports.eliminar = async function (id) {
-	const result = await eliminarBD(id);
+module.exports.eliminar = async function ({ idPropuesta }) {
+	const result = await eliminarBD({ idPropuesta });
 	return result;
 }
 

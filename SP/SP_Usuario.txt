@@ -8,7 +8,7 @@ CREATE OR REPLACE PROCEDURE SP_Usuario
     IN Rol SMALLINT,
     IN TipoUsuario TINYTEXT,
     IN Contrasenia VARCHAR(255),
-    IN Oficina VARCHAR(20),
+    IN Oficina VARCHAR(110),
         /* Variable para Persona */
     IN xIdPersona VARCHAR(255),
     IN NombrePersona VARCHAR(50),

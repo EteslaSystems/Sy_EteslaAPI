@@ -42,11 +42,13 @@ const configFile = require('../Controller/configFileController');
 //Salvar precio del dolar en un archivo local
 async function saveDollarPrice(){    
     let objPrecioDelDolar = {};
-    let uriFile = path.join(process.cwd(), 'config','dirDollarPrice');
-    let precioDolar = await scrapDollarPrice();
-    let fechaToday = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
     
     try{
+        //
+        let uriFile = path.join(process.cwd(), 'config','dirDollarPrice');
+        let precioDolar = await scrapDollarPrice();
+        let fechaToday = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+
         //Creando directorio
         await fs.mkdir(uriFile, {recursive: true});
         
@@ -73,39 +75,46 @@ async function saveDollarPrice(){
 
 //Scrapping para obtener precio del dolar
 async function scrapDollarPrice(){
-    const precioDolarRequest = await request({
-        uri: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
-        headers: {},
-        gzip: true
-    });
-
-    let $ = cheerio.load(precioDolarRequest);
-    let priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
-    priceDolar = Math.round(parseFloat(priceDolar) * 100) / 100;
-
-    return priceDolar;
+    try{
+        const precioDolarRequest = await request({
+            uri: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
+            headers: {},
+            gzip: true
+        });
+    
+        let $ = cheerio.load(precioDolarRequest);
+        let priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
+        priceDolar = parseFloat(priceDolar);
+    
+        return priceDolar;
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 //Obtener precio del dolar $local
 async function getDollarPrice(){
-    let dollarPrice = 0;
+    try{
+        let now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+        let fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
+        let dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
 
-    now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-    fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
+        if(dollarPrice.status != true)
+        {
+            //Error
+            dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
+        }
+        else{
+            //Success
+            dollarPrice = dollarPrice.message;
+        }
 
-    dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
-
-    if(dollarPrice.status != true)
-    {
-        //Error
-        dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
+        return dollarPrice;
     }
-    else{
-        //Success
-        dollarPrice = dollarPrice.message;
+    catch(error){
+        console.log(error)
     }
-
-    return dollarPrice;
 }
 
 module.exports.obtenerPrecioDolar = async function(){

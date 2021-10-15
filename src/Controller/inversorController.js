@@ -186,7 +186,7 @@ function buscarInversorPorNombre(datas){
 async function getInversores_cotizacion(data){
 	let inversoresResult = {};
 	let arrayInversor = [];
-	let noPaneles = 0; //No. paneles a instalar
+	let noPaneles = 0, numeroDeInversores = 0; //No. paneles a instalar
 	let precioTotal = 0;
 
 	try{
@@ -228,12 +228,7 @@ async function getInversores_cotizacion(data){
 			if(allInversores[i].vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
 				numeroDeInversores =  Math.floor(noPaneles / allInversores[i].iPanelSoportados);
 			}
-			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micro-inversores
-				/***Soporte de micros para combinacion *-* QS1 + YC600
-					-QS1 => 4 paneles
-					-YC600 => 2 paneles 
-				*/
-	
+			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Calculo de Combinacion de micro-inversores
 				//Se valida el noPaneles, que sea >=5, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
 				if(noPaneles >= 5){
 					let Micros = {}, MicroUno = {}, MicroDos = {};
@@ -282,6 +277,7 @@ async function getInversores_cotizacion(data){
 						precioTotal: costoTotalEquipos,
 						numeroDeInversores: { MicroUno, MicroDos },
 						imgRuta: _combinacionMicros[0].imgRuta,
+						vGarantia: MicroUno.vGarantia,
 						combinacion: true
 					}
 
@@ -302,24 +298,8 @@ async function getInversores_cotizacion(data){
 					porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
 					potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
 	
-					if(allInversores[i].vMarca === 'APS'){
-						if(allInversores[i].vNombreMaterialFot === 'YC600'){
-							precioTotal = Math.round(((((numeroDeInversores - 1) * 300) + 170.9) + (parseInt(data.noModulos) * 13.775) + 144.9)  * 100) / 100;
-						}
-						else{
-							precioTotal = Math.round(((numeroDeInversores * 300) + (parseInt(data.noModulos) * 13.775) + 144.9) * 100) / 100;
-						}
-					}
-					else if(allInversores[i].vMarca === 'Enphase'){
-						precioTotal = Math.round(((numeroDeInversores * allInversores[i].fPrecio) + 232.3 + (parseInt(data.noModulos) / 4) * 33) * 100) / 100;
-					}
-					else if(allInversores[i].vMarca === 'Solaredge'){
-						precioTotal = Math.round(((numeroDeInversores * allInversores[i].fPrecio) + (parseInt(data.noModulos) * 54.83)) * 100) / 100;
-					}
-					else{
-						//Calculo de precioTotal -Normal-
-						precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
-					}
+					//Calculo de precioTotal -Normal-
+					precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 					
 					inversoresResult = {
 						id: allInversores[i].idInversor,
@@ -329,7 +309,8 @@ async function getInversores_cotizacion(data){
 						vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
 						precioTotal: precioTotal,
 						numeroDeInversores: numeroDeInversores,
-						imgRuta: allInversores[i].imgRuta
+						imgRuta: allInversores[i].imgRuta,
+						vGarantia: allInversores[i].vGarantia
 					}
 	
 					arrayInversor.push(inversoresResult);
