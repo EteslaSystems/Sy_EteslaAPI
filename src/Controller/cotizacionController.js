@@ -21,13 +21,10 @@ var objCombinacion = {
 /*#region SwitchCotizaciones*/
 /*#endregion*/
 /*#region Busqueda_inteligente*/
-module.exports.mainBusqInteligente = async function(data){
-    const result = await mainBusquedaInteligente(data);
-    return result;
-}
-
 async function mainBusquedaInteligente(data){
     let tipoCotizacion = data.tipoCotizacion;
+    let porcentajePropuesta = parseInt(data.porcentajePropuesta);
+    let descuento = parseInt(data.porcentajeDescuento);
     let _paneles = [];
     let newData = {};
     let objCombinaciones = {};
@@ -39,7 +36,7 @@ async function mainBusquedaInteligente(data){
             _paneles = await bajaTension.firstStepBT(data);
             _consumos = _paneles[0].consumo;
             _arrayConsumos = _paneles[0];
-            newData = {idUsuario: data.idUsuario, idCliente: data.idCliente, _paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa};
+            newData = { idUsuario: data.idUsuario, idCliente: data.idCliente, _paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa, porcentajePropuesta, descuento };
     
             __combinacionMediana = await getCombinacionMediana(newData, _consumos);
             __combinacionEconomica = await getCombinacionEconomica(newData, _consumos);
@@ -242,6 +239,7 @@ async function getCombinacionMediana(data, __consumos){//Mediana
             origen: data.origen,
             destino: data.destino,
             tarifa: data.tarifa,
+            descuento: data.descuento,
             consumos: __consumos,
             tipoCotizacion: 'CombinacionCotizacion'
         };
@@ -346,3 +344,8 @@ async function getCombinacionOptima(data, __consumos){//MayorProduccion
 }
 /*#endregion*/
 /*#endregion*/
+
+module.exports.mainBusqInteligente = async function(data){
+    const result = await mainBusquedaInteligente(data);
+    return result;
+}

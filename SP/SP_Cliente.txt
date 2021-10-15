@@ -95,7 +95,9 @@ BEGIN
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
         WHERE cliente.id_Usuario = UNHEX(xIdUsuario)
         AND persona.deleted_at IS NULL
-        AND persona.vNombrePersona LIKE CONCAT(NombrePersona,'%');
+        AND persona.vNombrePersona LIKE CONCAT('%',NombrePersona,'%')
+        OR persona.vPrimerApellido LIKE CONCAT('%',NombrePersona,'%')
+        OR persona.vSegundoApellido LIKE CONCAT('%',NombrePersona,'%');
     END IF;
 END
 // DELIMITER ;
