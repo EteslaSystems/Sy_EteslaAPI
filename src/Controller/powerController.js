@@ -580,7 +580,7 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null };
+    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null, Ahorro: null };
     let _consumos = data.consumos || null;
     let tarifa = data.tarifa || null;
     let origen = data.origen;
@@ -619,6 +619,10 @@ async function getPowerBTI(data){
         }
 
         objResult.porcentajePotencia = porcentajePotencia;
+
+        ///Ahorro [kw/bim]
+        let ahorro = getAhorro(_generacion, _consumos);
+        objResult.Ahorro = ahorro;
     }
 
     objResult.generacion = _generacion;
@@ -801,7 +805,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
 
         //Proyeccion a 10 anios
         let _proyeccion10anios = proyeccion10anios(consumoAnual, pagoAnualIva); //Proyeccion en *KW* a 10 años
-    
+
         let objResp = {
             _pagosMensuales: _pagosMensuales._pagosMensualesAnual,
             _pagosBimestrales: _pagosBimestrales._bimestres,
@@ -1057,6 +1061,23 @@ function getNewConsumption(__consumos, __generacion){
     catch(error){
         console.log('Error getNewConsumption():\n'+error);
     }
+}
+
+function getAhorro(objNueConsumos, objAntConsumos){ //Return [Object] : *Todos los precios que se calculan y sus resultados. Son SIN IVA*
+    let Ahorro = { ahorroMensual: null, ahorroBimestral: null, ahorroAnual: null };
+
+    let promedConsumMes = objAntConsumos._promCons.promedioConsumosMensuales;
+    let promedConsumBim = objAntConsumos._promCons.promConsumosBimestrales;
+    let consumoAnual = objAntConsumos._promCons.consumoAnual;
+    let promedNuevoConsumMes = objNueConsumos.promedioDeGeneracion;
+    let promedNuevoConsumBim = objNueConsumos.promeDGeneracionBimestral;
+    let nuevoConsumoAnual = objNueConsumos.generacionAnual;
+
+    Ahorro.ahorroMensual = Math.round((promedConsumMes - promedNuevoConsumMes) * 100) / 100;
+    Ahorro.ahorroBimestral = Math.round((promedConsumBim - promedNuevoConsumBim) * 100) / 100;
+    Ahorro.ahorroAnual = Math.round((consumoAnual - nuevoConsumoAnual) * 100) / 100;
+
+    return Ahorro;
 }
 
 function dac(tarifa, consumoPromedio){

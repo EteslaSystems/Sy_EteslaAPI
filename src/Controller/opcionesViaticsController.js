@@ -43,6 +43,7 @@ async function calcularViaticosBTI(data){
     let cantidadEstructuras = 0;
     let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
     let precio_watt = 0;
+    let uCliente = {}, uVendedor = {};
 
     try{
         // let _opciones = await consultaOpcionesVPropuestaBD();
@@ -65,15 +66,17 @@ async function calcularViaticosBTI(data){
         //Propuesta - Caducidad
         let infoPropuesta = await configFile.getConfiguracionPropuesta();
 
-        //Datos cliente
-        let uCliente = await cliente.consultarId({ idPersona: idCliente });
-        uCliente = uCliente.message; 
-        uCliente = uCliente[0];
-    
-        //Datos vendedor
-        let uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
-        uVendedor = uVendedor.message;
-        uVendedor = uVendedor[0];
+        if(tipoCotizacion != 'CombinacionCotizacion'){
+            //Datos cliente
+            uCliente = await cliente.consultarId({ idPersona: idCliente });
+            uCliente = uCliente.message; 
+            uCliente = uCliente[0];
+
+            //Datos vendedor
+            uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
+            uVendedor = uVendedor.message;
+            uVendedor = uVendedor[0];
+        }
 
         //Estructuras
         let _estructuras = await estructura.leer();
@@ -322,7 +325,7 @@ function getDaysBTI(noPanelesAInstalar){
     return dias;
 }
 
-async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion retorna el costo de la ManoObra, etc. en dolares
+async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion retorna el costo de la ManoObra, etc. en dolares [USD]
     /*
         ->[dictionaryMOCost && OtrosCost] => {El *numero de la izquierda* es la cantidad de paneles y el *numero de la derecha* el costo en MXN}
         ->totalPIEV = [PIEV] Paneles Inversores Estructuras Viaticos
@@ -342,8 +345,8 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion
             costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
         }
         else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
-            costoMO = Math.round((cantidadPaneles * mo_unitario) * 100) / 100;
-            costoOtros = Math.round(((totalPIEV + costoMO) * otros_porcentaje) * 100) / 100;
+            costoMO = Math.round(((cantidadPaneles * mo_unitario) / precioDolar) * 100) / 100;
+            costoOtros = Math.round((((totalPIEV + costoMO) * otros_porcentaje) / precioDolar) * 100) / 100;
         }
     
         costosManoObraYOtros = [costoMO, costoOtros];

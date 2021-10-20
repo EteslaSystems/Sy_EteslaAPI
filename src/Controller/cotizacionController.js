@@ -6,6 +6,8 @@
 const bajaTension = require('../Controller/bajaTensionController');
 const mediaTension = require('../Controller/mediaTensionController');
 const configFile = require('../Controller/configFileController');
+const cliente = require('../Controller/clienteController');
+const vendedor = require('../Controller/usuarioController');
 
 var oldPanelPrice = 0;
 var newPanelPrice = 0;
@@ -27,11 +29,20 @@ async function mainBusquedaInteligente(data){
     let descuento = parseInt(data.porcentajeDescuento);
     let _paneles = [];
     let newData = {};
-    let objCombinaciones = {};
     let __combinaciones = [];
     let __combinacionMediana = [], __combinacionEconomica = [], __combinacionOptima = [];
     
     try{
+        //Datos cliente
+        let uCliente = await cliente.consultarId({ idPersona: data.idCliente });
+        uCliente = uCliente.message; 
+        uCliente = uCliente[0];
+
+        //Datos vendedor
+        let uVendedor = await vendedor.consultarId({ idPersona: data.idUsuario });
+        uVendedor = uVendedor.message;
+        uVendedor = uVendedor[0];
+        
         if(tipoCotizacion == 'bajaTension'){ //BajaTension
             _paneles = await bajaTension.firstStepBT(data);
             _consumos = _paneles[0].consumo;
@@ -46,8 +57,9 @@ async function mainBusquedaInteligente(data){
     
         } */
     
-        objCombinaciones = {
-            idCliente: data.idCliente,
+        let objCombinaciones = {
+            cliente: uCliente,
+            vendedor: uVendedor,
             _arrayConsumos: _arrayConsumos,
             combinacionMediana: __combinacionMediana,
             combinacionEconomica: __combinacionEconomica,
@@ -142,11 +154,6 @@ async function getCombinacionMediana(data, __consumos){//Mediana
     let _combinacionMediana = [];
 
     try{
-        let marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
-        marcaEspecificaPanel = marcaEspecificaPanel.busqueda_inteligente.combinacionMediana_marcaEspecificaPanel.toString();
-
-        objCombinacion.combinacion = "mediana";
-
         let mediaCostoTotPaneles = (_panelSelected) => {
             mediaDePrecios = 0;
             
@@ -177,24 +184,6 @@ async function getCombinacionMediana(data, __consumos){//Mediana
                 }
             }
         };
-
-        if(__paneles.length > 0){
-            //Se seleccionan paneles de la marcaEspecifica
-            for(let i=1; i<__paneles.length; i++)
-            {
-                if(__paneles[i].panel.marca === marcaEspecificaPanel){
-                    _panelesSelectos.push(__paneles[i].panel);
-                }
-            }
-
-            mediaCostoTotPaneles = mediaCostoTotPaneles(_panelesSelectos);
-            panelCombMediana(_panelesSelectos, mediaCostoTotPaneles); //:void
-        }
-
-        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
-
-        __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
-
         let mediaCostoTotInversores = (_inversoreSelected) => {
             mediaDePrecios = 0;
             
@@ -227,14 +216,33 @@ async function getCombinacionMediana(data, __consumos){//Mediana
             }
         };
 
+        let marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
+        marcaEspecificaPanel = marcaEspecificaPanel.busqueda_inteligente.combinacionMediana_marcaEspecificaPanel.toString();
+        objCombinacion.combinacion = "mediana";
+
+        if(__paneles.length > 0){
+            //Se seleccionan paneles de la marcaEspecifica
+            for(let i=1; i<__paneles.length; i++)
+            {
+                if(__paneles[i].panel.marca === marcaEspecificaPanel){
+                    _panelesSelectos.push(__paneles[i].panel);
+                }
+            }
+
+            mediaCostoTotPaneles = mediaCostoTotPaneles(_panelesSelectos);
+            panelCombMediana(_panelesSelectos, mediaCostoTotPaneles); //:void
+        }
+
+        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
+
+        __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
+
         mediaCostoTotInversores = mediaCostoTotInversores(__inversores);
         inversorCombMediana(__inversores,mediaCostoTotInversores);// :void
 
         _combinacionMediana.push(objCombinacion);
         
         let newData = {
-            idUsuario: data.idUsuario,
-            idCliente: data.idCliente,
             arrayBTI: _combinacionMediana,
             origen: data.origen,
             destino: data.destino,
