@@ -43,7 +43,7 @@ async function calcularViaticosBTI(data){
     let cantidadEstructuras = 0;
     let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
     let precio_watt = 0;
-    let uCliente = {}, uVendedor = {};
+    let uCliente = null, uVendedor = null;
 
     try{
         // let _opciones = await consultaOpcionesVPropuestaBD();
