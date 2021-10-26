@@ -33,12 +33,13 @@ async function savePropuesta(objPropuesta/*Obj*/){
 
 		dataToSave.expiracion = Propuesta.expiracion || null;
 
-		if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipoCotizacion === "mediaTension" || Propuesta.tipoCotizacion === "CombinacionCotizacion"){
+		if(Propuesta.tipoCotizacion != "individual"){
 			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
 			dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
-			dataToSave.descuento = Propuesta.descuento || null;
 			dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
 		}
+
+		dataToSave.descuento = Propuesta.descuento || null;
 
 		if(Propuesta.paneles){
 			dataToSave.panel = {
@@ -105,6 +106,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		return respuesta;
 	}
 	catch(error){
+		console.log(error);
 		throw 'Algo salio mal al intenetar guardar la propuesta:\n'+error;
 	}
 }
@@ -112,77 +114,83 @@ async function savePropuesta(objPropuesta/*Obj*/){
 /*----------------------------------------------------------------*/
 
 function insertarBD(datas){
-	/* Cliente */
-	let idCliente = datas.cliente.id;
-	let nombreCliente = datas.cliente.nombre;
-	/* Consumos - Cliente */
-	let consumoPromedio = datas.consumoPromedioKw || null; //Bimestral
-	let actualTarifa = datas.tarifa != null ? datas.tarifa.vieja : null;
-	let nuevaTarifa = datas.tarifa != null ? datas.tarifa.nueva : null;
-	/* Vendedor */
-	let idVendedor = datas.usuario.id;
-	let usuario = datas.usuario.nombre;
-	/* Panel */
-	let modeloPanel = null;
-	let cantidadPanel = null;
-	/* Inversor */
-	let modeloInversor = null;
-	let cantidadInversor = null;
-	/* Estructura */
-	let marcaEstructura = null;
-	let cantidadEstructura = null;
-	/* Energia */
-	let nuevoConsumoMensual = datas.nuevoConsumoMensual || null;
-	let nuevoConsumoBimestral = datas.nuevoConsumoBimestralKw || null;
-	let nuevoConsumoAnual = datas.nuevoConsumoAnualKw || null;
-	/* Propuesta */
-	let tipoCotizacion = datas.tipoCotizacion;
-	let descuento = datas.descuento || null;
-	let potenciaPropuesta = datas.potenciaPropuesta || null; //PotenciaPropuesta
-	let porcentajeDePropuesta = datas.porcentajePropuesta || null;
-	let totalSinIvaMXN = datas.totalSinIvaMXN;
-	let totalConIvaMXN = datas.totalConIvaMXN;
-	let totalSinIvaUSD = datas.totalSinIvaUSD;
-	let totalConIvaUSD = datas.totalConIvaUSD;
-	let diasExpiracion = datas.expiracion.cantidad;
+	try{
+		/* Cliente */
+		let idCliente = datas.cliente.id;
+		let nombreCliente = datas.cliente.nombre;
+		/* Consumos - Cliente */
+		let consumoPromedio = datas.consumoPromedioKw || null; //Bimestral
+		let actualTarifa = datas.tarifa != null ? datas.tarifa.vieja : null;
+		let nuevaTarifa = datas.tarifa != null ? datas.tarifa.nueva : null;
+		/* Vendedor */
+		let idVendedor = datas.usuario.id;
+		let usuario = datas.usuario.nombre;
+		/* Panel */
+		let modeloPanel = null;
+		let cantidadPanel = null;
+		/* Inversor */
+		let modeloInversor = null;
+		let cantidadInversor = null;
+		/* Estructura */
+		let marcaEstructura = null;
+		let cantidadEstructura = null;
+		/* Energia */
+		let nuevoConsumoMensual = datas.nuevoConsumoMensual || null;
+		let nuevoConsumoBimestral = datas.nuevoConsumoBimestralKw || null;
+		let nuevoConsumoAnual = datas.nuevoConsumoAnualKw || null;
+		/* Propuesta */
+		let tipoCotizacion = datas.tipoCotizacion;
+		let descuento = datas.descuento.porcentaje || null;
+		let potenciaPropuesta = datas.potenciaPropuesta || null; //PotenciaPropuesta
+		let porcentajeDePropuesta = datas.porcentajePropuesta || null;
+		let totalSinIvaMXN = datas.totalSinIvaMXN;
+		let totalConIvaMXN = datas.totalConIvaMXN;
+		let totalSinIvaUSD = datas.totalSinIvaUSD;
+		let totalConIvaUSD = datas.totalConIvaUSD;
+		let diasExpiracion = datas.expiracion.cantidad;
 
-	//Validation != null
-	if(datas.panel){
-		modeloPanel = datas.panel.modelo;
-		cantidadPanel = datas.panel.cantidad;
-	}
+		//Validation != null
+		if(datas.panel){
+			modeloPanel = datas.panel.modelo;
+			cantidadPanel = datas.panel.cantidad;
+		}
 
-	if(datas.inversor){
-		modeloInversor = datas.inversor.modelo;
-		cantidadInversor = datas.inversor.cantidad;
-	}
+		if(datas.inversor){
+			modeloInversor = datas.inversor.modelo;
+			cantidadInversor = datas.inversor.cantidad;
+		}
 
-	if(datas.estructura){
-		marcaEstructura = datas.estructura.marca;
-		cantidadEstructura = datas.estructura.cantidad;
-	}
+		if(datas.estructura){
+			marcaEstructura = datas.estructura.marca;
+			cantidadEstructura = datas.estructura.cantidad;
+		}
 
-  	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, idCliente, idVendedor, nombreCliente, actualTarifa, consumoPromedio, usuario, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaPropuesta, nuevoConsumoMensual, nuevoConsumoBimestral, nuevoConsumoAnual, nuevaTarifa, tipoCotizacion, descuento, porcentajeDePropuesta, totalSinIvaMXN, totalConIvaMXN, totalSinIvaUSD, totalConIvaUSD, 0, diasExpiracion], (error, rows) => {
-			if (error) {
-				const response = {
-					status: false,
-					message: error
+		return new Promise((resolve, reject) => {
+			mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, idCliente, idVendedor, nombreCliente, actualTarifa, consumoPromedio, usuario, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaPropuesta, nuevoConsumoMensual, nuevoConsumoBimestral, nuevoConsumoAnual, nuevaTarifa, tipoCotizacion, descuento, porcentajeDePropuesta, totalSinIvaMXN, totalConIvaMXN, totalSinIvaUSD, totalConIvaUSD, 0, diasExpiracion], (error, rows) => {
+				if (error) {
+					const response = {
+						status: false,
+						message: error
+					}
+
+					reject (response);
+				} 
+				else {
+					const response = {
+						idPropuesta: rows[0][0].xIdPropuesta,
+						status: true,
+						message: "El registro se ha guardado con éxito."
+					}
+
+					resolve(response);
 				}
-
-				reject (response);
-			} 
-			else {
-				const response = {
-					idPropuesta: rows[0][0].xIdPropuesta,
-					status: true,
-					message: "El registro se ha guardado con éxito."
-				}
-
-				resolve(response);
-			}
+			});
 		});
-  	});
+	}
+	catch(error){
+		console.log(error);
+		throw error;
+	}
 }
 
 function eliminarBD(data){

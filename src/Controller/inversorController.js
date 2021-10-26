@@ -285,36 +285,36 @@ async function getInversores_cotizacion(data){
 					arrayInversor.push(inversoresResult);
 				}
 			}
-			else{//Calculo de inversores
-				numeroDeInversores = potenciaReal_ / allInversores[i].fPotencia;
+			else{//Calculo de inversores /* Centrales */
+				//Redimensionamento_Inversor [25%]
+				let redimensionamientoAbajo = allInversores[i].fPotencia - ((25 / 100) * allInversores[i].fPotencia); ///PMIN
+				let redimenSionamientoArriba = allInversores[i].fPotencia + ((25 / 100) * allInversores[i].fPotencia); ///PMAX
+
+				if(potenciaReal_ >= redimensionamientoAbajo && potenciaReal_ <= redimenSionamientoArriba){
+					numeroDeInversores = Math.round(potenciaReal_ / allInversores[i].fPotencia);
+				}
 			}
 	
 			//CALCULO DE COSTO_TOTAL DE INVERSORES
-			if(numeroDeInversores >= 0.5 && allInversores[i].vTipoInversor != 'Combinacion'){ //Inversores && Micros [0.5 => para que se pueda obtener al menos 1 inversor])
-				numeroDeInversores = numeroDeInversores > 0.5 && numeroDeInversores < 1 ? Math.round(numeroDeInversores) : Math.floor(numeroDeInversores);
+			if(numeroDeInversores >= 1){
+				potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
 
-				if(numeroDeInversores >= 1){
-					_potenciaPicoInversor = Math.round((potenciaReal_ / numeroDeInversores) * 100) / 100;
-					porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
-					potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
-	
-					//Calculo de precioTotal -Normal-
-					precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
-					
-					inversoresResult = {
-						id: allInversores[i].idInversor,
-						fPotencia: allInversores[i].fPotencia,
-						fPrecio: allInversores[i].fPrecio,
-						vMarca: allInversores[i].vMarca,
-						vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
-						precioTotal: precioTotal,
-						numeroDeInversores: numeroDeInversores,
-						imgRuta: allInversores[i].imgRuta,
-						vGarantia: allInversores[i].vGarantia
-					}
-	
-					arrayInversor.push(inversoresResult);
+				//Calculo de precioTotal -Normal-
+				precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
+				
+				inversoresResult = {
+					id: allInversores[i].idInversor,
+					fPotencia: allInversores[i].fPotencia,
+					fPrecio: allInversores[i].fPrecio,
+					vMarca: allInversores[i].vMarca,
+					vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
+					precioTotal: precioTotal,
+					numeroDeInversores: numeroDeInversores,
+					imgRuta: allInversores[i].imgRuta,
+					vGarantia: allInversores[i].vGarantia
 				}
+
+				arrayInversor.push(inversoresResult);
 			}
 		}
 
