@@ -278,6 +278,7 @@ async function getInversores_cotizacion(data){
 						numeroDeInversores: { MicroUno, MicroDos },
 						imgRuta: _combinacionMicros[0].imgRuta,
 						vGarantia: MicroUno.vGarantia,
+						vOrigen: allInversores[i].vOrigen,
 						combinacion: true
 					}
 
@@ -311,7 +312,8 @@ async function getInversores_cotizacion(data){
 					precioTotal: precioTotal,
 					numeroDeInversores: numeroDeInversores,
 					imgRuta: allInversores[i].imgRuta,
-					vGarantia: allInversores[i].vGarantia
+					vGarantia: allInversores[i].vGarantia,
+					vOrigen: allInversores[i].vOrigen
 				}
 
 				arrayInversor.push(inversoresResult);
