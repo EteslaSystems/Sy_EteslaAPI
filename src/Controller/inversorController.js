@@ -298,8 +298,6 @@ async function getInversores_cotizacion(data){
 	
 			//CALCULO DE COSTO_TOTAL DE INVERSORES
 			if(numeroDeInversores >= 1){
-				potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
-
 				//Calculo de precioTotal -Normal-
 				precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 				

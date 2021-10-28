@@ -233,7 +233,7 @@ async function calcularViaticosBTI(data){
                 /// Descuento
                 if(parseInt(data.descuento) > 0){ ///[Return: $$USD]
                     let descuentPorcentaje = parseInt(data.descuento);
-                    descuento = (descuentPorcentaje * costoTotalProyecto) / 100;//USD
+                    descuento = Math.round(((descuentPorcentaje * costoTotalProyecto) / 100) * 100) / 100;//USD
                 }
 
                 //USD - Sin IVA
