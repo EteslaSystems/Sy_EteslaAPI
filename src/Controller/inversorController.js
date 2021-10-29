@@ -234,17 +234,10 @@ async function getInversores_cotizacion(data){
 					let Micros = {}, MicroUno = {}, MicroDos = {};
 					let costoTotalEquipos = 0;
 
-					//Obtener todas las combinaciones
-					let _combinacionMicros = await buscarTipoInversor({ vTipoInversor: 'Combinacion' });
-					_combinacionMicros = _combinacionMicros.message; //Formating
-
-					//Recorrer coleccion de *combinaciones-micros*
-					for(combinacionMicro of _combinacionMicros){
-						//Obtener el nombre de equipo 1 y equipo2
-						Micros = await getEquiposCombinacionMicros(combinacionMicro.vNombreMaterialFot);
-						MicroUno = Micros.primerEquipo;
-						MicroDos = Micros.segundoEquipo;
-					}
+					//Obtener el nombre de equipo 1 y equipo2
+					Micros = await getEquiposCombinacionMicros(allInversores[i].vNombreMaterialFot);
+					MicroUno = Micros.primerEquipo;
+					MicroDos = Micros.segundoEquipo;
 
 					//Se agregan la cantidad de equipos requeridos a -MicroUno- && -MicroDos-
 					Object.assign(MicroUno,{
@@ -270,21 +263,19 @@ async function getInversores_cotizacion(data){
 
 					//
 					inversoresResult = {
-						id: _combinacionMicros[0].idInversor,
+						id: allInversores[i].idInversor,
 						fPotencia: (MicroUno.fPotencia + MicroDos.fPotencia),
-						vMarca: _combinacionMicros[0].vMarca,
-						vNombreMaterialFot: _combinacionMicros[0].vNombreMaterialFot,
+						vMarca: MicroUno.vMarca,
+						vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
 						precioTotal: costoTotalEquipos,
 						numeroDeInversores: { MicroUno, MicroDos },
-						imgRuta: _combinacionMicros[0].imgRuta,
 						vGarantia: MicroUno.vGarantia,
 						vOrigen: allInversores[i].vOrigen,
 						combinacion: true
 					}
-
-					//
-					arrayInversor.push(inversoresResult);
 				}
+				//
+				arrayInversor.push(inversoresResult);
 			}
 			else{//Calculo de inversores /* Centrales */
 				//Redimensionamento_Inversor [25%]
@@ -292,12 +283,12 @@ async function getInversores_cotizacion(data){
 				let redimenSionamientoArriba = allInversores[i].fPotencia + ((25 / 100) * allInversores[i].fPotencia); ///PMAX
 
 				if(potenciaReal_ >= redimensionamientoAbajo && potenciaReal_ <= redimenSionamientoArriba){
-					numeroDeInversores = Math.round(potenciaReal_ / allInversores[i].fPotencia);
+					numeroDeInversores = Math.ceil(potenciaReal_ / redimenSionamientoArriba);
 				}
 			}
 	
 			//CALCULO DE COSTO_TOTAL DE INVERSORES
-			if(numeroDeInversores >= 1){
+			if(numeroDeInversores >= 1 && allInversores[i].vTipoInversor != 'Combinacion'){
 				//Calculo de precioTotal -Normal-
 				precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 				
@@ -311,9 +302,10 @@ async function getInversores_cotizacion(data){
 					numeroDeInversores: numeroDeInversores,
 					imgRuta: allInversores[i].imgRuta,
 					vGarantia: allInversores[i].vGarantia,
-					vOrigen: allInversores[i].vOrigen
+					vOrigen: allInversores[i].vOrigen,
+					combinacion: false
 				}
-
+			
 				arrayInversor.push(inversoresResult);
 			}
 		}
