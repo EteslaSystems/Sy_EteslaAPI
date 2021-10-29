@@ -93,11 +93,11 @@ BEGIN
         FROM cliente 
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
-        WHERE cliente.id_Usuario = UNHEX(xIdUsuario)
-        AND persona.deleted_at IS NULL
+        WHERE persona.deleted_at IS NULL
         AND persona.vNombrePersona LIKE CONCAT('%',NombrePersona,'%')
         OR persona.vPrimerApellido LIKE CONCAT('%',NombrePersona,'%')
-        OR persona.vSegundoApellido LIKE CONCAT('%',NombrePersona,'%');
+        OR persona.vSegundoApellido LIKE CONCAT('%',NombrePersona,'%')
+        AND cliente.id_Usuario = UNHEX(xIdUsuario);
     END IF;
 END
 // DELIMITER ;

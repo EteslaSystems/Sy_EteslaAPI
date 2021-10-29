@@ -181,13 +181,13 @@ async function calcularViaticosBTI(data){
             /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
             if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'CombinacionCotizacion'){ //BajaTension
                 costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
-                costoTotalInversores = typeof _arrayCotizacion[x].inversor.precioTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.precioTotal) : _arrayCotizacion[x].inversor.precioTotal;
+                costoTotalInversores = typeof _arrayCotizacion[x].inversor.costoTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.costoTotal) : _arrayCotizacion[x].inversor.costoTotal;
                 costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
                 cantidadEstructuras = _arrayCotizacion[x].panel.noModulos;
             }
             else if(tipoCotizacion === 'individual'){ //Individual
                 costoTotalPaneles = _arrayCotizacion[x].panel === null ? 0 : _arrayCotizacion[x].panel.costoTotal;
-                costoTotalInversores = _arrayCotizacion[x].inversor === null ? 0 : _arrayCotizacion[x].inversor.precioTotal;
+                costoTotalInversores = _arrayCotizacion[x].inversor === null ? 0 : _arrayCotizacion[x].inversor.costoTotal;
 
                 if(_arrayCotizacion[x].estructura != null){
                     costoTotalEstructuras = _arrayCotizacion[x].estructura.costoTotal;
@@ -428,7 +428,7 @@ async function main_calcularViaticos(data){
 
         let costoTotalEstructuras = _estructuras.fPrecio * panel.noModulos;
         let totalViaticos = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal;
-        let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.precioTotal) + costoTotalEstructuras) * 100) /100;
+        let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.costoTotal) + costoTotalEstructuras) * 100) /100;
         let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
         let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
         let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr + costoTotalAgregados) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras

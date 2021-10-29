@@ -35,7 +35,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
     _arrayResult.push(objPropuestaPaneles);
 
-    _noPaneles = await panel.numeroDePaneles(potenciaRequerida);
+    let _noPaneles = await panel.numeroDePaneles(potenciaRequerida);
 
     for(var x=0; x<_noPaneles.length; x++)
     {

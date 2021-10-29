@@ -183,16 +183,14 @@ function buscarInversorPorNombre(datas){
 */
 
 /*#region SI_SIRVE*/
-async function getInversores_cotizacion(data){
+async function getInversores_cotizacion(_data){
 	let inversoresResult = {};
 	let arrayInversor = [];
 	let noPaneles = 0, numeroDeInversores = 0; //No. paneles a instalar
 	let precioTotal = 0;
+	let data = _data;
 
 	try{
-		let allInversores = await consultaBD();
-		allInversores = allInversores.message;
-
 		if(data.objPanelSelect.hasOwnProperty("potenciaNecesaria")){
 			if(data.objPanelSelect.potenciaNecesaria.hasOwnProperty("potenciaNecesaria")){
 				data = data.objPanelSelect;
@@ -217,6 +215,9 @@ async function getInversores_cotizacion(data){
 			data = data.objPanelSelect;
 		}
 	
+		let allInversores = await consultaBD();
+		allInversores = allInversores.message;
+
 		let potenciaReal_= parseFloat(data.potenciaReal);
 		potenciaReal_ = potenciaReal_ * 1000; ///Watss 
 	
@@ -267,7 +268,7 @@ async function getInversores_cotizacion(data){
 						fPotencia: (MicroUno.fPotencia + MicroDos.fPotencia),
 						vMarca: MicroUno.vMarca,
 						vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
-						precioTotal: costoTotalEquipos,
+						costoTotal: costoTotalEquipos,
 						numeroDeInversores: { MicroUno, MicroDos },
 						vGarantia: MicroUno.vGarantia,
 						vOrigen: allInversores[i].vOrigen,
@@ -298,7 +299,7 @@ async function getInversores_cotizacion(data){
 					fPrecio: allInversores[i].fPrecio,
 					vMarca: allInversores[i].vMarca,
 					vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
-					precioTotal: precioTotal,
+					costoTotal: precioTotal,
 					numeroDeInversores: numeroDeInversores,
 					imgRuta: allInversores[i].imgRuta,
 					vGarantia: allInversores[i].vGarantia,

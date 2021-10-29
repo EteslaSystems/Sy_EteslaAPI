@@ -25,7 +25,7 @@ async function cotizacionIndividual(data){
             let inversor = {}; //Result
 
             if(data.cotizacionIndividual.equipos.inversores.combinacion){ ///Combinacion de micros
-                let EquiposResult = { MicroUno: {}, MicroDos: {}, precioTotal: 0, vMarca: '', vNombreMaterialFot: '' };
+                let EquiposResult = { MicroUno: {}, MicroDos: {}, precioTotal: 0, vMarca: '', vNombreMaterialFot: '', combinacion: true };
                 let precioTotal = 0;
 
                 //Se busca los MicroInversores por su Nombre
@@ -36,7 +36,7 @@ async function cotizacionIndividual(data){
                 ///Adding 'numeroDeInversores' && 'precioTotal' property
                 Object.assign(microInversor,{
                     numeroDeInversores: data.cotizacionIndividual.equipos.inversores.equipo1.cantidad,
-                    precioTotal: precioTotal
+                    costoTotal: precioTotal
                 });
                 ///
                 EquiposResult.MicroUno = microInversor;
@@ -48,13 +48,13 @@ async function cotizacionIndividual(data){
                 ///Adding 'numeroDeInversores' && 'precioTotal' property
                 Object.assign(microInversor,{
                     numeroDeInversores: data.cotizacionIndividual.equipos.inversores.equipo2.cantidad,
-                    precioTotal: precioTotal
+                    costoTotal: precioTotal
                 });
                 ///
                 EquiposResult.MicroDos = microInversor;
 
                 ///
-                EquiposResult.precioTotal = EquiposResult.MicroUno.precioTotal + EquiposResult.MicroDos.precioTotal;
+                EquiposResult.costoTotal = EquiposResult.MicroUno.precioTotal + EquiposResult.MicroDos.precioTotal;
                 EquiposResult.vMarca = EquiposResult.MicroUno.vMarca;
                 EquiposResult.vNombreMaterialFot = data.cotizacionIndividual.equipos.inversores.vNombreMaterialFot;
 
@@ -66,7 +66,11 @@ async function cotizacionIndividual(data){
                 inversor = await inversores.buscar({ idInversor: data.cotizacionIndividual.equipos.inversores.modelo });
                 inversor = inversor.message; //Array
                 inversor = inversor[0]; //Object
-                inversor = Object.assign(inversor,{ numeroDeInversores: parseInt(data.cotizacionIndividual.equipos.inversores.cantidad), precioTotal: Math.round((inversor.fPrecio * data.cotizacionIndividual.equipos.inversores.cantidad) * 100) / 100 });
+                inversor = Object.assign(inversor,{
+                    combinacion: false,
+                    numeroDeInversores: parseInt(data.cotizacionIndividual.equipos.inversores.cantidad), 
+                    costoTotal: Math.round((inversor.fPrecio * data.cotizacionIndividual.equipos.inversores.cantidad) * 100) / 100 
+                });
             }
 
             Cotizacion.inversor = inversor;

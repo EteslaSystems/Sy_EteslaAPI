@@ -9,49 +9,51 @@ const configFile = require('../Controller/configFileController');
 const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 
-var oldPanelPrice = 0;
-var newPanelPrice = 0;
-var oldInversorPrice = 0;
-var newInversorPrice = 0;
-var objCombinacion = {
-    combinacion: null,
-    panel: null, 
-    inversor: null
-};
-
-
-/*#region SwitchCotizaciones*/
-/*#endregion*/
 /*#region Busqueda_inteligente*/
 async function mainBusquedaInteligente(data){
     let tipoCotizacion = data.tipoCotizacion;
     let porcentajePropuesta = parseInt(data.porcentajePropuesta);
     let descuento = parseInt(data.porcentajeDescuento);
-    let _paneles = [];
-    let newData = {};
-    let __combinaciones = [];
-    let __combinacionMediana = [], __combinacionEconomica = [], __combinacionOptima = [];
     
     try{
-        //Datos cliente
-        let uCliente = await cliente.consultarId({ idPersona: data.idCliente });
-        uCliente = uCliente.message; 
-        uCliente = uCliente[0];
+        // //Datos cliente
+        // let uCliente = await cliente.consultarId({ idPersona: data.idCliente });
+        // uCliente = uCliente.message; 
+        // uCliente = uCliente[0];
 
-        //Datos vendedor
-        let uVendedor = await vendedor.consultarId({ idPersona: data.idUsuario });
-        uVendedor = uVendedor.message;
-        uVendedor = uVendedor[0];
+        // //Datos vendedor
+        // let uVendedor = await vendedor.consultarId({ idPersona: data.idUsuario });
+        // uVendedor = uVendedor.message;
+        // uVendedor = uVendedor[0];
         
         if(tipoCotizacion == 'bajaTension'){ //BajaTension
-            _paneles = await bajaTension.firstStepBT(data);
-            _consumos = _paneles[0].consumo;
-            _arrayConsumos = _paneles[0];
-            newData = { idUsuario: data.idUsuario, idCliente: data.idCliente, _paneles: _paneles, origen: data.origen, destino: data.destino, tarifa:data.tarifa, porcentajePropuesta, descuento };
+            let _data = await bajaTension.firstStepBT(data);
+
+            ///Consumos
+            let _consumos = _data[0].consumo;
+
+            ///Eliminar elemento de -consumos- 
+            _data.shift();
+
+            ///Paneles
+            let _paneles = _data;
+
+            newData = { 
+                idUsuario: data.idUsuario, 
+                idCliente: data.idCliente, 
+                _paneles: _paneles, 
+                origen: data.origen, 
+                destino: data.destino, 
+                tarifa:data.tarifa, 
+                porcentajePropuesta, 
+                descuento 
+            };
     
-            __combinacionMediana = await getCombinacionMediana(newData, _consumos);
-            __combinacionEconomica = await getCombinacionEconomica(newData, _consumos);
-            __combinacionOptima = await getCombinacionOptima(newData, _consumos);
+            CombinacionEconomica = await getCombinacionEconomica(_data);
+            CombinacionMediana = await getCombinacionMediana(newData, _consumos);
+            CombinacionOptima = await getCombinacionOptima(newData, _consumos);
+
+            //Calcular viaticos
         }
         /* else{ //MediaTension
     
@@ -78,69 +80,46 @@ async function mainBusquedaInteligente(data){
 }
 
 /*#region Combinaciones*/
-async function getCombinacionEconomica(data, __consumos){
-    let __paneles = data._paneles || null;
-    let _combinacionEconomica = [];
-
-    objCombinacion.combinacion = "economica";
-
+async function getCombinacionEconomica(_paneles){
     try{
-        if(__paneles.length > 0){
-            for(let i=1; i<__paneles.length; i++)
-            {
-                newPanelPrice = parseFloat(__paneles[i].panel.costoTotal);
-    
-                if(i == 1){
-                    oldPanelPrice = newPanelPrice;
+        let getEquipoEconomico = (_equipos) => {
+            costoEconomico = 0;
+            EquipoEconomico = {};
+
+            ///
+            _equipos.filter((equipo) => {
+                if(equipo.panel){
+                    equipo = equipo.panel;
                 }
-    
-                if(oldPanelPrice >= newPanelPrice){
-                    oldPanelPrice = newPanelPrice;
-                    
-                    objCombinacion.panel = __paneles[i].panel;
+
+                if(costoEconomico === 0){
+                    costoEconomico = equipo.costoTotal;
+                    EquipoEconomico = equipo;
                 }
-            }
-        }
-    
-        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
-    
-        let __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
-    
-        if(__inversores.length > 0){
-            for(let j=0; j<__inversores.length; j++)
-            {
-                newInversorPrice = parseFloat(__inversores[j].precioTotalInversores);
-    
-                if(j === 0){
-                    oldInversorPrice = newInversorPrice;
+
+                if(costoEconomico > equipo.costoTotal){
+                    costoEconomico = equipo.costoTotal;
+                    EquipoEconomico = equipo;
                 }
-    
-                if(oldInversorPrice >= newInversorPrice){
-                    oldInversorPrice = newInversorPrice;
-    
-                    objCombinacion.inversor = __inversores[j];
-                }
-            }
-        }
-        
-        _combinacionEconomica.push(objCombinacion);
-        
-        let newData = {
-            idUsuario: data.idUsuario,
-            idCliente: data.idCliente,
-            arrayBTI: _combinacionEconomica,
-            origen: data.origen,
-            destino: data.destino,
-            tarifa: data.tarifa,
-            consumos: __consumos,
-            tipoCotizacion: 'CombinacionCotizacion'
+            });
+            return EquipoEconomico;
         };
-    
-        ///Se calculan viaticos
-        _combinacionEconomica = await bajaTension.obtenerViaticos_Totales(newData);
-        _combinacionEconomica.push(objCombinacion.combinacion);
-    
-        return _combinacionEconomica;
+
+        if(Array.isArray(_paneles) === true){
+            Panel = getEquipoEconomico(_paneles);
+
+            //Recursividad
+            getCombinacionEconomica(Panel);
+        }
+
+        //Obtener lista de los inversores para ese panel
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: _paneles });
+
+        //Obtener -Inversor- mas economico
+        Inversor = getEquipoEconomico(_inversores);
+
+        //Retornar [Object]
+        return { _paneles, Inversor }
     }
     catch(error){
         console.log(error);
