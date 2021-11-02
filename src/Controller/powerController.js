@@ -581,53 +581,59 @@ function getConsumosGeneracionMXN(_pagosTotales){
 /*#region Power_BTI*/
 async function getPowerBTI(data){
     let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null, Ahorro: null };
-    let _consumos = data.consumos || null;
-    let tarifa = data.tarifa || null;
-    let origen = data.origen;
-    let potenciaReal = data.potenciaReal; 
-    let promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
     let dac_o_nodac = '';
-
-    let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
-
-    objResult.objImpactoAmbiental = getArbolesPlantados(_generacion.generacionAnual);
-
-    if(_consumos != null){
-        let _consumosMensuales = _consumos._promCons.consumoMensual;
-        let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
-        porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
-        
-        objResult._consumos = _consumos;
-
-        //Se sabe si es DAC o NO
-        if(tarifa != null){
-            dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
-            objResult.old_dac_o_nodac = dac_o_nodac;
- 
-            //Consumo en pesos
-            objResult.objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
-        }
-
-        objResult.nuevosConsumos = objNuevosConsumos;
-
-        if(objNuevosConsumos != null){ //Generacion en pesos MXN
-            dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
-            objResult.new_dac_o_nodac = dac_o_nodac;
-
-            //Generacion en pesos
-            objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
-        }
-
-        objResult.porcentajePotencia = porcentajePotencia;
-
-        ///Ahorro [kw/bim]
-        let ahorro = getAhorro(_generacion, _consumos);
-        objResult.Ahorro = ahorro;
-    }
-
-    objResult.generacion = _generacion;
     
-    return objResult;
+    try{
+        let _consumos = data.consumos || null;
+        let tarifa = data.tarifa || null;
+        let origen = data.origen;
+        let potenciaReal = data.potenciaReal; 
+        let promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
+        
+        let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
+    
+        objResult.objImpactoAmbiental = getArbolesPlantados(_generacion.generacionAnual);
+
+        if(_consumos != null){
+            let _consumosMensuales = _consumos._promCons.consumoMensual;
+            let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
+            porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
+            
+            objResult._consumos = _consumos;
+    
+            //Se sabe si es DAC o NO
+            if(tarifa != null){
+                dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
+                objResult.old_dac_o_nodac = dac_o_nodac;
+     
+                //Consumo en pesos
+                objResult.objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
+            }
+    
+            objResult.nuevosConsumos = objNuevosConsumos;
+    
+            if(objNuevosConsumos != null){ //Generacion en pesos MXN
+                dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
+                objResult.new_dac_o_nodac = dac_o_nodac;
+    
+                //Generacion en pesos
+                objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
+            }
+    
+            objResult.porcentajePotencia = porcentajePotencia;
+    
+            ///Ahorro [kw/bim]
+            let ahorro = getAhorro(_generacion, _consumos);
+            objResult.Ahorro = ahorro;
+    
+            objResult.generacion = _generacion;
+        
+            return objResult;
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = promedioConsumosMensuales    

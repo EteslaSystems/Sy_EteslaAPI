@@ -12,66 +12,72 @@ const vendedor = require('../Controller/usuarioController');
 /*#region Busqueda_inteligente*/
 async function mainBusquedaInteligente(data){
     let tipoCotizacion = data.tipoCotizacion;
-    let porcentajePropuesta = parseInt(data.porcentajePropuesta);
-    let descuento = parseInt(data.porcentajeDescuento);
-    
-    try{
-        // //Datos cliente
-        // let uCliente = await cliente.consultarId({ idPersona: data.idCliente });
-        // uCliente = uCliente.message; 
-        // uCliente = uCliente[0];
+    let __combinaciones = [], _consumos = [];
 
-        // //Datos vendedor
-        // let uVendedor = await vendedor.consultarId({ idPersona: data.idUsuario });
-        // uVendedor = uVendedor.message;
-        // uVendedor = uVendedor[0];
-        
-        if(tipoCotizacion == 'bajaTension'){ //BajaTension
+    try{
+        //Datos cliente
+        let uCliente = await cliente.consultarId({ idPersona: data.idCliente });
+        uCliente = uCliente.message; 
+        uCliente = uCliente[0];
+
+        //Datos vendedor
+        let uVendedor = await vendedor.consultarId({ idPersona: data.idUsuario });
+        uVendedor = uVendedor.message;
+        uVendedor = uVendedor[0];
+
+        if(tipoCotizacion == 'bajaTension'){
+            /*#region Formating */
+            //[ Consumos && Paneles ]
             let _data = await bajaTension.firstStepBT(data);
 
             ///Consumos
-            let _consumos = _data[0].consumo;
+            _consumos = _data[0].consumo;
+            data.consumos = _consumos;
 
             ///Eliminar elemento de -consumos- 
             _data.shift();
 
             ///Paneles
             let _paneles = _data;
+            /*#endregion */
 
-            newData = { 
-                idUsuario: data.idUsuario, 
-                idCliente: data.idCliente, 
-                _paneles: _paneles, 
-                origen: data.origen, 
-                destino: data.destino, 
-                tarifa:data.tarifa, 
-                porcentajePropuesta, 
-                descuento 
-            };
-    
-            CombinacionEconomica = await getCombinacionEconomica(_data);
-            CombinacionMediana = await getCombinacionMediana(newData, _consumos);
-            CombinacionOptima = await getCombinacionOptima(newData, _consumos);
+            CombinacionEconomica = await getCombinacionEconomica(_paneles);
+            CombinacionPremium = await getCombinacionPremium(_paneles);
+            CombinacionRecomendada = await getCombinacionMediana(_paneles);
 
-            //Calcular viaticos
+            ///
+            _combinaciones = [CombinacionEconomica, CombinacionPremium, CombinacionRecomendada];
+
         }
         /* else{ //MediaTension
     
         } */
     
+        //Calcular viaticos
+        let _Combinaciones = await calcularViaticosComb(_combinaciones,data);
+
         let objCombinaciones = {
             cliente: uCliente,
             vendedor: uVendedor,
-            _arrayConsumos: _arrayConsumos,
-            combinacionMediana: __combinacionMediana,
-            combinacionEconomica: __combinacionEconomica,
-            combinacionOptima: __combinacionOptima,
+            _arrayConsumos: _consumos,
+            combinacionMediana: { 
+                combinacion: _Combinaciones[2][0], 
+                nombre: _Combinaciones[2][1].tipoCombinacion
+            },
+            combinacionEconomica: {
+                combinacion: _Combinaciones[0][0], 
+                nombre: _Combinaciones[0][1].tipoCombinacion
+            },
+            combinacionOptima: {
+                combinacion: _Combinaciones[1][0], 
+                nombre: _Combinaciones[1][1].tipoCombinacion
+            },
             tipoCotizacion: data.tipoCotizacion,
             combinaciones: true
         };
-    
+
         __combinaciones[0] = objCombinaciones;
-    
+
         return __combinaciones;
     }
     catch(error){
@@ -81,6 +87,8 @@ async function mainBusquedaInteligente(data){
 
 /*#region Combinaciones*/
 async function getCombinacionEconomica(_paneles){
+    let Panel = {};
+
     try{
         let getEquipoEconomico = (_equipos) => {
             costoEconomico = 0;
@@ -94,7 +102,6 @@ async function getCombinacionEconomica(_paneles){
 
                 if(costoEconomico === 0){
                     costoEconomico = equipo.costoTotal;
-                    EquipoEconomico = equipo;
                 }
 
                 if(costoEconomico > equipo.costoTotal){
@@ -107,223 +114,227 @@ async function getCombinacionEconomica(_paneles){
 
         if(Array.isArray(_paneles) === true){
             Panel = getEquipoEconomico(_paneles);
-
-            //Recursividad
-            getCombinacionEconomica(Panel);
         }
 
         //Obtener lista de los inversores para ese panel
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: _paneles });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: Panel });
 
         //Obtener -Inversor- mas economico
         Inversor = getEquipoEconomico(_inversores);
 
         //Retornar [Object]
-        return { _paneles, Inversor }
+        return { panel: Panel, inversor: Inversor, tipoCombinacion: 'Economica' }
     }
     catch(error){
         console.log(error);
     }
 }
 
-async function getCombinacionMediana(data, __consumos){//Mediana
-    let __paneles = data._paneles || null;
-    let __inversores = data._inversores || null;
-    let _panelesSelectos = [];
-    let _combinacionMediana = [];
-
+async function getCombinacionPremium(_paneles){//MayorProduccion
+    /*Resumen: Se obtienen los equipos mas POTENTES y CAROS */
     try{
-        let mediaCostoTotPaneles = (_panelSelected) => {
-            mediaDePrecios = 0;
-            
-            for(var k=0; k<_panelSelected.length; k++)
-            {
-                mediaDePrecios += parseFloat(_panelSelected[k].costoTotal);
-            }
+        let getEquipoPotentes = (_equipos) => { ///Return [Array de Objetos]
+            /*Resumen: Se obtienen los equipos mas POTENTES */
+            potenciaHigger = 0;
+            _lstEquipos = [];
 
-            mediaDePrecios = Math.round((mediaDePrecios / _panelSelected.length) * 100) / 100;
-            return mediaDePrecios;
-        };
-        let panelCombMediana = (_panelSelecto, mediaCostoTPaneles) => {
-            acercamiento = 0;
-            oldAcercamiento = 0;
-            newAcercamiento = 0;
+            _equipos.filter((equipo) => {
+                //Validar si el equipo es [panel] || [inversor]
+                equipo = equipo.panel ? equipo.panel : equipo;
 
-            for(var u=0; u<_panelSelecto.length; u++)
-            {
-                acercamiento = Math.abs(Math.round((mediaCostoTPaneles - _panelSelecto[u].costoTotal) * 100) / 100);
-
-                if(u === 0){
-                    oldAcercamiento = acercamiento;
+                if(potenciaHigger === 0){
+                    potenciaHigger = equipo.fPotencia;
                 }
-                if(oldAcercamiento >= newAcercamiento){
-                    oldAcercamiento = newAcercamiento;
 
-                    objCombinacion.panel = _panelSelecto[u];
+                if(potenciaHigger <= equipo.fPotencia){
+                    potenciaHigger = equipo.fPotencia;
+                    _lstEquipos.push(equipo);
                 }
-            }
-        };
-        let mediaCostoTotInversores = (_inversoreSelected) => {
-            mediaDePrecios = 0;
-            
-            for(var k=0; k<_inversoreSelected.length; k++)
-            {
-                mediaDePrecios += parseFloat(_inversoreSelected[k].precioTotal);
-            }
-
-            mediaDePrecios = Math.round((mediaDePrecios / _inversoreSelected.length) * 100) / 100;
-            return mediaDePrecios;
-        };
-        let inversorCombMediana = (_inversSelect, mediaCostoTInv) => {
-            acercamiento = 0;
-            oldAcercamiento = 0;
-            newAcercamiento = 0;
-            objInversorComb = {};
-
-            for(let u=0; u<_inversSelect.length; u++)
-            {
-                acercamiento = Math.abs(mediaCostoTInv - _inversSelect[u].precioTotal);
-
-                if(u === 0){
-                    oldAcercamiento = acercamiento;
-                }
-                if(oldAcercamiento >= newAcercamiento){
-                    oldAcercamiento = newAcercamiento;
-
-                    objCombinacion.inversor = __inversores[u];
-                }
-            }
+            });
+            return _lstEquipos;
         };
 
-        let marcaEspecificaPanel = await configFile.getArrayOfConfigFile();
-        marcaEspecificaPanel = marcaEspecificaPanel.busqueda_inteligente.combinacionMediana_marcaEspecificaPanel.toString();
-        objCombinacion.combinacion = "mediana";
+        let getEquipoMasCaro = (_equipos) => { ///Return [Object]
+            /*Resumen: Se filtra de la coleccion de equipos mas potentes, los -MAS CAROS- */
+            costoCaro = 0;
+            EquipoCaro = {};
 
-        if(__paneles.length > 0){
-            //Se seleccionan paneles de la marcaEspecifica
-            for(let i=1; i<__paneles.length; i++)
-            {
-                if(__paneles[i].panel.marca === marcaEspecificaPanel){
-                    _panelesSelectos.push(__paneles[i].panel);
+            _equipos.filter((equipo) => {
+                //Validar si el equipo es [panel] || [inversor]
+                equipo = equipo.panel ? equipo.panel : equipo;
+
+                if(costoCaro === 0){
+                    costoCaro = equipo.costoTotal;
                 }
-            }
 
-            mediaCostoTotPaneles = mediaCostoTotPaneles(_panelesSelectos);
-            panelCombMediana(_panelesSelectos, mediaCostoTotPaneles); //:void
-        }
-
-        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
-
-        __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
-
-        mediaCostoTotInversores = mediaCostoTotInversores(__inversores);
-        inversorCombMediana(__inversores,mediaCostoTotInversores);// :void
-
-        _combinacionMediana.push(objCombinacion);
-        
-        let newData = {
-            arrayBTI: _combinacionMediana,
-            origen: data.origen,
-            destino: data.destino,
-            tarifa: data.tarifa,
-            descuento: data.descuento,
-            consumos: __consumos,
-            tipoCotizacion: 'CombinacionCotizacion'
+                if(costoCaro <= equipo.costoTotal){
+                    costoCaro = equipo.costoTotal;
+                    EquipoCaro = equipo;
+                }
+            });
+            return EquipoCaro;
         };
 
-        ///Se calculan viaticos
-        _combinacionMediana = await bajaTension.obtenerViaticos_Totales(newData);
-        _combinacionMediana.push(objCombinacion.combinacion);
+        //Obtener el [PANEL] mas potente
+        let _lstPanelesPotentes = getEquipoPotentes(_paneles);
+        //Obtener el [PANEL] mas caro
+        let Panel = getEquipoMasCaro(_lstPanelesPotentes);
 
-        return _combinacionMediana;
+        //Obtener lista de los inversores para ese panel
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: Panel });
+
+        //Obtener el [INVERSOR] mas potente
+        let _lstInversoresPotentes = getEquipoPotentes(_inversores);
+        //Obtener el [INVERSOR] mas caro
+        let Inversor = getEquipoMasCaro(_lstInversoresPotentes);
+
+        return { panel: Panel, inversor: Inversor, tipoCombinacion: 'Premium' };
     }
     catch(error){
         console.log(error);
     }
 }
 
-async function getCombinacionOptima(data, __consumos){//MayorProduccion
-    let origen = data.origen || null;
-    let __paneles = data._paneles || null;
-    let _combinacionOptima = [];
-
-    objCombinacion.combinacion = "optima";
+async function getCombinacionMediana(_paneles){//Mediana
+    /* Se saca una media de los costos de -[EQUIPOS SELECCIONADOS]- y se retorna los equipos con 
+    -costoTotal- que mas se acerque a la media */
+    let mediaCostos = 0;
+    let PanelSeleccionado = {}, InversorSeleccionado = {};
 
     try{
-        if(__paneles.length > 0){
-            let oldProduccion = 0;
-            let newProduccion = 0;
-    
-            for(let i=1; i<__paneles.length; i++)
-            {   
-                potenciaReal = parseFloat(__paneles[i].panel.potenciaReal);
-    
-                objCombinacionOptima = { consumos:__consumos, origen, potenciaReal, tarifa: data.tarifa };
-    
-                let newData = await bajaTension.getPowerBTI(objCombinacionOptima);
-                _generacionPower = newData.generacion;
-    
-                newProduccion = _generacionPower.generacionAnual;
-    
-                //Comparacion de mayor produccion
-                if(i === 1){
-                    oldProduccion = newProduccion;
-                }
-                
-                if(oldProduccion <= newProduccion){
-                    oldProduccion = newProduccion;
-    
-                    objCombinacion.panel = __paneles[i].panel;
-                }
+        let filtrarEquiSelectos = (MatEquipoSelect, _equipos) => { //Retorna [Array]
+            /* Resumen: Retorna la coleccion filtrada de equipos configurados por *admin* para la cotizacion_mediana */
+            lstEquiposFiltrados = [];
+            tipoEquipo =  "inversor";
+
+            //Identificar si son [PANELES] || [INVERSORES]
+            if(_equipos[0].panel){
+                tipoEquipo = "panel";
             }
-        }
-    
-        let objRequest = { objPanelSelect: { panel: objCombinacion.panel, potenciaNecesaria: __consumos } };
-    
-        let __inversores = await bajaTension.obtenerInversores_Requeridos(objRequest);
-    
-        if(__inversores.length > 0){
-            var oldSobredimension = 0;
-            var newSobredimension = 0;
-    
-            for(let x=0; x<__inversores.length; x++)
-            {
-                newSobredimension = parseFloat(__inversores[x].porcentajeSobreDimens);
-                newInversorPrice = parseFloat(__inversores[x].precioTotalInversores);
-    
-                //Filtro para seleccionar el inversor con mayor sobredimensionamiento y menor precio
-                if(x == 0){
-                    oldSobredimension = newSobredimension;
-                    oldInversorPrice = newInversorPrice;
+
+            if(MatEquipoSelect[tipoEquipo] != "*"){
+                ///Se obtiene la lista de -Marcas-
+                let _lstMarcas = MatEquipoSelect[tipoEquipo].split(",");
+                _lstMarcas = _lstMarcas.filter(Boolean);
+
+                ///Iteran las marcas (1 x 1)
+                for(let marca of _lstMarcas){
+                    //Filtrar los equipos pertenecientes a esa marca
+                    _equipos.filter(equipo => {
+                        if(equipo.vMarca === marca){
+                            lstEquiposFiltrados.push(equipo);
+                        }
+                    });
                 }
-                
-                if(oldSobredimension <= newSobredimension /* && oldInversorPrice >= newInversorPrice */){
-                    oldSobredimension = newSobredimension;
-                    /* oldInversorPrice = newInversorPrice; */
-    
-                    objCombinacion.inversor = __inversores[x];
-                }
+
+                ///Equipos filtrados por -MARCA-
+                _equipos = lstEquiposFiltrados;
             }
-        }
-    
-        _combinacionOptima.push(objCombinacion);
-        
-        let newData = {
-            idUsuario: data.idUsuario,
-            idCliente: data.idCliente,
-            arrayBTI: _combinacionOptima,
-            origen: data.origen,
-            destino: data.destino,
-            tarifa: data.tarifa,
-            consumos: __consumos,
-            tipoCotizacion: 'CombinacionCotizacion'
+
+
+            return _equipos;
         };
-    
-        ///Se calculan viaticos
-        _combinacionOptima = await bajaTension.obtenerViaticos_Totales(newData);
-        _combinacionOptima.push(objCombinacion.combinacion);
-    
-        return _combinacionOptima;
+        let getMediaCostos = (_equipos) => { ///Return: Number (Integer || Float)
+            /*Resumen: Se saca una media de todos los -costosTotales- de los equipos */
+
+            mediaCostoTotal = 0;
+
+            for(let Equipo of _equipos)
+            {
+                ///Validar si el Equipo iterado es un [PANEL]
+                if(Equipo.panel){
+                    Equipo = Equipo.panel;
+                }
+
+                ///Suma de todos los costos
+                mediaCostoTotal += Equipo.costoTotal;
+            }
+
+            ///Promedio || Media[costos]
+            return mediaCostoTotal = Math.round(mediaCostoTotal / _equipos.length);
+        };
+        let getEquiposCercanos = (_equipos, mediaCostos) => { ///Return: [Object]
+            /*Resumen: Filtrar los equipos con -costoTotal- a la media de *costosTotales* */
+            EquipoFiltrado = {};
+            
+            //Se genera un rango con base a la -mediaCostos- (15% *abajo* && *arriba*)
+            rangoMenor = Math.round((mediaCostos - ((15 / 100) * mediaCostos)) * 100) / 100;
+
+            //Filtrar equipos c/la media *costosTotales*
+            _equipos.filter(equipo => {
+                //Validar si el equipo es un [PANEL]
+                if(equipo.panel){
+                    equipo = equipo.panel;
+                }
+                
+                //Se filtran el equipo que se iguale o acerque a la media
+                if(equipo.costoTotal === mediaCostos || equipo.costoTotal >= rangoMenor && equipo.costoTotal <= mediaCostos){
+                    EquipoFiltrado = equipo;
+                }
+            });
+
+            return EquipoFiltrado;
+        };
+
+        //Obtener marcas de -[EQUIPOS_SELECCIONADOS]-
+        let MatrizEquiposSeleccionados = await configFile.getArrayOfConfigFile();
+        MatrizEquiposSeleccionados = MatrizEquiposSeleccionados.busqueda_inteligente.combinacionMediana;///Formating
+
+        //Se trata la data de [PANELES]
+        let _lstPaneleSelectos = filtrarEquiSelectos(MatrizEquiposSeleccionados, _paneles);
+        mediaCostos = getMediaCostos(_lstPaneleSelectos);
+        PanelSeleccionado = getEquiposCercanos(_lstPaneleSelectos, mediaCostos);
+
+        //Se obtienen los [Inversores] que le quedan a ese [Panel_Seleccionado]
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: PanelSeleccionado });
+        //Se trata la data de [INVERSORES]
+        let _lstInversoreSelectos = filtrarEquiSelectos(MatrizEquiposSeleccionados, _inversores);
+        mediaCostos = getMediaCostos(_lstInversoreSelectos);
+        InversorSeleccionado = getEquiposCercanos(_lstInversoreSelectos, mediaCostos);
+
+        return { panel: PanelSeleccionado, inversor: InversorSeleccionado, tipoCombinacion: 'Recomendada' };
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+async function calcularViaticosComb(_Combinaciones, data){
+    let Cotizacion = {
+        idUsuario: data.idUsuario,
+        idCliente: data.idCliente,
+        origen: data.origen,
+        destino: data.destino,
+        arrayBTI: null,
+        tarifa: data.tarifa,
+        consumos: data.consumos,
+        descuento: parseInt(data.porcentajeDescuento),
+        tipoCotizacion: 'CombinacionCotizacion'
+    };
+    let _combinacion = [];
+    let index = 0;
+
+    try{
+        for(let combinacion of _Combinaciones)
+        {
+            //Se *settea* la combinacion hacia la data
+            _combinacion[0] = combinacion;
+            Cotizacion.arrayBTI = _combinacion;
+
+            //Calcular viaticos
+            let Propuesta = await bajaTension.obtenerViaticos_Totales(Cotizacion);
+
+            ///
+            Propuesta.push({ tipoCombinacion: combinacion.tipoCombinacion });
+
+            ///
+            _Combinaciones[index] = Propuesta;
+
+            ///
+            index++;
+        }
+
+        return _Combinaciones;
     }
     catch(error){
         console.log(error);

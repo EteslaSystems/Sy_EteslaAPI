@@ -295,7 +295,7 @@ async function getInversores_cotizacion(_data){
 				
 				inversoresResult = {
 					id: allInversores[i].idInversor,
-					fPotencia: allInversores[i].fPotencia,
+					fPotencia: parseFloat(allInversores[i].fPotencia),
 					fPrecio: allInversores[i].fPrecio,
 					vMarca: allInversores[i].vMarca,
 					vNombreMaterialFot: allInversores[i].vNombreMaterialFot,

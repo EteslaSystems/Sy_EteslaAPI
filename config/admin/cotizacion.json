@@ -1,6 +1,9 @@
 {
     "busqueda_inteligente": {
-        "combinacionMediana_marcaEspecificaPanel": "Canadian"
+        "combinacionMediana": {
+            "panel": "*",
+            "inversor": "ABB Fimer,SMA,APSystem,Fronius Solar,"
+        }
     },
     "propuesta_cotizacion": {
         "tiempoExpiracion": 30

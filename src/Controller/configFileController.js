@@ -3,7 +3,7 @@ const fs = require('fs');
 var { response } = require('express');
 
 module.exports.getArrayOfConfigFile = function(){
-    let getFileRootOfConfiguration = process.cwd()+'/config/admin/parametroscotizador_suser-admin.json';
+    let getFileRootOfConfiguration = process.cwd()+'/config/admin/cotizacion.json';
 
     return new Promise((resolve, reject) => {
         fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, _$configCuadrilla) => {

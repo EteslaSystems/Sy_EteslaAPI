@@ -32,7 +32,7 @@ async function calcularViaticosBTI(data){
     let idUsuario = data.idUsuario;
     let idCliente = data.idCliente;
     let origen = data.origen;
-    let destino = data.destino;
+    let destino = data.destino; 
     let _consums = data.consumos || null;
     let _agregados = data._agregados || null;
     let tipoCotizacion = data.tipoCotizacion || null;
@@ -108,7 +108,8 @@ async function calcularViaticosBTI(data){
             }
         }
 
-        if(_consums != null){
+        //Consumos
+        if(_consums != null && tipoCotizacion != "CombinacionCotizacion"){
             //Consumos
             _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
     
