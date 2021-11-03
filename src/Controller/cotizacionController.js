@@ -41,9 +41,9 @@ async function mainBusquedaInteligente(data){
             let _paneles = _data;
             /*#endregion */
 
-            CombinacionEconomica = await getCombinacionEconomica(_paneles);
-            CombinacionPremium = await getCombinacionPremium(_paneles);
-            CombinacionRecomendada = await getCombinacionMediana(_paneles);
+            CombinacionEconomica = await getCombinacionEconomica(_paneles); //CombinacionA
+            CombinacionPremium = await getCombinacionPremium(_paneles); //CombinacionC
+            CombinacionRecomendada = await getCombinacionMediana(_paneles); //CombinacionB
 
             ///
             _combinaciones = [CombinacionEconomica, CombinacionPremium, CombinacionRecomendada];
@@ -259,6 +259,7 @@ async function getCombinacionMediana(_paneles){//Mediana
             
             //Se genera un rango con base a la -mediaCostos- (15% *abajo* && *arriba*)
             rangoMenor = Math.round((mediaCostos - ((15 / 100) * mediaCostos)) * 100) / 100;
+            rangoMayor = Math.round((mediaCostos + ((15 / 100) * mediaCostos)) * 100) / 100;
 
             //Filtrar equipos c/la media *costosTotales*
             _equipos.filter(equipo => {
@@ -268,7 +269,7 @@ async function getCombinacionMediana(_paneles){//Mediana
                 }
                 
                 //Se filtran el equipo que se iguale o acerque a la media
-                if(equipo.costoTotal === mediaCostos || equipo.costoTotal >= rangoMenor && equipo.costoTotal <= mediaCostos){
+                if(equipo.costoTotal === mediaCostos || equipo.costoTotal >= rangoMenor && equipo.costoTotal <= rangoMayor){
                     EquipoFiltrado = equipo;
                 }
             });

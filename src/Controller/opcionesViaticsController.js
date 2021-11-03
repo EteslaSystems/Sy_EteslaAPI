@@ -246,7 +246,7 @@ async function calcularViaticosBTI(data){
             let precioMXNConIVA = Math.round(precioUSDConIVA * precioDolar); //MXN + IVA
     
             if(_arrayCotizacion[x].panel != null){ ///Validar que se esten cotizando [PANELES]
-                /*????*/ precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.potencia))) * 100) / 100;
+                /*????*/ precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.fPotencia))) * 100) / 100;
             }
     
             if(_consums != null){

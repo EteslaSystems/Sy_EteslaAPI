@@ -152,8 +152,8 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 
 	for(let i = 0; i < arrayAllOfPanels.length; i++)
 	{
-		let noModulos = Math.round(energiaRequerida / parseFloat(arrayAllOfPanels[i].fPotencia));
-		let potenciaReal = Math.round((parseFloat(arrayAllOfPanels[i].fPotencia) * noModulos) * 100) / 100; 
+		let noModulos = Math.round(energiaRequerida / arrayAllOfPanels[i].fPotencia);
+		let potenciaReal = Math.round((arrayAllOfPanels[i].fPotencia * noModulos) * 100) / 100; 
 		
 
 		objNoDeModulosPorPotenciaDelPanel = {
@@ -163,7 +163,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 			fPotencia: parseFloat(arrayAllOfPanels[i].fPotencia),
 			origen: arrayAllOfPanels[i].vOrigen,
 			garantia: arrayAllOfPanels[i].vGarantia,
-			potenciaReal: (potenciaReal / 1000), //KWp - wtts ===> kwp
+			potenciaReal: Math.round((potenciaReal / 1000) * 100) / 100, // wtts ===> kwp
 			noModulos: noModulos,
 			precioPorPanel: parseFloat(arrayAllOfPanels[i].fPrecio),
 			costoTotal: 0,
