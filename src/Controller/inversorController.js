@@ -4,6 +4,7 @@
 - @date: 				19/02/2020
 */
 
+const { red } = require('chalk');
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas) {
@@ -224,8 +225,8 @@ async function getInversores_cotizacion(_data){
 			let numeroDeInversores = 0;
 	
 			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
-			if(Inversor.vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
-				numeroDeInversores =  Math.floor(noPaneles / Inversor.iPanelSoportados);
+			if(Inversor.vTipoInversor === 'MicroInversor'){ //Calculo de MicroInversores
+				numeroDeInversores =  Math.round(noPaneles / Inversor.iPanelSoportados);
 			}
 			else if(Inversor.vTipoInversor === 'Combinacion'){ ///Calculo de Combinacion de micro-inversores
 				//Se valida el noPaneles, que sea >=5, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
@@ -277,16 +278,29 @@ async function getInversores_cotizacion(_data){
 				arrayInversor.push(inversoresResult);
 			}
 			else{//Calculo de inversores /* Centrales */
-				//Redimensionamento_Inversor [25%]
-				let redimensionamientoAbajo = Inversor.fPotencia - ((25 / 100) * Inversor.fPotencia); ///PMIN
-				let redimenSionamientoArriba = Inversor.fPotencia + ((25 / 100) * Inversor.fPotencia); ///PMAX
+				let potenciaNominal = 0;
+				let redimenSionamientoArriba = 0;
 
-				numeroDeInversores = Math.round((potenciaReal_ / redimenSionamientoArriba) * 100) / 100;
-				numeroDeInversores = numeroDeInversores >= 0.6 ? Math.round(numeroDeInversores) : 0;
+				numeroDeInversores = Math.round(potenciaReal_ / Inversor.fPotencia);
+				potenciaNominal = numeroDeInversores * Inversor.fPotencia;
 
-				// if(potenciaReal_ >= redimensionamientoAbajo && potenciaReal_ <= redimenSionamientoArriba){
-					
-				// }
+				if(potenciaNominal === potenciaReal_){
+					numeroDeInversores = numeroDeInversores;
+				}
+				else if(potenciaNominal < potenciaReal_){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
+					redimenSionamientoArriba = potenciaNominal + ((25 / 100) * potenciaNominal);
+
+					////Comprobacion
+					if(redimenSionamientoArriba <= potenciaReal_){
+						numeroDeInversores = numeroDeInversores;
+					}
+					else{
+						numeroDeInversores = 0;
+					}
+				}
+				else if(potenciaNominal > potenciaReal_){
+					numeroDeInversores = 0;
+				}
 			}
 	
 			//CALCULO DE COSTO_TOTAL DE INVERSORES

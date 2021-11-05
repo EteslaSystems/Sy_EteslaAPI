@@ -39,7 +39,7 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
     for(var x=0; x<_noPaneles.length; x++)
     {
-        costoTotalPaneles = Math.round(((_noPaneles[x].precioPorPanel * _noPaneles[x].fPotencia) * _noPaneles[x].noModulos) * 100) / 100;
+        costoTotalPaneles = Math.round(((_noPaneles[x].fPrecio * _noPaneles[x].fPotencia) * _noPaneles[x].noModulos) * 100) / 100;
         _noPaneles[x].costoTotal = costoTotalPaneles;
 
         objPropuestaPaneles = {

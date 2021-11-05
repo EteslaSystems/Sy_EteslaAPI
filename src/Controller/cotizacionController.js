@@ -104,7 +104,7 @@ async function getCombinacionEconomica(_paneles){
                     costoEconomico = equipo.costoTotal;
                 }
 
-                if(costoEconomico > equipo.costoTotal){
+                if(costoEconomico >= equipo.costoTotal){
                     costoEconomico = equipo.costoTotal;
                     EquipoEconomico = equipo;
                 }
@@ -215,7 +215,7 @@ async function getCombinacionMediana(_paneles){//Mediana
             if(MatEquipoSelect[tipoEquipo] != "*"){
                 ///Se obtiene la lista de -Marcas-
                 let _lstMarcas = MatEquipoSelect[tipoEquipo].split(",");
-                _lstMarcas = _lstMarcas.filter(Boolean);
+                _lstMarcas = _lstMarcas.filter(Boolean); //Borrar los espacios en blanco del [array]
 
                 ///Iteran las marcas (1 x 1)
                 for(let marca of _lstMarcas){
@@ -246,12 +246,12 @@ async function getCombinacionMediana(_paneles){//Mediana
                     Equipo = Equipo.panel;
                 }
 
-                ///Suma de todos los costos
+                ///Suma de todos los costos[unitarios]
                 mediaCostoTotal += Equipo.costoTotal;
             }
 
             ///Promedio || Media[costos]
-            return mediaCostoTotal = Math.round(mediaCostoTotal / _equipos.length);
+            return mediaCostoTotal = Math.round((mediaCostoTotal / _equipos.length) * 100) / 100;
         };
         let getEquiposCercanos = (_equipos, mediaCostos) => { ///Return: [Object]
             /*Resumen: Filtrar los equipos con -costoTotal- a la media de *costosTotales* */

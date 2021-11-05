@@ -120,7 +120,7 @@ async function firstStep(data){
 
 	for(var x=0; x<_paneles.length; x++)
     {
-        costoTotalPaneles = Math.round(((parseFloat(_paneles[x].precioPorPanel * _paneles[x].potencia)) * _paneles[x].noModulos) * 100) / 100;
+        costoTotalPaneles = Math.round(((parseFloat(_paneles[x].fPrecio * _paneles[x].potencia)) * _paneles[x].noModulos) * 100) / 100;
         _paneles[x].costoTotal = costoTotalPaneles;
 
         objPropuestaPaneles = {

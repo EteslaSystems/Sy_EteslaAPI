@@ -165,7 +165,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 			garantia: arrayAllOfPanels[i].vGarantia,
 			potenciaReal: Math.round((potenciaReal / 1000) * 100) / 100, // wtts ===> kwp
 			noModulos: noModulos,
-			precioPorPanel: parseFloat(arrayAllOfPanels[i].fPrecio),
+			fPrecio: parseFloat(arrayAllOfPanels[i].fPrecio),
 			costoTotal: 0,
 			imgRuta: arrayAllOfPanels[i].imgRuta
 		};
