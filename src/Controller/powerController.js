@@ -833,25 +833,18 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
 
 function getArbolesPlantados(generacionAnualKw){
     /* 
-    1 khw = 0.012 arboles
-    1 khw = 0.458 kg CO2
-    */ 
-    let numeroArboles = 0, co2NogeneradoKg = 0;
-    let objResult = {};
+        ->1 kw = 19 arboles [ANUALES]
+        ->1 kw = 800 kg Co2 [ANUALES]
+    */
 
     try{
-        numeroArboles = Math.round(generacionAnualKw / 0.012);
-        co2NogeneradoKg = Math.round(generacionAnualKw / 0.458);
+        let numeroArboles = generacionAnualKw * 19;
+        let co2NogeneradoKg = generacionAnualKw * 800;
         
-        objResult = {
-            numeroArboles: numeroArboles,
-            co2NogeneradoKg: co2NogeneradoKg
-        };
-
-        return objResult;
+        return { numeroArboles, co2NogeneradoKg };
     }
     catch(error){
-        console.log(error);
+        throw error;
     }
 }
 
