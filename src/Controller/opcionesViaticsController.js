@@ -241,6 +241,14 @@ async function calcularViaticosBTI(data){
                 precio = Math.round(costoTotalProyecto * (1 - porcentajeDescuento) * 100)/100; 
             }
     
+            /// %
+            let inflacionPropuesta = _configFile.propuesta_cotizacion.inflacion;
+
+            if(inflacionPropuesta > 0){
+                precio = Math.round((precio + ((inflacionPropuesta / 100) * precio)) * 100) / 100;
+            }
+
+
             let precioUSDConIVA = Math.round((precio * 1.16)); //USD //Con IVA
             let precioMXNSinIVA = Math.round(precio * precioDolar); //MXN SIN IVA
             let precioMXNConIVA = Math.round(precioUSDConIVA * precioDolar); //MXN + IVA

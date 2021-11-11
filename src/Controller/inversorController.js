@@ -220,8 +220,9 @@ async function getInversores_cotizacion(_data){
 
 		let potenciaReal_ = data.potenciaReal * 1000; ///Watss
 
-		allInversores.filter(async (Inversor) => {
-			let noPaneles = data.noModulos; //Numero de paneles de la propuesta
+		for(let Inversor of allInversores)
+		{
+			let noPaneles = parseInt(data.noModulos); //Numero de paneles de la propuesta
 			let numeroDeInversores = 0;
 	
 			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
@@ -231,32 +232,34 @@ async function getInversores_cotizacion(_data){
 			else if(Inversor.vTipoInversor === 'Combinacion'){ ///Calculo de Combinacion de micro-inversores
 				//Se valida el noPaneles, que sea >=5, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
 				if(noPaneles >= 5){
-					let Micros = {}, MicroUno = {}, MicroDos = {};
 					let costoTotalEquipos = 0;
 
 					//Obtener el nombre de equipo 1 y equipo2
-					Micros = await getEquiposCombinacionMicros(Inversor.vNombreMaterialFot);
-					MicroUno = Micros.primerEquipo;
-					MicroDos = Micros.segundoEquipo;
+					let Micros = await getEquiposCombinacionMicros(Inversor.vNombreMaterialFot);
+					let MicroUno = Micros.primerEquipo;
+					let MicroDos = Micros.segundoEquipo;
 
 					//Se agregan la cantidad de equipos requeridos a -MicroUno- && -MicroDos-
 					Object.assign(MicroUno,{
-						numeroDeInversores: parseInt(noPaneles / MicroUno.iPanelSoportados)
+						numeroDeInversores: Math.round(noPaneles / MicroUno.iPanelSoportados)
 					});
 
 					//Se descuentan los paneles calculados anteriores de la cantidad original de [Paneles]
-					noPaneles = noPaneles - (MicroUno.numeroDeInversores * MicroUno.iPanelSoportados);
+					noPaneles = Math.round(noPaneles - (MicroUno.numeroDeInversores * MicroUno.iPanelSoportados));
+
 
 					//Se valida que haya paneles suficientes para poder hacer el calculo con el siguiente Micro
 					if(noPaneles >= 1){
 						let cantidadMicros = 0;
 
-						cantidadMicros = noPaneles / MicroDos.iPanelSoportados;
-						cantidadMicros = cantidadMicros < 1 && cantidadMicros > 0 ? Math.ceil(cantidadMicros) : Math.round(cantidadMicros);
+						cantidadMicros = Math.round(noPaneles / MicroDos.iPanelSoportados);
 
 						Object.assign(MicroDos,{
 							numeroDeInversores: cantidadMicros
 						});
+					}
+					else{
+						continue;
 					}
 
 					costoTotalEquipos = (MicroUno.numeroDeInversores * MicroUno.fPrecio) + (MicroDos.numeroDeInversores * MicroDos.fPrecio);
@@ -273,32 +276,33 @@ async function getInversores_cotizacion(_data){
 						vOrigen: Inversor.vOrigen,
 						combinacion: true
 					}
+					//
+					arrayInversor.push(inversoresResult);
 				}
-				//
-				arrayInversor.push(inversoresResult);
 			}
 			else{//Calculo de inversores /* Centrales */
 				let potenciaNominal = 0;
-				let redimenSionamientoArriba = 0;
 
+				///
 				numeroDeInversores = Math.round(potenciaReal_ / Inversor.fPotencia);
 				potenciaNominal = numeroDeInversores * Inversor.fPotencia;
 
+				///
 				if(potenciaNominal === potenciaReal_){
 					numeroDeInversores = numeroDeInversores;
 				}
-				else if(potenciaNominal < potenciaReal_){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
-					redimenSionamientoArriba = potenciaNominal + ((25 / 100) * potenciaNominal);
+				else if(potenciaNominal > potenciaReal_ && potenciaNominal <= (potenciaReal_ + 1000/*watts*/) ){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
+					let redimenSionamientoArriba = Math.round((potenciaNominal + ((25 / 100) * potenciaNominal)) * 100) / 100; //Watts
+					// let redimenSionamientoAbajo = Math.round((potenciaNominal - ((25 / 100) * potenciaNominal)) * 100) / 100;
 
-					////Comprobacion
-					if(redimenSionamientoArriba <= potenciaReal_){
+					if(potenciaNominal > potenciaReal_ && potenciaNominal <= redimenSionamientoArriba){
 						numeroDeInversores = numeroDeInversores;
 					}
 					else{
 						numeroDeInversores = 0;
 					}
 				}
-				else if(potenciaNominal > potenciaReal_){
+				else if(potenciaNominal > (potenciaReal_ + 1000/*watts*/)){
 					numeroDeInversores = 0;
 				}
 			}
@@ -321,10 +325,10 @@ async function getInversores_cotizacion(_data){
 					vOrigen: Inversor.vOrigen,
 					combinacion: false
 				}
-			
+				///
 				arrayInversor.push(inversoresResult);
 			}
-		});
+		}
 
 		return arrayInversor;
 	}
@@ -339,24 +343,29 @@ async function getEquiposCombinacionMicros(vNombreMaterialFotovoltaico){ ///Retu
 		Devuelve un objeto con los microInversores y su data de los equipos.
 	*/
 	let NombresEquipos = { primerEquipo: null, segundoEquipo: null };
-	let totalDeCaracteres = 0, indice = 0;
+	let indice = 0;
 
-	//Devuelve el total de caracteres de toda la cadena
-	totalDeCaracteres = vNombreMaterialFotovoltaico.length;
+	try{
+		//Devuelve el total de caracteres de toda la cadena
+		let totalDeCaracteres = vNombreMaterialFotovoltaico.length;
 
-	//Equipo1
-	indice = vNombreMaterialFotovoltaico.indexOf("+");
-	NombresEquipos.primerEquipo = vNombreMaterialFotovoltaico.substring(0, indice);
-	NombresEquipos.primerEquipo = await buscarInversorPorNombre({ vNombreMaterialFot: NombresEquipos.primerEquipo });
-	NombresEquipos.primerEquipo = NombresEquipos.primerEquipo.message[0]; //Formating
-		
-	//Equipo2
-	indice = NombresEquipos.primerEquipo.vNombreMaterialFot.length + 1;
-	NombresEquipos.segundoEquipo = vNombreMaterialFotovoltaico.substring(indice,totalDeCaracteres);
-	NombresEquipos.segundoEquipo = await buscarInversorPorNombre({ vNombreMaterialFot: NombresEquipos.segundoEquipo });
-	NombresEquipos.segundoEquipo = NombresEquipos.segundoEquipo.message[0]; //Formating
+		//Equipo1
+		indice = vNombreMaterialFotovoltaico.indexOf("+");
+		NombresEquipos.primerEquipo = vNombreMaterialFotovoltaico.substring(0, indice);
+		NombresEquipos.primerEquipo = await buscarInversorPorNombre({ vNombreMaterialFot: NombresEquipos.primerEquipo });
+		NombresEquipos.primerEquipo = NombresEquipos.primerEquipo.message[0]; //Formating
+			
+		//Equipo2
+		indice = NombresEquipos.primerEquipo.vNombreMaterialFot.length + 1;
+		NombresEquipos.segundoEquipo = vNombreMaterialFotovoltaico.substring(indice,totalDeCaracteres);
+		NombresEquipos.segundoEquipo = await buscarInversorPorNombre({ vNombreMaterialFot: NombresEquipos.segundoEquipo });
+		NombresEquipos.segundoEquipo = NombresEquipos.segundoEquipo.message[0]; //Formating
 
-	return NombresEquipos;
+		return NombresEquipos;
+	}
+	catch(error){
+		throw error;
+	}
 }
 /*#endregion*/
 

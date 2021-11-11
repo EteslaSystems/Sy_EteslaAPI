@@ -133,7 +133,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
 
     switch(tarifa)
     {
-        //Los datos estan definidos en "bimestral" (limite, objetivoDAC, etc)
+        //Los datos estan definidos en *BIMESTRAL* (limite, objetivoDAC, etc)
         case '1':
             limite = 500;
             objetivoDAC = 200;
@@ -214,7 +214,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
     promedioConsumsMensuales = objPromedioDeConsumos.promedioConsumosMensuales;
     consumoDiario = objPromedioDeConsumos.consumoDiario;
     /*-------*/
-    cuanto_menos = limite - (promedioConsumsMensuales * 2 * 0.10);
+    cuanto_menos = Math.abs(limite - (promedioConsumsMensuales * 2 * 0.10));
     
     if(cuanto_menos < objetivoDAC){
         objetivoDAC = cuanto_menos;

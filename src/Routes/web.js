@@ -677,7 +677,7 @@ router.put('/buscar-estructura', function(request, response){
 	.catch(error => {
 		response.json({
 			status: 500,
-			message: error.message
+			message: error
 		});
 	});
 });

@@ -54,7 +54,7 @@ async function cotizacionIndividual(data){
                 EquiposResult.MicroDos = microInversor;
 
                 ///
-                EquiposResult.costoTotal = EquiposResult.MicroUno.precioTotal + EquiposResult.MicroDos.precioTotal;
+                EquiposResult.costoTotal = EquiposResult.MicroUno.costoTotal + EquiposResult.MicroDos.costoTotal;
                 EquiposResult.vMarca = EquiposResult.MicroUno.vMarca;
                 EquiposResult.vNombreMaterialFot = data.cotizacionIndividual.equipos.inversores.vNombreMaterialFot;
 

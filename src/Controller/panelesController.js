@@ -159,7 +159,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 		objNoDeModulosPorPotenciaDelPanel = {
 			idPanel: arrayAllOfPanels[i].idPanel,
 			nombre: arrayAllOfPanels[i].vNombreMaterialFot,
-			marca: arrayAllOfPanels[i].vMarca,
+			vMarca: arrayAllOfPanels[i].vMarca,
 			fPotencia: parseFloat(arrayAllOfPanels[i].fPotencia),
 			origen: arrayAllOfPanels[i].vOrigen,
 			garantia: arrayAllOfPanels[i].vGarantia,
