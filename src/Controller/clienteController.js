@@ -172,30 +172,6 @@ function consultaPorNombre(datas){
 	});
 }
 
-function destruirBD(datas) {
-	const { idCliente } = datas;
-
-  	return new Promise((resolve, reject) => {
-		mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [6, idCliente, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
-			if (error) {
-				const response = {
-					status: false,
-					message: error
-				}
-
-				resolve (response);
-			} else {
-				const response = {
-					status: true,
-					message: "Error al insertar los datos."
-				}
-
-				resolve(response);
-			}
-		});
-  	});
-}
-
 module.exports.insertar = async function (datas, response) {
 	const result = await insertarBD(datas);
 
@@ -234,12 +210,6 @@ module.exports.consultarPorNombre = async function (datas, response) {
 
 module.exports.consultarUser = async function (datas, response) {
 	const result = await consultaUserBD(datas);
-
-	return result;
-}
-
-module.exports.destruir = async function (datas, response) {
-	const result = await destruirBD(datas);
 
 	return result;
 }
