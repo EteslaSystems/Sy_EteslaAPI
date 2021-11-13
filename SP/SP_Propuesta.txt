@@ -21,7 +21,7 @@ CREATE OR REPLACE PROCEDURE SP_Propuesta
 	/* Variables para Inversor */
 	IN modeloInversor VARCHAR(50),
 	IN cantidadInversor INT,
-	
+		
 	/* Variables para Estructura */
 	IN marcaEstructura VARCHAR(50),
 	IN cantidadEstructura INT,

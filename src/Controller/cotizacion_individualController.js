@@ -79,7 +79,7 @@ async function cotizacionIndividual(data){
         if(data.cotizacionIndividual.equipos.estructuras != null){
             estructura = await estructuras.buscar({ id: data.cotizacionIndividual.equipos.estructuras.modelo });
             estructura = estructura.message; //Array
-            estructura = estructura[0]; //Object
+            estructura = Array.isArray(estructura) === true ? estructura[0] : estructura; //Object
             estructura = Object.assign(estructura,{ cantidad: parseInt(data.cotizacionIndividual.equipos.estructuras.cantidad), costoTotal: Math.round(estructura.fPrecio * data.cotizacionIndividual.equipos.estructuras.cantidad) });
             Cotizacion.estructura = estructura;
         }
