@@ -37,9 +37,8 @@ async function calcularViaticosBTI(data){
     let _agregados = data._agregados || null;
     let tipoCotizacion = data.tipoCotizacion || null;
     let tarifa = data.tarifa || null;
-    let porcentajeDescuento = (data.descuento / 100) || 0;
-    let descuento = 0;
-    let aumento = (data.aumento / 100) || 0;
+    let Descuento = { porcentaje: 0, descuento: 0, precioSinDescuento: 0 };
+    let Aumento = { porcentaje: 0, aumento: 0, precioSinAumento: 0 };
     let cantidadEstructuras = 0;
     let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
     let precio_watt = 0;
@@ -64,7 +63,7 @@ async function calcularViaticosBTI(data){
         };
     
         //Propuesta - Caducidad
-        let infoPropuesta = await configFile.getConfiguracionPropuesta();
+        let infoPropuesta = _configFile.propuesta_cotizacion;
 
         if(tipoCotizacion != 'CombinacionCotizacion'){
             //Datos cliente
@@ -167,7 +166,7 @@ async function calcularViaticosBTI(data){
 
             //Cotizacion Individual
             if(tipoCotizacion === 'individual'){
-                if(data.data.cotizacionIndividual.complementos.viaticos.viaticos == '1'){ //Con viaticos
+                if(data.data.cotizacionIndividual.complementos.viaticos != null){ //Con viaticos
                     hospedaje = data.data.cotizacionIndividual.complementos.viaticos.hospedaje === '1' ? hospedaje : 0;
                     comida = data.data.cotizacionIndividual.complementos.viaticos.comida === '1' ? comida : 0;
                     pasaje = data.data.cotizacionIndividual.complementos.viaticos.pasaje === '1' ? pasaje : 0;
@@ -227,27 +226,47 @@ async function calcularViaticosBTI(data){
             let margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
             let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
            
-            if(aumento > 0){
-                precio = Math.round((costoTotalProyecto * (1 + aumento)) * 100) / 100; //USD //Sin IVA
-            }
-            else{
-                /// Descuento
-                if(parseInt(data.descuento) > 0){ ///[Return: $$USD]
-                    let descuentPorcentaje = parseInt(data.descuento);
-                    descuento = Math.round(((descuentPorcentaje * costoTotalProyecto) / 100) * 100) / 100;//USD
-                }
-
-                //USD - Sin IVA
-                precio = Math.round(costoTotalProyecto * (1 - porcentajeDescuento) * 100)/100; 
-            }
-    
             /// %
             let inflacionPropuesta = _configFile.propuesta_cotizacion.inflacion;
 
             if(inflacionPropuesta > 0){
-                precio = Math.round((precio + ((inflacionPropuesta / 100) * precio)) * 100) / 100;
+                costoTotalProyecto = Math.round(costoTotalProyecto + ((inflacionPropuesta / 100) * costoTotalProyecto));
             }
 
+            ///Aumento
+            if(parseInt(data.aumento) > 0){
+                let aumentoPorcentaje = parseInt(data.aumento);
+                let aumento = (aumentoPorcentaje * costoTotalProyecto) / 100;
+                aumento = Math.round((aumento) * 100) / 100;
+
+                ///
+                Aumento.porcentaje = aumentoPorcentaje;
+                Aumento.aumento = aumento;
+                Aumento.precioSinAumento = costoTotalProyecto;
+            }
+
+            /// Descuento
+            if(parseInt(data.descuento) > 0){ ///[Return: $$USD]
+                let descuentPorcentaje = parseInt(data.descuento);
+                let descuento = (descuentPorcentaje * costoTotalProyecto) / 100;//USD
+                descuento = Math.round((descuento) * 100) / 100; //USD [NO - Porcentaje]
+
+                ///
+                Descuento.porcentaje = descuentPorcentaje;
+                Descuento.descuento = descuento;
+                Descuento.precioSinDescuento = costoTotalProyecto;
+            }
+
+            ///PRECIO - COSTO_TOTAL
+            if(Descuento.porcentaje > 0){ ///[ Descuento ]
+                precio = Math.round((costoTotalProyecto - Descuento.descuento) * 100) / 100;
+            }
+            else if(Aumento.porcentaje > 0){ ///[ Aumento ]
+                precio = Math.round((costoTotalProyecto + Aumento.aumento) * 100) / 100;
+            }
+            else{
+                precio = costoTotalProyecto;
+            }
 
             let precioUSDConIVA = Math.round((precio * 1.16)); //USD //Con IVA
             let precioMXNSinIVA = Math.round(precio * precioDolar); //MXN SIN IVA
@@ -297,6 +316,7 @@ async function calcularViaticosBTI(data){
                     otrosTotal: _manoDeObra[1],
                     fletes: totalFletes,
                     totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
+                    subtotalSinMarge: subtotOtrFletManObrTPIE,
                     margen: margen,
                     precio: precio, //USD sin IVA
                     precioMasIVA: precioUSDConIVA, //USD con IVA
@@ -304,18 +324,19 @@ async function calcularViaticosBTI(data){
                     precioMXNConIVA: precioMXNConIVA, //MXN con IVA
                     precio_watt: precio_watt
                 },
+                inflacionPropuesta: inflacionPropuesta,
                 tarifa: tarifa,
                 power: objPower,
                 roi: objROI, 
                 financiamiento: objFinan,
-                descuento: { porcentaje: data.descuento, descuento: descuento },
+                descuento: Descuento,
                 aumento: data.aumento,
                 tipoDeCambio: precioDolar,
                 promedioConsumosBimestrales: _consums,
                 tipoCotizacion: tipoCotizacion,
                 expiracion: { 
-                    cantidad: infoPropuesta.configuracion.expiracion.numero,
-                    unidadMedida: infoPropuesta.configuracion.expiracion.unidadMedida
+                    cantidad: infoPropuesta.expiracion.numero,
+                    unidadMedida: infoPropuesta.expiracion.unidadMedida
                 }
             };
     
@@ -342,8 +363,8 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion
 
     let dictionaryMOCost = {1:2000,2:2200,3:2392,4:2583,5:2775,6:2967,7:3158,8:3350,9:3400,10:3450,11:3500,12:3550,13:3600,14:3650,15:3675,16:3700,17:3715,18:3729,19:3746,20:3764,21:3882,22:4000,23:4222,24:4444,25:4667,26:4889,27:5111,28:5333,29:5556,30:5778,31:6000,32:6222,33:6444,34:6667,35:6889,36:7111,37:7333,38:7556,39:7778,40:8000,41:8200,42:8400,43:8600,44:8800,45:9000};
     let dictionaryOtrosCost = {1:4100,2:4200,3:4300,4:4400,5:4500,6:4600,7:4700,8:4800,9:4900,10:5000,11:5350,12:5700,13:6200,14:6700,15:7200,16:7700,17:8000,18:8100,19:8200,20:8300,21:8400,22:8500,23:8600,24:8700,25:8800,26:8900,27:9000,28:9100,29:9200,30:9300,31:9400,32:9500,33:9600,34:9700,35:9800,36:9900,37:10000,38:10100,39:10200,40:10300,41:10400,42:10500,43:10600,44:10700,45:10800};
-    let mo_unitario = 12;
-    let otros_porcentaje = 0.035;
+    let mo_unitario = 12; //USD
+    let otros_porcentaje = 0.035; //USD
 
     try{
         let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
@@ -354,8 +375,8 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion
             costoOtros = Math.round((dictionaryOtrosCost[cantidadPaneles] / precioDolar) * 100) / 100;  
         }
         else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
-            costoMO = Math.round(((cantidadPaneles * mo_unitario) / precioDolar) * 100) / 100;
-            costoOtros = Math.round((((totalPIEV + costoMO) * otros_porcentaje) / precioDolar) * 100) / 100;
+            costoMO = Math.round(((cantidadPaneles * mo_unitario)) * 100) / 100;
+            costoOtros = Math.round((((totalPIEV + costoMO) * otros_porcentaje)) * 100) / 100;
         }
     
         costosManoObraYOtros = [costoMO, costoOtros];

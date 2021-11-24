@@ -22,7 +22,7 @@ module.exports.insertar = async function (request, response) {
 		result = await vendedorCliente.insertar(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / CLIENTE.', result.message);
+			log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / CLIENTE. ' + result.message });
 
 			const info = {
 				status: 500,
@@ -32,7 +32,7 @@ module.exports.insertar = async function (request, response) {
       		return info;
 		}
 
-		log.eventos('INSERTAR / CLIENTE.', '1 fila insertada.');
+		log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / CLIENTE. ' + '1 fila insertada.' });
 
 		const info = {
 			status: 200,
@@ -50,10 +50,10 @@ module.exports.actualizar = async function (vendedor_clienteModel, response) {
 	result = await vendedorCliente.actualizar(vendedor_clienteModel);
 
 	if(result !== true) {
-		log.errores('Actualizar Vendedor_Cliente', 'Ocurrió un error al actualizar el vendedor del cliente en la base de datos.');
+		log.generateLog({ tipo: 'Error', contenido: 'Actualizar Vendedor_Cliente ' + 'Ocurrió un error al actualizar el vendedor del cliente en la base de datos.' });
 		throw new Error('Ocurrió un error al actualizar el vendedor del cliente.');
 	}
 
-	log.eventos('Actualizar Vendedor_Cliente', 'Se ha actualizado correctamente el vendedor del cliente en la base de datos.');
+	log.generateLog({ tipo: 'Evento', contenido: 'Actualizar Vendedor_Cliente ' + 'Se ha actualizado correctamente el vendedor del cliente en la base de datos.' });
 	return result;
 }

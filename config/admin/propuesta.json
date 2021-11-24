@@ -1,8 +1,0 @@
-{
-    "configuracion": { 
-        "expiracion": {
-            "numero": 30,
-            "unidadMedida": "dias"
-        }
-    }
-}

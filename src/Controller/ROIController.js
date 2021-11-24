@@ -41,7 +41,7 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
         ahorroBimestralEnPesosMXN = Math.round(consumoBimestralPesosMXN - generacionBimestralPesosMXN);
         ahorroMensualEnPesosMXN = Math.round(ahorroBimestralEnPesosMXN / 2); //$$
     
-        ROIenAnios = Math.round((costoDeProyecto / ahorroAnualEnPesosMXN) * 100) / 100;
+        ROIenAnios = Math.round((costoDeProyecto / ahorroAnualEnPesosMXN) * 10) / 10;
         ROIcnDeduccion = Math.round((ROIenAnios * 0.7) * 100) / 100;
 
         objRespuesta = {

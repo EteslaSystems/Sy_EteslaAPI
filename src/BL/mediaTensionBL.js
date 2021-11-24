@@ -14,7 +14,7 @@ module.exports.promedioArray = async function (request, response) {
 	}
 
 	for (var i in request) {
-		for (var j in request[i]) {
+		for (let j in request[i]) {
 			const data = { numero: request[i][j] };
 			let validate = await validations.promedioValidation(data);
 			if (validate.status != true) {
@@ -26,7 +26,7 @@ module.exports.promedioArray = async function (request, response) {
 	result = await mediaTension.promedioArray(request);
 
 	if(result.status !== true) {
-		log.errores('Promediar array.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'Promediar array. ' + result.message });
 		throw new Error('Error al promediar los datos del array.');
 	}
 

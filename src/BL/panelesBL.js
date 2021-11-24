@@ -33,12 +33,12 @@ module.exports.insertar = async function (request, response) {
 		result = await panel.insertar(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / PANELES.', result.message);
+			log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / PANELES. ' + result.message });
 
 			throw new Error('Error al insertar los datos.');
 		}
 
-		log.eventos('INSERTAR / PANELES.', '1 fila insertada.');
+		log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / PANELES.' + '1 fila insertada.' });
 
 		return result.message;
 	} else {
@@ -58,12 +58,12 @@ module.exports.eliminar = async function (request, response) {
 	result = await panel.eliminar(datas);
 
 	if(result.status !== true) {
-		log.errores('ELIMINAR / PANELES.', result.message);
+		log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / PANELES.' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('ELIMINAR / PANELES.', '1 fila eliminada.');
+	log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / PANELES.' + '1 fila eliminada.' });
 
 	return result.message;
 }
@@ -92,12 +92,12 @@ module.exports.editar = async function (request, response) {
 		result = await panel.editar(datas);
 
 		if(result.status !== true) {
-			log.errores('EDITAR / PANELES.', result.message);
+			log.generateLog({ tipo: 'Error', contenido: 'EDITAR / PANELES. ' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		log.eventos('EDITAR / PANELES.', '1 fila editada.');
+		log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / PANELES.' + '1 fila editada.' });
 
 		return result.message;
 	} else {
@@ -109,12 +109,12 @@ module.exports.consultar = async function (response) {
 	const result = await panel.consultar();
 
 	if(result.status !== true) {
-		log.errores('CONSULTA / PANELES.', result.message);
+		log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / PANELES.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('CONSULTA / PANELES.', result.message.length + ' filas consultadas.');
+	log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / PANELES.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -127,12 +127,12 @@ module.exports.buscar = async function (request, response) {
 	result = await panel.buscar(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / PANELES.', result.message);
+		log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / PANELES. ' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('BUSQUEDA / PANELES.', result.message.length + ' filas consultadas.');
+	log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / PANELES. ' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }

@@ -12,15 +12,14 @@
     Dicha tarea programada debe de ejecutarse cada 24 hrs, para asi evitar un banneo por parte de
     la pagina, por extracion del dato sin permiso.
 */
+const configFile = require('../Controller/configFileController');
 const request = require('request-promise');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process'); 
 const cronJob = require('node-cron');
-
 const moment = require('moment-timezone');
-const configFile = require('../Controller/configFileController');
 
 /*                               -Tarea Programada_Obtener precio del dolar-
     1.-Dicha tarea programada debe de verificar o crear un directorio temporal
@@ -45,7 +44,7 @@ async function saveDollarPrice(){
     
     try{
         //
-        let uriFile = path.join(process.cwd(), 'config','dirDollarPrice');
+        let uriFile = path.join(process.cwd(), 'config','dirDollarPrice'); //Directory-File
         let precioDolar = await scrapDollarPrice();
         let fechaToday = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
 

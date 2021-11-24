@@ -5,11 +5,11 @@
             "inversor": "Goodwe,"
         },
         "combinacionMediana": {
-            "panel": "*",
+            "panel": "Canadian,",
             "inversor": "ABB Fimer,SMA,APSystem,Fronius Solar,"
         },
         "combinacionPremium": {
-            "panel": "*",
+            "panel": "Jinko,",
             "inversor": "Enphase,"
         }
     },

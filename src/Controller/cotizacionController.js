@@ -144,15 +144,24 @@ async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
             _lstEquipos = [];
 
             _equipos.filter((equipo) => {
+                potencia = 0;
+
                 //Validar si el equipo es [panel] || [inversor]
                 equipo = equipo.panel ? equipo.panel : equipo;
 
-                if(potenciaHigger === 0){
-                    potenciaHigger = equipo.fPotencia;
+                if(equipo.potenciaReal){
+                    potencia = equipo.potenciaReal;
+                }
+                else{
+                    potencia = equipo.potenciaNominal;
                 }
 
-                if(potenciaHigger <= equipo.fPotencia){
-                    potenciaHigger = equipo.fPotencia;
+                if(potenciaHigger === 0){
+                    potenciaHigger = potencia;
+                }
+
+                if(potenciaHigger <= potencia){
+                    potenciaHigger = potencia;
                     _lstEquipos.push(equipo);
                 }
             });
@@ -235,7 +244,6 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
             EquipoFiltrado = {};
             
             //Se genera un rango con base a la -mediaCostos- (15% *abajo* && *arriba*)
-            rangoMenor = Math.round((mediaCostos - ((15 / 100) * mediaCostos)) * 100) / 100;
             rangoMayor = Math.round((mediaCostos + ((15 / 100) * mediaCostos)) * 100) / 100;
 
             //Filtrar equipos c/la media *costosTotales*
@@ -246,7 +254,7 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
                 }
                 
                 //Se filtran el equipo que se iguale o acerque a la media
-                if(equipo.costoTotal === mediaCostos || equipo.costoTotal >= rangoMenor && equipo.costoTotal <= rangoMayor){
+                if(equipo.costoTotal === mediaCostos || equipo.costoTotal <= rangoMayor){
                     EquipoFiltrado = equipo;
                 }
             });
@@ -269,7 +277,7 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
         return { panel: PanelSeleccionado, inversor: InversorSeleccionado, tipoCombinacion: 'Recomendada' };
     }
     catch(error){
-        console.log(error);
+        throw error;
     }
 }
 
