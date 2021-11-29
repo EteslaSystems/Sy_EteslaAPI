@@ -5,7 +5,6 @@
 */
 //Requires
 const express = require('express');
-const fs = require('fs');
 const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');

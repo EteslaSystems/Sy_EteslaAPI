@@ -367,8 +367,9 @@ async function getPrecioDeManoDeObraBTI(cantidadPaneles, totalPIEV){//La funcion
     let otros_porcentaje = 0.035; //USD
 
     try{
-        let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
-        precioDolar = precioDolar.precioDolar;
+        // let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
+        // precioDolar = precioDolar.precioDolar;
+        let precioDolar = 17;
     
         if(dictionaryMOCost.hasOwnProperty(cantidadPaneles) == true){ //Se busca coincidencia en los diccionarios (Sobre la cantidad de paneles a instalar)
             costoMO = Math.round((dictionaryMOCost[cantidadPaneles] / precioDolar) * 100) / 100;

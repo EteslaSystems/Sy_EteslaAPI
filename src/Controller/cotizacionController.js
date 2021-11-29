@@ -12,7 +12,7 @@ const vendedor = require('../Controller/usuarioController');
 /*#region Busqueda_inteligente*/
 async function mainBusquedaInteligente(data){
     let tipoCotizacion = data.tipoCotizacion;
-    let __combinaciones = [], _consumos = [];
+    let __combinaciones = [];
 
     try{
         //Datos cliente
@@ -36,7 +36,6 @@ async function mainBusquedaInteligente(data){
 
             ///Consumos
             _consumos = _data[0].consumo;
-            data.consumos = _consumos;
 
             ///Eliminar elemento de -consumos- 
             _data.shift();
@@ -45,13 +44,29 @@ async function mainBusquedaInteligente(data){
             let _paneles = _data;
             /*#endregion */
 
-            CombinacionEconomica = await getCombinacionEconomica(_paneles, MatrizEquiposSeleccionados); //CombinacionA
-            CombinacionPremium = await getCombinacionPremium(_paneles, MatrizEquiposSeleccionados); //CombinacionC
-            CombinacionRecomendada = await getCombinacionMediana(_paneles, MatrizEquiposSeleccionados); //CombinacionB
+            if(!data.combinacionPremium){
+                CombinacionEconomica = await getCombinacionEconomica(_paneles, MatrizEquiposSeleccionados); //CombinacionA
+                CombinacionRecomendada = await getCombinacionMediana(_paneles, MatrizEquiposSeleccionados); //CombinacionB
+    
+                ///
+                _combinaciones = [CombinacionEconomica, CombinacionRecomendada];
+
+                ///Preparar la data para la combinacion [Premium]
+                Object.assign(data, { combinacionPremium: true });
+
+                //Se modifica el -porcentajePropuesta- para que saque el 100%
+                data.porcentajePropuesta = '100';
+
+                return mainBusquedaInteligente(data);
+            }
 
             ///
-            _combinaciones = [CombinacionEconomica, CombinacionPremium, CombinacionRecomendada];
+            CombinacionPremium = await getCombinacionPremium(_paneles, MatrizEquiposSeleccionados); //CombinacionC
 
+            _combinaciones.push(CombinacionPremium);
+
+            ///Se vuelve a -settear- [_consumos] en la data para enviar a -calcularViaticosComb()-
+            data.consumos = _consumos;
         }
         /* else{ //MediaTension
     
@@ -65,16 +80,16 @@ async function mainBusquedaInteligente(data){
             vendedor: uVendedor,
             _arrayConsumos: _consumos,
             combinacionMediana: { 
-                combinacion: _Combinaciones[2][0], 
-                nombre: _Combinaciones[2][1].tipoCombinacion
+                combinacion: _Combinaciones[1][0], 
+                nombre: _Combinaciones[1][1].tipoCombinacion
             },
             combinacionEconomica: {
                 combinacion: _Combinaciones[0][0], 
                 nombre: _Combinaciones[0][1].tipoCombinacion
             },
             combinacionOptima: {
-                combinacion: _Combinaciones[1][0], 
-                nombre: _Combinaciones[1][1].tipoCombinacion
+                combinacion: _Combinaciones[2][0], 
+                nombre: _Combinaciones[2][1].tipoCombinacion
             },
             tipoCotizacion: data.tipoCotizacion,
             combinaciones: true
