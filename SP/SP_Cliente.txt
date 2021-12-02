@@ -32,7 +32,10 @@ BEGIN
         /*Cliente*/
         INSERT INTO cliente
         VALUES (UUID(), UNHEX(xIdPersona), UNHEX(xIdUsuario));
-        SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente INNER JOIN persona ON cliente.id_Persona = persona.idPersona WHERE deleted_at IS NULL ORDER BY persona.created_at DESC LIMIT 1);
+        SET xIdCliente = (SELECT HEX(cliente.idCliente) AS idCliente FROM cliente
+        INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
+        WHERE deleted_at IS NULL 
+        ORDER BY persona.created_at DESC LIMIT 1);
         /*Direccion*/
         INSERT INTO direccion
         VALUES (UUID(), UNHEX(xIdCliente), CP, Calle, Municipio, Ciudad, Estado);
@@ -61,7 +64,7 @@ BEGIN
     ELSEIF (Opcion = 3) THEN
         SELECT HEX(cliente.idCliente) AS idCliente, 
         HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at, 
-        HEX(direccion.idDireccion) AS idDireccion, direccion.vCalle, direccion.vMunicipio, direccion.vEstado
+        HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado
         FROM cliente
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
@@ -90,9 +93,11 @@ BEGIN
         FROM cliente 
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
-        WHERE cliente.id_Usuario = UNHEX(xIdUsuario)
-        AND persona.deleted_at IS NULL
-        AND persona.vNombrePersona LIKE CONCAT(NombrePersona,'%');
+        WHERE persona.deleted_at IS NULL
+        AND persona.vNombrePersona LIKE CONCAT('%',NombrePersona,'%')
+        OR persona.vPrimerApellido LIKE CONCAT('%',NombrePersona,'%')
+        OR persona.vSegundoApellido LIKE CONCAT('%',NombrePersona,'%')
+        AND cliente.id_Usuario = UNHEX(xIdUsuario);
     END IF;
 END
 // DELIMITER ;

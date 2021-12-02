@@ -85,7 +85,7 @@ function buscarBD(datas){
 			} else {
 				const response = {
 					status: true,
-					message: rows[0]
+					message: rows[0][0]
 				}
 
 				resolve(response);

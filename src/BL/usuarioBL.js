@@ -36,12 +36,12 @@ module.exports.insertar = async function (request, response) {
 		result = await usuario.insertar(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / USUARIOS.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / USUARIOS.' + result.message });
 
 			throw new Error('Error al insertar los datos.');
 		}
 
-		log.eventos('INSERTAR / USUARIOS.', '1 fila insertada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / USUARIOS.' + '1 fila insertada.' });
 
 		const payload = { email: datas.vEmail };
 		const emailToken = jwt.sign(payload, secret, { expiresIn: 86400 });
@@ -277,12 +277,12 @@ module.exports.eliminar = async function (request, response) {
 	result = await usuario.eliminar(datas);
 
 	if(result.status !== true) {
-		log.errores('ELIMINAR / USUARIO.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / USUARIO.' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('ELIMINAR / USUARIO.', '1 fila eliminada.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / USUARIO.' + '1 fila eliminada.' });
 
 	return result.message;
 }
@@ -307,12 +307,12 @@ module.exports.editar = async function (request, response) {
 		result = await usuario.editar(datas);
 
 		if(result.status !== true) {
-			log.errores('EDITAR / USUARIO.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / USUARIO.' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		log.eventos('EDITAR / USUARIO.', '1 fila editada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / USUARIO.' + '1 fila editada.' });
 
 		const payload = {
 			idUsuario: result.message[0].idUsuario,
@@ -334,12 +334,8 @@ module.exports.editar = async function (request, response) {
 		return new Promise((resolve, reject) => {
 			jwt.sign(payload, secret, { expiresIn: 36000 }, (error, token) => {
 				if (error) {
-					log.errores('EDITAR / USUARIO.', 'Ocurrió un error al generar el token de usuario.');
-
-					throw new Error('Error en la genereación del token.');
+					reject('Error en la genereación del token.' +error);
 				} else {
-					log.eventos('EDITAR / USUARIO.', 'Token de usuario generado, acceso a: ' + payload.nombrePersona + '.');
-
 					resolve(token);
 				}
 			});
@@ -353,12 +349,12 @@ module.exports.consultar = async function (response) {
 	const result = await usuario.consultar();
 
 	if(result.status !== true) {
-		log.errores('CONSULTA / USUARIOS.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / USUARIOS.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('CONSULTA / USUARIOS.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / USUARIOS.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -371,12 +367,12 @@ module.exports.consultarId = async function (request, response) {
 	result = await usuario.consultarId(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / USUARIO POR ID.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('BUSQUEDA / USUARIO POR ID.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message.length + ' filas consultadas.' });
 
 	result.message[0].vContrasenia = String.fromCharCode.apply(null, result.message[0].vContrasenia);
 
@@ -392,20 +388,20 @@ module.exports.validar = async function (request, response) {
 	result = await usuario.validar(datas);
 
 	if(result.status !== true) {
-		log.errores('VALIDAR / USUARIOS.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS.' + result.message });
 
 		throw new Error('Error al validar los datos del usuario.');
 	}
 
 	if(result.message.propertyIsEnumerable(0) !== true) {
-		log.errores('VALIDAR / USUARIOS.', 'Las credenciales proporcionadas por el usuario no coinciden con los registros de la base de datos.');
+		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS. ' + 'Las credenciales proporcionadas por el usuario no coinciden con los registros de la base de datos.' });
 
 		throw new Error('Las credenciales proporcionadas son incorrectas.');
 	}
 
 	if (result.message[0].vTelefono != null || result.message[0].vTelefono == 666) {
 		const nombrecompleto = result.message[0].vNombrePersona +' '+ result.message[0].vPrimerApellido +' '+ result.message[0].vSegundoApellido;
-		log.eventos('VALIDAR / USUARIOS.', 'El usuario ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'VALIDAR / USUARIOS. ' + 'El usuario ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.' });
 
 		throw new Error('Debe verificar su correo electrónico para iniciar sesión.');
 	}
@@ -430,13 +426,9 @@ module.exports.validar = async function (request, response) {
 	return new Promise((resolve, reject) => {
 		jwt.sign(payload, secret, { expiresIn: 36000 }, (error, token) => {
 			if (error) {
-				log.errores('VALIDAR / USUARIOS.', 'Ocurrió un error al generar el token de usuario.');
-
-				throw new Error('Error en la genereación del token.');
+				reject('Error en la genereación del token.' +error)
 			} else {
-                log.eventos('VALIDAR / USUARIOS.', 'Token de usuario generado, acceso a: ' + payload.nombrePersona + '.');
-
-                resolve(token);
+				resolve(token);
 			}
 		});
 	});
@@ -447,11 +439,11 @@ module.exports.verificarEmail = async function (request, response) {
 	result = await usuario.verificarEmail(datas);
 
 	if(result.status !== true) {
-		log.errores('VERIFICAR / EMAIL.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'VERIFICAR / EMAIL.' + result.message });
 
 		throw new Error('Error al verificar el email: ' + request.email);
 	}
-	log.eventos('VERIFICAR / EMAIL.', 'Se verificó con éxito el email: ' + request.email);
+	await log.generateLog({ tipo: 'Evento', contenido: 'VERIFICAR / EMAIL.' + 'Se verificó con éxito el email: ' + request.email });
 
 	return result.message;
 }
@@ -461,18 +453,19 @@ module.exports.recuperarPassword = async function (request, response) {
 	result = await usuario.recuperarPassword(datas);
 
 	if(result.status !== true) {
-		log.errores('RECUPERAR CONTRASEÑA.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + result.message });
 
 		throw new Error('Error al recuperar la contraseña.');
 	}
 
 	if(result.message.propertyIsEnumerable(0) !== true || result.message.length == 0) {
-		log.errores('RECUPERAR CONTRASEÑA.', 'No existe ningún usuario registrado con el correo: ' + datas.vEmail + ' en la base de datos.');
+		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + 'No existe ningún usuario registrado con el correo: ' + datas.vEmail + ' en la base de datos.' });
 
 		throw new Error('No existe ningún usuario registrado con ese correo, verifiquelo e intente de nuevo.');
 	}
 
-	log.eventos('RECUPERAR CONTRASEÑA.', 'Se recuperó con éxito la contraseña.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'RECUPERAR CONTRASEÑA.' + 'Se recuperó con éxito la contraseña.' });
+	
 	const contrasenia = String.fromCharCode.apply(null, result.message[0].vContrasenia);
 	const oEmail = new mailer();
 

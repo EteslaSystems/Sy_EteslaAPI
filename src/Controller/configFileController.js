@@ -3,7 +3,7 @@ const fs = require('fs');
 var { response } = require('express');
 
 module.exports.getArrayOfConfigFile = function(){
-    var getFileRootOfConfiguration = process.cwd()+'/config/admin_confgs/parametroscotizador_suser-admin.json';
+    let getFileRootOfConfiguration = process.cwd()+'/config/admin/cotizacion.json';
 
     return new Promise((resolve, reject) => {
         fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, _$configCuadrilla) => {
@@ -24,6 +24,33 @@ module.exports.getArrayOfConfigFile = function(){
                 };
 
                 resolve(response);
+            }
+        });
+    });
+}
+
+module.exports.getConfiguracionPropuesta = function(){
+    let uriFile = process.cwd()+'/config/admin/propuesta.json';
+
+    return new Promise((resolve, reject) => {
+        fs.readFile(uriFile, 'utf-8', (err, configPropuesta) => {
+            if(!err){
+                configPropuesta = JSON.parse(configPropuesta);
+                
+                response = {
+                    status: true,
+                    message: configPropuesta
+                };
+                
+                resolve(response.message);
+            }
+            else{
+                response = {
+                    status: false,
+                    message: err
+                };
+
+                reject(response);
             }
         });
     });
@@ -67,31 +94,5 @@ module.exports.ifExistConfigFile = function(root, fileName){
         else if(err.code === 'ENOENT'){
             return false;
         }
-    });
-}
-
-/*---  Lectura del Handlebars-Template para el PDF  ---*/
-module.exports.getHandlebarsTemplate = function(fileName){
-    var getFileRootOfTemplate = process.cwd()+'/src/PDF/templates/'+fileName;
-
-    return new Promise((resolve, reject) => {
-        fs.readFile(getFileRootOfTemplate, 'utf-8', (err, template) => {
-            if(!err){
-                response = {
-                    status: true,
-                    message: template
-                };
-
-                resolve(response);
-            }
-            else{
-                response = {
-                    status: false,
-                    message: template
-                };
-
-                resolve(response);
-            }
-        });
     });
 }

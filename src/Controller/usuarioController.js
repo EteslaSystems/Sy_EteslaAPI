@@ -7,7 +7,23 @@
 const mysqlConnection = require('../../config/database');
 
 function insertarBD (datas) {
-	const { siRol, ttTipoUsuario, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vEmail } = datas;
+	let { siRol, ttTipoUsuario, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vEmail } = datas;
+
+	switch(vOficina)
+    {
+		case 'Veracruz':
+			vOficina = 'Av. Ricardo Flores Magón 1181, Ignacio Zaragoza, 91910 Veracruz, Ver.';
+		break;
+		case 'CDMX':
+			vOficina = 'Oso, Col del Valle Sur, Benito Juárez, 03100 Ciudad de México, CDMX';
+		break;
+		case 'Puebla':
+			vOficina = 'Av. 25 Ote. & C. 18 Sur, Bella Vista, 72500 Puebla, Pue.';
+		break;
+		default: 
+			-1
+		break;
+	}
 
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, null, siRol, ttTipoUsuario, vContrasenia, vOficina, null, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, null, vEmail], (error, rows) => {
@@ -50,26 +66,47 @@ function eliminarBD (datas) {
   	});
 }
 
-function editarBD (datas) {
-	const { idPersona, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido} = datas;
+function editarBD(datas) {
+	let { idPersona, vContrasenia, vOficina, vNombrePersona, vPrimerApellido, vSegundoApellido} = datas;
 
-  	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, null, null, null, vContrasenia, vOficina, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, null, null, null], (error, rows) => {
-			if (error) {
-				const response = {
-					status: false,
-					message: error
+	try{
+		switch(vOficina)
+		{
+			case 'Veracruz':
+				vOficina = 'Av. Ricardo Flores Magón 1181, Ignacio Zaragoza, 91910 Veracruz, Ver.';
+			break;
+			case 'CDMX':
+				vOficina = 'Oso, Col del Valle Sur, Benito Juárez, 03100 Ciudad de México, CDMX';
+			break;
+			case 'Puebla':
+				vOficina = 'Av. 25 Ote. & C. 18 Sur, Bella Vista, 72500 Puebla, Pue.';
+			break;
+			default: 
+				-1
+			break;
+		}
+
+		return new Promise((resolve, reject) => {
+			mysqlConnection.query('CALL SP_Usuario(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, null, null, null, vContrasenia, vOficina, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, null, null, null], (error, rows) => {
+				if (error) {
+					const response = {
+						status: false,
+						message: error
+					}
+					resolve (response);
+				} else {
+					const response = {
+						status: true,
+						message: rows[0]
+					}
+					resolve(response);
 				}
-				resolve (response);
-			} else {
-				const response = {
-					status: true,
-					message: rows[0]
-				}
-				resolve(response);
-			}
+			});
 		});
-  	});
+	}
+	catch(error){
+		console.log(error);
+	}
 }
 
 function consultaBD () {

@@ -5,7 +5,6 @@
 */
 //Requires
 const express = require('express');
-const fs = require('fs');
 const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');
@@ -16,7 +15,6 @@ const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
 const dollar = require('../Controller/dolar_tipoCambio');
 const viaticosController = require('../Controller/opcionesViaticsController.js');
-const archivoPDF = require('../PDF/crearPdf');  // Ruta del PDF.
 
 const estructura = require('../Controller/estructuraController.js');
 
@@ -213,6 +211,22 @@ router.post('/calcularVT', function(request, response){
 /*#endregion*/
 /*#endregion*/
 /*#region Propuesta*/
+router.put('/eliminar-propuesta', function(request, response){
+	propuesta.eliminar(request.body)
+	.then(respuesta => {
+		response.json({
+			status: 200,
+			message: respuesta.message
+		});
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error
+		});
+	});
+});
+
 router.post('/guardar-propuesta', function(request, response){
 	propuesta.guardar(request.body)
 	.then(respuesta => {
@@ -229,7 +243,7 @@ router.post('/guardar-propuesta', function(request, response){
 	});
 });
 
-router.post('/getPropuestaByCliente', function(request, response){
+router.put('/getPropuestaByCliente', function(request, response){
 	propuesta.consultar(request.body)
 	.then(respuesta => {
 		response.json({
@@ -426,17 +440,32 @@ router.get('/cotizacionView', (request, response) => {
 	response.render('cotizacion');
 });
 /*#endregion*/
-
-router.get('/lista-inversores', function (request, response) {
-	inversorBL.consultar()
-	.then(inversor => {
-		response.json(inversor).end();
+router.put('/listar-micros', function(request, response){
+	inversorBL.obtenerEquiposTipo(request.body)
+	.then(vTipoEquipos => {
+		response.json({
+			status: 200,
+			message: vTipoEquipos
+		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
 			message: error.message,
-		}).end();
+		});
+	});
+});
+
+router.get('/lista-inversores', function (request, response) {
+	inversorBL.consultar()
+	.then(inversor => {
+		response.json(inversor);
+	})
+	.catch(error => {
+		response.json({
+			status: 500,
+			message: error.message,
+		});
 	});
 });
 
@@ -647,7 +676,7 @@ router.put('/buscar-estructura', function(request, response){
 	.catch(error => {
 		response.json({
 			status: 500,
-			message: error.message
+			message: error
 		});
 	});
 });
@@ -716,7 +745,7 @@ router.put('/editar-cliente', function (request, response) {
 	});
 });
 
-router.put('/lista-clientes-id', function (request, response) {
+router.put('/cliente-por-id', function (request, response) {
 	clienteBL.consultarId(request.body)
 	.then(cliente => {
 		response.json({
@@ -1109,35 +1138,6 @@ router.put('/buscar-opcionesViatics', function (request, response) {
 		response.json({
 			status: 500,
 			message: error.message,
-		}).end();
-	});
-});
-
-/*
-- @section: 		Ruta para la creación del archivo PDF.
-*/
-
-router.post('/pdf',function (request, response) {
-	archivoPDF.crearPDF(request.body)
-	.then(objPdf => {
-		pdf64 = fs.readFileSync(objPdf.rutaArchivo, { encoding: 'base64' });
-
-		if(objPdf.nombreArchivo != null){
-			var respuesta = {
-				fileName: objPdf.nombreArchivo,
-				pdfBase64: pdf64
-			};
-		}
-		
-		response.json({
-			status: 200,
-			message: respuesta
-		});
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message
 		}).end();
 	});
 });

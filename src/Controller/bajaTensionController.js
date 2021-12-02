@@ -35,11 +35,11 @@ async function obtenerEnergiaPaneles_Requeridos(data){ //BT = Baja_Tension
 
     _arrayResult.push(objPropuestaPaneles);
 
-    _noPaneles = await panel.numeroDePaneles(potenciaRequerida);
+    let _noPaneles = await panel.numeroDePaneles(potenciaRequerida);
 
-    for(var x=0; x<_noPaneles.length; x++)
+    for(let x=0; x<_noPaneles.length; x++)
     {
-        costoTotalPaneles = Math.round(((parseFloat(_noPaneles[x].precioPorPanel * _noPaneles[x].potencia)) * _noPaneles[x].noModulos) * 100) / 100;
+        costoTotalPaneles = Math.round(((_noPaneles[x].fPrecio * _noPaneles[x].fPotencia) * _noPaneles[x].noModulos) * 100) / 100;
         _noPaneles[x].costoTotal = costoTotalPaneles;
 
         objPropuestaPaneles = {
@@ -56,7 +56,7 @@ function promedio_consumos(consumos){
     //Retorna todo en kwh
     let promConsumosBimestrales = (consumos) => {
         promConsumosBim = 0;
-        for(var i=0; i<consumos.length; i++)
+        for(let i=0; i<consumos.length; i++)
         {
             promConsumosBim += parseFloat(consumos[i]);
         }
@@ -68,11 +68,11 @@ function promedio_consumos(consumos){
         _consumMens = [];
         promConsums = 0;
 
-        for(var i=0; i<consumos.length; i++)
+        for(let i=0; i<consumos.length; i++)
         {
             consumMens = parseFloat(consumos[i] / 2); //Bimestre / 2  
             
-            for(var x=0; x<2; x++)
+            for(let x=0; x<2; x++)
             {
                 _consumMens.push(consumMens);
             }
@@ -95,7 +95,7 @@ function promedio_consumos(consumos){
         _consumosMensual = consMesual._consumosMensuales;
         consAnual = 0;
 
-        for(var i=0; i<_consumosMensual.length; i++)
+        for(let i=0; i<_consumosMensual.length; i++)
         {
             consAnual += parseFloat(_consumosMensual[i]);
         }
@@ -133,7 +133,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
 
     switch(tarifa)
     {
-        //Los datos estan definidos en "bimestral" (limite, objetivoDAC, etc)
+        //Los datos estan definidos en *BIMESTRAL* (limite, objetivoDAC, etc)
         case '1':
             limite = 500;
             objetivoDAC = 200;
@@ -214,7 +214,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
     promedioConsumsMensuales = objPromedioDeConsumos.promedioConsumosMensuales;
     consumoDiario = objPromedioDeConsumos.consumoDiario;
     /*-------*/
-    cuanto_menos = limite - (promedioConsumsMensuales * 2 * 0.10);
+    cuanto_menos = Math.abs(limite - (promedioConsumsMensuales * 2 * 0.10));
     
     if(cuanto_menos < objetivoDAC){
         objetivoDAC = cuanto_menos;
@@ -246,7 +246,7 @@ async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){
 }
 
 async function calcularPorcentajePerdida(porcentajePerdida){
-    var porcentajePerdida = porcentajePerdida / 100;
+    porcentajePerdida = porcentajePerdida / 100;
 	return porcentajePerdida;
 }
 

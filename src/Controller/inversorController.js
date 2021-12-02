@@ -4,10 +4,15 @@
 - @date: 				19/02/2020
 */
 
+const { red } = require('chalk');
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas) {
-	const { vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
+	let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
+
+	if(vTipoInversor === 'Combinacion'){
+		vNombreMaterialFot = vInversor1 + '+' + vInversor2;
+	}
 
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta], (error, rows) => {
@@ -124,6 +129,53 @@ function buscarBD(datas) {
   	});
 }
 
+function buscarTipoInversor(datas){
+	const { vTipoInversor } = datas;
+
+	return new Promise((resolve, reject) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, null, vTipoInversor, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+			if (error) {
+				const response = {
+					status: false,
+					message: error
+				}
+
+				reject(response);
+			} else {
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
+			}
+		});
+  	});
+}
+
+function buscarInversorPorNombre(datas){
+	const { vNombreMaterialFot } = datas;
+
+	return new Promise ((resolve, reject) => {
+		mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [6, null, null, vNombreMaterialFot, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+			if (error) {
+				const response = {
+					status: false,
+					message: error
+				}
+
+				reject(response);
+			} else {
+				const response = {
+					status: true,
+					message: rows[0]
+				}
+
+				resolve(response);
+			}
+		});
+	});
+}
 /*#region LH420*/
 /*
 - @description: 		Funciones para la cotizacion de media tension
@@ -132,18 +184,13 @@ function buscarBD(datas) {
 */
 
 /*#region SI_SIRVE*/
-async function getInversores_cotizacion(data){
-	let inversoresResult = {};
+async function getInversores_cotizacion(_data){
+	let inversoresResult = null;
 	let arrayInversor = [];
-	let combinacion = false;
-	let noPaneles = 0; //No. paneles a instalar
-
 	let precioTotal = 0;
+	let data = _data;
 
 	try{
-		let allInversores = await consultaBD();
-		allInversores = allInversores.message;
-
 		if(data.objPanelSelect.hasOwnProperty("potenciaNecesaria")){
 			if(data.objPanelSelect.potenciaNecesaria.hasOwnProperty("potenciaNecesaria")){
 				data = data.objPanelSelect;
@@ -168,142 +215,115 @@ async function getInversores_cotizacion(data){
 			data = data.objPanelSelect;
 		}
 	
-		let potenciaReal_= parseFloat(data.potenciaReal);
-		potenciaReal_ = potenciaReal_ * 1000; ///Watss 
-	
-		for(let i = 0; i < allInversores.length; i++)
+		let allInversores = await consultaBD();
+		allInversores = allInversores.message;
+
+		let potenciaReal_ = data.potenciaReal * 1000; ///Watss
+
+		for(let Inversor of allInversores)
 		{
+			let noPaneles = parseInt(data.noModulos); //Numero de paneles de la propuesta
 			let numeroDeInversores = 0;
-			let invSoportMay = 0;
-			let invSoportMen = 0;
-			noPaneles = parseFloat(data.noModulos);
+			let potenciaNominal = 0;
 	
 			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
-			if(allInversores[i].vTipoInversor === 'Microinversor'){ //Calculo de MicroInversores
-				numeroDeInversores =  Math.floor(noPaneles / allInversores[i].iPanelSoportados);
+			if(Inversor.vTipoInversor === 'MicroInversor'){ //Calculo de MicroInversores
+				numeroDeInversores =  Math.round(noPaneles / Inversor.iPanelSoportados);
 			}
-			else if(allInversores[i].vTipoInversor === 'Combinacion'){ ///Combinacion de micro-inversores
-				/***Soporte de micros para combinacion *-* QS1 + YC600
-					-QS1 => 4 paneles
-					-YC600 => 2 paneles 
-				*/
-	
-				//Se valida el noPaneles, que sea >6, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
+			else if(Inversor.vTipoInversor === 'Combinacion'){ ///Calculo de Combinacion de micro-inversores
+				//Se valida el noPaneles, que sea >=5, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
 				if(noPaneles >= 5){
-					//Cantidad de micros del modelo QS1
-					invSoportMay = Math.floor(noPaneles / 4);
-						
-					//Se descuentan/restan los paneles contemplados con el micro anterior
-					noPaneles = noPaneles - (invSoportMay * 4);
-					
-					//Cantidad de micros del modelo YC600
-					invSoportMen = noPaneles >= 1 ? Math.round(noPaneles / 2) : 0;
+					let costoTotalEquipos = 0;
 
-					//Se descuentan/restan los paneles contemplados con el micro anterior
-					noPaneles = noPaneles - (invSoportMen * 2);
-	
-					cantidadTotalEquipos = invSoportMay + invSoportMen;
-	
-					numeroDeInversores = { invSoportMay: invSoportMay, invSoportMen:invSoportMen, cantidadTotalEquipos: cantidadTotalEquipos };
-	
-					combinacion = true;
-				}
-			}
-			else{//Calculo de inversores
-				numeroDeInversores = potenciaReal_ / allInversores[i].fPotencia;
-			}
-	
-			//CALCULO DE COSTO_TOTAL DE INVERSORES
-			if(combinacion === false && numeroDeInversores >= 0.5){ //Inversores && Micros [0.5 => para que se pueda obtener al menos 1 inversor])
-				numeroDeInversores = numeroDeInversores > 0.5 && numeroDeInversores < 1 ? Math.round(numeroDeInversores) : Math.floor(numeroDeInversores);
+					//Obtener el nombre de equipo 1 y equipo2
+					let Micros = await getEquiposCombinacionMicros(Inversor.vNombreMaterialFot);
+					let MicroUno = Micros.primerEquipo;
+					let MicroDos = Micros.segundoEquipo;
 
-				if(numeroDeInversores >= 1){
-					_potenciaPicoInversor = Math.round((potenciaReal_ / numeroDeInversores) * 100) / 100;
-					porcentajeSobreDimens = Math.round(((_potenciaPicoInversor / allInversores[i].fPotencia) * 100) * 100)/100;
-					potenciaNominal = numeroDeInversores *  allInversores[i].fPotencia;
-	
-					if(allInversores[i].vMarca === 'APS'){
-						if(allInversores[i].vNombreMaterialFot === 'YC600'){
-							precioTotal = Math.round(((((numeroDeInversores - 1) * 300) + 170.9) + (parseInt(data.noModulos) * 13.775) + 144.9)  * 100) / 100;
-						}
-						else{
-							precioTotal = Math.round(((numeroDeInversores * 300) + (parseInt(data.noModulos) * 13.775) + 144.9) * 100) / 100;
-						}
-					}
-					else if(allInversores[i].vMarca === 'Enphase'){
-						precioTotal = Math.round(((numeroDeInversores * allInversores[i].fPrecio) + 232.3 + (parseInt(data.noModulos) / 4) * 33) * 100) / 100;
-					}
-					else if(allInversores[i].vMarca === 'Solaredge'){
-						precioTotal = Math.round(((numeroDeInversores * allInversores[i].fPrecio) + (parseInt(data.noModulos) * 54.83)) * 100) / 100;
+					//Se agregan la cantidad de equipos requeridos a -MicroUno- && -MicroDos-
+					Object.assign(MicroUno,{
+						numeroDeInversores: Math.round(noPaneles / MicroUno.iPanelSoportados)
+					});
+
+					//Se descuentan los paneles calculados anteriores de la cantidad original de [Paneles]
+					noPaneles = Math.round(noPaneles - (MicroUno.numeroDeInversores * MicroUno.iPanelSoportados));
+
+
+					//Se valida que haya paneles suficientes para poder hacer el calculo con el siguiente Micro
+					if(noPaneles >= 1){
+						let cantidadMicros = 0;
+
+						cantidadMicros = Math.round(noPaneles / MicroDos.iPanelSoportados);
+
+						Object.assign(MicroDos,{
+							numeroDeInversores: cantidadMicros
+						});
 					}
 					else{
-						//Calculo de precioTotal -Normal-
-						precioTotal = Math.round((allInversores[i].fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
+						continue;
 					}
-					
+
+					costoTotalEquipos = (MicroUno.numeroDeInversores * MicroUno.fPrecio) + (MicroDos.numeroDeInversores * MicroDos.fPrecio);
+
+					//
 					inversoresResult = {
-						id: allInversores[i].idInversor,
-						fISC: allInversores[i].fISC,
-						fPotencia: allInversores[i].fPotencia,
-						fPrecio: allInversores[i].fPrecio,
-						iPMAX: allInversores[i].iPMAX,
-						iPMIN: allInversores[i].iPMIN,
-						iVMAX: allInversores[i].iVMAX,
-						iVMIN: allInversores[i].iVMIN,
-						vGarantia: allInversores[i].vGarantia,
-						vMarca: allInversores[i].vMarca,
-						vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
-						vOrigen: allInversores[i].vOrigen,
-						vTipoMoneda: allInversores[i].vTipoMoneda,
-						precioTotal: precioTotal,
-						numeroDeInversores: numeroDeInversores,
-						porcentajeSobreDimens: porcentajeSobreDimens,
-						potenciaNominal: potenciaNominal,
-						potenciaPico: _potenciaPicoInversor,
-						combinacion: combinacion,
-						imgRuta: allInversores[i].imgRuta
+						id: Inversor.idInversor,
+						fPotencia: (MicroUno.fPotencia + MicroDos.fPotencia),
+						vMarca: MicroUno.vMarca,
+						vNombreMaterialFot: Inversor.vNombreMaterialFot,
+						costoTotal: costoTotalEquipos,
+						numeroDeInversores: { MicroUno, MicroDos },
+						vGarantia: MicroUno.vGarantia,
+						vOrigen: Inversor.vOrigen,
+						combinacion: true
 					}
-	
+					//
 					arrayInversor.push(inversoresResult);
 				}
 			}
-			else if(combinacion === true){ //combinacion - QS1+YC600
-				/*#region CostoTotal_combinacion - QS1+YC600*/
-				// costoTotalInvSMay = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS QS1' });
-				// costoTotalInvSMay = Math.round((costoTotalInvSMay[0].fPrecio * invSoportMay)*100)/100;
-				// costoTotalInvSMen = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'Microinversor APS YC600' });
-				// costoTotalInvSMen = Math.round((costoTotalInvSMen[0].fPrecio * invSoportMen)*100)/100;
-				// precioTotal = costoTotalInvSMay + costoTotalInvSMen;
-				
-				let costo = allInversores.filter(function(inversor){ return inversor.vNombreMaterialFot === 'QS1+YC600' });;
-				precioTotal = Math.round((costo[0].fPrecio * numeroDeInversores.cantidadTotalEquipos) * 100) / 100;
-				/*#endregion*/
+			else{//Calculo de inversores /* Centrales */
+				///
+				numeroDeInversores = Math.round(potenciaReal_ / Inversor.fPotencia);
+				potenciaNominal = numeroDeInversores * Inversor.fPotencia;
+
+				///
+				if(potenciaNominal === potenciaReal_){
+					numeroDeInversores = numeroDeInversores;
+				}
+				else if(potenciaNominal > potenciaReal_ && potenciaNominal <= (potenciaReal_ + 1000/*watts*/) ){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
+					if(potenciaNominal > potenciaReal_ && potenciaNominal <= Inversor.iPMAX){
+						numeroDeInversores = numeroDeInversores;
+					}
+					else{
+						numeroDeInversores = 0;
+					}
+				}
+				else if(potenciaNominal > (potenciaReal_ + 1000/*watts*/)){
+					numeroDeInversores = 0;
+				}
+			}
 	
-				inversoresResult = {
-					id: allInversores[i].idInversor,
-					fISC: allInversores[i].fISC,
-					fPotencia: allInversores[i].fPotencia,
-					fPrecio: allInversores[i].fPrecio,
-					iPMAX: allInversores[i].iPMAX,
-					iPMIN: allInversores[i].iPMIN,
-					iVMAX: allInversores[i].iVMAX,
-					iVMIN: allInversores[i].iVMIN,
-					vGarantia: allInversores[i].vGarantia,
-					vMarca: allInversores[i].vMarca,
-					vNombreMaterialFot: allInversores[i].vNombreMaterialFot,
-					vOrigen: allInversores[i].vOrigen,
-					vTipoMoneda: allInversores[i].vTipoMoneda,
-					precioTotal: precioTotal,
-					numeroDeInversores: numeroDeInversores,
-					porcentajeSobreDimens: null,
-					potenciaNominal: null,
-					potenciaPico: null,
-					combinacion: combinacion,
-					imgRuta: allInversores[i].imgRuta
-				};
+			//CALCULO DE COSTO_TOTAL DE INVERSORES
+			if(numeroDeInversores >= 1 && Inversor.vTipoInversor != 'Combinacion'){
+				//Calculo de precioTotal -Normal-
+				precioTotal = Math.round((Inversor.fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
 				
+				inversoresResult = {
+					id: Inversor.idInversor,
+					fPotencia: parseFloat(Inversor.fPotencia),
+					potenciaNominal: potenciaNominal,
+					fPrecio: Inversor.fPrecio,
+					vMarca: Inversor.vMarca,
+					vNombreMaterialFot: Inversor.vNombreMaterialFot,
+					costoTotal: precioTotal,
+					numeroDeInversores: numeroDeInversores,
+					imgRuta: Inversor.imgRuta,
+					vGarantia: Inversor.vGarantia,
+					vOrigen: Inversor.vOrigen,
+					combinacion: false
+				}
+				///
 				arrayInversor.push(inversoresResult);
-				combinacion = false;
 			}
 		}
 
@@ -314,13 +334,42 @@ async function getInversores_cotizacion(data){
 	}
 }
 
+async function getEquiposCombinacionMicros(vNombreMaterialFotovoltaico){ ///Return: [Object]
+	/* [Descripcion]
+		Se extraen los equipos -MicroInversores(2)- de la combinacion para ser consultados.
+		Devuelve un objeto con los microInversores y su data de los equipos.
+	*/
+	let NombresEquipos = { primerEquipo: null, segundoEquipo: null };
+	let indice = 0;
+
+	try{
+		//Devuelve el total de caracteres de toda la cadena
+		let totalDeCaracteres = vNombreMaterialFotovoltaico.length;
+
+		//Equipo1
+		indice = vNombreMaterialFotovoltaico.indexOf("+");
+		NombresEquipos.primerEquipo = vNombreMaterialFotovoltaico.substring(0, indice);
+		NombresEquipos.primerEquipo = await buscarInversorPorNombre({ vNombreMaterialFot: NombresEquipos.primerEquipo });
+		NombresEquipos.primerEquipo = NombresEquipos.primerEquipo.message[0]; //Formating
+			
+		//Equipo2
+		indice = NombresEquipos.primerEquipo.vNombreMaterialFot.length + 1;
+		NombresEquipos.segundoEquipo = vNombreMaterialFotovoltaico.substring(indice,totalDeCaracteres);
+		NombresEquipos.segundoEquipo = await buscarInversorPorNombre({ vNombreMaterialFot: NombresEquipos.segundoEquipo });
+		NombresEquipos.segundoEquipo = NombresEquipos.segundoEquipo.message[0]; //Formating
+
+		return NombresEquipos;
+	}
+	catch(error){
+		throw error;
+	}
+}
+/*#endregion*/
+
 module.exports.obtenerInversores_cotizacion = async function(data){
 	const result = await getInversores_cotizacion(data);
 	return result;
 }
-/*#endregion*/
-
-
 
 module.exports.insertar = async function (datas) {
 	const result = await insertarBD(datas);
@@ -347,3 +396,12 @@ module.exports.consultar = async function () {
 	return result;
 }
 
+module.exports.consultarTipoEquipos = async function(vTipoInversor){
+	const result = await buscarTipoInversor(vTipoInversor);
+	return result;
+}
+
+module.exports.consultarEquipoPorNombre = async function(vNombreMaterialFot){
+	const result = await buscarInversorPorNombre(vNombreMaterialFot);
+	return result;
+}

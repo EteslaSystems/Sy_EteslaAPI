@@ -580,50 +580,58 @@ function getConsumosGeneracionMXN(_pagosTotales){
 //BTI - BajaTension_Individual
 /*#region Power_BTI*/
 async function getPowerBTI(data){
-    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null };
-    let _consumos = data.consumos || null;
-    let tarifa = data.tarifa || null;
-    let origen = data.origen;
-    let potenciaReal = data.potenciaReal; 
-    let promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
+    let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null, Ahorro: null };
     let dac_o_nodac = '';
-
-    let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
-
-    objResult.objImpactoAmbiental = getArbolesPlantados(_generacion.generacionAnual);
-
-    if(_consumos != null){
-        let _consumosMensuales = _consumos._promCons.consumoMensual;
-        let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
-        porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
-        
-        objResult._consumos = _consumos;
-
-        //Se sabe si es DAC o NO
-        if(tarifa != null){
-            dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
-            objResult.old_dac_o_nodac = dac_o_nodac;
- 
-            //Consumo en pesos
-            objResult.objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
-        }
-
-        objResult.nuevosConsumos = objNuevosConsumos;
-
-        if(objNuevosConsumos != null){ //Generacion en pesos MXN
-            dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
-            objResult.new_dac_o_nodac = dac_o_nodac;
-
-            //Generacion en pesos
-            objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
-        }
-
-        objResult.porcentajePotencia = porcentajePotencia;
-    }
-
-    objResult.generacion = _generacion;
     
-    return objResult;
+    try{
+        let _consumos = data.consumos || null;
+        let tarifa = data.tarifa || null;
+        let origen = data.origen;
+        let potenciaReal = data.potenciaReal; 
+        let promedioConsumosMensuales = _consumos._promCons.promedioConsumosMensuales;
+        
+        let _generacion = getGeneration(origen, potenciaReal); //Generacion en KWp
+    
+        objResult.objImpactoAmbiental = getArbolesPlantados(_generacion.generacionAnual);
+
+        if(_consumos != null){
+            let _consumosMensuales = _consumos._promCons.consumoMensual;
+            let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
+            objResult.porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
+            
+            objResult._consumos = _consumos;
+    
+            //Es DAC o NO
+            if(tarifa != null){
+                dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
+                objResult.old_dac_o_nodac = dac_o_nodac;
+     
+                //Consumo en pesos
+                objResult.objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
+            }
+    
+            objResult.nuevosConsumos = objNuevosConsumos;
+    
+            if(objNuevosConsumos != null){ //Generacion en pesos MXN
+                dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
+                objResult.new_dac_o_nodac = dac_o_nodac;
+    
+                //Generacion en pesos
+                objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
+            }
+    
+            ///Ahorro [kw/bim]
+            let ahorro = getAhorro(_generacion, _consumos);
+            objResult.Ahorro = ahorro;
+    
+            objResult.generacion = _generacion;
+        
+            return objResult;
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = promedioConsumosMensuales    
@@ -749,6 +757,10 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             return objResult;
         };
 
+        ///
+        let _tarifas = await tarifas.obtenerTodasLasTarifas();
+        _tarifas = _tarifas.message;
+
         if(dataConsumo.hasOwnProperty('_promCons')){ ///Consumos
             consumoPromedioMens = parseFloat(dataConsumo._promCons.consumoMensual.promedioConsumoMensual);
             consumoAnual = parseFloat(dataConsumo._promCons.consumoAnual);
@@ -757,9 +769,6 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             consumoPromedioMens = parseFloat(dataConsumo.promedioNuevosConsumosMensuales);
             consumoAnual = parseFloat(dataConsumo.nuevoConsumoAnual);
         }
-
-        let _tarifas = await tarifas.obtenerTodasLasTarifas();
-        _tarifas = _tarifas.message;
 
         if(dacOnoDac != 'DAC'){ // <> DAC
             _noVerano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
@@ -801,7 +810,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
 
         //Proyeccion a 10 anios
         let _proyeccion10anios = proyeccion10anios(consumoAnual, pagoAnualIva); //Proyeccion en *KW* a 10 años
-    
+
         let objResp = {
             _pagosMensuales: _pagosMensuales._pagosMensualesAnual,
             _pagosBimestrales: _pagosBimestrales._bimestres,
@@ -818,31 +827,24 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
         return objResp;
     }
     catch(error){
-        console.log(error);
+        throw error;
     }
 }
 
 function getArbolesPlantados(generacionAnualKw){
     /* 
-    1 khw = 0.012 arboles
-    1 khw = 0.458 kg CO2
-    */ 
-    let numeroArboles = 0, co2NogeneradoKg = 0;
-    let objResult = {};
+        ->1 kw = 19 arboles [ANUALES]
+        ->1 kw = 800 kg Co2 [ANUALES]
+    */
 
     try{
-        numeroArboles = Math.round(generacionAnualKw / 0.012);
-        co2NogeneradoKg = Math.round(generacionAnualKw / 0.458);
+        let numeroArboles = Math.round((generacionAnualKw * 19) * 100) / 100;
+        let co2NogeneradoKg = Math.round((generacionAnualKw * 800) * 100) / 100;
         
-        objResult = {
-            numeroArboles: numeroArboles,
-            co2NogeneradoKg: co2NogeneradoKg
-        };
-
-        return objResult;
+        return { numeroArboles, co2NogeneradoKg };
     }
     catch(error){
-        console.log(error);
+        throw error;
     }
 }
 
@@ -879,39 +881,39 @@ function proyeccion10anios(kwhAnuales, costoAnualMXN){
 }
 
 function getGeneration(origen, potenciaReal){
-    //Generacion Mensual
-    let _generation = [];
+    ///Functions
+    let getGeneracionMensual = (potenciaInstalada, irradiacion, eficiencia) => {
+        _generation = []; //Generacion Mensual
 
-    for(let i=0; i<12; i++)
-    {
-        if(origen.toString() === "Veracruz"){
-            gener = Math.round((Math.floor(/*irradiacion->*/4.6 * potenciaReal) * 0.83 * 30.4) * 100) / 100;
-            _generation.push(gener);
+        /*
+        [Formula]
+        ->Generacion = potenciaInstalada/potenciaReal[kw] * irradiacionPromedio[mes] * % Perdidas * no. dias[mes];
+        */
+
+        generacion = Math.round((potenciaInstalada * irradiacion * eficiencia * 30.4) * 100) / 100;
+
+        for(let i=0; i<12; i++){
+            _generation[i] = generacion;
         }
-        else{
-            gener = Math.round((Math.floor(/*irradiacion->*/5.42 * potenciaReal) * 0.73 * 30.4) * 100) / 100;
-            _generation.push(gener);
-        }
-        //kwp
-    }
+        return _generation;
+    };
 
     let promeDGeneracionMensual = (_generacn) => {
         promDGeneracion = 0;
 
-        for(var i=0; i<_generacn.length; i++)
+        for(let i=0; i<_generacn.length; i++)
         {
             promDGeneracion += _generacn[i];
         }
 
-        promDGeneracion = Math.round((promDGeneracion / _generacn.length) * 100) / 100; 
-        return promDGeneracion;
+        return promDGeneracion = Math.round((promDGeneracion / _generacn.length) * 100) / 100;
     }
 
     let _generacionBimestral = (_generacionMes) => {
         generacionBimestre = 0;
         _generacionBimestrl = [];
 
-        for(var i=0; i<_generacionMes.length; i++)
+        for(let i=0; i<_generacionMes.length; i++)
         {
             generacionBimestre += _generacionMes[i];
 
@@ -926,7 +928,7 @@ function getGeneration(origen, potenciaReal){
     let promeDGeneracionBimestral = (_genBimestral) => {
         promedioGB = 0;
 
-        for(var i=0; i<_genBimestral.length; i++)
+        for(let i=0; i<_genBimestral.length; i++)
         {
             promedioGB += _genBimestral[i];
         }
@@ -937,7 +939,7 @@ function getGeneration(origen, potenciaReal){
 
     let generacionAnual = (_generacn) => {
         generationAnual = 0;
-        for(var i=0; i<_generacn.length; i++)
+        for(let i=0; i<_generacn.length; i++)
         {
             generationAnual += _generacn[i];
         }
@@ -946,17 +948,24 @@ function getGeneration(origen, potenciaReal){
         return generationAnual;
     };
 
-    promeDGeneracionMensual = promeDGeneracionMensual(_generation);
-    _generacionBimestral = _generacionBimestral(_generation);
-    promeDGeneracionBimestral = promeDGeneracionBimestral(_generacionBimestral);
-    generacionAnual = generacionAnual(_generation);
+    let irradiacion = origen != "Veracruz" ? 5.42 : 4.6;
+    let eficiencia = origen != "Veracruz" ? 0.73 : 0.83;
 
-    objrespuesta = {
-        _generacion: _generation, //kwp - Mensual
+    ///Coleccion de generacion *POR MES* (Mensual)
+    let _generacion = getGeneracionMensual(potenciaReal, irradiacion, eficiencia);
+
+    ///
+    promeDGeneracionMensual = promeDGeneracionMensual(_generacion);
+    _generacionBimestral = _generacionBimestral(_generacion);
+    promeDGeneracionBimestral = promeDGeneracionBimestral(_generacionBimestral);
+    generacionAnual = generacionAnual(_generacion);
+
+    let objrespuesta = { /* Todo esta en [Kw] */
+        _generacion: _generacion,
         _generacionBimestral: _generacionBimestral,
         promeDGeneracionBimestral: promeDGeneracionBimestral,
-        promedioDeGeneracion: promeDGeneracionMensual, //kwp - promedioGeneracionMensual
-        generacionAnual: generacionAnual //kwp
+        promedioDeGeneracion: promeDGeneracionMensual,
+        generacionAnual: generacionAnual
     };
 
     return objrespuesta;
@@ -964,15 +973,12 @@ function getGeneration(origen, potenciaReal){
 
 function getNewConsumption(__consumos, __generacion){
     try{
-        __generacion = __generacion._generacion; //kwp
-        __consumos = __consumos._consumosMensuales; //kwh
-
         let _consumosNuevosMensuales = (consumos) => {
             consumosMensuales = [];
             for(let x=0; x<consumos.length; x++)
             {
                 ///Consumos nuevos Mensuales - Kw
-                consumosMensuales[x] = Math.floor(__consumos[x] - __generacion[x]);
+                consumosMensuales[x] = Math.round(__consumos[x] - __generacion[x]);
             }
             return consumosMensuales;
         };
@@ -1037,13 +1043,18 @@ function getNewConsumption(__consumos, __generacion){
             return nwConsumosMnsuales; //Retorna - KW
         };
 
+        ///
+        __generacion = __generacion._generacion; //kwp
+        __consumos = __consumos._consumosMensuales; //kwh
+
+        ///
         _consumosNuevosMensuales = _consumosNuevosMensuales(__consumos);
         _consumosNuevosBimestrales = _consumosNuevosBimestrales(_consumosNuevosMensuales);
         promedioNuevosConsumosMensuales = promedioNuevosConsumosMensuales(_consumosNuevosMensuales);
         nuevoConsumoAnual = nuevoConsumoAnual(_consumosNuevosMensuales);
         promedioConsumoBimestral = promedioConsumoBimestral(_consumosNuevosMensuales);
 
-        objResult = {
+        let objResult = {
             ////Todo es retornado en Kw
             _consumosNuevosMensuales: _consumosNuevosMensuales,
             _consumosNuevosBimestrales: _consumosNuevosBimestrales,
@@ -1059,30 +1070,47 @@ function getNewConsumption(__consumos, __generacion){
     }
 }
 
-function dac(tarifa, consumoPromedio){
+function getAhorro(objNueConsumos, objAntConsumos){ //Return [Object] : *Todos los precios que se calculan y sus resultados. Son SIN IVA*
+    let Ahorro = { ahorroMensual: null, ahorroBimestral: null, ahorroAnual: null };
+
+    let promedConsumMes = objAntConsumos._promCons.promedioConsumosMensuales;
+    let promedConsumBim = objAntConsumos._promCons.promConsumosBimestrales;
+    let consumoAnual = objAntConsumos._promCons.consumoAnual;
+    let promedNuevoConsumMes = objNueConsumos.promedioDeGeneracion;
+    let promedNuevoConsumBim = objNueConsumos.promeDGeneracionBimestral;
+    let nuevoConsumoAnual = objNueConsumos.generacionAnual;
+
+    Ahorro.ahorroMensual = Math.round((promedConsumMes - promedNuevoConsumMes) * 100) / 100;
+    Ahorro.ahorroBimestral = Math.round((promedConsumBim - promedNuevoConsumBim) * 100) / 100;
+    Ahorro.ahorroAnual = Math.round((consumoAnual - nuevoConsumoAnual) * 100) / 100;
+
+    return Ahorro;
+}
+
+function dac(tarifa, consumoPromedioMes){
     //consumoPromedio = PROMEDIO DE CONSUMOS *MENSUALES*
     switch(tarifa)
     {
         case '1':
-            tarifa = consumoPromedio >= 250 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 250 ? 'DAC' : tarifa;
         break;
         case '1a':
-            tarifa = consumoPromedio >= 300 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 300 ? 'DAC' : tarifa;
         break;
         case '1b':
-            tarifa = consumoPromedio >= 400 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 400 ? 'DAC' : tarifa;
         break;
         case '1c':
-            tarifa = consumoPromedio >= 850 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 850 ? 'DAC' : tarifa;
         break;
         case '1d':
-            tarifa = consumoPromedio >= 1000 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 1000 ? 'DAC' : tarifa;
         break;
         case '1e':
-            tarifa = consumoPromedio >= 2000 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 2000 ? 'DAC' : tarifa;
         break;
         case '1f':
-            tarifa = consumoPromedio >= 2500 ? 'DAC' : tarifa;
+            tarifa = consumoPromedioMes >= 2500 ? 'DAC' : tarifa;
         break;
         default:
             tarifa = tarifa;

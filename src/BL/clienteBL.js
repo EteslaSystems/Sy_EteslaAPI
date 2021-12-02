@@ -42,7 +42,7 @@ module.exports.insertar = async function (request, response) {
 			result = await cliente.insertar(datas);
 	
 			if(result.status !== true) {
-				log.errores('INSERTAR / CLIENTES.', result.message.sqlMessage);
+				await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / CLIENTES.' + result.message.sqlMessage });
 	
 				throw new Error('Error al insertar los datos: '+result.message.sqlMessage.toString());
 			}
@@ -88,12 +88,12 @@ module.exports.eliminar = async function (request, response) {
 	result = await cliente.eliminar(datas);
 
 	if(result.status !== true) {
-		log.errores('ELIMINAR / CLIENTE.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / CLIENTE. ' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('ELIMINAR / CLIENTE.', '1 fila eliminada.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / CLIENTE. ' + '1 fila eliminada.'  });
 
 	return result.message;
 }
@@ -125,12 +125,12 @@ module.exports.editar = async function (request, response) {
 		result = await cliente.editar(datas);
 
 		if(result.status !== true) {
-			log.errores('EDITAR / CLIENTES.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / CLIENTES.' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		log.eventos('EDITAR / CLIENTES.', '1 fila editada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / CLIENTES.' + '1 fila editada.' });
 
 		return result.message;
 	} else {
@@ -142,12 +142,12 @@ module.exports.consultar = async function (response) {
 	const result = await cliente.consultar();
 
 	if(result.status !== true) {
-		log.errores('CONSULTA / CLIENTES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / CLIENTES.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('CONSULTA / CLIENTES.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / CLIENTES.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -160,12 +160,12 @@ module.exports.consultarId = async function (request, response) {
 	result = await cliente.consultarId(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / CLIENTES POR ID.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / CLIENTES POR ID.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('BUSQUEDA / CLIENTES POR ID.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / CLIENTES POR ID.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -178,12 +178,12 @@ module.exports.consultarUser = async function (request, response) {
 	result = await cliente.consultarUser(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / CLIENTES POR USUARIO.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / CLIENTES POR USUARIO.' + result.message });
 
 		throw new Error('Error al consultar los datos: '+result.message.sqlMessage);
 	}
 
-	log.eventos('BUSQUEDA / CLIENTES POR USUARIO.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / CLIENTES POR USUARIO.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }

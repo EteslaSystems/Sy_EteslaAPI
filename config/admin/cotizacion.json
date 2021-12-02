@@ -1,9 +1,24 @@
 {
     "busqueda_inteligente": {
-        "combinacionMediana_marcaEspecificaPanel": "Canadian"
+        "combinacionEconomica": {
+            "panel": "Jinko,Suntech,",
+            "inversor": "Goodwe,"
+        },
+        "combinacionMediana": {
+            "panel": "Canadian,",
+            "inversor": "ABB Fimer,SMA,APSystem,Fronius Solar,"
+        },
+        "combinacionPremium": {
+            "panel": "Jinko,",
+            "inversor": "Enphase,"
+        }
     },
     "propuesta_cotizacion": {
-        "tiempoExpiracion": 30
+        "expiracion": {
+            "numero": 30,
+            "unidadMedida": "dias"
+        },
+        "inflacion": 3
     },
     "costos": {
         "porcentaje_fletes": 0.07,

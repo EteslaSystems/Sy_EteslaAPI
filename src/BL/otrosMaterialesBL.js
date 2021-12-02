@@ -25,12 +25,12 @@ module.exports.insertarCategoriaMaterialesBL = async function (request, response
 		result = await otrosMateriales.insertarCategoriaMateriales(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / CATEGORIA MATERIALES.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / CATEGORIA MATERIALES. ' + result.message });
 
 			throw new Error('Error al insertar los datos.');
 		}
 
-		log.eventos('INSERTAR / CATEGORIA MATERIALES.', '1 fila insertada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / CATEGORIA MATERIALES.' + '1 fila insertada.' });
 
 		return result.message;
 	} else {
@@ -50,12 +50,12 @@ module.exports.eliminarCategoriaMaterialesBL = async function (request, response
 	result = await otrosMateriales.eliminarCategoriaMateriales(datas);
 
 	if(result.status !== true) {
-		log.errores('ELIMINAR / CATEGORIA MATERIALES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / CATEGORIA MATERIALES. ' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('ELIMINAR / CATEGORIA MATERIALES.', '1 fila eliminada.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / CATEGORIA MATERIALES.' + '1 fila eliminada.' });
 
 	return result.message;
 }
@@ -76,12 +76,12 @@ module.exports.editarCategoriaMaterialesBL = async function (request, response) 
 		result = await otrosMateriales.editarCategoriaMateriales(datas);
 
 		if(result.status !== true) {
-			log.errores('EDITAR / CATEGORIA MATERIALES.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / CATEGORIA MATERIALES.' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		log.eventos('EDITAR / CATEGORIA MATERIALES.', '1 fila editada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / CATEGORIA MATERIALES.' + '1 fila editada.' });
 
 		return result.message;
 	} else {
@@ -93,12 +93,12 @@ module.exports.consultaCategoriaMaterialesBL = async function (response) {
 	const result = await otrosMateriales.consultaCategoriaMateriales();
 
 	if(result.status !== true) {
-		log.errores('CONSULTA / CATEGORIA MATERIALES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / CATEGORIA MATERIALES.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('CONSULTA / CATEGORIA MATERIALES.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / CATEGORIA MATERIALES. ' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -111,12 +111,12 @@ module.exports.buscarCategoriaMaterialesBL = async function (request, response) 
 	result = await otrosMateriales.buscarCategoriaMateriales(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / CATEGORIA MATERIALES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / CATEGORIA MATERIALES.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('BUSQUEDA / CATEGORIA MATERIALES.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / CATEGORIA MATERIALES.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -141,12 +141,12 @@ module.exports.insertarOtroMaterialBL = async function (request, response) {
 		result = await otrosMateriales.insertarOtroMaterial(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / OTROS MATERIALES.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / OTROS MATERIALES.' + result.message });
 
 			throw new Error('Error al insertar los datos.');
 		}
 
-		log.eventos('INSERTAR / OTROS MATERIALES.', '1 fila insertada.');
+		await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / OTROS MATERIALES. ' + '1 fila insertada.' });
 
 		return result.message;
 	} else {
@@ -166,12 +166,12 @@ module.exports.eliminarOtroMaterialBL = async function (request, response) {
 	result = await otrosMateriales.eliminarOtroMaterial(datas);
 
 	if(result.status !== true) {
-		log.errores('ELIMINAR / OTROS MATERIALES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / OTROS MATERIALES.' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('ELIMINAR / OTROS MATERIALES.', '1 fila eliminada.');
+	log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / OTROS MATERIALES. ' + '1 fila eliminada.' });
 
 	return result.message;
 }
@@ -195,12 +195,12 @@ module.exports.editarOtroMaterialBL = async function (request, response) {
 		result = await otrosMateriales.editarOtroMaterial(datas);
 
 		if(result.status !== true) {
-			log.errores('EDITAR / OTROS MATERIALES.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / OTROS MATERIALES.' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		log.eventos('EDITAR / OTROS MATERIALES.', '1 fila editada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / OTROS MATERIALES. ' + '1 fila editada.' });
 
 		return result.message;
 	} else {
@@ -212,12 +212,12 @@ module.exports.consultaOtroMaterialBL = async function (response) {
 	const result = await otrosMateriales.consultaOtroMaterial();
 
 	if(result.status !== true) {
-		log.errores('CONSULTA / OTROS MATERIALES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / OTROS MATERIALES. ' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('CONSULTA / OTROS MATERIALES.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / OTROS MATERIALES.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -230,12 +230,12 @@ module.exports.buscarOtroMaterialBL = async function (request, response) {
 	result = await otrosMateriales.buscarOtroMaterial(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / OTROS MATERIALES.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / OTROS MATERIALES.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('BUSQUEDA / OTROS MATERIALES.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / OTROS MATERIALES.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -254,12 +254,12 @@ module.exports.insertarMaterialesPropuestaBL = async function (request, response
 		result = await otrosMateriales.insertarMaterialesPropuesta(datas);
 
 		if(result.status !== true) {
-			log.errores('INSERTAR / OTROS MATERIALES PROPUESTA.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / OTROS MATERIALES PROPUESTA. ' + result.message });
 
 			throw new Error('Error al insertar los datos.');
 		}
 
-		log.eventos('INSERTAR / OTROS MATERIALES PROPUESTA.', '1 fila insertada.');
+		await log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / OTROS MATERIALES PROPUESTA.' + '1 fila insertada.' });
 
 		return result.message;
 	} else {
@@ -275,12 +275,12 @@ module.exports.eliminarMaterialesPropuestaBL = async function (request, response
 	result = await otrosMateriales.eliminarMaterialesPropuesta(datas);
 
 	if(result.status !== true) {
-		log.errores('ELIMINAR / OTROS MATERIALES PROPUESTA.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / OTROS MATERIALES PROPUESTA. ' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	log.eventos('ELIMINAR / OTROS MATERIALES PROPUESTA.', '1 fila eliminada.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / OTROS MATERIALES PROPUESTA. ' + '1 fila eliminada.' });
 
 	return result.message;
 }
@@ -301,12 +301,12 @@ module.exports.editarMaterialesPropuestaBL = async function (request, response) 
 		result = await otrosMateriales.editarMaterialesPropuesta(datas);
 
 		if(result.status !== true) {
-			log.errores('EDITAR / OTROS MATERIALES PROPUESTA.', result.message);
+			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / OTROS MATERIALES PROPUESTA. ' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		log.eventos('EDITAR / OTROS MATERIALES PROPUESTA.', '1 fila editada.');
+		await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / OTROS MATERIALES PROPUESTA. ' + '1 fila editada.' });
 
 		return result.message;
 	} else {
@@ -318,12 +318,12 @@ module.exports.consultaMaterialesPropuestaBL = async function (response) {
 	const result = await otrosMateriales.consultaMaterialesPropuesta();
 
 	if(result.status !== true) {
-		log.errores('CONSULTA / OTROS MATERIALES PROPUESTA.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / OTROS MATERIALES PROPUESTA. ' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('CONSULTA / OTROS MATERIALES PROPUESTA.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / OTROS MATERIALES PROPUESTA.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -336,12 +336,12 @@ module.exports.buscarMaterialesPropuestaBL = async function (request, response) 
 	result = await otrosMateriales.buscarMaterialesPropuesta(datas);
 
 	if(result.status !== true) {
-		log.errores('BUSQUEDA / OTROS MATERIALES PROPUESTA.', result.message);
+		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / OTROS MATERIALES PROPUESTA.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	log.eventos('BUSQUEDA / OTROS MATERIALES PROPUESTA.', result.message.length + ' filas consultadas.');
+	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / OTROS MATERIALES PROPUESTA. ' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }

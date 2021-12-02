@@ -152,26 +152,20 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 
 	for(let i = 0; i < arrayAllOfPanels.length; i++)
 	{
-		idPanel = arrayAllOfPanels[i].idPanel;
-		_nombre = arrayAllOfPanels[i].vNombreMaterialFot;
-		_marca = arrayAllOfPanels[i].vMarca;
-		_precio = parseFloat(arrayAllOfPanels[i].fPrecio);
-		origen = arrayAllOfPanels[i].vOrigen;
-		garantia = arrayAllOfPanels[i].vGarantia;
-		potenciaDelPanel = parseFloat(arrayAllOfPanels[i].fPotencia);
-		NoOfModuls = Math.ceil(energiaRequerida / potenciaDelPanel);
-		_potenciaReal = Math.round(((potenciaDelPanel * NoOfModuls) / 1000) * 100) / 100; //KWp - wtts ===> kwp
+		let noModulos = Math.round(energiaRequerida / arrayAllOfPanels[i].fPotencia);
+		let potenciaReal = Math.round((arrayAllOfPanels[i].fPotencia * noModulos) * 100) / 100; 
+		
 
 		objNoDeModulosPorPotenciaDelPanel = {
-			idPanel: idPanel,
-			nombre: _nombre,
-			marca: _marca,
-			potencia: potenciaDelPanel,
-			origen: origen,
-			garantia: garantia,
-			potenciaReal: _potenciaReal,
-			noModulos: NoOfModuls,
-			precioPorPanel: _precio,
+			idPanel: arrayAllOfPanels[i].idPanel,
+			nombre: arrayAllOfPanels[i].vNombreMaterialFot,
+			vMarca: arrayAllOfPanels[i].vMarca,
+			fPotencia: parseFloat(arrayAllOfPanels[i].fPotencia),
+			origen: arrayAllOfPanels[i].vOrigen,
+			garantia: arrayAllOfPanels[i].vGarantia,
+			potenciaReal: Math.round((potenciaReal / 1000) * 100) / 100, // wtts ===> kwp
+			noModulos: noModulos,
+			fPrecio: parseFloat(arrayAllOfPanels[i].fPrecio),
 			costoTotal: 0,
 			imgRuta: arrayAllOfPanels[i].imgRuta
 		};

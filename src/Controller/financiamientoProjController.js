@@ -4,9 +4,9 @@
 - @date: 				27/10/2020
 */
 async function mainFinanciamiento(data){
-    var costoTotalProyecto = data.costoTotal; //$$MXN
+    let costoTotalProyecto = data.costoTotal; //$$MXN
 
-    var objGetEnganche = (costTotalProyecto) => {
+    let objGetEnganche = (costTotalProyecto) => {
         quincePorcent = Math.ceil(costoTotalProyecto * 0.15);
         treintacincoPorcent = Math.ceil(costoTotalProyecto * 0.35);
         cincuentaPorcent = Math.ceil(costoTotalProyecto * 0.50);
@@ -20,7 +20,7 @@ async function mainFinanciamiento(data){
         return objResult;
     };
 
-    var objGetMensualidades_TarjetaCredito = (costTotalProyecto) => {
+    let objGetMensualidades_TarjetaCredito = (costTotalProyecto) => {
         tresMeses = Math.ceil((costTotalProyecto * 1.03) / 3);
         seisMeses = Math.ceil((costTotalProyecto * 1.06) / 6); 
         nueveMeses = Math.ceil((costTotalProyecto * 1.09) / 9); 
@@ -38,18 +38,17 @@ async function mainFinanciamiento(data){
         return objResult;
     };
 
-    var _getPagosMensualesPorPlazo = (cstTotalProyecto, obJGetEnganche) => {
+    let _getPagosMensualesPorPlazo = (cstTotalProyecto, obJGetEnganche) => {
         _porcentaje15 = [0.096,0.053,0.039,0.032,0.028,0.025,0.023];
         _porcentaje35 = [0.098,0.054,0.039,0.032,0.028,0.025,0.023];
         _porcentaje50 = [0.095,0.053,0.038,0.031,0.027,0.025,0.023];
         enganche15 = obJGetEnganche.quincePorcent;
         enganche35 = obJGetEnganche.treintacincoPorcent;
         enganche50 = obJGetEnganche.cincuentaPorcent;
-        var objMensualidades = { 12:'', 24:'', 36:'', 48:'', 60:'', 72:'', 84:'' };
-        var _result = [];
-        var meses = 0;
+        objMensualidades = { 12:'', 24:'', 36:'', 48:'', 60:'', 72:'', 84:'' };
+        meses = 0;
 
-        for(var i=0; i<=6; i++)
+        for(let i=0; i<=6; i++)
         {   
             meses += 12;
             plazo15porcent = Math.ceil(_porcentaje15[i] / 1 * (cstTotalProyecto - enganche15));
@@ -61,11 +60,9 @@ async function mainFinanciamiento(data){
                 thirtyFive: plazo35porcent,
                 fiftyPorcent: plazo50porcent
             };
-
-            _result.push(objMensualidades);
         }
 
-        return _result;
+        return objMensualidades;
     };
 
     objEnganche = objGetEnganche(costoTotalProyecto);

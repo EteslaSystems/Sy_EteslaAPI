@@ -17,18 +17,21 @@ class mailConfig {
 		});
 	}
 
-	enviarCorreo(oEmail) {
+	async enviarCorreo(oEmail) {
 		try {
+			let Log = {};
+			
 			this.createTransport.sendMail(oEmail, function(error, info) {
 				if (error) {
-					log.errores('ENVIAR CORREO.', "Error al enviar el correo a: " + oEmail.to);
+					Log = { tipo: 'Error', contenido: "Error al enviar el correo a: " + oEmail.to };
 				} else {
-					log.eventos('ENVIAR CORREO.', "Correo enviado correctamente a: " + oEmail.to);
+					Log = { tipo: 'Evento', contenido: "Correo enviado correctamente a: " + oEmail.to };
 				}
-				//this.createTransport.close();
 			})
-		} catch(x) {
-			log.errores('ENVIAR CORREO.', "Error al enviar el correo - " + x.message);
+
+			await log.generateLog(Log);
+		} catch(x){
+			await log.generateLog();
 		}
 	}
 }
