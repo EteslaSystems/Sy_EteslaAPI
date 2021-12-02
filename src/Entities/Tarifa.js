@@ -1,8 +1,3 @@
-/*
-- @description: 		Archivo correspondiente a las funciones de la API con la BD.
-- @author: 				LH420
-- @date: 				
-*/
 const mysqlConnection = require('../../config/database');
 
 function consultaBD () {
@@ -51,12 +46,4 @@ function buscarBD (datas) {
     });
 }
 
-module.exports.obtenerTodasLasTarifas = async function(){
-    const result = await consultaBD();
-    return result;
-}
-
-module.exports.buscarTarifaFiltrada = async function(data){
-    const result = await buscarBD(data);
-    return result;
-}
+modules.export = { consultaBD, buscarBD };

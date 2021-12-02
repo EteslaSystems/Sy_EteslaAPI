@@ -4,7 +4,7 @@
 - @date: 				19/02/2020
 */
 
-const panel = require('../Controller/panelesController');
+const panelController = require('../Controller/paneles.controller');
 const log = require('../../config/logConfig');
 const validations = require('../Middleware/panelesMiddleware');
 
@@ -30,7 +30,7 @@ module.exports.insertar = async function (request, response) {
 			created_at: fecha
 		};
 
-		result = await panel.insertar(datas);
+		result = await panelController.insertar(datas);
 
 		if(result.status !== true) {
 			log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / PANELES. ' + result.message });
@@ -55,7 +55,7 @@ module.exports.eliminar = async function (request, response) {
 		deleted_at: fecha
 	};
 
-	result = await panel.eliminar(datas);
+	result = await panelController.eliminar(datas);
 
 	if(result.status !== true) {
 		log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / PANELES.' + result.message });
@@ -89,7 +89,7 @@ module.exports.editar = async function (request, response) {
 			updated_at: fecha
 		};
 
-		result = await panel.editar(datas);
+		result = await panelController.editar(datas);
 
 		if(result.status !== true) {
 			log.generateLog({ tipo: 'Error', contenido: 'EDITAR / PANELES. ' + result.message });
@@ -106,7 +106,7 @@ module.exports.editar = async function (request, response) {
 }
 
 module.exports.consultar = async function (response) {
-	const result = await panel.consultar();
+	const result = await panelController.consultar();
 
 	if(result.status !== true) {
 		log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / PANELES.' + result.message });
@@ -124,7 +124,7 @@ module.exports.buscar = async function (request, response) {
 		idPanel: request.id
 	};
 
-	result = await panel.buscar(datas);
+	result = await panelController.buscar(datas);
 
 	if(result.status !== true) {
 		log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / PANELES. ' + result.message });

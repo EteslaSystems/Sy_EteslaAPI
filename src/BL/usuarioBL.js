@@ -4,7 +4,7 @@
 - @date: 				19/02/2020
 */
 
-const usuario = require('../Controller/usuarioController');
+const usuarioController = require('../Controller/usuarioController.controller');
 const log = require('../../config/logConfig');
 const validations = require('../Middleware/usuarioMiddleware');
 const mailer = require('../../config/mailConfig');
@@ -33,7 +33,7 @@ module.exports.insertar = async function (request, response) {
 			created_at: fecha
 		};
 
-		result = await usuario.insertar(datas);
+		result = await usuarioController.insertar(datas);
 
 		if(result.status !== true) {
 			await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / USUARIOS.' + result.message });
@@ -274,7 +274,7 @@ module.exports.eliminar = async function (request, response) {
 		deleted_at: fecha
 	};
 
-	result = await usuario.eliminar(datas);
+	result = await usuarioController.eliminar(datas);
 
 	if(result.status !== true) {
 		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / USUARIO.' + result.message });
@@ -304,7 +304,7 @@ module.exports.editar = async function (request, response) {
 			updated_at: fecha
 	     };
 
-		result = await usuario.editar(datas);
+		result = await usuarioController.editar(datas);
 
 		if(result.status !== true) {
 			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / USUARIO.' + result.message });
@@ -346,7 +346,7 @@ module.exports.editar = async function (request, response) {
 }
 
 module.exports.consultar = async function (response) {
-	const result = await usuario.consultar();
+	const result = await usuarioController.consultar();
 
 	if(result.status !== true) {
 		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / USUARIOS.' + result.message });
@@ -364,7 +364,7 @@ module.exports.consultarId = async function (request, response) {
 		idPersona: request.id
 	};
 
-	result = await usuario.consultarId(datas);
+	result = await usuarioController.consultarId(datas);
 
 	if(result.status !== true) {
 		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message });
@@ -385,23 +385,23 @@ module.exports.validar = async function (request, response) {
 		vEmail: request.email
 	};
 
-	result = await usuario.validar(datas);
+	result = await usuarioController.validar(datas);
 
 	if(result.status !== true) {
 		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS.' + result.message });
 
-		throw new Error('Error al validar los datos del usuario.');
+		throw new Error('Error al validar los datos del usuarioController.');
 	}
 
 	if(result.message.propertyIsEnumerable(0) !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS. ' + 'Las credenciales proporcionadas por el usuario no coinciden con los registros de la base de datos.' });
+		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS. ' + 'Las credenciales proporcionadas por el usuarioController no coinciden con los registros de la base de datos.' });
 
 		throw new Error('Las credenciales proporcionadas son incorrectas.');
 	}
 
 	if (result.message[0].vTelefono != null || result.message[0].vTelefono == 666) {
 		const nombrecompleto = result.message[0].vNombrePersona +' '+ result.message[0].vPrimerApellido +' '+ result.message[0].vSegundoApellido;
-		await log.generateLog({ tipo: 'Evento', contenido: 'VALIDAR / USUARIOS. ' + 'El usuario ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.' });
+		await log.generateLog({ tipo: 'Evento', contenido: 'VALIDAR / USUARIOS. ' + 'El usuarioController ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.' });
 
 		throw new Error('Debe verificar su correo electrónico para iniciar sesión.');
 	}
@@ -436,7 +436,7 @@ module.exports.validar = async function (request, response) {
 
 module.exports.verificarEmail = async function (request, response) {
 	const datas = { vEmail: request.email.toLowerCase() };
-	result = await usuario.verificarEmail(datas);
+	result = await usuarioController.verificarEmail(datas);
 
 	if(result.status !== true) {
 		await log.generateLog({ tipo: 'Error', contenido: 'VERIFICAR / EMAIL.' + result.message });
@@ -450,7 +450,7 @@ module.exports.verificarEmail = async function (request, response) {
 
 module.exports.recuperarPassword = async function (request, response) {
 	const datas = { vEmail: request.email.toLowerCase() };
-	result = await usuario.recuperarPassword(datas);
+	result = await usuarioController.recuperarPassword(datas);
 
 	if(result.status !== true) {
 		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + result.message });
@@ -459,9 +459,9 @@ module.exports.recuperarPassword = async function (request, response) {
 	}
 
 	if(result.message.propertyIsEnumerable(0) !== true || result.message.length == 0) {
-		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + 'No existe ningún usuario registrado con el correo: ' + datas.vEmail + ' en la base de datos.' });
+		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + 'No existe ningún usuarioController registrado con el correo: ' + datas.vEmail + ' en la base de datos.' });
 
-		throw new Error('No existe ningún usuario registrado con ese correo, verifiquelo e intente de nuevo.');
+		throw new Error('No existe ningún usuarioController registrado con ese correo, verifiquelo e intente de nuevo.');
 	}
 
 	await log.generateLog({ tipo: 'Evento', contenido: 'RECUPERAR CONTRASEÑA.' + 'Se recuperó con éxito la contraseña.' });

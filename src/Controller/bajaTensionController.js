@@ -3,10 +3,10 @@
 - @author: 				LH420
 - @date: 				24/07/2020
 */
-const irradiacionBT = require('../Controller/irradiacionController'); //BT = BajaTension
-const inversor = require('../Controller/inversorController');
-const panel = require('../Controller/panelesController');
-const viaticosBT = require('../Controller/opcionesViaticsController');
+const irradiacionBT = require('./irradiacion.controller'); //BT = BajaTension
+const inversor = require('./inversor.controller');
+const panel = require('./paneles.controller');
+const viaticosBT = require('./viaticos.controller');
 const power = require('../Controller/powerController');
 
 var limite = 0;

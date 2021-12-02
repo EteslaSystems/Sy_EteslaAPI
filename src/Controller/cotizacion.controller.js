@@ -3,11 +3,11 @@
 - @author: 				LH420
 - @date: 				20/03/2020
 */
-const bajaTension = require('../Controller/bajaTensionController');
-const mediaTension = require('../Controller/mediaTensionController');
-const configFile = require('../Controller/configFileController');
+const bajaTension = require('./bajaTensionController');
+const mediaTension = require('./mediaTensionController');
+const configFile = require('./configFileController');
 const cliente = require('../Controller/clienteController');
-const vendedor = require('../Controller/usuarioController');
+const vendedor = require('./usuario.controller');
 
 /*#region Busqueda_inteligente*/
 async function mainBusquedaInteligente(data){

@@ -5,13 +5,13 @@
 */
 const request = require('request');
 const mysqlConnection = require('../../config/database');
-const configFile = require('../Controller/configFileController');
-const dolar = require('../Controller/dolar_tipoCambio');
-const financiamiento = require('../Controller/financiamientoProjController');
-const power = require('../Controller/powerController');
-const roi = require('../Controller/ROIController');
+const configFile = require('./configFileController');
+const dolar = require('./dollarController');
+const financiamiento = require('./financiamientoProjController');
+const power = require('./powerController');
+const roi = require('./ROIController');
 const cliente = require('../Controller/clienteController');
-const vendedor = require('../Controller/usuarioController');
+const vendedor = require('./usuario.controller');
 const estructura = require('../Controller/estructuraController');
 
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario

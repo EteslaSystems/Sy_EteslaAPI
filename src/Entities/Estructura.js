@@ -94,22 +94,9 @@ function buscarBD(datas){
   	});
 }
 
-module.exports.insertar = async function(data){
-	const result = await insertaBD(data);
-	return result;
-}
-
-module.exports.eliminar = async function(data){
-	const result = await eliminarBD(data);
-	return result;
-}
-
-module.exports.leer = async function(){
-	const result = await consultaBD();
-	return result;
-}
-
-module.exports.buscar = async function(data){
-	const result = await buscarBD(data);
-	return result;
-}
+module.exports = {
+    insertaBD,
+    eliminarBD,
+    consultaBD,
+    buscarBD
+};

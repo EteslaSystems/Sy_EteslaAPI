@@ -3,10 +3,10 @@
 - @author: 				LH420
 - @date: 				20/03/2020
 */
-const irradiacion = require('../Controller/irradiacionController');
-const paneles = require('../Controller/panelesController');
-const inversores = require('../Controller/inversorController');
-const viaticos = require('../Controller/opcionesViaticsController');
+const irradiacion = require('./irradiacion.controller');
+const paneles = require('./paneles.controller');
+const inversores = require('./inversor.controller');
+const viaticos = require('./viaticos.controller');
 const power = require('../Controller/powerController');
 
 /*#region Cotizacion*/

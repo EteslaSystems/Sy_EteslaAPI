@@ -1,12 +1,6 @@
-/*
-- @description: 		Archivo correspondiente a las funciones de la API con la BD.
-- @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcón
-- @date: 				10/03/2020
-*/
-
 const mysqlConnection = require('../../config/database');
 
-function insertarBD(datas) {
+function insertarBD(datas){
     const { vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, cCodigoPostal, vCalle, vMunicipio, vCiudad, vEstado, id_Usuario } = datas;
 
   	return new Promise((resolve, reject) => {
@@ -30,7 +24,7 @@ function insertarBD(datas) {
   	});
 }
 
-function eliminarBD(datas) {
+function eliminarBD(datas){
 	const { idPersona } = datas;
 
   	return new Promise((resolve, reject) => {
@@ -54,7 +48,7 @@ function eliminarBD(datas) {
   	});
 }
 
-function editarBD (datas) {
+function editarBD(datas){
 	const { fConsumo, idPersona, vNombrePersona, vPrimerApellido, vSegundoApellido, vTelefono, vCelular, vEmail, vCalle, vMunicipio, vEstado } = datas;
 
   	return new Promise((resolve, reject) => {
@@ -78,7 +72,7 @@ function editarBD (datas) {
   	});
 }
 
-function consultaBD () {
+function consultaBD(){
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
@@ -172,44 +166,12 @@ function consultaPorNombre(datas){
 	});
 }
 
-module.exports.insertar = async function (datas, response) {
-	const result = await insertarBD(datas);
-
-	return result;
-}
-
-module.exports.eliminar = async function (datas, response) {
-	const result = await eliminarBD(datas);
-
-	return result;
-}
-
-module.exports.editar = async function (datas, response) {
-	const result = await editarBD(datas);
-
-	return result;
-}
-
-module.exports.consultar = async function (response) {
-	const result = await consultaBD();
-
-	return result;
-}
-
-module.exports.consultarId = async function (datas, response) {
-	const result = await consultaIdBD(datas);
-
-	return result;
-}
-
-module.exports.consultarPorNombre = async function (datas, response) {
-	const result = await consultaPorNombre(datas);
-
-	return result;
-}
-
-module.exports.consultarUser = async function (datas, response) {
-	const result = await consultaUserBD(datas);
-
-	return result;
-}
+module.exports = { 
+    insertarBD, 
+    eliminarBD, 
+    editarBD, 
+    consultaBD, 
+    consultaIdBD,
+    consultaUserBD,
+    consultaPorNombre
+};

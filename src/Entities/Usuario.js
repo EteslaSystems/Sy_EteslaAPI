@@ -1,9 +1,3 @@
-/*
-- @description: 		Archivo correspondiente a las funciones de la API con la BD.
-- @author: 			Yael Ramirez Herrerias / Jesus Daniel Carrera Falcón
-- @date: 				10/03/2020
-*/
-
 const mysqlConnection = require('../../config/database');
 
 function insertarBD (datas) {
@@ -219,50 +213,13 @@ function recuperarPasswordDB(datas) {
 	});
 }
 
-module.exports.insertar = async function (datas, response) {
-	const result = await insertarBD(datas);
-
-	return result;
-}
-
-module.exports.eliminar = async function (datas, response) {
-	const result = await eliminarBD(datas);
-
-	return result;
-}
-
-module.exports.editar = async function (datas, response) {
-	const result = await editarBD(datas);
-
-	return result;
-}
-
-module.exports.consultar = async function (response) {
-	const result = await consultaBD();
-
-	return result;
-}
-
-module.exports.consultarId = async function (datas, response) {
-	const result = await consultaIdBD(datas);
-
-	return result;
-}
-
-module.exports.validar = async function (datas, response) {
-	const result = await validarBD(datas);
-
-	return result;
-}
-
-module.exports.verificarEmail = async function (datas, response) {
-	const result = await verificarEmailDB(datas);
-
-	return result;
-}
-
-module.exports.recuperarPassword = async function (datas, response) {
-	const result = await recuperarPasswordDB(datas);
-
-	return result;
-}
+module.exports = {
+    insertarBD,
+    eliminarBD,
+    editarBD,
+    consultaBD,
+    consultaIdBD,
+    validarBD,
+    verificarEmailDB,
+    recuperarPasswordDB
+};

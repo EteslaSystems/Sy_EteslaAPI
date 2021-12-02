@@ -3,10 +3,10 @@
 - @author: 				LH420
 - @date: 				20/03/2020
 */
-const paneles = require('../Controller/panelesController');
-const inversores = require('../Controller/inversorController');
+const paneles = require('./paneles.controller');
+const inversores = require('./inversor.controller');
 const estructuras = require('../Controller/estructuraController');
-const viaticos = require('../Controller/opcionesViaticsController');
+const viaticos = require('./viaticos.controller');
 
 async function cotizacionIndividual(data){
     let Cotizacion = { panel: null, inversor: null, estructura: null };
