@@ -239,29 +239,29 @@ async function getInversores_cotizacion(_data){
 					let MicroUno = Micros.primerEquipo;
 					let MicroDos = Micros.segundoEquipo;
 
+					numeroDeInversores = Math.floor(noPaneles / MicroUno.iPanelSoportados);
+
 					//Se agregan la cantidad de equipos requeridos a -MicroUno- && -MicroDos-
 					Object.assign(MicroUno,{
-						numeroDeInversores: Math.round(noPaneles / MicroUno.iPanelSoportados)
+						numeroDeInversores: numeroDeInversores
 					});
 
 					//Se descuentan los paneles calculados anteriores de la cantidad original de [Paneles]
 					noPaneles = Math.round(noPaneles - (MicroUno.numeroDeInversores * MicroUno.iPanelSoportados));
 
-
 					//Se valida que haya paneles suficientes para poder hacer el calculo con el siguiente Micro
 					if(noPaneles >= 1){
-						let cantidadMicros = 0;
-
-						cantidadMicros = Math.round(noPaneles / MicroDos.iPanelSoportados);
+						numeroDeInversores = Math.ceil(noPaneles / MicroDos.iPanelSoportados);
 
 						Object.assign(MicroDos,{
-							numeroDeInversores: cantidadMicros
+							numeroDeInversores: numeroDeInversores
 						});
 					}
 					else{
 						continue;
 					}
 
+					//
 					costoTotalEquipos = (MicroUno.numeroDeInversores * MicroUno.fPrecio) + (MicroDos.numeroDeInversores * MicroDos.fPrecio);
 
 					//
