@@ -14,7 +14,6 @@ const mysqlConnection = mysql.createConnection({ //Cadena de conexión a la base
 	// database: 'eteslapanelessolares_sy',
 	host: 'localhost',
 	user: 'root',
-	password: '$!Etesla123$!',
 	database: 'eteslapanelessolares_sy'
 });
 

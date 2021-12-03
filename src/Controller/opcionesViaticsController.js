@@ -166,16 +166,9 @@ async function calcularViaticosBTI(data){
 
             //Cotizacion Individual
             if(tipoCotizacion === 'individual'){
-                if(data.data.cotizacionIndividual.complementos.viaticos != null){ //Con viaticos
-                    hospedaje = data.data.cotizacionIndividual.complementos.viaticos.hospedaje === '1' ? hospedaje : 0;
-                    comida = data.data.cotizacionIndividual.complementos.viaticos.comida === '1' ? comida : 0;
-                    pasaje = data.data.cotizacionIndividual.complementos.viaticos.pasaje === '1' ? pasaje : 0;
-                }
-                else{ //Sin viaticos
-                    hospedaje = 0;
-                    comida = 0;
-                    pasaje = 0;
-                }
+                hospedaje = data.data.cotizacionIndividual.complementos.viaticos.hospedaje === '1' ? hospedaje : 0;
+                comida = data.data.cotizacionIndividual.complementos.viaticos.comida === '1' ? comida : 0;
+                pasaje = data.data.cotizacionIndividual.complementos.viaticos.pasaje === '1' ? pasaje : 0;
             }
             
             /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
