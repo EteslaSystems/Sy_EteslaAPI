@@ -63,7 +63,7 @@ BEGIN
     /* Consultar todos los registros de Persona, Cliente y Direccion */
     ELSEIF (Opcion = 3) THEN
         SELECT HEX(cliente.idCliente) AS idCliente, 
-        HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at, 
+        HEX(persona.idPersona) AS idPersona, HEX(cliente.id_Cliente) AS id_Cliente, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at, 
         HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado
         FROM cliente
         INNER JOIN persona ON cliente.id_Persona = persona.idPersona
@@ -89,15 +89,18 @@ BEGIN
         ORDER BY persona.created_at DESC;
     /* Consultar - Clientes pertenecientes a un Vendedor, *Por Nombre* */
     ELSEIF (Opcion = 6) THEN
-        SELECT HEX(cliente.idCliente) AS idCliente, HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado, persona.created_at, persona.deleted_at, persona.updated_at 
-        FROM cliente 
-        INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
-        INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
-        WHERE persona.deleted_at IS NULL
-        AND persona.vNombrePersona LIKE CONCAT('%',NombrePersona,'%')
-        OR persona.vPrimerApellido LIKE CONCAT('%',NombrePersona,'%')
-        OR persona.vSegundoApellido LIKE CONCAT('%',NombrePersona,'%')
-        AND cliente.id_Usuario = UNHEX(xIdUsuario);
+        SELECT client.idCliente, client.vNombrePersona, client.vPrimerApellido, client.vSegundoApellido, client.vTelefono, client.vCelular, client.vEmail, dir.cCodigoPostal, dir.vCalle, dir.vMunicipio, dir.vCiudad, dir.vEstado
+        FROM (
+            SELECT HEX(cli.idCliente) AS idCliente, HEX(cli.id_Usuario) AS id_Usuario, per.vNombrePersona, per.vPrimerApellido, per.vSegundoApellido, CONCAT(per.vNombrePersona, ' ', per.vPrimerApellido, ' ', per.vSegundoApellido) AS FullName, per.vTelefono, per.vCelular, per.vEmail
+            FROM persona per
+            INNER JOIN cliente cli
+            ON cli.id_Persona = per.idPersona
+            WHERE deleted_at IS NULL
+            AND cli.id_Usuario = UNHEX(xIdUsuario)
+        ) AS client
+        INNER JOIN direccion dir
+        ON dir.id_Cliente = UNHEX(client.idCliente)
+        WHERE client.FullName LIKE CONCAT('%',NombrePersona,'%');
     END IF;
 END
 // DELIMITER ;

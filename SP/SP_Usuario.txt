@@ -48,13 +48,11 @@ BEGIN
         WHERE persona.idPersona = UNHEX(xIdPersona) AND persona.deleted_at IS NULL;
     /* Consultar todos los registros de Usuario */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.sTipoUsuario, 
-        AES_DECRYPT(usuario.vContrasenia,'AES') AS vContrasenia, usuario.vOficina,
-        HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, 
-        persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at
-        FROM usuario
-        INNER JOIN persona ON usuario.id_Persona = persona.idPersona
-        WHERE persona.deleted_at IS NULL;
+        SELECT usr.idUsuario, usr.sTipoUsuario, CONCAT(per.vNombrePersona,' ',per.vSegundoApellido) AS FullName, per.vEmail, AES_DECRYPT(usr.vContrasenia,'AES') AS Contrasenia
+    	FROM persona per
+    	INNER JOIN usuario usr
+    	ON usr.id_Persona = per.idPersona
+    	WHERE per.deleted_at IS NULL;
     /* Validar el usuario */
     ELSEIF (Opcion = 4) THEN
         SELECT HEX(usuario.idUsuario) AS idUsuario, usuario.siRol, usuario.sTipoUsuario, 
