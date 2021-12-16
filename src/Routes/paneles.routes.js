@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const panelBL = require('../BL/panelesBL');
+const PanelBL = require('../BL/panel.bl');
 
 //Initializations
 router.use(express.json());
+
+//Instancia
+let panelBL = new PanelBL();
 
 router.get('/lista-paneles', function (req, res) {
 	panelBL.consultar()
