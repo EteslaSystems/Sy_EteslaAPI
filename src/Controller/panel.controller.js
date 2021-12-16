@@ -4,12 +4,16 @@
 - @date: 				01/04/2020
 */
 const Panel = require('../Entities/Panel');
+const Log = require('../../config/logConfig');
 
 class PanelController{
+	//Instancia
+	panel = new Panel();
+
 	//Propuesta
 	async getPanelesPropuesta(potenciaNecesaria){
 		try{
-			let _paneles = await Panel.consultaBD();
+			let _paneles = await panel.consultaBD();
 			let _result = [];
 	
 			_paneles.find(Panel => {
@@ -28,33 +32,34 @@ class PanelController{
 			return _result;
 		}
 		catch(error){
-			console.log(error);
+			Log.generateLog({ tipo: 'Error', contenido: 'getPanelesPropuesta(): ' +error });
+			throw 'Error PanelController getPanelesPropuesta: '+error;
 		}
 	}
 
 	//CRUD
 	async insertar(datas){
-		const result = await Panel.insertarBD(datas);
+		const result = await panel.insertarBD(datas);
 		return result;
 	}
 
 	async eliminar(datas){
-		const result = await Panel.eliminarBD(datas);
+		const result = await panel.eliminarBD(datas);
 		return result;
 	}
 
 	async editar(datas){
-		const result = await Panel.editarBD(datas);
+		const result = await panel.editarBD(datas);
 		return result;
 	}
 
 	async consulta(){
-		const result = await Panel.consultaBD;
+		const result = await panel.consultaBD;
 		return result;
 	}
 
 	async buscar(datas){
-		const result = await Panel.buscarBD(datas);
+		const result = await panel.buscarBD(datas);
 		return result;
 	}
 }

@@ -1,129 +1,158 @@
 const mysqlConnection = require('../../config/database');
+const Log = require('../../config/logConfig');
 
 class Panel{
 	insertarBD(datas){
-		const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
+		try{
+			const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 	
-		  return new Promise((resolve, reject) => {
-			mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
-				if (error) {
-					const response = {
-						status: false,
-						message: error
+			return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha guardado con éxito."
+						}
+		
+						resolve(response);
 					}
-	
-					reject(response);
-				} else {
-					const response = {
-						status: true,
-						message: "El registro se ha guardado con éxito."
-					}
-	
-					mysqlConnection.destroy();
-	
-					resolve(response);
-				}
+				});
 			});
-		  });
+		}
+		catch(error){
+			Log.generateLog({ tipo: 'Error', contenido: 'Panel.insertarBD(): ' +error.message });
+			throw 'Error PanelController insertarBD: '+error;
+		}
 	}
 	
 	eliminarBD(datas) {
-		const { idPanel } = datas;
+		try{
+			const { idPanel } = datas;
 	
-		  return new Promise((resolve, reject) => {
-			mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
-				if (error) {
-					const response = {
-						status: false,
-						message: error
+			return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+					if(error){
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+				  	} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha eliminado con éxito."
+						}
+		
+						resolve(response);
 					}
-	
-					reject(response);
-				} else {
-					const response = {
-						status: true,
-						message: "El registro se ha eliminado con éxito."
-					}
-	
-					mysqlConnection.destroy();
-	
-					resolve(response);
-				}
+				});
 			});
-		  });
+		}
+		catch(error){
+			Log.generateLog({ tipo: 'Error', contenido: 'Panel.eliminarBD(): ' +error.message });
+			throw 'Error PanelController eliminarBD(): '+error;
+		}
 	}
 	
-	editarBD (datas) {
-		const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
+	editarBD(datas){
+		try{
+			const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 	
-		  return new Promise((resolve, reject) => {
-			mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
-				if (error) {
-					const response = {
-						status: false,
-						message: error
+			return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha editado con éxito."
+						}
+		
+						resolve(response);
 					}
-	
-					reject(response);
-				} else {
-					const response = {
-						status: true,
-						message: "El registro se ha editado con éxito."
-					}
-	
-					mysqlConnection.destroy();
-	
-					resolve(response);
-				}
+				});
 			});
-		  });
+		}
+		catch(error){
+			Log.generateLog({ tipo: 'Error', contenido: 'Panel.editarBD(): ' +error.message });
+			throw 'Error PanelController editarBD: '+error;
+		}
 	}
 	
-	consultaBD () {
-		  return new Promise((resolve, reject) => {
-			mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
-				if (error) {
-					const response = {
-						status: false,
-						message: error
+	consultaBD(){
+		try{
+			return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+					if(error){
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: rows[0]
+						}
+		
+						resolve(response);
 					}
-	
-					reject(response);
-				} else {
-					const response = {
-						status: true,
-						message: rows[0]
-					}
-	
-					resolve(response);
-				}
-			});
-		  });
+				});
+			  });
+		}
+		catch(error){
+			Log.generateLog({ tipo: 'Error', contenido: 'Panel.consultaBD(): ' +error.message });
+			throw 'Error PanelController consultaBD: '+error;
+		}
 	}
 	
-	buscarBD (datas) {
-		const { idPanel } = datas;
-		  return new Promise((resolve, reject) => {
-			mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
-				if (error) {
-					const response = {
-						status: false,
-						message: error
+	buscarBD(datas){
+		try{
+			const { idPanel } = datas;
+		
+			return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else {
+						const response = {
+							status: true,
+							message: rows[0]
+						}
+		
+						resolve(response);
 					}
-	
-					reject(response);
-				} else {
-					const response = {
-						status: true,
-						message: rows[0]
-					}
-	
-					mysqlConnection.destroy();
-	
-					resolve(response);
-				}
+				});
 			});
-		  });
+		}
+		catch(error){
+			Log.generateLog({ tipo: 'Error', contenido: 'Panel.buscarBD(): ' +error.message });
+			throw 'Error PanelController buscarBD: '+error;
+		}
 	}
 }
 

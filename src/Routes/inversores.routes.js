@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const inversorBL = require('../BL/inversorBL');
-
-const inversor = require('../Controller/inversorController');
+const InversorBL = require('../BL/inversor.bl');
 
 //Initializations
 router.use(express.json());
+
+//Instancia
+let inversorBL = new InversorBL();
 
 router.put('/listar-micros', function(request, response){
 	inversorBL.obtenerEquiposTipo(request.body)
