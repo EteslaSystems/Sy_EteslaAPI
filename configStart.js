@@ -10,9 +10,9 @@ const express = require('express'); //Constante que instancia la libreria 'expre
 const http = require('http');
 
 //Routes - Directory
-const panelesRoutes = require('./src/Routes/paneles.routes');
-const inversoresRoutes = require('./src/Routes/inversores.routes');
-const estructurasRoutes = require('./src/Routes/estructuras.routes');
+const panelesRoutes = require('./src/Routes/panel.routes');
+const inversoresRoutes = require('./src/Routes/inversor.routes');
+const estructurasRoutes = require('./src/Routes/estructura.routes');
 const cotizacionRoutes = require('./src/Routes/cotizacion.routes');
 const propuestaRoutes = require('./src/Routes/propuesta.routes');
 const clienteRoutes = require('./src/Routes/clientes.routes');

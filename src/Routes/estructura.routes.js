@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-const estructura = require('../Controller/estructuraController.js');
+const EstructuraBL = require('../BL/estructura.bl');
 
 //Initializations
 router.use(express.json());
 
+//Instancia
+let estructuraBL = new EstructuraBL();
+
 router.post('/agregar-estructura', function(request, response){
-	estructura.insertar(request.body)
+	estructuraBL.insertar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,
@@ -23,7 +26,7 @@ router.post('/agregar-estructura', function(request, response){
 });
 
 router.put('/eliminar-estructura', function (request, response) {
-	estructura.eliminar(request.body)
+	estructuraBL.eliminar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,
@@ -39,7 +42,7 @@ router.put('/eliminar-estructura', function (request, response) {
 });
 
 router.get('/lista-estructuras', function(request, response){
-	estructura.leer()
+	estructuraBL.leer()
 	.then(estructura => {
 		response.json({
 			status: 200,
@@ -55,7 +58,7 @@ router.get('/lista-estructuras', function(request, response){
 });	
 
 router.put('/buscar-estructura', function(request, response){
-	estructura.buscar(request.body)
+	estructuraBL.buscar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,

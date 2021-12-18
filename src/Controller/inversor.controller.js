@@ -1,4 +1,4 @@
-let Inversor = require('../Entities/Inversor');
+const Inversor = require('../Entities/Inversor');
 
 class InversorController{
 	//Instancia
@@ -138,7 +138,7 @@ class InversorController{
 			return _arrayInversor;
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'InversorController.getInversoresCotizacion(): ' +error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'InversorController.getInversoresCotizacion(): ' +error });
 			throw 'Error InversorController getInversoresCotizacion: '+error;
 		}
 	}
@@ -170,7 +170,7 @@ class InversorController{
 			return NombresEquipos;
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'InversorController.getEquiposCombinacionMicros(): ' +error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'InversorController.getEquiposCombinacionMicros(): ' +error });
 			throw 'Error InversorController getEquiposCombinacionMicros: '+error;
 		}
 	}
@@ -211,3 +211,5 @@ class InversorController{
 		return result;
 	}
 }
+
+module.exports = InversorController;

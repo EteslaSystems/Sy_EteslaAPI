@@ -29,7 +29,7 @@ class PanelBL{
 					throw new Error(result.message);
 				}
 		
-				Log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / PANELES.' + '1 fila insertada.' });
+				await Log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / PANELES.' + '1 fila insertada.' });
 		
 				return result.message;
 			} 
@@ -38,7 +38,7 @@ class PanelBL{
 			}
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / PANELES. ' +error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / PANELES. ' +error });
 			throw 'Error PanelBL Insertar: '+error;
 		}
 	}
@@ -56,12 +56,12 @@ class PanelBL{
 				throw new Error(result.message);
 			}
 		
-			Log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / PANELES.' + '1 fila eliminada.' });
+			await Log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / PANELES.' + '1 fila eliminada.' });
 		
 			return result.message;
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / PANELES.' + error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / PANELES.' + error });
 			throw 'Error PanelBL eliminar: '+error;
 		}
 	}
@@ -90,7 +90,7 @@ class PanelBL{
 					throw new Error(result.message);
 				}
 
-				Log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / PANELES.' + '1 fila editada.' });
+				await Log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / PANELES.' + '1 fila editada.' });
 
 				return result.message;
 			} 
@@ -99,7 +99,7 @@ class PanelBL{
 			}
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'EDITAR / PANELES. ' + error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'EDITAR / PANELES. ' + error });
 			throw 'Error PanelBl editar: '+error;
 		}
 	}
@@ -112,12 +112,12 @@ class PanelBL{
 				throw new Error(result.message);
 			}
 		
-			Log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / PANELES.' + result.message.length + ' filas consultadas.' });
+			await Log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / PANELES.' + result.message.length + ' filas consultadas.' });
 		
 			return result.message;
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / PANELES.' + error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / PANELES.' + error });
 			throw 'Error PanelBL consultar: ' + error;
 		}
 	}
@@ -132,12 +132,12 @@ class PanelBL{
 				throw new Error(result.message);
 			}
 		
-			Log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / PANELES. ' + result.message.length + ' filas consultadas.' });
+			await Log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / PANELES. ' + result.message.length + ' filas consultadas.' });
 		
 			return result.message;
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / PANELES. ' + error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / PANELES. ' + error });
 			throw 'Error PanelBL buscar: ' + error;
 		}
 	}

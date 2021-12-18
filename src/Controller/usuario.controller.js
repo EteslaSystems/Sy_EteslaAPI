@@ -1,41 +1,49 @@
 const Usuario = require('./Entities/Usuario');
+const Log = require('../../config/logConfig');
 
-module.exports.insertar = async function (datas, response) {
-	const result = await Usuario.insertarBD(datas);
-	return result;
+class UsuarioController{
+	usuario = new Usuario();
+
+	//CRUD
+	async insertar(datas){
+		const result = await usuario.insertarBD(datas);
+		return result;
+	}
+
+	async eliminar(datas){
+		const result = await usuario.eliminarBD(datas);
+		return result;
+	}
+
+	async editar(datas){
+		const result = await usuario.editarBD(datas);
+		return result;
+	}
+
+	async consultar(){
+		const result = await usuario.consultaBD();
+		return result;
+	}
+
+	async consultarId(datas){
+		const result = await usuario.consultaIdBD(datas);
+		return result;
+	}
+
+	async validar(datas){
+		const result = await usuario.validarBD(datas);
+		return result;
+	}
+
+	async verificarEmail(datas){
+		const result = await usuario.verificarEmailDB(datas);
+		return result;
+	}
+
+	async recuperarPassword(datas){
+		const result = await usuario.recuperarPasswordDB(datas);
+		return result;
+	}
 }
 
-module.exports.eliminar = async function (datas, response) {
-	const result = await Usuario.eliminarBD(datas);
-	return result;
-}
-
-module.exports.editar = async function (datas, response) {
-	const result = await Usuario.editarBD(datas);
-	return result;
-}
-
-module.exports.consultar = async function (response) {
-	const result = await Usuario.consultaBD();
-	return result;
-}
-
-module.exports.consultarId = async function (datas, response) {
-	const result = await Usuario.consultaIdBD(datas);
-	return result;
-}
-
-module.exports.validar = async function (datas, response) {
-	const result = await Usuario.validarBD(datas);
-	return result;
-}
-
-module.exports.verificarEmail = async function (datas, response) {
-	const result = await Usuario.verificarEmailDB(datas);
-	return result;
-}
-
-module.exports.recuperarPassword = async function (datas, response) {
-	const result = await Usuario.recuperarPasswordDB(datas);
-	return result;
-}
+module.exports = UsuarioController;

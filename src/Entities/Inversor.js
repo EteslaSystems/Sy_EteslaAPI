@@ -2,7 +2,7 @@ const mysqlConnection = require('../../config/database');
 const Log = require('../../config/logConfig');
 
 class Inversor{
-	insertarBD(datas) {
+	async insertarBD(datas) {
 		try{
 			let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
 	
@@ -32,12 +32,12 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.insertarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.insertarBD(): ' +error.message });
 			throw 'Error Inversor insertarBD: '+error;
 		}
 	}
 	
-	eliminarBD(datas) {
+	async eliminarBD(datas) {
 		try{
 			const { idInversor } = datas;
 	
@@ -63,12 +63,12 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.eliminarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.eliminarBD(): ' +error.message });
 			throw 'Error InversorController eliminarBD: '+error;
 		}
 	}
 	
-	editarBD(datas) {
+	async editarBD(datas) {
 		try{
 			const { idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
 	
@@ -93,12 +93,12 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.editarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.editarBD(): ' +error.message });
 			throw 'Error Inversor editarBD: '+error;
 		}
 	}
 	
-	consultaBD() {
+	async consultaBD() {
 		try{
 			return new Promise((resolve, reject) => {
 				mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
@@ -122,12 +122,12 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.consultaBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.consultaBD(): ' +error.message });
 			throw 'Error Inversor consultaBD: '+error;
 		}
 	}
 	
-	buscarBD(datas) {
+	async buscarBD(datas) {
 		try{
 			const { idInversor } = datas;
 	
@@ -152,12 +152,12 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.buscarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.buscarBD(): ' +error.message });
 			throw 'Error Inversor buscarBD: '+error;
 		}
 	}
 	
-	buscarTipoInversor(datas){
+	async buscarTipoInversor(datas){
 		try{
 			const { vTipoInversor } = datas;
 	
@@ -182,12 +182,12 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.buscarTipoInversor(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.buscarTipoInversor(): ' +error.message });
 			throw 'Error Inversor buscarTipoInversor: '+error;
 		}
 	}
 	
-	buscarInversorPorNombre(datas){
+	async buscarInversorPorNombre(datas){
 		try{
 			const { vNombreMaterialFot } = datas;
 	
@@ -212,7 +212,7 @@ class Inversor{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Inversor.buscarInversorPorNombre(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Inversor.buscarInversorPorNombre(): ' +error.message });
 			throw 'Error Inversor buscarInversorPorNombre: '+error;
 		}
 	}

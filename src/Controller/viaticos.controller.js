@@ -1,8 +1,3 @@
-/*
-- @description: 		Archivo correspondiente a las funciones del calculo de viaticos
-- @author: 				LH420
-- @date: 				09/04/2020
-*/
 const request = require('request');
 const mysqlConnection = require('../../config/database');
 const configFile = require('./configFileController');

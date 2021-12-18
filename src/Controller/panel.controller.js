@@ -32,7 +32,7 @@ class PanelController{
 			return _result;
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'getPanelesPropuesta(): ' +error });
+			await Log.generateLog({ tipo: 'Error', contenido: 'getPanelesPropuesta(): ' +error });
 			throw 'Error PanelController getPanelesPropuesta: '+error;
 		}
 	}

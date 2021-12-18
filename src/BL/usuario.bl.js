@@ -1,19 +1,13 @@
-/*
-- @description: 		Archivo correspondiente a la sección de reglas a cumplir de los datos recibidos.
-- @author: 			Yael Ramirez Herrerias / Jesus Daniel Carrera Falcon
-- @date: 				19/02/2020
-*/
-
-const usuarioController = require('../Controller/usuarioController.controller');
-const log = require('../../config/logConfig');
-const validations = require('../Middleware/usuarioMiddleware');
+const UsuarioController = require('../Controller/usuarioController.controller');
+const Log = require('../../config/logConfig');
+const Validations = require('../Middleware/usuarioMiddleware');
 const mailer = require('../../config/mailConfig');
 const jwt = require('jsonwebtoken'); 
 const secret = 'eTeslaSecret';
 var moment = require('moment-timezone');
 
 module.exports.insertar = async function (request, response) {
-	let validate = await validations.usuarioValidation(request);
+	let validate = await Validations.usuarioValidation(request);
 
 	if (validate.status == true) {
 		let now = moment().tz("America/Mexico_City").format();
@@ -33,15 +27,15 @@ module.exports.insertar = async function (request, response) {
 			created_at: fecha
 		};
 
-		result = await usuarioController.insertar(datas);
+		result = await UsuarioController.insertar(datas);
 
 		if(result.status !== true) {
-			await log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / USUARIOS.' + result.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'INSERTAR / USUARIOS.' + result.message });
 
 			throw new Error('Error al insertar los datos.');
 		}
 
-		await log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / USUARIOS.' + '1 fila insertada.' });
+		await Log.generateLog({ tipo: 'Evento', contenido: 'INSERTAR / USUARIOS.' + '1 fila insertada.' });
 
 		const payload = { email: datas.vEmail };
 		const emailToken = jwt.sign(payload, secret, { expiresIn: 86400 });
@@ -274,15 +268,15 @@ module.exports.eliminar = async function (request, response) {
 		deleted_at: fecha
 	};
 
-	result = await usuarioController.eliminar(datas);
+	result = await UsuarioController.eliminar(datas);
 
 	if(result.status !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / USUARIO.' + result.message });
+		await Log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / USUARIO.' + result.message });
 
 		throw new Error('Error al eliminar los datos.');
 	}
 
-	await log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / USUARIO.' + '1 fila eliminada.' });
+	await Log.generateLog({ tipo: 'Evento', contenido: 'ELIMINAR / USUARIO.' + '1 fila eliminada.' });
 
 	return result.message;
 }
@@ -304,15 +298,15 @@ module.exports.editar = async function (request, response) {
 			updated_at: fecha
 	     };
 
-		result = await usuarioController.editar(datas);
+		result = await UsuarioController.editar(datas);
 
 		if(result.status !== true) {
-			await log.generateLog({ tipo: 'Error', contenido: 'EDITAR / USUARIO.' + result.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'EDITAR / USUARIO.' + result.message });
 
 			throw new Error('Error al editar los datos.');
 		}
 
-		await log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / USUARIO.' + '1 fila editada.' });
+		await Log.generateLog({ tipo: 'Evento', contenido: 'EDITAR / USUARIO.' + '1 fila editada.' });
 
 		const payload = {
 			idUsuario: result.message[0].idUsuario,
@@ -346,15 +340,15 @@ module.exports.editar = async function (request, response) {
 }
 
 module.exports.consultar = async function (response) {
-	const result = await usuarioController.consultar();
+	const result = await UsuarioController.consultar();
 
 	if(result.status !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / USUARIOS.' + result.message });
+		await Log.generateLog({ tipo: 'Error', contenido: 'CONSULTA / USUARIOS.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	await log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / USUARIOS.' + result.message.length + ' filas consultadas.' });
+	await Log.generateLog({ tipo: 'Evento', contenido: 'CONSULTA / USUARIOS.' + result.message.length + ' filas consultadas.' });
 
 	return result.message;
 }
@@ -364,15 +358,15 @@ module.exports.consultarId = async function (request, response) {
 		idPersona: request.id
 	};
 
-	result = await usuarioController.consultarId(datas);
+	result = await UsuarioController.consultarId(datas);
 
 	if(result.status !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message });
+		await Log.generateLog({ tipo: 'Error', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message });
 
 		throw new Error('Error al consultar los datos.');
 	}
 
-	await log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message.length + ' filas consultadas.' });
+	await Log.generateLog({ tipo: 'Evento', contenido: 'BUSQUEDA / USUARIO POR ID.' + result.message.length + ' filas consultadas.' });
 
 	result.message[0].vContrasenia = String.fromCharCode.apply(null, result.message[0].vContrasenia);
 
@@ -385,23 +379,23 @@ module.exports.validar = async function (request, response) {
 		vEmail: request.email
 	};
 
-	result = await usuarioController.validar(datas);
+	result = await UsuarioController.validar(datas);
 
 	if(result.status !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS.' + result.message });
+		await Log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS.' + result.message });
 
 		throw new Error('Error al validar los datos del usuarioController.');
 	}
 
 	if(result.message.propertyIsEnumerable(0) !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS. ' + 'Las credenciales proporcionadas por el usuarioController no coinciden con los registros de la base de datos.' });
+		await Log.generateLog({ tipo: 'Error', contenido: 'VALIDAR / USUARIOS. ' + 'Las credenciales proporcionadas por el usuarioController no coinciden con los registros de la base de datos.' });
 
 		throw new Error('Las credenciales proporcionadas son incorrectas.');
 	}
 
 	if (result.message[0].vTelefono != null || result.message[0].vTelefono == 666) {
 		const nombrecompleto = result.message[0].vNombrePersona +' '+ result.message[0].vPrimerApellido +' '+ result.message[0].vSegundoApellido;
-		await log.generateLog({ tipo: 'Evento', contenido: 'VALIDAR / USUARIOS. ' + 'El usuarioController ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.' });
+		await Log.generateLog({ tipo: 'Evento', contenido: 'VALIDAR / USUARIOS. ' + 'El usuarioController ' + nombrecompleto + ', intentó iniciar sesión sin haber verificado su correo electrónico.' });
 
 		throw new Error('Debe verificar su correo electrónico para iniciar sesión.');
 	}
@@ -436,35 +430,35 @@ module.exports.validar = async function (request, response) {
 
 module.exports.verificarEmail = async function (request, response) {
 	const datas = { vEmail: request.email.toLowerCase() };
-	result = await usuarioController.verificarEmail(datas);
+	result = await UsuarioController.verificarEmail(datas);
 
 	if(result.status !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'VERIFICAR / EMAIL.' + result.message });
+		await Log.generateLog({ tipo: 'Error', contenido: 'VERIFICAR / EMAIL.' + result.message });
 
 		throw new Error('Error al verificar el email: ' + request.email);
 	}
-	await log.generateLog({ tipo: 'Evento', contenido: 'VERIFICAR / EMAIL.' + 'Se verificó con éxito el email: ' + request.email });
+	await Log.generateLog({ tipo: 'Evento', contenido: 'VERIFICAR / EMAIL.' + 'Se verificó con éxito el email: ' + request.email });
 
 	return result.message;
 }
 
 module.exports.recuperarPassword = async function (request, response) {
 	const datas = { vEmail: request.email.toLowerCase() };
-	result = await usuarioController.recuperarPassword(datas);
+	result = await UsuarioController.recuperarPassword(datas);
 
 	if(result.status !== true) {
-		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + result.message });
+		await Log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + result.message });
 
 		throw new Error('Error al recuperar la contraseña.');
 	}
 
 	if(result.message.propertyIsEnumerable(0) !== true || result.message.length == 0) {
-		await log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + 'No existe ningún usuarioController registrado con el correo: ' + datas.vEmail + ' en la base de datos.' });
+		await Log.generateLog({ tipo: 'Error', contenido: 'RECUPERAR CONTRASEÑA. ' + 'No existe ningún usuarioController registrado con el correo: ' + datas.vEmail + ' en la base de datos.' });
 
 		throw new Error('No existe ningún usuarioController registrado con ese correo, verifiquelo e intente de nuevo.');
 	}
 
-	await log.generateLog({ tipo: 'Evento', contenido: 'RECUPERAR CONTRASEÑA.' + 'Se recuperó con éxito la contraseña.' });
+	await Log.generateLog({ tipo: 'Evento', contenido: 'RECUPERAR CONTRASEÑA.' + 'Se recuperó con éxito la contraseña.' });
 	
 	const contrasenia = String.fromCharCode.apply(null, result.message[0].vContrasenia);
 	const oEmail = new mailer();

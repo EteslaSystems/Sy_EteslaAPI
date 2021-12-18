@@ -2,7 +2,7 @@ const mysqlConnection = require('../../config/database');
 const Log = require('../../config/logConfig');
 
 class Panel{
-	insertarBD(datas){
+	async insertarBD(datas){
 		try{
 			const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 	
@@ -28,12 +28,12 @@ class Panel{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Panel.insertarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Panel.insertarBD(): ' +error.message });
 			throw 'Error PanelController insertarBD: '+error;
 		}
 	}
 	
-	eliminarBD(datas) {
+	async eliminarBD(datas) {
 		try{
 			const { idPanel } = datas;
 	
@@ -59,12 +59,12 @@ class Panel{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Panel.eliminarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Panel.eliminarBD(): ' +error.message });
 			throw 'Error PanelController eliminarBD(): '+error;
 		}
 	}
 	
-	editarBD(datas){
+	async editarBD(datas){
 		try{
 			const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
 	
@@ -90,12 +90,12 @@ class Panel{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Panel.editarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Panel.editarBD(): ' +error.message });
 			throw 'Error PanelController editarBD: '+error;
 		}
 	}
 	
-	consultaBD(){
+	async consultaBD(){
 		try{
 			return new Promise((resolve, reject) => {
 				mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
@@ -119,12 +119,12 @@ class Panel{
 			  });
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Panel.consultaBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Panel.consultaBD(): ' +error.message });
 			throw 'Error PanelController consultaBD: '+error;
 		}
 	}
 	
-	buscarBD(datas){
+	async buscarBD(datas){
 		try{
 			const { idPanel } = datas;
 		
@@ -150,7 +150,7 @@ class Panel{
 			});
 		}
 		catch(error){
-			Log.generateLog({ tipo: 'Error', contenido: 'Panel.buscarBD(): ' +error.message });
+			await Log.generateLog({ tipo: 'Error', contenido: 'Panel.buscarBD(): ' +error.message });
 			throw 'Error PanelController buscarBD: '+error;
 		}
 	}
