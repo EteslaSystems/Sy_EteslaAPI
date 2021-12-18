@@ -4,7 +4,7 @@ CREATE PROCEDURE SP_Opciones_Viatics
 	IN Opcion INT,
 	IN xIdOpcion_Viatics VARCHAR(255),
 	IN NombreOperacion VARCHAR(80),
-    IN TipoDeMoneda VARCHAR(8),
+    	IN TipoDeMoneda VARCHAR(8),
 	IN Valor FLOAT
 )
 BEGIN

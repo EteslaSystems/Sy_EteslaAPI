@@ -1,0 +1,39 @@
+DELIMITER //
+CREATE PROCEDURE SP_Viaticos
+(
+	IN Opcion INT,
+	IN xIdViatico VARCHAR(255),
+	IN TipoCotizacion CHAR(15),
+	IN Concepto VARCHAR(100),
+	IN Costo FLOAT,
+	IN Moneda CHAR(10)
+)
+BEGIN
+	IF(Opcion = 0) THEN
+	/*Insertar*/
+		INSERT INTO viaticos
+		VALUES(UUID, TipoCotizacion, Concepto, Costo, Moneda, NOW(), NULL, NULL);
+	ELSEIF(Opcion = 1) THEN
+	/*Eliminar*/
+		UPDATE viaticos
+		SET deleted_at = NOW()
+		WHERE idViatico = UNHEX(xIdViatico);
+	ELSEIF(Opcion = 2) THEN
+	/*Actualizar*/
+		UPDATE viaticos
+		SET cTipoCotizacion = TipoCotizacion, vConcepto = Concepto, fCosto = Costo, cMoneda = Moneda, updated_at = NOW()
+		WHERE idViatico = UNHEX(xIdViatico);
+	ELSEIF(Opcion = 3) THEN
+	/*Leer*/
+		SELECT HEX(idViatico) AS idViatico, cTipoCotizacion, vConcepto, fCosto, cMoneda, created_at, updated_at, deleted_at
+		FROM viaticos
+		WHERE deleted_at IS NULL;
+	ELSEIF(Opcion = 4) THEN
+	/*Editar*/
+		SELECT HEX(idViatico) AS idViatico, cTipoCotizacion, vConcepto, fCosto, cMoneda, created_at, updated_at, deleted_at
+		FROM viaticos
+		WHERE deleted_at IS NULL
+		AND idViatico = UNHEX(xIdViatico);
+	END IF;
+END
+// DELIMITER ;

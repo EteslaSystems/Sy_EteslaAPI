@@ -10,13 +10,13 @@ const express = require('express'); //Constante que instancia la libreria 'expre
 const http = require('http');
 
 //Routes - Directory
+const usuarioRoutes = require('./src/Routes/usuario.routes');
+const clienteRoutes = require('./src/Routes/clientes.routes');
 const panelesRoutes = require('./src/Routes/panel.routes');
 const inversoresRoutes = require('./src/Routes/inversor.routes');
 const estructurasRoutes = require('./src/Routes/estructura.routes');
 const cotizacionRoutes = require('./src/Routes/cotizacion.routes');
-const propuestaRoutes = require('./src/Routes/propuesta.routes');
-const clienteRoutes = require('./src/Routes/clientes.routes');
-const usuarioRoutes = require('./src/Routes/usuario.routes');
+const viaticosRoutes = require('./src/Routes/viaticos.routes');
 
 //Initializations
 const app = express(); //Constante que inicializa express para su uso en la aplicacion.
@@ -35,13 +35,14 @@ app.get('/', (req, res) => {
 });
 
 //Middlewares - Routes\
+app.use('/api/usuario', usuarioRoutes);
+app.use('/api/clientes', clienteRoutes);
 app.use('/api/paneles', panelesRoutes);
 app.use('/api/inversores', inversoresRoutes);
 app.use('/api/estructuras', estructurasRoutes);
 app.use('/api/cotizacion', cotizacionRoutes);
-app.use('/api/propuesta', propuestaRoutes);
-app.use('/api/clientes', clienteRoutes);
-app.use('/api/usuario', usuarioRoutes);
+app.use('/api/viaticos', viaticosRoutes);
+
 
 //Arranque
 server.listen(app.get('port'), () => { //Se da inicio al servidor con los parametros antes declarados.

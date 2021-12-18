@@ -4,8 +4,29 @@ const Log = require('../../config/logConfig');
 class Viaticos{
     //CRUD
     async insertarBD(datas){
-        try{
+        const { cTipoCotizacion, vConcepto, fCosto, cMoneda } = datas;
 
+        try{
+			return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Viaticos(?, ?, ?, ?, ?, ?)', [0, null, cTipoCotizacion, vConcepto, fCosto, cMoneda], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha guardado con éxito."
+						}
+		
+						resolve(response);
+					}
+				});
+			});
         }
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.insertarBD(): ' +error.message });
@@ -15,7 +36,26 @@ class Viaticos{
 
     async eliminarBD(idViatico){
         try{
-
+            return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Viaticos(?, ?, ?, ?, ?, ?)', [1, null, null, null, null, null], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha guardado con éxito."
+						}
+		
+						resolve(response);
+					}
+				});
+			});
         }
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.eliminarBD(): ' +error.message });
@@ -25,7 +65,26 @@ class Viaticos{
 
     async consultaBD(){
         try{
-            
+            return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Viaticos(?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha guardado con éxito."
+						}
+		
+						resolve(response);
+					}
+				});
+			});
         }
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.consultaBD(): ' +error.message });
@@ -34,8 +93,29 @@ class Viaticos{
     }
 
     async editarBD(datas){
-        try{
+        const { idViatico, cTipoCotizacion, vConcepto, fCosto, cMoneda } = datas;
 
+        try{
+            return new Promise((resolve, reject) => {
+				mysqlConnection.query('CALL SP_Viaticos(?, ?, ?, ?, ?, ?)', [4, idViatico, cTipoCotizacion, vConcepto, fCosto, cMoneda], (error, rows) => {
+					if (error) {
+						const response = {
+							status: false,
+							message: error
+						}
+		
+						reject(response);
+					} 
+					else{
+						const response = {
+							status: true,
+							message: "El registro se ha guardado con éxito."
+						}
+		
+						resolve(response);
+					}
+				});
+			});
         }
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.editarBD(): ' +error.message });

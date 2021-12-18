@@ -1,8 +1,3 @@
-/*
-- @description: 		Funciones para la cotizacion de media tension
-- @author: 				LH420
-- @date: 				01/04/2020
-*/
 const Panel = require('../Entities/Panel');
 const Log = require('../../config/logConfig');
 
