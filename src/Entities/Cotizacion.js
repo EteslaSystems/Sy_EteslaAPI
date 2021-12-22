@@ -114,37 +114,6 @@ class Cotizacion{
         }
     }
 
-    async editarBD(datas){
-        const { idPanel, idInversor, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total } = datas;
-
-        try{
-            return new Promise((resolve, reject) => {
-                mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, null, null, idPanel, idInversor, null, null, promedioKw, tarifa, cantidadPaneles, cantidadInversores, potenciaPropuesta, nuevoConsumoBimestralKw, nuevoConsumoAnualKw, descuento, porcentajePropuesta, subtotal, total, null, null], (error, rows) => {
-                    if (error) {
-                        const response = {
-                            status: false,
-                            message: error
-                        }
-
-                        reject(response);
-                    } 
-                    else {
-                        const response = {
-                            status: true,
-                            message: "El registro se ha editado con éxito."
-                        }
-
-                        resolve(response);
-                    }
-                });
-            });
-        }
-        catch(error){
-            await Log.generateLog({ tipo: 'Error', contenido: 'Cotizacion.editarBD(): ' +error.message });
-			throw 'Error Cotizacion editarBD: '+error;
-        }
-    }
-
     async consultaBD(data)
     {
         const { id } = data;
@@ -177,7 +146,8 @@ class Cotizacion{
         }
     }
 
-    async buscarBD(idPropuesta){
+    async buscarBD(datas){
+        const { idPropuesta } = datas;
         try{
             return new Promise((resolve, reject) => {
                 mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, null, idPropuesta, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {

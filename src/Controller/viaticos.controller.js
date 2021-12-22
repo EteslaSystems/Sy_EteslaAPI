@@ -1,15 +1,30 @@
 const Viatico = require('../Entities/Viaticos');
 const Log = require('../../config/logConfig');
+const DolarController = require('../Controller/dolar.controller');
 
 class ViaticosController{
-    //Instancia
+    //Instancia(s)
 	viatico = new Viatico();
+    dolarController = DolarController();
 
     /*#region Cotizacion*/
     async calcularViaticos(){ /* main() */
+        let Descuento = { porcentaje: 0, descuento: 0, precioSinDescuento: 0 };
+        let Aumento = { porcentaje: 0, aumento: 0, precioSinAumento: 0 };
+        let cantidadEstructuras = 0;
+        let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
+        let precio_watt = 0;
+        let uCliente = null, uVendedor = null;
+
         try{
-            /* BajaTension */ /* MediaTension */
-            
+            let idUsuario = data.idUsuario;
+            let idCliente = data.idCliente;
+            let origen = data.origen;
+            let destino = data.destino; 
+            let _consums = data.consumos || null;
+            let _agregados = data._agregados || null;
+            let tipoCotizacion = data.tipoCotizacion || null;
+            let tarifa = data.tarifa || null;
         }
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.calcularViaticos(): ' +error });

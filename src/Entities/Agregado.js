@@ -33,7 +33,9 @@ class Agregado{
 		}
 	}
 
-	async eliminarBD(idAgregado){
+	async eliminarBD(datas){
+		const { idAgregado } = datas;
+
 		try{
 			return new Promise((resolve, reject) => {
 				mysqlConnection.query('CALL SP_Agregados(?, ?, ?, ?, ?, ?)', [1, idAgregado, null, null, null, null], (error, rows) => {

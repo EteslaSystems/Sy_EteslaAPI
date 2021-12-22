@@ -17,6 +17,7 @@ const inversoresRoutes = require('./src/Routes/inversor.routes');
 const estructurasRoutes = require('./src/Routes/estructura.routes');
 const cotizacionRoutes = require('./src/Routes/cotizacion.routes');
 const viaticosRoutes = require('./src/Routes/viaticos.routes');
+const dolarRoutes = require('./src/Routes/dollar.routes');
 
 //Initializations
 const app = express(); //Constante que inicializa express para su uso en la aplicacion.
@@ -42,7 +43,7 @@ app.use('/api/inversores', inversoresRoutes);
 app.use('/api/estructuras', estructurasRoutes);
 app.use('/api/cotizacion', cotizacionRoutes);
 app.use('/api/viaticos', viaticosRoutes);
-
+app.use('/api/dolar', dolarRoutes)
 
 //Arranque
 server.listen(app.get('port'), () => { //Se da inicio al servidor con los parametros antes declarados.
