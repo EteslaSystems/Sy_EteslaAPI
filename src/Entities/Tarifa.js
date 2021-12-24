@@ -5,7 +5,7 @@ class Tarifa{
     async consultaBD(){
         try{
             return new Promise((resolve, reject) => {
-                mysqlConnection.query('CALL SP_Tarifas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+                mysqlConnection.query('CALL SP_Tarifas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
                     if (error) {
                         const response = {
                             status: false,
@@ -32,11 +32,11 @@ class Tarifa{
     }
 
     async buscarBD(datas){
-        try{
-            const { idTarifa } = datas;
+        const { idTarifa } = datas;
 
+        try{
             return new Promise((resolve, reject) => {
-                mysqlConnection.query('CALL SP_Tarifas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idTarifa, null, null, null, null, null, null, null, null, null], (error, rows) => {
+                mysqlConnection.query('CALL SP_Tarifas(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idTarifa, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
                     if (error) {
                         const response = {
                             status: false,

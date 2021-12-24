@@ -1,43 +1,35 @@
 DELIMITER //
-CREATE PROCEDURE SP_Tarifas
+CREATE OR REPLACE PROCEDURE SP_Tarifas
 (
 	IN Opcion INT,
 	IN xIdTarifa VARCHAR(255),
-	IN NombreTarifa VARCHAR(80),
-	IN Nivel SMALLINT,	
-	IN Verano SMALLINT,
-	IN Rango INT,
-	IN Precio FLOAT,
-	IN created TIMESTAMP,	
-	IN updated TIMESTAMP,
-	IN deleted TIMESTAMP
+	IN xIdTarifaCobro VARCHAR(255),
+	IN NombreTarifa CHAR(7),
+	IN TipoCotizacion CHAR(15),
+	IN Periodo CHAR(10),
+	IN LimiteKw SMALLINT(6),
+	IN ObjetivoDAC SMALLINT(6),
+	IN TarifaComercial TINYINT(1),
+	IN Nivel TINYINT(4),
+	IN Rango TINYINT(4),
+	IN Precio FLOAT
 )
 BEGIN
-	IF(Opcion = 0) THEN
-	/*Insertar*/
-	   	INSERT INTO tarifa
-	   	VALUES(UUID(), NombreTarifa, Nivel, Verano, Rango, Precio, created, NULL, NULL);
-	ELSEIF(Opcion = 1) THEN
-	/*Eliminar*/
-	   	UPDATE tarifa
-	   	SET deleted_at = deleted
-	   	WHERE idTarifa = UNHEX(xIdTarifa);
-	ELSEIF(Opcion = 2) THEN
-	/*Actualizar*/
-	   	UPDATE tarifa
-	   	SET vNombreTarifa = NombreTarifa, sinNivel = Nivel, siVerano = Verano, iRango = Rango, fPrecio = Precio, updated_at = updated
-	   	WHERE idTarifa = UNHEX(xIdTarifa);
-	ELSEIF(Opcion = 3) THEN
+	IF(Opcion = 3) THEN
 	/*Leer*/
-	   	SELECT HEX(idTarifa) AS idTarifa, vNombreTarifa, siNivel, siVerano, iRango, fPrecio, created_at, updated_at, deleted_at
-	   	FROM tarifa
-	   	WHERE deleted_at IS NULL	
-	   	ORDER BY created_at DESC;
+	   	SELECT HEX(tar.idTarifa) AS idTarifa, tar.cNombre, tar.siLimiteKw, tar.siObjetivoDAC, tar.created_at AS tar_created_at, tar.updated_at AS tar_updated_at, tc.tiNivel, tc.tiRango, tc.fPrecio, tc.created_at AS tc_created_at, tc.updated_at AS tc_updated_at
+		FROM tarifa tar
+		INNER JOIN tarifa_cobro tc
+		ON tc.id_Tarifa = tar.idTarifa
+		WHERE tar.deleted_at IS NULL;
 	ELSEIF(Opcion = 4) THEN
 	/*Leer - filtrado*/
-		SELECT HEX(idTarifa) AS idTarifa, vNombreTarifa, siNivel, siVerano, iRango, fPrecio, created_at, updated_at, deleted_at
-	   	FROM Tarifas
-    		WHERE idTarifa = UNHEX(xIdTarifa);
+		SELECT HEX(tar.idTarifa) AS idTarifa, tar.cNombre, tar.siLimiteKw, tar.siObjetivoDAC, tar.created_at AS tar_created_at, tar.updated_at AS tar_updated_at, tc.tiNivel, tc.tiRango, tc.fPrecio, tc.created_at AS tc_created_at, tc.updated_at AS tc_updated_at
+		FROM tarifa tar
+		INNER JOIN tarifa_cobro tc
+		ON tc.id_Tarifa = tar.idTarifa
+		WHERE tar.deleted_at IS NULL
+		AND tar.idTarifa = UNHEX(xIdTarifa);
 	END IF;
 END
 // DELIMITER ;

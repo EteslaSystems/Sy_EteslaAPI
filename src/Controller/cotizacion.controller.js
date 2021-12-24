@@ -1,11 +1,14 @@
 const Cotizacion = require('../Entities/Panel');
 const AgregadoController = require('../Controller/agregado.controller');
+const EnergiaController = require('../Controller/energia.controller');
 const Log = require('../../config/logConfig');
+const ConfigFile = require('../Controller/configFile.controller');
 
 class CotizacionController{
     //Instancia(s)
     cotizacion = new Cotizacion();
     agregadoController = new AgregadoController();
+    energiaController = new EnergiaController();
 
     /* #region Cotizacion/Propuesta */
     
@@ -13,6 +16,7 @@ class CotizacionController{
 
     /* #region Combinaciones */
     //@main()
+    /****NOTA:: RECONSTRUIR LA FUNCION DE 'busquedaInteligente(data)' */ 
     async busquedaInteligente(data){ /* [ Combinaciones ] */
         try{
             let tipoCotizacion = data.tipoCotizacion;
@@ -30,7 +34,7 @@ class CotizacionController{
             if(tipoCotizacion == 'bajaTension'){
                 /*#region Formating */
                 //Obtener marcas de -[EQUIPOS_SELECCIONADOS]-
-                let MatrizEquiposSeleccionados = await configFile.getArrayOfConfigFile();
+                let MatrizEquiposSeleccionados = await ConfigFile.getArrayOfConfigFile();
                 MatrizEquiposSeleccionados = MatrizEquiposSeleccionados.busqueda_inteligente;///Formating
 
                 //[ Consumos && Paneles ]

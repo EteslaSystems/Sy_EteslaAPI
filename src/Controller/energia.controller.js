@@ -9,7 +9,20 @@ class EnergiaController{
     //@main()
     async getPotenciaNecesaria(data){
         try{
-            let tipoCotizacion = data.tipoCotizacion;
+            let PromedioConsumos = getPromedioConsumos(data.tipoCotizacion, data._consumos);
+            let potenciaNecesaria = getPotenciaNecesaria({ 
+                origen: data.origen, 
+                porcentajePropuesta: data.porcentajePropuesta,
+                tarifa: data.tarifa,
+                PromedioConsumos: PromedioConsumos
+            });
+
+            let Result = {
+                Consumo: PromedioConsumos,
+                potenciaNecesaria: potenciaNecesaria
+            };
+            
+            return Result;
         }
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'EnergiaController.getPotenciaNecesaria(): ' +error });
@@ -95,6 +108,52 @@ class EnergiaController{
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'EnergiaController.getPromedioConsumos(): ' +error });
 			throw 'EnergiaController.getPromedioConsumos(): '+error; 
+        }
+    }
+
+    //@static
+    async getPotenciaNecesaria(data){
+        let potenciaNecesaria = 0;
+
+        try{
+            // let _consumos = data.consumos;
+            let irradiacion = irradiacionController.obtenerIrradiacion(data.origen);
+            let porcentajePropuesta = parseFloat(data.porcentajePropuesta) / 100 || 0;
+            let _tarifas = tarifaController.consulta();
+            let Tarifa = _tarifas[data.tarifa];
+
+            if(data.tipoCotizacion === "bajatension"){ /* BajaTension */
+                let cuantoMenos = Math.abs(Tarifa.limite - (data.PromedioConsumos.promedios.bimestral * 0.10));
+
+                if(cuantoMenos < Tarifa.siObjetivoDAC){
+                    Tarifa.siObjetivoDAC = cuantoMenos;
+                }
+                else if(Tarifa.siObjetivoDAC < 0 || Tarifa.siObjetivoDAC > (data.PromedioConsumos.promedios.bimestral)){
+                    Tarifa.siObjetivoDAC = 0;
+                }
+
+                let subsidioDiario = Math.round(((Tarifa.siObjetivoDAC * 6) / 365) * 100) / 100;
+                let consumoDiario = data.PromedioConsumos.consumoDiario;
+                
+                let porcentajePerdida = origen == "Veracruz" ? 82 : 73;
+                porcentajePerdida = porcentajePerdida / 100;
+
+                if(porcentajePropuesta == 0){
+                    potenciaNecesaria = (Math.round((((consumoDiario - subsidioDiario) / irradiacion) / porcentajePerdida) * 100) / 100) * 1000; 
+                }
+                else{
+                    potenciaNecesaria = (Math.round((((consumoDiario * porcentajePropuesta) / irradiacion) / porcentajePerdida) * 100) / 100) * 1000;
+                }
+            }
+            else{ /* MediaTension */
+
+            }
+
+            return potenciaNecesaria;
+        }
+        catch(error){
+            await Log.generateLog({ tipo: 'Error', contenido: 'EnergiaController.getPotenciaNecesaria(): ' +error });
+			throw 'EnergiaController.getPotenciaNecesaria(): '+error;   
         }
     }
 }
