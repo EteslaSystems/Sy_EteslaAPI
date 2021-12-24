@@ -1,6 +1,7 @@
 const Cotizacion = require('../Entities/Panel');
 const AgregadoController = require('../Controller/agregado.controller');
 const EnergiaController = require('../Controller/energia.controller');
+const PanelController = require('../Controller/panel.controller');
 const Log = require('../../config/logConfig');
 const ConfigFile = require('../Controller/configFile.controller');
 
@@ -9,9 +10,45 @@ class CotizacionController{
     cotizacion = new Cotizacion();
     agregadoController = new AgregadoController();
     energiaController = new EnergiaController();
+    panelController = new PanelController();
 
     /* #region Cotizacion/Propuesta */
+    //@main() - First Step - "Obtener *potenica necesaria* y *paneles*"
+    async getFirstStepCotizacion(data){
+        let PotenciaNecesaria = {};
+        let _Paneles = [];
     
+        try{
+            let tipoCotizacion = data.tipoCotizacion;
+
+            if(tipoCotizacion === "bajatension"){
+                PotenciaNecesaria = await energiaController.getPotenciaNecesaria(data);
+                _Paneles = await panelController.getPanelesPropuesta(PotenciaNecesaria.potenciaNecesaria);
+            }
+
+            let Result = {
+                PotenciaNecesaria: PotenciaNecesaria,
+                _Paneles: _Paneles
+            };
+
+            return Result;
+        }
+        catch(error){
+            await Log.generateLog({ tipo: 'Error', contenido: 'CotizacionController.getCotizacion(): ' +error });
+			throw 'ErrorCotizacionController.getCotizacion(): '+error;
+        }
+    }
+
+    //@main - Second Step - "Obtener *Viaticos* *ROI* *PRODUCCION*"
+    async getSecondStepCotizacion(data){
+        try{
+            
+        }
+        catch(error){
+            await Log.generateLog({ tipo: 'Error', contenido: 'CotizacionController.getSecondStepCotizacion(): ' +error });
+			throw 'ErrorCotizacionController.getSecondStepCotizacion(): '+error;
+        }
+    }
     /* #endregion */
 
     /* #region Combinaciones */
