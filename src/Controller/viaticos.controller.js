@@ -1,6 +1,6 @@
 const Viatico = require('../Entities/Viaticos');
-const Log = require('../../config/logConfig');
 const DolarController = require('../Controller/dolar.controller');
+const Log = require('../../config/logConfig');
 
 class ViaticosController{
     //Instancia(s)

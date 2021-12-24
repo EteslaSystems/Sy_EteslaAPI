@@ -57,7 +57,7 @@ module.exports.getConfiguracionPropuesta = function(){
 }
 
 module.exports.getArrayJSONDollarPrice = function(fileName){
-    var getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName;
+    let getFileRootOfConfiguration = process.cwd()+'/config/dirDollarPrice/'+fileName;
 
     return new Promise((resolve, reject) => {
         fs.readFile(getFileRootOfConfiguration, 'utf-8', (err, dollarPrice) => {

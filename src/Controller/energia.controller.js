@@ -1,5 +1,6 @@
 const TarifaController = require('../Controller/tarifa.controller');
 const IrradiacionController = require('../Controller/irradiacion.controller');
+const Log = require('../../config/logConfig');
 
 class EnergiaController{
     //Instancia(s)
@@ -27,6 +28,17 @@ class EnergiaController{
         catch(error){
             await Log.generateLog({ tipo: 'Error', contenido: 'EnergiaController.getPotenciaNecesaria(): ' +error });
 			throw 'EnergiaController.getPotenciaNecesaria(): '+error; 
+        }
+    }
+
+    //@main()
+    async getProduccion(data){
+        try{
+
+        }
+        catch(error){
+            await Log.generateLog({ tipo: 'Error', contenido: 'EnergiaController.getProduccion(): ' +error });
+			throw 'EnergiaController.getProduccion(): '+error;
         }
     }
 
