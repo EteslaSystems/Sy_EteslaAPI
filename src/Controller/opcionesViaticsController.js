@@ -703,7 +703,7 @@ function getCostoTotalAgregados(__agregados){
 
     for(let agregado of __agregados)
     {
-        subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
+        subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioUnitarioMXN);    
         total += subtotal;
     }
     
