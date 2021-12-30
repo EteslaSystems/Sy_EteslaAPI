@@ -1,3 +1,5 @@
+const log = require('../../config/logConfig');
+
 /*
 - @description: 		Archivo correspondiente a las funciones de la API con la BD.
 - @author: 				LH420
@@ -5,7 +7,6 @@
 */
 /*#region CRUD*/
 const mysqlConnection = require('../../config/database');
-const configFile = require('../Controller/configFileController');
 const agregados = require('../Controller/agregadosController');
 
 async function savePropuesta(objPropuesta/*Obj*/){
@@ -105,6 +106,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 			}
 		}
 		catch(error){
+			await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / CLIENTE. ' + result.message });
 			throw error;
 		}
 		/*#endregion*/
@@ -112,7 +114,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		return respuesta;
 	}
 	catch(error){
-		console.log(error);
+		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / CLIENTE. ' + result.message });
 		throw 'Algo salio mal al intenetar guardar la propuesta:\n'+error;
 	}
 }
