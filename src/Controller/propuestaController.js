@@ -106,7 +106,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 			}
 		}
 		catch(error){
-			await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / CLIENTE. ' + result.message });
+			await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + result.message });
 			throw error;
 		}
 		/*#endregion*/
@@ -114,7 +114,7 @@ async function savePropuesta(objPropuesta/*Obj*/){
 		return respuesta;
 	}
 	catch(error){
-		await log.generateLog({ tipo: 'Error', contenido: 'ELIMINAR / CLIENTE. ' + result.message });
+		await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + result.message });
 		throw 'Algo salio mal al intenetar guardar la propuesta:\n'+error;
 	}
 }
