@@ -87,9 +87,15 @@ async function savePropuesta(objPropuesta/*Obj*/){
 				let _agregados = Propuesta.agregados._agregados;
 
 				//Iterar _agregados
-				for(i in _agregados)
+				for(let Agregado of _agregados)
 				{
-					let data = { idPropuesta: idPropuesta, cantidad: _agregados[i].cantidadAgregado, agregado: _agregados[i].nombreAgregado, costo: parseFloat(_agregados[i].precioAgregado) };
+					let data = { 
+						idPropuesta: idPropuesta, 
+						cantidad: Agregado.cantidadAgregado, 
+						agregado: Agregado.nombreAgregado, 
+						costo: parseFloat(Agregado.precioUnitarioMXN) 
+					};
+
 					respuesta = await agregados.insertar(data);
 
 					if(respuesta.status === false){
