@@ -106,16 +106,15 @@ async function savePropuesta(objPropuesta/*Obj*/){
 			}
 		}
 		catch(error){
-			await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + result.message });
-			throw error;
+			throw new Error(error);
 		}
 		/*#endregion*/
 
 		return respuesta;
 	}
 	catch(error){
-		await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + result.message });
-		throw 'Algo salio mal al intenetar guardar la propuesta:\n'+error;
+		await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + error.message });
+		throw new Error('Algo salio mal al intenetar guardar la propuesta:\n'+error);
 	}
 }
 

@@ -11,18 +11,19 @@ function insertarBD(datas){
 
   	return new Promise((resolve, reject) => {
     	mysqlConnection.query('CALL SP_Agregados(?, ?, ?, ?, ?, ?)', [0, null, idPropuesta, cantidad, agregado, costo], (error, rows) => {
-			if (error) {
+			if(error){
 				const response = {
 					status: false,
-					message: error
-				}
+					message: error.message
+				};
 
-				resolve (response);
-			} else {
+				reject(response);
+			} 
+			else{
 				const response = {
 					status: true,
 					message: "El registro se ha guardado con éxito."
-				}
+				};
 
 				resolve(response);
 			}
