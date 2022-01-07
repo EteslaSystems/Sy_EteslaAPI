@@ -3,8 +3,8 @@ const DolarController = require('../Controller/dolar.controller');
 const Log = require('../../config/logConfig');
 const Config = require('../Controller/configFileController');
 
-///
-const ClienteController = require('../Controller/clienteController');
+const ClienteController = require('../Controller/cliente.controller');
+const UsuarioController = require('../Controller/usuario.controller');
 
 /*#region Cotizacion*/
 //@main() - [ 'bajaTension', 'mediaTension', 'individual' ] 
@@ -29,12 +29,16 @@ module.exports.calcularViaticos = async function(data){
         //Se obtiene la data del -Cliente- && -Vendedor(Usuario)-
         if(tipoCotizacion != "CombinacionCotizacion"){
             /* [ C L I E N T E ] */
-            Cliente = await cliente.consultarId({ idPersona: idCliente });
+            Cliente = await ClienteController.consultaId({ idPersona: idCliente });
             Cliente = Cliente.message; 
             Cliente = Cliente[0];
-
             /* [ V E N D E D O R ] */
+            Vendedor = await vendedor.consultarId({ idPersona: idUsuario });
+            Vendedor = Vendedor.message;
+            Vendedor = Vendedor[0];
         }
+
+
     }
     catch(error){
         await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.calcularViaticos(): ' +error });

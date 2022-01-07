@@ -39,84 +39,80 @@ const Log = require('../../config/logConfig');
     await saveDollarPrice();
 }); */
 
-class DolarController{
-    async saveDollarPrice(){
-        let objPrecioDelDolar = {};
+module.exports.saveDollarPrice = async function(){
+    let objPrecioDelDolar = {};
 
-        try{
-            //
-            let uriFile = path.join(process.cwd(), 'config','dirDollarPrice'); //Directory-File
-            let precioDolar = await scrapDollarPrice();
-            let fechaToday = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+    try{
+        //
+        let uriFile = path.join(process.cwd(), 'config','dirDollarPrice'); //Directory-File
+        let precioDolar = await scrapDollarPrice();
+        let fechaToday = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
 
-            //Creando directorio
-            await fs.mkdir(uriFile, {recursive: true});
-            
-            //Objeto del precio del dolar
-            objPrecioDelDolar = {
-                fuente: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
-                precioDolar: precioDolar,
-                fechaUpdate: fechaToday
-            };
-
-            objPrecioDelDolar = JSON.stringify(objPrecioDelDolar, null, 2);
-
-            //Nombre del futuro archivo-log
-            let fileName = 'pdl_'+fechaToday.toString()+'.json';
-            
-            await fs.writeFile(uriFile+'/'+fileName, objPrecioDelDolar, { encoding: 'utf-8' });
-            
-            return 'Precio del dolar actualizado';
-        }
-        catch(error){
-            await Log.generateLog({ tipo: 'Error', contenido: 'DolarController.saveDollarPrice(): ' +error });
-            throw 'Error DolarController.saveDollarPrice(): '+error;
-        }
-    }
-
-    async scrapDollarPrice(){
-        try{
-            const precioDolarRequest = await request({
-                uri: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
-                headers: {},
-                gzip: true
-            });
+        //Creando directorio
+        await fs.mkdir(uriFile, {recursive: true});
         
-            let $ = cheerio.load(precioDolarRequest);
-            let priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
-            priceDolar = parseFloat(priceDolar);
+        //Objeto del precio del dolar
+        objPrecioDelDolar = {
+            fuente: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
+            precioDolar: precioDolar,
+            fechaUpdate: fechaToday
+        };
+
+        objPrecioDelDolar = JSON.stringify(objPrecioDelDolar, null, 2);
+
+        //Nombre del futuro archivo-log
+        let fileName = 'pdl_'+fechaToday.toString()+'.json';
         
-            return priceDolar;
-        }
-        catch(error){
-            await Log.generateLog({ tipo: 'Error', contenido: 'DolarController.scrapDollarPrice(): ' +error });
-            throw 'Error DolarController.scrapDollarPrice(): '+error;
-        }
+        await fs.writeFile(uriFile+'/'+fileName, objPrecioDelDolar, { encoding: 'utf-8' });
+        
+        return 'Precio del dolar actualizado';
     }
-
-    async getDollarPrice(){
-        try{
-            let now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
-            let fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
-            let dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
-
-            if(dollarPrice.status != true)
-            {
-                //Error - No lo pudo descargar de la pagina web
-                dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
-            }
-            else{
-                //Success
-                dollarPrice = dollarPrice.message;
-            }
-
-            return dollarPrice;
-        }
-        catch(error){
-            await Log.generateLog({ tipo: 'Error', contenido: 'DolarController.getDollarPrice(): ' +error });
-            throw 'Error DolarController.getDollarPrice(): '+error;
-        }
+    catch(error){
+        await Log.generateLog({ tipo: 'Error', contenido: 'DolarController.saveDollarPrice(): ' +error });
+        throw 'Error DolarController.saveDollarPrice(): '+error;
     }
 }
 
-module.exports = DolarController;
+module.exports.scrapDollarPrice = async function(){
+    try{
+        const precioDolarRequest = await request({
+            uri: 'https://www.infodolar.com.mx/tipo-de-cambio-dof-diario-oficial-de-la-federacion.aspx',
+            headers: {},
+            gzip: true
+        });
+    
+        let $ = cheerio.load(precioDolarRequest);
+        let priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
+        priceDolar = parseFloat(priceDolar);
+    
+        return priceDolar;
+    }
+    catch(error){
+        await Log.generateLog({ tipo: 'Error', contenido: 'DolarController.scrapDollarPrice(): ' +error });
+        throw 'Error DolarController.scrapDollarPrice(): '+error;
+    }
+}
+
+module.exports.getDollarPrice = async function(){
+    try{
+        let now = moment().tz("America/Mexico_City").format('YYYY-MM-DD');
+        let fileName = 'pdl_'+now.toString()+'.json'; ///pdl = precio dolar log
+        let dollarPrice = await configFile.getArrayJSONDollarPrice(fileName);
+
+        if(dollarPrice.status != true)
+        {
+            //Error - No lo pudo descargar de la pagina web
+            dollarPrice = parseFloat(dollarPrice.valueOfDollar.precioDolar);
+        }
+        else{
+            //Success
+            dollarPrice = dollarPrice.message;
+        }
+
+        return dollarPrice;
+    }
+    catch(error){
+        await Log.generateLog({ tipo: 'Error', contenido: 'DolarController.getDollarPrice(): ' +error });
+        throw 'Error DolarController.getDollarPrice(): '+error;
+    }
+}
