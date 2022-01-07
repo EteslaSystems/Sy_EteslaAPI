@@ -6,75 +6,67 @@ const ViaticosController = require('../Controller/viaticos.controller');
 const Log = require('../../config/logConfig');
 const ConfigFile = require('../Controller/configFile.controller');
 
-class CotizacionController{
-    //Instancia(s)
-    cotizacion = new Cotizacion();
-    agregadoController = new AgregadoController();
-    energiaController = new EnergiaController();
-    panelController = new PanelController();
-    viaticosController = new ViaticosController();
-
-    /* #region Cotizacion/Propuesta */
-    //@main() - First Step - "Obtener *potenica necesaria* y *paneles*"
-    async getFirstStepCotizacion(data){
-        let PotenciaNecesaria = {};
-        let Result = {};
-        let _Paneles = [];
+/* #region Cotizacion/Propuesta */
+//@main() - First Step - "Obtener *potenica necesaria* y *paneles*"
+maodule.exports.getFirstStepCotizacion = function(data){
+    let PotenciaNecesaria = {};
+    let Result = {};
+    let _Paneles = [];
     
-        try{
-            let tipoCotizacion = data.tipoCotizacion;
+    try{
+        let tipoCotizacion = data.tipoCotizacion;
 
-            if(tipoCotizacion === "bajatension" || tipoCotizacion === "mediatension"){
-                PotenciaNecesaria = await energiaController.getPotenciaNecesaria(data);
-                _Paneles = await panelController.getPanelesPropuesta(PotenciaNecesaria.potenciaNecesaria);
+        if(tipoCotizacion === "bajatension" || tipoCotizacion === "mediatension"){
+            PotenciaNecesaria = await energiaController.getPotenciaNecesaria(data);
+            _Paneles = await panelController.getPanelesPropuesta(PotenciaNecesaria.potenciaNecesaria);
 
-                Result = {
-                    PotenciaNecesaria: PotenciaNecesaria,
-                    _Paneles: _Paneles
-                };
-            }
-            else{ /* CotizacionIndividual */
-
-            }
-
-            return Result;
+            Result = {
+                PotenciaNecesaria: PotenciaNecesaria,
+                _Paneles: _Paneles
+            };
         }
-        catch(error){
-            await Log.generateLog({ tipo: 'Error', contenido: 'CotizacionController.getCotizacion(): ' +error });
-			throw 'ErrorCotizacionController.getCotizacion(): '+error;
+        else{ /* CotizacionIndividual */
+
         }
+
+        return Result;
     }
-
-    //@main - Second Step - "Obtener *Viaticos* *PRODUCCION* *ROI* *Financiamiento*"
-    async getSecondStepCotizacion(data){
-        let Result = {};
-
-        try{
-            if(tipoCotizacion === "bajatension"){
-                let Viaticos = await viaticosController.calcularViaticos({
-
-                }); 
-
-                let Produccion = await energiaController.getProduccion(data); 
-
-                // let ROI = await roiController.getROI({
-                //     Produccion: Produccion,
-                //     _consumos: data._consumos,
-                //     precioMXNSinIVA: Viaticos.totales.precioMXNSinIVA
-                // });
-                
-                // let Financiamiento = await financiamientoController.getFinanciamiento({ costoTotal: Viaticos.totales.precioMXNSinIVA });
-
-                Result = { Viaticos, Produccion };
-            }
-
-            return Result;
-        }
-        catch(error){
-            await Log.generateLog({ tipo: 'Error', contenido: 'CotizacionController.getSecondStepCotizacion(): ' +error });
-			throw 'ErrorCotizacionController.getSecondStepCotizacion(): '+error;
-        }
+    catch(error){
+        await Log.generateLog({ tipo: 'Error', contenido: 'CotizacionController.getCotizacion(): ' +error });
+		throw 'ErrorCotizacionController.getCotizacion(): '+error;
     }
+}
+
+//@main - Second Step - "Obtener *Viaticos* *PRODUCCION* *ROI* *Financiamiento*"
+module.exports.getSecondStepCotizacion = function(data){
+    let Result = {};
+
+    try{
+        if(tipoCotizacion === "bajatension"){
+            let Viaticos = await viaticosController.calcularViaticos({
+
+            }); 
+
+            let Produccion = await energiaController.getProduccion(data); 
+
+            // let ROI = await roiController.getROI({
+            //     Produccion: Produccion,
+            //     _consumos: data._consumos,
+            //     precioMXNSinIVA: Viaticos.totales.precioMXNSinIVA
+            // });
+            
+            // let Financiamiento = await financiamientoController.getFinanciamiento({ costoTotal: Viaticos.totales.precioMXNSinIVA });
+
+            Result = { Viaticos, Produccion };
+        }
+
+        return Result;
+    }
+    catch(error){
+        await Log.generateLog({ tipo: 'Error', contenido: 'CotizacionController.getSecondStepCotizacion(): ' +error });
+        throw 'ErrorCotizacionController.getSecondStepCotizacion(): '+error;
+    }
+}
     /* #endregion */
 
     /* #region Combinaciones */
@@ -589,6 +581,3 @@ class CotizacionController{
         return result;
     }
     /*#endregion */
-}
-
-module.exports = CotizacionController;
