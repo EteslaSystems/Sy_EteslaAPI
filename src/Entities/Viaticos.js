@@ -2,37 +2,6 @@ const mysqlConnection = require('../../config/database');
 const Log = require('../../config/logConfig');
 
 //CRUD
-module.exports.insertarBD = async function(datas){
-	const { cTipoCotizacion, vConcepto, fCosto, cMoneda } = datas;
-
-	try{
-		return new Promise((resolve, reject) => {
-			mysqlConnection.query('CALL SP_Viaticos(?, ?, ?, ?, ?, ?)', [0, null, cTipoCotizacion, vConcepto, fCosto, cMoneda], (error, rows) => {
-				if(error){
-					const response = {
-						status: false,
-						message: error
-					}
-	
-					reject(response);
-				} 
-				else{
-					const response = {
-						status: true,
-						message: "El registro se ha guardado con éxito."
-					}
-	
-					resolve(response);
-				}
-			});
-		});
-	}
-	catch(error){
-		await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.insertarBD(): ' +error.message });
-		throw 'Error Viaticos.insertarBD(): '+error;
-	}
-}
-
 module.exports.eliminarBD = async function(idViatico){
 	try{
 		return new Promise((resolve, reject) => {

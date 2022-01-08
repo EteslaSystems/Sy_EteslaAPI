@@ -4,30 +4,33 @@ const ConfigFile = require('../Controller/configFile.controller');
 const Cotizacion = require('../Entities/Panel');
 const ClienteController = require('../Controller/clienteController');
 const UsuarioController = require('../Controller/usuario.controller');
+const PanelController = require('../Controller/panel.controller');
+const EnergiaController = require('../Controller/energia.controller');
 
 const AgregadoController = require('../Controller/agregado.controller');
-const EnergiaController = require('../Controller/energia.controller');
-const PanelController = require('../Controller/panel.controller');
 const ViaticosController = require('../Controller/viaticos.controller');
 
 
 /* #region Cotizacion/Propuesta */
-//@main() - First Step - "Obtener *potenica necesaria* y *paneles*"
+//@main - First Step - "Obtener *potenica necesaria* y *paneles*"
 maodule.exports.getFirstStepCotizacion = function(data){
     let PotenciaNecesaria = {};
-    let Result = {};
+    let Combinaciones = {};
     let _Paneles = [];
+    let Result = {};
     
     try{
         let tipoCotizacion = data.tipoCotizacion;
 
         if(tipoCotizacion === "bajatension" || tipoCotizacion === "mediatension"){
-            PotenciaNecesaria = await energiaController.getPotenciaNecesaria(data);
-            _Paneles = await panelController.getPanelesPropuesta(PotenciaNecesaria.potenciaNecesaria);
+            PotenciaNecesaria = await EnergiaController.getPotenciaNecesaria(data);
+            _Paneles = await PanelController.getPanelesPropuesta(PotenciaNecesaria.potenciaNecesaria);
+            Combinaciones = busquedaInteligente(data);
 
             Result = {
                 PotenciaNecesaria: PotenciaNecesaria,
-                _Paneles: _Paneles
+                _Paneles: _Paneles,
+                Combinaciones: Combinaciones
             };
         }
         else{ /* CotizacionIndividual */
@@ -75,7 +78,7 @@ module.exports.getSecondStepCotizacion = function(data){
 /* #endregion */
 
 /* #region Combinaciones */
-//@main()
+//@static
 /****NOTA:: RECONSTRUIR LA FUNCION DE 'busquedaInteligente(data)' */ 
 async function busquedaInteligente(data){ /* [ Combinaciones ] */
     let CombinacionEconomica  = {}, CombinacionRecomendada  = {}, CombinacionPremium = {};

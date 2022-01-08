@@ -5,14 +5,18 @@ const Config = require('../Controller/configFileController');
 
 const ClienteController = require('../Controller/cliente.controller');
 const UsuarioController = require('../Controller/usuario.controller');
+const AgregadosController = require('../Controller/agregado.controller');
+const EstructuraController = require('../Controller/estructura.controller');
 
 /*#region Cotizacion*/
 //@main() - [ 'bajaTension', 'mediaTension', 'individual' ] 
 module.exports.calcularViaticos = async function(data){ 
     let Descuento = { porcentaje: 0, descuento: 0, precioSinDescuento: 0 };
     let Aumento = { porcentaje: 0, aumento: 0, precioSinAumento: 0 };
+    let Agregados = {};
+    let Estructuras = {};
     let cantidadEstructuras = 0;
-    let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
+    let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0;
     let precio_watt = 0;
     let Cliente = null, Vendedor = null;
 
@@ -26,6 +30,8 @@ module.exports.calcularViaticos = async function(data){
         let _agregados = data._agregados || null;
         let tarifa = data.tarifa || null;
 
+        let precioDolar = JSON.parse(await DolarController.obtenerPrecioDolar());
+
         //Se obtiene la data del -Cliente- && -Vendedor(Usuario)-
         if(tipoCotizacion != "CombinacionCotizacion"){
             /* [ C L I E N T E ] */
@@ -33,12 +39,28 @@ module.exports.calcularViaticos = async function(data){
             Cliente = Cliente.message; 
             Cliente = Cliente[0];
             /* [ V E N D E D O R ] */
-            Vendedor = await vendedor.consultarId({ idPersona: idUsuario });
+            Vendedor = await UsuarioController.consultarId({ idPersona: idUsuario });
             Vendedor = Vendedor.message;
             Vendedor = Vendedor[0];
         }
 
+        /* [ Agregados ] */
+        if(_agregados != null){
+            //Se obtiene el costo total de los agregados
+            Agregados = await AgregadosController.obtenerCostoTotalAgregados(_agregados, precioDolar);
+        }
 
+        if(data.estructura){
+            //Coleccion de estructuras
+            Estructuras = await EstructuraController.consultar();
+            Estructuras = Estructuras.filter(Estructura => { Estructura.vMarca === data.estructura.vMarca });
+
+            if(tipoCotizacion === "individual"){
+                costoTotalEstructuras = data.estructura.cantidad * Estructuras.fPrecio;
+            }
+
+            costoTotalEstructuras = data.paneles.cantidad * Estructuras.fPrecio;
+        }
     }
     catch(error){
         await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.calcularViaticos(): ' +error });
@@ -47,24 +69,6 @@ module.exports.calcularViaticos = async function(data){
 }
 
 /*#region @static*/
-//@static
-async function obtenerCostoTotalAgregados(_agregados){
-    let total = 0, subtotal = 0;
-
-    try{
-        _agregados.filter(agregado => {
-            subtotal = parseFloat(agregado.cantidadAgregado * agregado.precioAgregado);    
-            total += subtotal;
-        });
-
-        return total;
-    }
-    catch(error){
-        await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.obtenerCostoTotalAgregados(): ' +error });
-        throw 'Error Viaticos.obtenerCostoTotalAgregados(): '+error;
-    }
-}
-
 //@static
 async function obtenerDiasObra(numeroPanelesInstalar, numeroCuadrillas){
     let dias = 0;
@@ -205,23 +209,18 @@ async function obtenerDistanciaEnKm(origen, destino){
 /*#endregion */
 
 /*#region @exports - [CRUD] */
-module.exports.insertar = async function(datas){
-    const result = await viatico.insertarBD(datas);
-    return result;
-}
-
 module.exports.eliminar = async function(datas){
-    const result = await viatico.eliminarBD(datas);
+    const result = await Viatico.eliminarBD(datas);
     return result;
 }
 
 module.exports.editar = async function(datas){
-    const result = await viatico.editarBD(datas);
+    const result = await Viatico.editarBD(datas);
     return result;
 }
 
 module.exports.consulta = async function(){
-    const result = await viatico.consultaBD;
+    const result = await Viatico.consultaBD;
     return result;
 }
 /*#endregion */
