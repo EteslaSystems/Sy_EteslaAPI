@@ -1,4 +1,25 @@
 let Estructura = require('../Entities/Estructura');
+const Log = require('../../config/logConfig');
+
+//@
+module.exports.obtenerEstructurasCotizacion = async function(data){
+    try{
+        let { marca, cantidad } = data;
+
+        let Estructura =  await this.consultar();
+        Estructura = Estructura.filter(estructura => { estructura.vMarca === marca });
+
+        //Agregar :propiedades: -cantidad- && -costoTotal- al objetco [ Estructuras ]
+        Object.assign(Estructura,{ cantidad, costoTotal });
+
+        Estructura.cantidad = cantidad;
+        Estructura.costoTotal = cantidad * Estructura.fPrecio;
+    }
+    catch(error){
+        await Log.generateLog({ tipo: 'Error', contenido: 'EstructuraController.obtenerEstructurasCotizacion(): ' +error });
+        throw 'Error EstructuraController.obtenerEstructurasCotizacion: '+error;
+    }
+}
 
 //CRUD
 module.exports.insertar = async function(datas){

@@ -1,48 +1,27 @@
 const Viatico = require('../Entities/Viaticos');
 const DolarController = require('../Controller/dolar.controller');
 const Log = require('../../config/logConfig');
-const Config = require('../Controller/configFileController');
 
 const ClienteController = require('../Controller/cliente.controller');
 const UsuarioController = require('../Controller/usuario.controller');
 const AgregadosController = require('../Controller/agregado.controller');
 const EstructuraController = require('../Controller/estructura.controller');
+const ConfigController = require('../Controller/configFileController');
 
 /*#region Cotizacion*/
 //@main() - [ 'bajaTension', 'mediaTension', 'individual' ] 
 module.exports.calcularViaticos = async function(data){ 
-    let Descuento = { porcentaje: 0, descuento: 0, precioSinDescuento: 0 };
-    let Aumento = { porcentaje: 0, aumento: 0, precioSinAumento: 0 };
-    let Agregados = {};
-    let Estructuras = {};
-    let cantidadEstructuras = 0;
-    let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0;
-    let precio_watt = 0;
-    let Cliente = null, Vendedor = null;
+    let Agregados = null;
+    let Estructuras = null;
 
     try{
-        let idUsuario = data.idUsuario;
-        let idCliente = data.idCliente;
         let origen = data.origen;
         let destino = data.destino; 
         let tipoCotizacion = data.tipoCotizacion;
-        let _consumos = data.consumos || null;
-        let _agregados = data._agregados || null;
-        let tarifa = data.tarifa || null;
 
         let precioDolar = JSON.parse(await DolarController.obtenerPrecioDolar());
-
-        //Se obtiene la data del -Cliente- && -Vendedor(Usuario)-
-        if(tipoCotizacion != "CombinacionCotizacion"){
-            /* [ C L I E N T E ] */
-            Cliente = await ClienteController.consultaId({ idPersona: idCliente });
-            Cliente = Cliente.message; 
-            Cliente = Cliente[0];
-            /* [ V E N D E D O R ] */
-            Vendedor = await UsuarioController.consultarId({ idPersona: idUsuario });
-            Vendedor = Vendedor.message;
-            Vendedor = Vendedor[0];
-        }
+        let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
+        distanciaEnKm = distanciaEnKm.message;
 
         /* [ Agregados ] */
         if(_agregados != null){
@@ -51,16 +30,21 @@ module.exports.calcularViaticos = async function(data){
         }
 
         if(data.estructura){
-            //Coleccion de estructuras
-            Estructuras = await EstructuraController.consultar();
-            Estructuras = Estructuras.filter(Estructura => { Estructura.vMarca === data.estructura.vMarca });
-
-            if(tipoCotizacion === "individual"){
-                costoTotalEstructuras = data.estructura.cantidad * Estructuras.fPrecio;
+            if(tipoCotizacion === 'individual'){
+                //Cotizacion -individual- la cantidad de Estructuras varia y no tiene relacion con los modulos a instalar
+                Estructuras = await EstructuraController.obtenerEstructurasCotizacion({ marca: data.estructura.vMarca, cantidad: data.estructura.cantidad });
             }
 
-            costoTotalEstructuras = data.paneles.cantidad * Estructuras.fPrecio;
+            //Cotizacion -baja- && -media- la cantidad de Estructuras va en relacion a los paneles a instalar
+            Estructuras = await EstructuraController.obtenerEstructurasCotizacion({ marca: data.estructura.vMarca, cantidad: data.panel.noModulos });
         }
+
+        let Viaticos = await obtenerViaticos({
+            Equipos: { panel: data.panel, inversor: data.inversor, estructura: data.estructura },
+            distanciaEnKm: distanciaEnKm,
+            precioDolar: precioDolar,
+            ComplementosConfig: data
+        });
     }
     catch(error){
         await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.calcularViaticos(): ' +error });
@@ -69,96 +53,144 @@ module.exports.calcularViaticos = async function(data){
 }
 
 /*#region @static*/
-//@static
-async function obtenerDiasObra(numeroPanelesInstalar, numeroCuadrillas){
-    let dias = 0;
-
+/*#region*/
+//@main_static
+async function obtenerViaticos(data){
     try{
-        if(numeroPanelesInstalar >= 0 && numeroPanelesInstalar <= 99){
-            dias = (numeroPanelesInstalar / 40) / numeroCuadrillas * 8;
-        }
-        else if(numeroPanelesInstalar >= 100 && numeroPanelesInstalar <= 299){
-            dias = (numeroPanelesInstalar / 40) / numeroCuadrillas * 8;
-        }
-        else if(numeroPanelesInstalar >= 300 && numeroPanelesInstalar <= 499){
-            dias = (numeroPanelesInstalar / 40) / numeroCuadrillas * 8;
-        }
-        else if(numeroPanelesInstalar >= 500 && numeroPanelesInstalar <= 799){
-            dias = (numeroPanelesInstalar / 40) / numeroCuadrillas * 8;
-        }
-        else if(numeroPanelesInstalar >=800 && numeroPanelesInstalar <= 1199){
-            dias = (numeroPanelesInstalar / 40) / numeroCuadrillas * 8;
-        }
-        else if(numeroPanelesInstalar >= 1200){
-            dias = (numeroPanelesInstalar / 40) / numeroCuadrillas * 8;
-        }
-        else{
-            dias = -1;
-        }
+        let { Equipos, distanciaEnKm, precioDolar, ComplementosConfig  } = data;
 
-        return dias = Math.round(dias * 100)/100;
-    }
-    catch(error){
-        await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.obtenerDiasObra(): ' +error });
-        throw 'Error Viaticos.obtenerDiasObra(): '+error;
-    }
-}
+        ComplementosConfig = ComplementosConfig.complementos ? ComplementosConfig.complementos : null;
 
-//@static
-async function obtenerDiasObraReales(numeroPanelesInstalar, numeroDias){
-    let diasReales = 0;
+        let ConfigViaticos = await ConfigController.getArrayOfConfigFile();
+        let Viaticos = await Viatico.consultaBD();
 
-    try{
-        if(numeroPanelesInstalar >= 0 && numeroPanelesInstalar <= 99){
-            // return 244;
-            diasReales = Math.ceil(numeroPanelesInstalar / 100 * numeroDias);
-        }
-        else if(numeroPanelesInstalar >= 100 && numeroPanelesInstalar <= 299){
-            // return 122;
-            diasReales = Math.ceil(numeroPanelesInstalar / 300 * numeroDias);
-        }
-        else if(numeroPanelesInstalar >= 300 && numeroPanelesInstalar <= 499){
-            // return 82;
-            diasReales = Math.ceil(numeroPanelesInstalar / 500 * numeroDias);
-        }
-        else if(numeroPanelesInstalar >= 500 && numeroPanelesInstalar <= 799){
-            // return 49;
-            diasReales = Math.ceil(numeroPanelesInstalar / 800 * numeroDias);
-        }
-        else if(numeroPanelesInstalar >=800 && numeroPanelesInstalar <= 1199){
-            // return 31;
-            diasReales = Math.ceil(numeroPanelesInstalar / 1200 * numeroDias);
-        }
-        else if(numeroPanelesInstalar >= 1200){
-            // return 23;
-            diasReales = Math.ceil(numeroPanelesInstalar / 2000 * numeroDias);
-        }
-
-        return diasReales;
-    }
-    catch(error){
-        await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.obtenerDiasObraReales(): ' +error });
-        throw 'Error Viaticos.obtenerDiasObraReales(): '+error;
-    }
-    
-}
-
-//@static
-async function obtenerPagoBus(distanciaKm){
-    try{
-        if(distanciaKm < 600){
-            distanciaKm = parseFloat(distanciaKm * 1.2);
-        }
-        else{
-            distanciaKm = parseFloat(distanciaKm * 2.1); 
-        }
+        //[ Dias(naturales) de instalacion ]
+        let noDias = obtenerDiasNaturales({ 
+            noPanelesInstalar: Equipos.panel.noModulos,
+            noPersonasRequeridas: Viaticos.PERSONAS_REQUERIDAS,
+            personasPorPanel: Viaticos.PERSONAS_PANEL
+        });
         
-        return distanciaKm = distanciaKm * 2;
+        //[ Fletes ]
+        let totalFletes = obtenerFletes({ 
+            Config: ConfigViaticos,
+            costoTotalPanel: data.panel.costoTotal,
+            costoTotalInversor: data.inversor.costoTotal,
+            costoTotalEstructura: data.estructura.costoTotal
+        });
+        
+        //[{ hospedaje, pasaje, comida, gasolina }]
+        let ViaticosForaneos = obtenerViaticosForaneos({ 
+            noDias: noDias, 
+            Config: ConfigViaticos, 
+            Viaticos: Viaticos, 
+            distanciaEnKm: distanciaEnKm
+        });
+        
+        //[ Mano de obra && Otros ]
+        let OtrosManoO = obtenerMOyOtros({ 
+            Config: ConfigViaticos,
+            cantidadPaneles: Equipos.panel.noModulos,
+            subtotalPIEV: (Equipos.panel.costoTotal + Equipos.inversor.costoTotal + Equipos.estructura.costoTotal + ViaticosForaneos.costoTotal),
+            precioDolar: precioDolar
+        });
+
+        const Result = {
+            noDias: noDias,
+            totalFletes: totalFletes,
+            manoObra: OtrosManoO.costoMO,
+            otros: OtrosManoO.costoOtros,
+            ViaticosForaneos: ViaticosForaneos
+        };
+
+        return Result;
     }
     catch(error){
-        await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.obtenerPagoBus(): ' +error });
-        throw 'Error Viaticos.obtenerPagoBus(): '+error;
+        await Log.generateLog({ tipo: 'Error', contenido: 'ViaticosController.obtenerViaticos(): ' +error });
+        throw 'Error ViaticosController.obtenerViaticos(): '+error;
     }
+}
+
+//@static
+function obtenerViaticosForaneos(data){
+    let hospedaje = 0, comida = 0, pasaje = 0, gasolina = 0;
+    let { noDias, Config, Viaticos, distanciaEnKm  } = data;
+
+    //
+    Config = Config.cotizacion_config;
+
+    //Variables de configuracion (validaciones)
+    let km_cobro_gasolina = Config.viaticos.km_cobro_gasol;
+
+    //Conceptos [Viaticos]
+    let hospedaje_dia = Viaticos.HOSPEDAJE;
+    let noPersonasRequeridas = Viaticos.PERSONAS_REQUERIDAS;
+    let comida_dia = Viaticos.COMIDA;
+    let km_hospedaje = Viaticos.KM_HOSPEDAJE;
+    let km_pasaje = Viaticos.KM_PASAJE;
+    let costo_km_gasolina = Viaticos.COSTO_KM_GASOLINA;
+
+    //[ Gasolina ]
+    if(distanciaEnKm >= km_cobro_gasolina){
+        gasolina = distanciaEnKm * costo_km_gasolina;
+    }
+
+    //[ Cotizacion_Foranea = { hospedaje, comida, pasaje } ]
+    if(distanciaEnKm >= km_hospedaje || distanciaEnKm >= km_pasaje && noDias > 7){
+        hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
+        comida = noDias * comida_dia * noPersonasRequeridas;
+        pasaje = gasolina * noPersonasRequeridas * 2;
+    }
+    else if(distanciaEnKm >= km_pasaje && noDias < 7){
+        pasaje = distanciaEnKm * costo_km_gasolina * noPersonasRequeridas * 2 * noDias;
+    }
+
+    costoTotal = distanciaEnKm < km_hospedaje ? gasolina : Math.round( hospedaje + comida + pasaje );
+    costoTotal = Math.round(costoTotal * (1 + Viaticos.VIATICOS_OTROS));
+
+    return { costoTotal, viaticos_foraneos: { gasolina, hospedaje, comida, pasaje } }
+}
+
+//@static
+function obtenerDiasNaturales(data){
+    let { noPanelesInstalar, noPersonasRequeridas, personasPorPanel } = data;
+    return Math.ceil((noPanelesInstalar / noPersonasRequeridas) / personasPorPanel);
+}
+
+//@static
+function obtenerFletes(data){
+    let { Config, costoTotalPanel, costoTotalInversor, costoTotalEstructura } = data;
+
+    let porcentaje_flete = parseFloat(Config.cotizacion_config.porcentajes.porcentaje_fletes);
+    let subtotalPIE = costoTotalPanel + costoTotalInversor + costoTotalEstructura; //PIE => [ Panel, Inversor, Estructura ]
+
+    return Math.floor(subtotalPIE * porcentaje_flete);
+}
+/*#endregion*/
+
+//@static
+function obtenerMOyOtros(data){ /* Nota: Debe de retornar los costos en [USD] */
+    let { Config, cantidadPaneles, subtotalPIEV, precioDolar } = data; /* PIEV => Panel, Inversor, Estructura, Viaticos */
+    
+    //
+    let costoMO = 0, costoOtros = 0;
+    let mo_unitario = 12; //USD
+    let otros_porcentaje = 0.035;
+
+    //Costos en MXN de -Mano de Obra- & -Otros-
+    let ManoObraDictionary = Config.cotizacion_config.mano_obra;
+    let OtrosDictionary = Config.cotizacion_config.otros;
+
+    if(ManoObraDictionary.hasOwnProperty(cantidadPaneles) == true){ //Se busca coincidencia en los diccionarios (Sobre la cantidad de paneles a instalar)
+        costoMO = Math.round((ManoObraDictionary[cantidadPaneles] / precioDolar) * 100) / 100;
+        costoOtros = Math.round((OtrosDictionary[cantidadPaneles] / precioDolar) * 100) / 100;  
+    }
+    else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
+        costoMO = Math.round(((cantidadPaneles * mo_unitario)) * 100) / 100;
+        costoOtros = Math.round((((subtotalPIEV + costoMO) * otros_porcentaje)) * 100) / 100;
+    }
+
+    return { costoMO, costoOtros }
 }
 
 //@static
@@ -178,7 +210,7 @@ async function obtenerDistanciaEnKm(origen, destino){
                     body = JSON.parse(body);
                     body = body.rows[0].elements;
     
-                    for(var i=0; i<body.length; i++){
+                    for(let i=0; i<body.length; i++){
                         distanciaEnKm = body[i].distance.value;
                     }
     

@@ -1,38 +1,38 @@
 DELIMITER //
-CREATE PROCEDURE SP_Opciones_Viatics
+CREATE OR REPLACE PROCEDURE SP_Viaticos
 (
 	IN Opcion INT,
-	IN xIdOpcion_Viatics VARCHAR(255),
-	IN NombreOperacion VARCHAR(80),
-    	IN TipoDeMoneda VARCHAR(8),
+	IN xIdViatico VARCHAR(255),
+	IN NombreViatico VARCHAR(80),
+    IN TipoDeMoneda VARCHAR(8),
 	IN Valor FLOAT
 )
 BEGIN
 	/*Insertar*/
 	IF(Opcion = 0) THEN	
-	   INSERT INTO opciones_viatics
-	   VALUES(UUID(), NombreOperacion, TipoDeMoneda, Valor, NOW(), NULL, NULL);
+	   INSERT INTO viaticos
+	   VALUES(UUID(), NombreViatico, TipoDeMoneda, Valor, NOW(), NULL, NULL);
     /*Eliminar*/
 	ELSEIF(Opcion = 1) THEN
-	   UPDATE opciones_viatics
+	   UPDATE viaticos
 	   SET deleted_at = NOW()
-	   WHERE idOpcion_Viatics = UNHEX(xIdOpcion_Viatics);
+	   WHERE idViatico = UNHEX(xIdViatico);
     /*Actualizar*/
 	ELSEIF(Opcion = 2) THEN
-	   UPDATE opciones_viatics
-	   SET vNombreOperacion = NombreOperacion, vTipoMoneda=TipoDeMoneda, fValor = Valor, updated_at = NOW()
-	   WHERE idOpcion_Viatics = UNHEX(xIdOpcion_Viatics);
+	   UPDATE viaticos
+	   SET vNombreViatico = NombreViatico, vTipoMoneda = TipoDeMoneda, fValor = Valor, updated_at = NOW()
+	   WHERE idViatico = UNHEX(xIdViatico);
 	/*Leer*/
     ELSEIF(Opcion = 3) THEN
-	   SELECT HEX(idOpcion_Viatics) AS idOpcion_Viatics, vNombreOperacion, fValor, created_at, updated_at, deleted_at
-	   FROM opciones_viatics
+	   SELECT HEX(idViatico) AS idViatico, vNombreViatico, fValor, created_at, updated_at, deleted_at
+	   FROM viaticos
 	   WHERE deleted_at IS NULL
 	   ORDER BY created_at DESC;
     /*Leer - filtrado*/
 	ELSEIF(Opcion = 4) THEN
-	   SELECT HEX(idOpcion_Viatics) AS idOpcion_Viatics, vNombreOperacion, fValor, created_at, updated_at, deleted_at
-	   FROM opciones_viatics
-	   WHERE idOpcion_Viatics = UNHEX(xIdOpcion_Viatics);
+	   SELECT HEX(idViatico) AS idViatico, vNombreViatico, fValor, created_at, updated_at, deleted_at
+	   FROM viaticos
+	   WHERE idViatico = UNHEX(xIdViatico);
 	END IF;
 END
 // DELIMITER;
