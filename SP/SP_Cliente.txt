@@ -1,5 +1,5 @@
 DELIMITER //
-CREATE OR REPLACE PROCEDURE SP_Cliente
+CREATE PROCEDURE SP_Cliente
 (
     /* Variables para Cliente */
     IN Opcion INT,
@@ -89,15 +89,19 @@ BEGIN
         ORDER BY persona.created_at DESC;
     /* Consultar - Clientes pertenecientes a un Vendedor, *Por Nombre* */
     ELSEIF (Opcion = 6) THEN
-        SELECT HEX(cliente.idCliente) AS idCliente, HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado, persona.created_at, persona.deleted_at, persona.updated_at 
-        FROM cliente 
-        INNER JOIN persona ON cliente.id_Persona = persona.idPersona 
-        INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
-        WHERE persona.deleted_at IS NULL
-        AND persona.vNombrePersona LIKE CONCAT('%',NombrePersona,'%')
-        OR persona.vPrimerApellido LIKE CONCAT('%',NombrePersona,'%')
-        OR persona.vSegundoApellido LIKE CONCAT('%',NombrePersona,'%')
-        AND cliente.id_Usuario = UNHEX(xIdUsuario);
+        SELECT HEX(cli.idCliente) AS idCliente, per.vNombrePersona, per.vPrimerApellido, per.vSegundoApellido, per.vTelefono, per.vCelular, per.vEmail, cli.cCodigoPostal, cli.vCalle, cli.vMunicipio, cli.vCiudad, cli.vEstado
+        FROM
+        (
+            SELECT cli.idCliente, cli.id_Usuario, cli.id_Persona, dir.cCodigoPostal, dir.vCalle, dir.vMunicipio, dir.vCiudad, dir.vEstado
+            FROM direccion dir
+            INNER JOIN cliente cli
+            ON dir.id_Cliente = cli.idCliente
+        ) AS cli
+        INNER JOIN persona per
+        ON per.idPersona = cli.id_Persona
+        WHERE cli.id_Usuario = UNHEX(xIdUsuario)
+        AND CONCAT(per.vNombrePersona, ' ', per.vPrimerApellido)
+        LIKE CONCAT('%', NombrePersona,'%');
     END IF;
 END
 // DELIMITER ;

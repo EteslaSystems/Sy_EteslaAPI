@@ -5,7 +5,6 @@
  * @date: 11/Febrero/2020
  */
 //Requires
-const path = require('path');
 const express = require('express'); //Constante que instancia la libreria 'express'.
 const http = require('http');
 
@@ -26,6 +25,7 @@ const server = http.createServer(app); //Constante que crea/inicializa el servid
 //Settings
 app.set('port', process.env.PORT || 3000); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
 
+//Ruta inicial
 app.get('/', (req, res) => {
     res.json({
         name: 'API Etesla',

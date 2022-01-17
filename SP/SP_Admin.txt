@@ -1,0 +1,26 @@
+/* Retorna Usuario con -nombres- de sus Clientes */
+/* Se une el id -Vendedor- junto con su info. que hay en -Persona- */
+SELECT HEX(us.idUsuario) AS idUsuario, CONCAT(per.vNombrePersona, ' ', per.vPrimerApellido) AS Vendedor, us.nombreCliente
+FROM
+(
+	/* Retorna los -id- de *Vendedor* que tengan -Clientes- */
+	SELECT usu.idUsuario, usu.id_Persona, CONCAT(client.vNombrePersona, ' ', client.vPrimerApellido) AS nombreCliente
+	FROM
+	(
+		/* Retona -Clientes- con sus -Direcciones- */
+		SELECT cli.idCliente, cli.id_Usuario, per.vNombrePersona, per.vPrimerApellido, per.vSegundoApellido, per.vTelefono, per.vCelular, per.vEmail, cli.cCodigoPostal, cli.vCalle, cli.vMunicipio, cli.vCiudad, cli.vEstado
+		FROM
+		(
+			SELECT idCliente, id_Usuario, id_Persona, dir.cCodigoPostal, dir.vCalle, dir.vMunicipio, dir.vCiudad, dir.vEstado
+			FROM direccion dir
+			INNER JOIN cliente cli
+			ON dir.id_Cliente = cli.idCliente
+		) AS cli
+		INNER JOIN persona per
+		ON per.idPersona = cli.id_Persona
+	) AS client
+	INNER JOIN usuario usu
+	ON usu.idUsuario = client.id_Usuario
+) AS us
+INNER JOIN persona per
+ON us.id_Persona = per.idPersona
