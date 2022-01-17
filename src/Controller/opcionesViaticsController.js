@@ -13,6 +13,7 @@ const roi = require('../Controller/ROIController');
 const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 const estructura = require('../Controller/estructuraController');
+const Notificacion = require('../Controller/notificationController');
 
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -336,6 +337,9 @@ async function calcularViaticosBTI(data){
             _result[0] = objCotizacionBTI;
         }
     
+        //Notificar
+        await Notificacion.notificar({ message: { cotizacion: _result, estado: "cotizando" } });
+
         return _result;
     }
     catch(error){

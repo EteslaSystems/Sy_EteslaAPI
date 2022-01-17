@@ -9,6 +9,8 @@ const log = require('../../config/logConfig');
 const mysqlConnection = require('../../config/database');
 const agregados = require('../Controller/agregadosController');
 
+const Notificacion = require('../Controller/notificationController');
+
 async function savePropuesta(objPropuesta/*Obj*/){
 	try{
 		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
@@ -104,13 +106,16 @@ async function savePropuesta(objPropuesta/*Obj*/){
 					}
 				}
 			}
+
+			//Notificar
+			await Notificacion.notificar({ message: { cotizacion: Propuesta, estado: "Guardada" } });
+
+			return respuesta;
 		}
 		catch(error){
 			throw new Error(error);
 		}
 		/*#endregion*/
-
-		return respuesta;
 	}
 	catch(error){
 		await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + error.message });
