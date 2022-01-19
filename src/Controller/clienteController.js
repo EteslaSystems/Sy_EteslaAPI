@@ -17,7 +17,7 @@ function insertarBD(datas) {
 					message: error
 				}
 
-				resolve (response);
+				reject(response);
 			} else {
 				const response = {
 					status: true,
@@ -128,15 +128,16 @@ function consultaUserBD (datas) {
 	const { idUsuario } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, idUsuario, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Cliente(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, null, null, null, null, null, null, null, null, null, null, null, null, null, null, idUsuario], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
 					message: error
 				}
 
-				resolve (response);
-			} else {
+				reject (response);
+			} 
+			else {
 				const response = {
 					status: true,
 					message: rows[0]

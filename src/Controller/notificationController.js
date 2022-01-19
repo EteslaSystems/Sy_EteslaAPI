@@ -4,13 +4,14 @@ const Fetch = require("node-fetch");
 /* Notificar via -Telegram_Chatbot- */
 module.exports.notificar = function(data){
     const uriApiNotification = process.env.URI_API_NOTIFICATION; //Ruta de la API del - Chatbot
-    const routNotification = process.env.ROUT_NOTIFICATION; //Ruta a donde se tiene que apuntar para mandar notificaciones
+    let routNotification = process.env.ROUT_NOTIFICATION; //Ruta a donde se tiene que apuntar para mandar notificaciones
 
     try{
         let { message } = data;
+        routNotification = uriApiNotification + routNotification;
 
         return new Promise((resolve,reject) => {
-            Fetch(uriApiNotification + routNotification,{
+            Fetch(routNotification,{
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify(message)

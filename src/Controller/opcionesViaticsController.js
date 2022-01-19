@@ -338,7 +338,7 @@ async function calcularViaticosBTI(data){
         }
     
         //Notificar
-        await Notificacion.notificar({ message: { cotizacion: _result, estado: "cotizando" } });
+        // await Notificacion.notificar({ message: { cotizacion: _result, estado: "cotizando" } });
 
         return _result;
     }
