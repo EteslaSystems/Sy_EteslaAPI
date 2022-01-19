@@ -306,7 +306,7 @@ async function calcularViaticosComb(_Combinaciones, data){
         tarifa: data.tarifa,
         consumos: data.consumos,
         descuento: parseInt(data.porcentajeDescuento),
-        tipoCotizacion: 'CombinacionCotizacion'
+        tipoCotizacion: 'Combinacion'
     };
     let _combinacion = [];
     let index = 0;

@@ -66,7 +66,7 @@ async function calcularViaticosBTI(data){
         //Propuesta - Caducidad
         let infoPropuesta = _configFile.propuesta_cotizacion;
 
-        if(tipoCotizacion != 'CombinacionCotizacion'){
+        if(tipoCotizacion != 'Combinacion'){
             //Datos cliente
             uCliente = await cliente.consultarId({ idPersona: idCliente });
             uCliente = uCliente.message; 
@@ -109,7 +109,7 @@ async function calcularViaticosBTI(data){
         }
 
         //Consumos
-        if(_consums != null && tipoCotizacion != "CombinacionCotizacion"){
+        if(_consums != null && tipoCotizacion != "Combinacion"){
             //Consumos
             _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
     
@@ -173,7 +173,7 @@ async function calcularViaticosBTI(data){
             }
             
             /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
-            if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'CombinacionCotizacion'){ //BajaTension
+            if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'Combinacion'){ //BajaTension
                 costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
                 costoTotalInversores = typeof _arrayCotizacion[x].inversor.costoTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.costoTotal) : _arrayCotizacion[x].inversor.costoTotal;
                 costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
