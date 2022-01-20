@@ -11,24 +11,110 @@ const agregados = require('../Controller/agregadosController');
 
 const Notificacion = require('../Controller/notificationController');
 
-async function savePropuesta(data){
+async function savePropuesta(objPropuesta){
+	let dataToSave = { 
+		panel: null, 
+		inversor: null, 
+		estructura: null, 
+		cliente: null, 
+		usuario: null, 
+		tipoCombinacion: null, 
+		tipoCotizacion: null, 
+		consumoPromedioKw: null, /*(Bimestral o anual)*/ 
+		tarifa: null,  
+		potenciaPropuesta: null, 
+		nuevoConsumoBimestralKw: null, 
+		nuevoConsumoAnualKw: null, 
+		descuento: null, 
+		porcentajePropuesta: null, 
+		totalSinIvaMXN: null, 
+		totalConIvaMXN: null, 
+		totalSinIvaUSD: null, 
+		totalConIvaUSD: null, 
+		statusProjectFV: 0, 
+		expiracion: 0 /* Dias de expiracion */ 
+	};
+	
 	try{
-		data = typeof data.propuesta === "object" ? data.propuesta : JSON.parse(data.propuesta); //Formating to Array
-		data = Array.isArray(data) === true ? data[0] : data; //Formating
+		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
+		Propuesta = Array.isArray(Propuesta) === true ? Propuesta[0] : Propuesta; //Formating
 
-		//
-		let dataFiltrada = filtrarData(data);
+		/* #region Formating Data to Save PROPUESTA */
+		dataToSave.cliente = { 
+			id: Propuesta.cliente.idCliente,
+			nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido
+		} || null;
 
-		//
-		let respuesta = await insertarBD(dataFiltrada);
+		dataToSave.usuario = {
+			id: Propuesta.vendedor.idUsuario,
+			nombre: Propuesta.vendedor.vNombrePersona + ' ' + Propuesta.vendedor.vPrimerApellido + ' ' + Propuesta.vendedor.vSegundoApellido
+		} || null;
+
+		//*CotizacionSencilla* o *CotizacionCombinacion* 
+		if(Propuesta.combinacion){
+			dataToSave.tipoCombinacion = Propuesta.tipoCombinacion;
+		}
+
+		dataToSave.tipoCotizacion = Propuesta.tipoCotizacion || null;
+		dataToSave.totalSinIvaMXN = Propuesta.totales.precioMXNSinIVA || null;
+		dataToSave.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
+		dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
+		dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
+
+		dataToSave.expiracion = Propuesta.expiracion || null;
+
+		if(Propuesta.tipoCotizacion != "individual"){
+			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
+			dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
+			dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
+		}
+
+		dataToSave.descuento = Propuesta.descuento || null;
+
+		if(Propuesta.paneles){
+			dataToSave.panel = {
+				modelo: Propuesta.paneles.nombre || Propuesta.paneles.vNombreMaterialFot,
+				cantidad: Propuesta.paneles.noModulos
+			} || null;
+
+			dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal;
+		}
+		
+		if(Propuesta.estructura._estructuras != null){
+			dataToSave.estructura = {
+				marca: Propuesta.estructura._estructuras.vMarca,
+				cantidad: Propuesta.estructura.cantidad
+			} || null;
+		}
+
+		if(Propuesta.inversores){
+			dataToSave.inversor = {
+				modelo: Propuesta.inversores.vNombreMaterialFot,
+				cantidad: Propuesta.inversores.numeroDeInversores
+			} || null;
+		}
+
+		if(Propuesta.power){
+			if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipCotizacion === "bajaTension" && Propuesta.tipoCotizacion === "CombinacionCotizacion"){ //BajaTension || BajaTension c/Commbinaciones
+				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
+				dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
+			}
+			else{ //MediaTension
+				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.generacion.promedioGeneracionBimestral || null;
+				dataToSave.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
+			}
+		}
+		/* #endregion */
+
+		let respuesta = await insertarBD(dataToSave);
 		
 		/*#region Agregados*/
 		try{
 			//Se valida que la propuesta tenga -Agregados-
-			if(data.propuesta.agregados._agregados != null){
+			if(Propuesta.agregados._agregados != null){
 				let idPropuesta = respuesta.idPropuesta;
 
-				let _agregados = data.propuesta.agregados._agregados;
+				let _agregados = Propuesta.agregados._agregados;
 
 				//Iterar _agregados
 				for(let Agregado of _agregados)
@@ -54,7 +140,6 @@ async function savePropuesta(data){
 			return respuesta;
 		}
 		catch(error){
-			console.log(error);
 			throw new Error(error);
 		}
 		/*#endregion*/
@@ -298,7 +383,7 @@ function consultaBD(data) {
 	const { id } = data;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, null, id, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Propuesta(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [5, null, id, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
