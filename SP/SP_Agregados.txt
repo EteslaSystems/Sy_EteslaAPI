@@ -4,7 +4,7 @@ CREATE OR REPLACE PROCEDURE SP_Agregados
 	IN Opcion INT,
 	IN xIdAgregado VARCHAR(255),
 	IN xIdPropuesta VARCHAR(255),
-	IN Cantidad TINYINT,
+	IN Cantidad SMALLINT,
 	IN Agregado VARCHAR(50),
 	IN Costo FLOAT
 )

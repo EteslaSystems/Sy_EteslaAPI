@@ -11,13 +11,86 @@ const agregados = require('../Controller/agregadosController');
 
 const Notificacion = require('../Controller/notificationController');
 
-async function savePropuesta(objPropuesta/*Obj*/){
+async function savePropuesta(data){
 	try{
-		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
-		Propuesta = Array.isArray(Propuesta) === true ? Propuesta[0] : Propuesta; //Formating
-		let dataToSave = { panel: null, inversor: null, estructura: null, cliente: null, usuario: null, tipoCombinacion: null, tipoCotizacion: null, consumoPromedioKw: null, /*(Bimestral o anual)*/ tarifa: null,  potenciaPropuesta: null, nuevoConsumoBimestralKw: null, nuevoConsumoAnualKw: null, descuento: null, porcentajePropuesta: null, totalSinIvaMXN: null, totalConIvaMXN: null, totalSinIvaUSD: null, totalConIvaUSD: null, statusProjectFV: 0, expiracion: 0 /* Dias de expiracion */ };
+		data = typeof data.propuesta === "object" ? data.propuesta : JSON.parse(data.propuesta); //Formating to Array
+		data = Array.isArray(data) === true ? data[0] : data; //Formating
 
-		/* #region Formating Data to Save PROPUESTA */
+		//
+		let dataFiltrada = filtrarData(data);
+
+		//
+		let respuesta = await insertarBD(dataFiltrada);
+		
+		/*#region Agregados*/
+		try{
+			//Se valida que la propuesta tenga -Agregados-
+			if(data.propuesta.agregados._agregados != null){
+				let idPropuesta = respuesta.idPropuesta;
+
+				let _agregados = data.propuesta.agregados._agregados;
+
+				//Iterar _agregados
+				for(let Agregado of _agregados)
+				{
+					let data = { 
+						idPropuesta: idPropuesta, 
+						cantidad: Agregado.cantidadAgregado, 
+						agregado: Agregado.nombreAgregado, 
+						costo: parseFloat(Agregado.precioUnitarioMXN) 
+					};
+
+					respuesta = await agregados.insertar(data);
+
+					if(respuesta.status === false){
+						throw 'Algo salio mal al intentar insertar -Agregados- en la BD.\n'+respuesta.message;
+					}
+				}
+			}
+
+			//Notificar
+			// await Notificacion.notificar({ message: { cotizacion: Propuesta, estado: "Guardada" } });
+
+			return respuesta;
+		}
+		catch(error){
+			console.log(error);
+			throw new Error(error);
+		}
+		/*#endregion*/
+	}
+	catch(error){
+		console.log(error);
+		await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + error.message });
+		throw new Error('Algo salio mal al intenetar guardar la propuesta:\n'+error);
+	}
+}
+
+function filtrarData(Propuesta){
+	let dataToSave = { 
+		panel: null, 
+		inversor: null, 
+		estructura: null, 
+		cliente: null, 
+		usuario: null, 
+		tipoCombinacion: null, 
+		tipoCotizacion: null, 
+		consumoPromedioKw: null, /*(Bimestral o anual)*/ 
+		tarifa: null,  
+		potenciaPropuesta: null, 
+		nuevoConsumoBimestralKw: null, 
+		nuevoConsumoAnualKw: null, 
+		descuento: null, 
+		porcentajePropuesta: null, 
+		totalSinIvaMXN: null, 
+		totalConIvaMXN: null, 
+		totalSinIvaUSD: null, 
+		totalConIvaUSD: null, 
+		statusProjectFV: 0, 
+		expiracion: 0 /* Dias de expiracion */ 
+	};
+	
+	try{
 		dataToSave.cliente = { 
 			id: Propuesta.cliente.idCliente,
 			nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido
@@ -82,53 +155,15 @@ async function savePropuesta(objPropuesta/*Obj*/){
 				dataToSave.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
 			}
 		}
-		/* #endregion */
 
-		let respuesta = await insertarBD(dataToSave);
-		
-		/*#region Agregados*/
-		try{
-			//Se valida que la propuesta tenga -Agregados-
-			if(Propuesta.agregados._agregados != null){
-				let idPropuesta = respuesta.idPropuesta;
-
-				let _agregados = Propuesta.agregados._agregados;
-
-				//Iterar _agregados
-				for(let Agregado of _agregados)
-				{
-					let data = { 
-						idPropuesta: idPropuesta, 
-						cantidad: Agregado.cantidadAgregado, 
-						agregado: Agregado.nombreAgregado, 
-						costo: parseFloat(Agregado.precioUnitarioMXN) 
-					};
-
-					respuesta = await agregados.insertar(data);
-
-					if(respuesta.status === false){
-						throw 'Algo salio mal al intentar insertar -Agregados- en la BD.\n'+respuesta.message;
-					}
-				}
-			}
-
-			//Notificar
-			// await Notificacion.notificar({ message: { cotizacion: Propuesta, estado: "Guardada" } });
-
-			return respuesta;
-		}
-		catch(error){
-			throw new Error(error);
-		}
-		/*#endregion*/
+		return dataToSave;
 	}
 	catch(error){
-		await log.generateLog({ tipo: 'Error', contenido: 'Propuesta / savePropuesta ' + error.message });
-		throw new Error('Algo salio mal al intenetar guardar la propuesta:\n'+error);
+		console.log(error);
 	}
 }
 
-/*----------------------------------------------------------------*/
+/*-------------------------[ CRUD ]-------------------------------*/
 
 function insertarBD(datas){
 	try{
@@ -305,6 +340,8 @@ function buscarBD(idPropuesta){
   	});
 }
 
+/*-------------------------[ EXPORTS ]-------------------------------*/
+
 module.exports.guardar = async function (datas) {
 	const result = await savePropuesta(datas);
 	return result;
@@ -328,6 +365,11 @@ module.exports.editar = async function (datas, response) {
 module.exports.consultar = async function (idCliente) {
 	let result = await consultaBD(idCliente);
 	result = result.message;
+	return result;
+}
+
+module.exports.filtrarData = function(data){
+	const result = filtrarData(data);
 	return result;
 }
 /*#endregion*/

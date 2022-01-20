@@ -1,6 +1,8 @@
 require('dotenv').config();
 const Fetch = require("node-fetch");
 
+const PropuestaController = require('../Controller/propuestaController');
+
 /* Notificar via -Telegram_Chatbot- */
 module.exports.notificar = function(data){
     const uriApiNotification = process.env.URI_API_NOTIFICATION; //Ruta de la API del - Chatbot
@@ -32,5 +34,18 @@ module.exports.notificar = function(data){
     }
     catch(error){
         throw new Error(error);
+    }
+}
+
+function prepararNotificacion(data){
+    try{
+        //Filtrar data
+        let dataFiltrada = PropuestaController.filtrarData(data);
+
+        //Identificar tipo de notificacion
+        
+    }
+    catch(error){
+        console.log(error);
     }
 }
