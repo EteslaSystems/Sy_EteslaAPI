@@ -34,7 +34,8 @@ CREATE OR REPLACE PROCEDURE SP_Propuesta
 	IN nuevaTarifa CHAR(6),
 	
 	/* Variables para Propuesta */
-	IN TipoCotizacion CHAR(12),
+	IN TipoCotizacion CHAR(24),
+	IN TipoCombinacion CHAR(11),
 	IN porcentajeDescuento TINYINT,
 	IN porcentajePropuesta TINYINT,
 	IN costoSinIVAMXN FLOAT,
@@ -53,7 +54,7 @@ BEGIN
 	IF(Opcion = 0) THEN
 		SET expireAt = DATE_ADD(NOW(),INTERVAL daysOfExpire DAY);
 		INSERT INTO propuesta
-		VALUES(UUID(), UNHEX(xIdCliente), UNHEX(xIdVendedor), nombreCliente, consumoPromedio, tarifaActual, nuevaTarifa, nombreVendedor, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaInstalada, promedioNuevoConsumoMensual, promedioNuevoConsumoBimestral, promedioNuevoConsumoAnual, TipoCotizacion, porcentajeDescuento, porcentajePropuesta, costoSinIVAMXN, costoConIVAMXN, costoSinIVAUSD, costoConIVAUSD, 0, NOW(), NULL, NULL, expireAt);
+		VALUES(UUID(), UNHEX(xIdCliente), UNHEX(xIdVendedor), nombreCliente, consumoPromedio, tarifaActual, nuevaTarifa, nombreVendedor, modeloPanel, cantidadPanel, modeloInversor, cantidadInversor, marcaEstructura, cantidadEstructura, potenciaInstalada, promedioNuevoConsumoMensual, promedioNuevoConsumoBimestral, promedioNuevoConsumoAnual, TipoCotizacion, TipoCombinacion, porcentajeDescuento, porcentajePropuesta, costoSinIVAMXN, costoConIVAMXN, costoSinIVAUSD, costoConIVAUSD, 0, NOW(), NULL, NULL, expireAt);
 		SET xIdPropuesta = (SELECT HEX(idPropuesta) FROM propuesta ORDER BY idPropuesta DESC LIMIT 1);
 		SELECT xIdPropuesta;
 	ELSEIF(Opcion = 1) THEN

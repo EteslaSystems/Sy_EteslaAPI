@@ -4,7 +4,7 @@ CREATE OR REPLACE PROCEDURE SP_Agregados
 	IN Opcion INT,
 	IN xIdAgregado VARCHAR(255),
 	IN xIdPropuesta VARCHAR(255),
-	IN Cantidad TINYINT,
+	IN Cantidad SMALLINT,
 	IN Agregado VARCHAR(50),
 	IN Costo FLOAT
 )
@@ -12,7 +12,7 @@ BEGIN
 	IF(Opcion = 0) THEN
 	/*Insertar*/
 	   	INSERT INTO agregados
-		VALUES(UUID(), UNHEX(xIdPropuesta) Cantidad, Agregado, Costo);
+		VALUES(UUID(), UNHEX(xIdPropuesta), Cantidad, Agregado, Costo);
 	ELSEIF(Opcion = 1) THEN
 	/*Actualizar*/
 		UPDATE agregados

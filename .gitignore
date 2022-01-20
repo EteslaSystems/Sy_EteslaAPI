@@ -12,3 +12,4 @@ LICENSE
 /config/database.js
 /src/PDF/*
 *.pdf
+.env

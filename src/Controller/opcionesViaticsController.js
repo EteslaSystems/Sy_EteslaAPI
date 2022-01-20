@@ -13,6 +13,7 @@ const roi = require('../Controller/ROIController');
 const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 const estructura = require('../Controller/estructuraController');
+const Notificacion = require('../Controller/notificationController');
 
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -65,7 +66,7 @@ async function calcularViaticosBTI(data){
         //Propuesta - Caducidad
         let infoPropuesta = _configFile.propuesta_cotizacion;
 
-        if(tipoCotizacion != 'CombinacionCotizacion'){
+        if(tipoCotizacion != 'Combinacion'){
             //Datos cliente
             uCliente = await cliente.consultarId({ idPersona: idCliente });
             uCliente = uCliente.message; 
@@ -108,7 +109,7 @@ async function calcularViaticosBTI(data){
         }
 
         //Consumos
-        if(_consums != null && tipoCotizacion != "CombinacionCotizacion"){
+        if(_consums != null && tipoCotizacion != "Combinacion"){
             //Consumos
             _consums = validarJSON(_consums) == false ? _consums : validarJSON(_consums);
     
@@ -172,7 +173,7 @@ async function calcularViaticosBTI(data){
             }
             
             /* Se calcula el -costoTotalEstructuras- que tomara en la cotizacion */
-            if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'CombinacionCotizacion'){ //BajaTension
+            if(tipoCotizacion === 'bajaTension' || tipoCotizacion === 'mediaTension' || tipoCotizacion === 'Combinacion'){ //BajaTension
                 costoTotalPaneles = _arrayCotizacion[x].panel.costoTotal;
                 costoTotalInversores = typeof _arrayCotizacion[x].inversor.costoTotal === 'string' ? parseFloat(_arrayCotizacion[x].inversor.costoTotal) : _arrayCotizacion[x].inversor.costoTotal;
                 costoTotalEstructuras = _arrayCotizacion[x].panel.noModulos * _estructuras.fPrecio;
@@ -336,6 +337,9 @@ async function calcularViaticosBTI(data){
             _result[0] = objCotizacionBTI;
         }
     
+        //Notificar
+        // await Notificacion.notificar({ message: { cotizacion: _result, estado: "cotizando" } });
+
         return _result;
     }
     catch(error){

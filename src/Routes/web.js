@@ -783,13 +783,13 @@ router.put('/lista-clientes-usuario', function (request, response) {
 		response.json({
 			status: 200,
 			message: cliente,
-		}).end();
+		});
 	})
 	.catch(error => {
 		response.json({
 			status: 500,
-			message: error.message,
-		}).end();
+			message: error,
+		});
 	});
 });
 
