@@ -223,7 +223,8 @@ async function getInversores_cotizacion(_data){
 		{
 			let noPaneles = parseInt(data.noModulos); //Numero de paneles de la propuesta
 			let numeroDeInversores = 0;
-			let potenciaNominal = 0, potenciaNominalRedimen = 0;
+			let potenciaNominal = 0;
+			let potenciaNominalRedimenArriba = 0, potenciaNominalRedimenAbajo = 0;
 	
 			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
 			if(Inversor.vTipoInversor === 'MicroInversor'){ //Calculo de MicroInversores
@@ -282,16 +283,16 @@ async function getInversores_cotizacion(_data){
 			}
 			else{//Calculo de inversores /* Centrales */
 				///
-				numeroDeInversores = potenciaReal_ / Inversor.fPotencia;
-				numeroDeInversores = numeroDeInversores < 1 ? 0 : Math.round(numeroDeInversores);
+				numeroDeInversores = Math.round(potenciaReal_ / Inversor.fPotencia);
 				potenciaNominal = numeroDeInversores * Inversor.fPotencia;
-				potenciaNominalRedimen = potenciaNominal * 1.25;
+				potenciaNominalRedimenArriba = potenciaNominal * 1.25;
+				potenciaNominalRedimenAbajo = potenciaNominal - ((25/100) * potenciaNominal);
 
 				///
 				if(potenciaNominal === potenciaReal_){
 					numeroDeInversores = numeroDeInversores;
 				}
-				else if((potenciaNominal > potenciaReal_ || potenciaNominalRedimen > potenciaReal_) && potenciaNominal <= (potenciaReal_ + 1000/*watts*/) ){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
+				else if((potenciaNominalRedimenAbajo <= potenciaReal_ && potenciaNominalRedimenArriba >= potenciaReal_) && potenciaNominal <= (potenciaReal_ + 1000/*watts*/) ){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
 					numeroDeInversores = numeroDeInversores;
 				}
 				else{

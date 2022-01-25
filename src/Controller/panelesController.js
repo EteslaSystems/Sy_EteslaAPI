@@ -146,9 +146,8 @@ async function getAllPanelsArray(){
 	return consultaPaneles;
 }
 
-function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
-	let objNoDeModulosPorPotenciaDelPanel = {};
-	arrayNoDeModulosPorPotenciaDelPanel = [];
+function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){\
+	let arrayNoDeModulosPorPotenciaDelPanel = [];
 
 	for(let i = 0; i < arrayAllOfPanels.length; i++)
 	{
@@ -156,7 +155,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 		let potenciaReal = Math.round((arrayAllOfPanels[i].fPotencia * noModulos) * 100) / 100; 
 		
 
-		objNoDeModulosPorPotenciaDelPanel = {
+		let objNoDeModulosPorPotenciaDelPanel = {
 			idPanel: arrayAllOfPanels[i].idPanel,
 			nombre: arrayAllOfPanels[i].vNombreMaterialFot,
 			vMarca: arrayAllOfPanels[i].vMarca,
