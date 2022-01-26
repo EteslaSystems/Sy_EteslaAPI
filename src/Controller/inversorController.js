@@ -186,7 +186,6 @@ function buscarInversorPorNombre(datas){
 async function getInversores_cotizacion(_data){
 	let inversoresResult = null;
 	let arrayInversor = [];
-	let precioTotal = 0;
 	let data = _data;
 
 	try{
@@ -221,6 +220,7 @@ async function getInversores_cotizacion(_data){
 
 		for(let Inversor of allInversores)
 		{
+			let precioTotal = 0;
 			let noPaneles = parseInt(data.noModulos); //Numero de paneles de la propuesta
 			let numeroDeInversores = 0;
 			let potenciaNominal = 0;
@@ -229,6 +229,27 @@ async function getInversores_cotizacion(_data){
 			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
 			if(Inversor.vTipoInversor === 'MicroInversor'){ //Calculo de MicroInversores
 				numeroDeInversores =  Math.round(noPaneles / Inversor.iPanelSoportados);
+
+				switch(Inversor.vMarca)
+				{
+					case 'Enphase':
+						precioTotal = Math.round((numeroDeInversores * Inversor.fPrecio) + 232.3 + ((noPaneles / 4) * 33));
+					break;
+					case 'Solaredge':
+						precioTotal = Math.round(((numeroDeInversores * Inversor.fPrecio) + (noPaneles * 54.83)));
+					break;
+					case 'APSystem':
+						if(Inversor.vNombreMaterialFot === "Microinversor APS YC600"){
+							precioTotal = Math.round(((numeroDeInversores * 300) + 170.9) + (noPaneles * 13.775) + 144.9);
+						}
+						else{
+							precioTotal = Math.round((numeroDeInversores * 300) + (noPaneles * 13.775) + 144.9);
+						}
+					break;
+					default: 
+						-1;
+					break;
+				}
 			}
 			else if(Inversor.vTipoInversor === 'Combinacion'){ ///Calculo de Combinacion de micro-inversores
 				//Se valida el noPaneles, que sea >=5, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
@@ -303,8 +324,11 @@ async function getInversores_cotizacion(_data){
 			//CALCULO DE COSTO_TOTAL DE INVERSORES
 			if(numeroDeInversores >= 1 && Inversor.vTipoInversor != 'Combinacion'){
 				//Calculo de precioTotal -Normal-
-				precioTotal = Math.round((Inversor.fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
+				if(precioTotal === 0){
+					precioTotal = Math.round((Inversor.fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
+				}
 				
+				///
 				inversoresResult = {
 					id: Inversor.idInversor,
 					fPotencia: parseFloat(Inversor.fPotencia),

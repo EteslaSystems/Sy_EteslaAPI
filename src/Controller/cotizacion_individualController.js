@@ -66,11 +66,34 @@ async function cotizacionIndividual(data){
                 inversor = await inversores.buscar({ idInversor: data.cotizacionIndividual.equipos.inversores.modelo });
                 inversor = inversor.message; //Array
                 inversor = inversor[0]; //Object
-                inversor = Object.assign(inversor,{
+
+                ///
+                Object.assign(inversor,{
                     combinacion: false,
                     numeroDeInversores: parseInt(data.cotizacionIndividual.equipos.inversores.cantidad), 
                     costoTotal: Math.round((inversor.fPrecio * data.cotizacionIndividual.equipos.inversores.cantidad) * 100) / 100 
                 });
+
+                switch(inversor.vMarca)
+				{
+					case 'Enphase':
+						inversor.costoTotal = Math.round((inversor.numeroDeInversores * inversor.fPrecio) + 232.3 + ((Cotizacion.panel.noModulos / 4) * 33));
+					break;
+					case 'Solaredge':
+						inversor.costoTotal = Math.round(((inversor.numeroDeInversores * inversor.fPrecio) + (Cotizacion.panel.noModulos * 54.83)));
+					break;
+					case 'APSystem':
+						if(inversor.vNombreMaterialFot === "Microinversor APS YC600"){
+							inversor.costoTotal = Math.round(((inversor.numeroDeInversores * 300) + 170.9) + (Cotizacion.panel.noModulos * 13.775) + 144.9);
+						}
+						else{
+							inversor.costoTotal = Math.round((inversor.numeroDeInversores * 300) + (Cotizacion.panel.noModulos * 13.775) + 144.9);
+						}
+					break;
+					default: 
+						-1;
+					break;
+				}
             }
 
             Cotizacion.inversor = inversor;
