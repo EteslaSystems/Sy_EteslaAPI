@@ -1,4 +1,5 @@
 const tarifas = require('../Controller/tarifaController');
+const ConfigController = require('../Controller/configFileController');
 
 function getIrradiacionDiasDeMesesDelAnio(){
     var objMeses = {};
@@ -24,6 +25,29 @@ function getIrradiacionDiasDeMesesDelAnio(){
     objMeses = Object.values(objMeses);
 
     return objMeses;
+}
+
+async function getCargoFijo(tarifa){ //Return: (number)
+    let cargoFijo = 0; //Costo -cargoFijo-
+    
+    try{
+        let _CargoFijo = await ConfigController.getArrayOfConfigFile();
+        _CargoFijo = Config.energia.costos.cargoFijo;
+
+        //
+        for(let CargoFijo in _CargoFijo)
+        {
+            cargoFijo = CargoFijo.tarifa[tarifa];
+
+            //Validar si se encontro el -cargoFijo- dentro de la coleccion anterior
+            if(cargoFijo != null){
+                return cargoFijo = CargoFijo.costo;
+            }
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
 }
 
 //MEDIA TENSION
@@ -597,7 +621,7 @@ async function getPowerBTI(data){
         if(_consumos != null){
             let _consumosMensuales = _consumos._promCons.consumoMensual;
             let objNuevosConsumos = getNewConsumption(_consumosMensuales, _generacion);
-            objResult.porcentajePotencia = Math.floor((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
+            objResult.porcentajePotencia = Math.round((_generacion.promedioDeGeneracion / promedioConsumosMensuales) * 100);
             
             objResult._consumos = _consumos;
     
@@ -806,12 +830,12 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
         _pagosIva = _pagosIva(_pagosMensuales._pagosMensualesAnual);
         _pagosBimestralesCIva = _pagosBimestralesCIva(_pagosBimestrales._bimestres); //Pagos bimestrales con IVA - MXN
 
-        let pagoAnualIva = Math.floor(pagoAnual * 1.16);
+        let pagoAnualIva  = Math.floor(pagoAnual * 1.16);
 
         //Proyeccion a 10 anios
         let _proyeccion10anios = proyeccion10anios(consumoAnual, pagoAnualIva); //Proyeccion en *KW* a 10 años
 
-        let objResp = {
+        return {
             _pagosMensuales: _pagosMensuales._pagosMensualesAnual,
             _pagosBimestrales: _pagosBimestrales._bimestres,
             pagoAnual: pagoAnual,
@@ -823,8 +847,6 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             pagoAnualIva: pagoAnualIva,
             _proyeccion10anios: _proyeccion10anios
         };
-
-        return objResp;
     }
     catch(error){
         throw error;
