@@ -272,8 +272,12 @@ async function calcularViaticosBTI(data){
     
             if(_consums != null){
                 //P O W E R
-                let dataPwr = { consumos: _consums, origen: origen, potenciaReal: _arrayCotizacion[x].panel.potenciaReal, tarifa: tarifa };
-                objPower = await power.obtenerPowerBTI(dataPwr) || null;
+                objPower = await power.obtenerPowerBTI({ 
+                    consumos: _consums, 
+                    origen: origen, 
+                    potenciaReal: _arrayCotizacion[x].panel.potenciaReal, 
+                    tarifa: tarifa 
+                }) || null;
                 objROI = await roi.obtenerROI(objPower, _consums, precioMXNSinIVA);
     
                 //Se guarda el resultado de -consumos- para mandarlo en la respuesta de la funcion

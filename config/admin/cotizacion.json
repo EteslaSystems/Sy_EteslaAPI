@@ -20,6 +20,20 @@
         },
         "inflacion": 3
     },
+    "energia": {
+        "costos": {
+            "cargoFijo": [
+                {
+                    "tarifa": ["01","1a","1b","1c","1d","1e","1f"],
+                    "costo": 114
+                },
+                {
+                    "tarifa": ["IC","02"],
+                    "costo": 50
+                }
+            ]
+        }
+    },
     "costos": {
         "porcentaje_fletes": 0.07,
         "porcentaje_margen": 0.30,

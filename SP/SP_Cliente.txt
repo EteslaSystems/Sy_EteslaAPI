@@ -90,7 +90,8 @@ BEGIN
         ) AS cli
         INNER JOIN persona per
         ON per.idPersona = cli.id_Persona
-        WHERE cli.id_Usuario = UNHEX(xIdUsuario);
+        WHERE cli.id_Usuario = UNHEX(xIdUsuario)
+        ORDER BY per.created_at DESC;
     /* Consultar - Clientes pertenecientes a un Vendedor, *Por Nombre* */
     ELSEIF (Opcion = 6) THEN
         SELECT HEX(client.idCliente) AS idCliente, client.vNombrePersona, client.vPrimerApellido, client.vSegundoApellido, client.vTelefono, client.vCelular, client.vEmail, dir.cCodigoPostal, dir.vCalle, dir.vMunicipio, dir.vCiudad, dir.vEstado
