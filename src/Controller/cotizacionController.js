@@ -9,6 +9,8 @@ const configFile = require('../Controller/configFileController');
 const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 
+const EstructuraController = require('../Controller/estructuraController');
+
 /*#region Busqueda_inteligente*/
 async function mainBusquedaInteligente(data){
     let tipoCotizacion = data.tipoCotizacion;
@@ -131,19 +133,39 @@ async function getCombinacionEconomica(_paneles, matrizEquipos){
             return EquipoEconomico;
         };
 
-        _paneles = filtrarEquiposSelectos(matrizEquipos, _paneles, "combinacionEconomica");
-
+        //[Paneles]
+        _paneles = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _paneles,
+            tipoEquipo: "panel",
+            nombreCombinacion: "combinacionEconomica"
+        });
         Panel = getEquipoEconomico(_paneles);
 
-        //Obtener lista de los inversores para ese panel
+        //[Inversores] (Obtener lista de los inversores para ese panel)
         let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: Panel });
-        _inversores = filtrarEquiposSelectos(matrizEquipos, _inversores, "combinacionEconomica");
+        _inversores = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _inversores,
+            tipoEquipo: "inversor",
+            nombreCombinacion: "combinacionEconomica"
+        });
 
         //Obtener -Inversor- mas economico
-        Inversor = getEquipoEconomico(_inversores);
+        let Inversor = getEquipoEconomico(_inversores);
+
+        //[Estructuras]
+        let _estructuras = await EstructuraController.leer();
+        _estructuras = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _estructuras.message,
+            tipoEquipo: "estructura",
+            nombreCombinacion: "combinacionEconomica"
+        });
+        _estructuras = _estructuras[0];
 
         //Retornar [Object]
-        return { panel: Panel, inversor: Inversor, tipoCombinacion: 'Economica' }
+        return { panel: Panel, inversor: Inversor, estructura:_estructuras, tipoCombinacion: 'Economica' }
     }
     catch(error){
         console.log(error);
@@ -205,7 +227,12 @@ async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
         };
 
         ///Obtener el [PANEL] filtrado
-        let _panelFiltrado = filtrarEquiposSelectos(matrizEquipos, _paneles, "combinacionPremium");
+        let _panelFiltrado = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _paneles,
+            tipoEquipo: "panel",
+            nombreCombinacion: "combinacionPremium"
+        });
 
         //Obtener el [PANEL] mas potente
         let _lstPanelesPotentes = getEquipoPotentes(_panelFiltrado);
@@ -214,7 +241,12 @@ async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
 
         //Obtener lista de los inversores para ese panel
         let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: Panel });
-        _inversores = filtrarEquiposSelectos(matrizEquipos, _inversores, "combinacionPremium");
+        _inversores = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _inversores,
+            tipoEquipo: "inversor",
+            nombreCombinacion: "combinacionPremium"
+        });
 
         //Obtener el [INVERSOR] mas potente
         let _lstInversoresPotentes = getEquipoPotentes(_inversores);
@@ -278,14 +310,24 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
         };
 
         //Se trata la data de [PANELES]
-        let _lstPaneleSelectos = filtrarEquiposSelectos(matrizEquipos, _paneles, "combinacionMediana");
+        let _lstPaneleSelectos = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _paneles,
+            tipoEquipo: "panel",
+            nombreCombinacion: "combinacionMediana"
+        });
         mediaCostos = getMediaCostos(_lstPaneleSelectos);
         PanelSeleccionado = getEquiposCercanos(_lstPaneleSelectos, mediaCostos);
 
         //Se obtienen los [Inversores] que le quedan a ese [Panel_Seleccionado]
         let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: PanelSeleccionado });
         //Se trata la data de [INVERSORES]
-        let _lstInversoreSelectos = filtrarEquiposSelectos(matrizEquipos, _inversores, "combinacionMediana");
+        let _lstInversoreSelectos = filtrarEquiposSelectos({
+            MatrizEquipoSelectos: matrizEquipos,
+            _equipos: _inversores,
+            tipoEquipo: "inversor",
+            nombreCombinacion: "combinacionMediana"
+        });
         mediaCostos = getMediaCostos(_lstInversoreSelectos);
         InversorSeleccionado = getEquiposCercanos(_lstInversoreSelectos, mediaCostos);
 
@@ -338,50 +380,41 @@ async function calcularViaticosComb(_Combinaciones, data){
     }
 }
 
-function filtrarEquiposSelectos(MatEquipoSelect, _equipos, combinacionName, recursive){ ///Return: [Array]
+function filtrarEquiposSelectos(data){ ///Return: [Array]
     /* Resumen: Retorna la coleccion filtrada de equipos configurados por *admin* para la cotizacion_mediana */
-    let lstEquiposFiltrados = [];
-    let tipoEquipo =  "inversor";
+    let { MatrizEquipoSelectos, _equipos, tipoEquipo, nombreCombinacion } = data;
 
     try{
-        if(typeof recursive != 'undefined'){
-            MatEquipoSelect[combinacionName][tipoEquipo] = '*'
-        }
+        //Preparar la matriz que filtrara los equipos de la -Combinacion-
+        MatrizEquipoSelectos = MatrizEquipoSelectos[nombreCombinacion][tipoEquipo];
 
-        ///
-        MateEquipoSelect =  MatEquipoSelect[combinacionName];
+        //Validar si hay marcas de equipos a filtrar
+        if(MatrizEquipoSelectos != "*"){
+            let _EquiposFiltrados = [];
 
-        //Identificar si son [PANELES] || [INVERSORES]
-        if(_equipos[0].panel){
-            tipoEquipo = "panel";
-        }
+            //Obtener la lista de -MarcasSelectas-
+            let _lstMarcaSelectas = MatrizEquipoSelectos.split(",");
+            _lstMarcaSelectas.filter(Boolean); //Borrar los espacios en blanco del [array]
 
-        if(MateEquipoSelect[tipoEquipo] != "*"){
-            ///Se obtiene la lista de -Marcas-
-            let _lstMarcas = MateEquipoSelect[tipoEquipo].split(",");
-            _lstMarcas = _lstMarcas.filter(Boolean); //Borrar los espacios en blanco del [array]
+            //Iterar marcas
+            for(let marca of _lstMarcaSelectas)
+            {
+                
 
-            ///Iteran las marcas (1 x 1)
-            for(let marca of _lstMarcas){
-                //Filtrar los equipos pertenecientes a esa marca
-                _equipos.filter(equipo => {
-                    if(equipo.panel){
-                        equipo = equipo.panel;
+                //Filtrar los equipos que pertenecen a la *marca*
+                _equipos.filter(Equipo => {
+                    //Comprobar si el *Objeto* iterado tiene propiedad [panel]
+                    if(Equipo.panel){
+                        Equipo = Equipo.panel;
                     }
 
-                    if(equipo.vMarca === marca){
-                        lstEquiposFiltrados.push(equipo);
+                    if(Equipo.vMarca === marca){
+                        _EquiposFiltrados.push(Equipo);
                     }
-                });
+                });    
             }
 
-            ///
-            if(lstEquiposFiltrados.length == 0){
-                return filtrarEquiposSelectos(MatEquipoSelect, _equipos, combinacionName, 1);
-            }
-
-            ///Equipos filtrados por -MARCA-
-            _equipos = lstEquiposFiltrados;
+            _equipos = _EquiposFiltrados;
         }
 
         return _equipos;

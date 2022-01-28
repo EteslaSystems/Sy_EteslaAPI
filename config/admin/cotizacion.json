@@ -2,7 +2,8 @@
     "busqueda_inteligente": {
         "combinacionEconomica": {
             "panel": "Jinko,Suntech,",
-            "inversor": "Goodwe,"
+            "inversor": "Goodwe,",
+            "estructura": "Supports,"
         },
         "combinacionMediana": {
             "panel": "Canadian,",

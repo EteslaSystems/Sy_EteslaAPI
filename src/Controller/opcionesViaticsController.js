@@ -103,7 +103,9 @@ async function calcularViaticosBTI(data){
                 }
             }
             else{
-                _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes('Everest') });
+                let marcaEstructura = typeof data.arrayBTI[0].estructura != 'undefined' || data.arrayBTI[0].estructura != null ? data.arrayBTI[0].estructura.vMarca : 'Everest';
+
+                _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(marcaEstructura) });
                 _estructuras = _estructuras[0]; //Formating to Object
             }
         }
