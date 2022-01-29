@@ -8,14 +8,11 @@
 const mysql = require ('mysql'); //Constante que instancia la dependencia de MySQL
 
 const mysqlConnection = mysql.createConnection({ //Cadena de conexión a la base de datos de MySQL
-	host: '137.184.97.127',
+	host: 'localhost',
 	user: 'esclavo',
+        //user: root,
 	password: '$!Etesla123$',
-	database: 'eteslapanelessolares_sy',
-	/* ---------------------------------------- */
-	// host: 'localhost',
-	// user: 'root',
-	// database: 'eteslapanelessolares_sy'
+	database: 'eteslapanelessolares_sy'
 });
 
 mysqlConnection.connect(function (err){ //función que manda un mensaje a la consola con el resultado de la conección, ya sea exitosa o no
