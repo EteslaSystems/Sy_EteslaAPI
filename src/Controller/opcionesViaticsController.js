@@ -66,17 +66,15 @@ async function calcularViaticosBTI(data){
         //Propuesta - Caducidad
         let infoPropuesta = _configFile.propuesta_cotizacion;
 
-        if(tipoCotizacion != 'Combinacion'){
-            //Datos cliente
-            uCliente = await cliente.consultarId({ idPersona: idCliente });
-            uCliente = uCliente.message; 
-            uCliente = uCliente[0];
+        //Datos cliente
+        uCliente = await cliente.consultarId({ idPersona: idCliente });
+        uCliente = uCliente.message; 
+        uCliente = uCliente[0];
 
-            //Datos vendedor
-            uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
-            uVendedor = uVendedor.message;
-            uVendedor = uVendedor[0];
-        }
+        //Datos vendedor
+        uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
+        uVendedor = uVendedor.message;
+        uVendedor = uVendedor[0];
 
         //Estructuras
         let _estructuras = await estructura.leer();
@@ -294,7 +292,7 @@ async function calcularViaticosBTI(data){
             let paneles = _arrayCotizacion[x].panel != null ? _arrayCotizacion[x].panel : null;
             let inversores = _arrayCotizacion[x].inversor != null ? _arrayCotizacion[x].inversor : null;
             /*#endregion*/
-    
+
             //Se llena el objetoRespuesta
             objCotizacionBTI = {
                 vendedor: uVendedor,
@@ -338,14 +336,20 @@ async function calcularViaticosBTI(data){
                     cantidad: infoPropuesta.expiracion.numero,
                     unidadMedida: infoPropuesta.expiracion.unidadMedida
                 }
-            };
-    
+            };        
+
+            //Notificar
+            await Notificacion.notificar(objCotizacionBTI);
+
+            //Limpiar de propiedades inecesarias (Solo para propuestas[Combinaciones])
+            if(tipoCotizacion != 'Combinacion'){
+                objCotizacionBTI.vendedor = null;
+                objCotizacionBTI.cliente = null;
+            }
+
             _result[0] = objCotizacionBTI;
         }
     
-        //Notificar
-        // await Notificacion.notificar({ message: { cotizacion: _result, estado: "cotizando" } });
-
         return _result;
     }
     catch(error){

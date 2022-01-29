@@ -12,109 +12,27 @@ const agregados = require('../Controller/agregadosController');
 const Notificacion = require('../Controller/notificationController');
 
 async function savePropuesta(objPropuesta){
-	let dataToSave = { 
-		panel: null, 
-		inversor: null, 
-		estructura: null, 
-		cliente: null, 
-		usuario: null, 
-		tipoCombinacion: null, 
-		tipoCotizacion: null, 
-		consumoPromedioKw: null, /*(Bimestral o anual)*/ 
-		tarifa: null,  
-		potenciaPropuesta: null, 
-		nuevoConsumoBimestralKw: null, 
-		nuevoConsumoAnualKw: null, 
-		descuento: null, 
-		porcentajePropuesta: null, 
-		totalSinIvaMXN: null, 
-		totalConIvaMXN: null, 
-		totalSinIvaUSD: null, 
-		totalConIvaUSD: null, 
-		statusProjectFV: 0, 
-		expiracion: 0 /* Dias de expiracion */ 
-	};
-	
+	let _agregados = null;
+
 	try{
 		let Propuesta = typeof objPropuesta.propuesta === "object" ? objPropuesta.propuesta : JSON.parse(objPropuesta.propuesta); //Formating to Array
 		Propuesta = Array.isArray(Propuesta) === true ? Propuesta[0] : Propuesta; //Formating
 
-		/* #region Formating Data to Save PROPUESTA */
-		dataToSave.cliente = { 
-			id: Propuesta.cliente.idCliente,
-			nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido
-		} || null;
-
-		dataToSave.usuario = {
-			id: Propuesta.vendedor.idUsuario,
-			nombre: Propuesta.vendedor.vNombrePersona + ' ' + Propuesta.vendedor.vPrimerApellido + ' ' + Propuesta.vendedor.vSegundoApellido
-		} || null;
-
-		//*CotizacionSencilla* o *CotizacionCombinacion* 
-		if(Propuesta.combinacion){
-			dataToSave.tipoCombinacion = Propuesta.tipoCombinacion;
+		//Se encapsulan el array de [agregados]
+		if(Propuesta.agregados._agregados != null){
+			_agregados = Propuesta.agregados._agregados;
 		}
 
-		dataToSave.tipoCotizacion = Propuesta.tipoCotizacion || null;
-		dataToSave.totalSinIvaMXN = Propuesta.totales.precioMXNSinIVA || null;
-		dataToSave.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
-		dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
-		dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
+		//Quitar la paja de la data, para que esta sea factible para guardar
+		Propuesta = filtrarData(Propuesta);
 
-		dataToSave.expiracion = Propuesta.expiracion || null;
-
-		if(Propuesta.tipoCotizacion != "individual"){
-			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
-			dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
-			dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
-		}
-
-		dataToSave.descuento = Propuesta.descuento || null;
-
-		if(Propuesta.paneles){
-			dataToSave.panel = {
-				modelo: Propuesta.paneles.nombre || Propuesta.paneles.vNombreMaterialFot,
-				cantidad: Propuesta.paneles.noModulos
-			} || null;
-
-			dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal;
-		}
-		
-		if(Propuesta.estructura._estructuras != null){
-			dataToSave.estructura = {
-				marca: Propuesta.estructura._estructuras.vMarca,
-				cantidad: Propuesta.estructura.cantidad
-			} || null;
-		}
-
-		if(Propuesta.inversores){
-			dataToSave.inversor = {
-				modelo: Propuesta.inversores.vNombreMaterialFot,
-				cantidad: Propuesta.inversores.numeroDeInversores
-			} || null;
-		}
-
-		if(Propuesta.power){
-			if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipCotizacion === "bajaTension" && Propuesta.tipoCotizacion === "CombinacionCotizacion"){ //BajaTension || BajaTension c/Commbinaciones
-				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
-				dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
-			}
-			else{ //MediaTension
-				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.generacion.promedioGeneracionBimestral || null;
-				dataToSave.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
-			}
-		}
-		/* #endregion */
-
-		let respuesta = await insertarBD(dataToSave);
+		let respuesta = await insertarBD(Propuesta);
 		
 		/*#region Agregados*/
 		try{
 			//Se valida que la propuesta tenga -Agregados-
-			if(Propuesta.agregados._agregados != null){
+			if(_agregados != null){
 				let idPropuesta = respuesta.idPropuesta;
-
-				let _agregados = Propuesta.agregados._agregados;
 
 				//Iterar _agregados
 				for(let Agregado of _agregados)
@@ -152,10 +70,11 @@ async function savePropuesta(objPropuesta){
 }
 
 function filtrarData(Propuesta){
-	let dataToSave = { 
+	let dataFiltrada = {
 		panel: null, 
 		inversor: null, 
-		estructura: null, 
+		estructura: null,
+		agregadosCostoTotal: null,
 		cliente: null, 
 		usuario: null, 
 		tipoCombinacion: null, 
@@ -176,55 +95,59 @@ function filtrarData(Propuesta){
 	};
 	
 	try{
-		dataToSave.cliente = { 
+		dataFiltrada.cliente = { 
 			id: Propuesta.cliente.idCliente,
 			nombre: Propuesta.cliente.vNombrePersona + ' ' + Propuesta.cliente.vPrimerApellido + ' ' + Propuesta.cliente.vSegundoApellido
 		} || null;
 
-		dataToSave.usuario = {
+		dataFiltrada.usuario = {
 			id: Propuesta.vendedor.idUsuario,
 			nombre: Propuesta.vendedor.vNombrePersona + ' ' + Propuesta.vendedor.vPrimerApellido + ' ' + Propuesta.vendedor.vSegundoApellido
 		} || null;
 
 		//*CotizacionSencilla* o *CotizacionCombinacion* 
 		if(Propuesta.combinacion){
-			dataToSave.tipoCombinacion = Propuesta.tipoCombinacion;
+			dataFiltrada.tipoCombinacion = Propuesta.tipoCombinacion;
 		}
 
 		//
-		dataToSave.tipoCotizacion = Propuesta.tipoCotizacion || null;
-		dataToSave.totalSinIvaMXN = Propuesta.totales.precioMXNSinIVA || null;
-		dataToSave.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
-		dataToSave.totalSinIvaUSD = Propuesta.totales.precio || null;
-		dataToSave.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
-		dataToSave.expiracion = Propuesta.expiracion || null;
+		dataFiltrada.tipoCotizacion = Propuesta.tipoCotizacion || null;
+		dataFiltrada.totalSinIvaMXN = Propuesta.totales.precioMXNSinIVA || null;
+		dataFiltrada.totalConIvaMXN = Propuesta.totales.precioMXNConIVA || null;
+		dataFiltrada.totalSinIvaUSD = Propuesta.totales.precio || null;
+		dataFiltrada.totalConIvaUSD = Propuesta.totales.precioMasIVA || null;
+		dataFiltrada.expiracion = Propuesta.expiracion || null;
 
 		if(Propuesta.tipoCotizacion != "individual"){
-			dataToSave.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
-			dataToSave.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
-			dataToSave.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
+			dataFiltrada.consumoPromedioKw = parseFloat(Propuesta.promedioConsumosBimestrales) || null;
+			dataFiltrada.tarifa = { vieja: Propuesta.power.old_dac_o_nodac, nueva: Propuesta.power.new_dac_o_nodac };
+			dataFiltrada.porcentajePropuesta = Propuesta.power.porcentajePotencia || null;
 		}
 
-		dataToSave.descuento = Propuesta.descuento || null;
+		dataFiltrada.descuento = Propuesta.descuento || null;
 
 		if(Propuesta.paneles){
-			dataToSave.panel = {
+			dataFiltrada.panel = {
 				modelo: Propuesta.paneles.nombre || Propuesta.paneles.vNombreMaterialFot,
 				cantidad: Propuesta.paneles.noModulos
 			} || null;
 
-			dataToSave.potenciaPropuesta = Propuesta.paneles.potenciaReal;
+			dataFiltrada.potenciaPropuesta = Propuesta.paneles.potenciaReal;
 		}
 		
 		if(Propuesta.estructura._estructuras != null){
-			dataToSave.estructura = {
+			dataFiltrada.estructura = {
 				marca: Propuesta.estructura._estructuras.vMarca,
 				cantidad: Propuesta.estructura.cantidad
 			} || null;
 		}
 
+		if(Propuesta.agregados._agregados != null){
+			dataFiltrada.agregadosCostoTotal = Propuesta.agregados.costoTotal;
+		}
+
 		if(Propuesta.inversores){
-			dataToSave.inversor = {
+			dataFiltrada.inversor = {
 				modelo: Propuesta.inversores.vNombreMaterialFot,
 				cantidad: Propuesta.inversores.numeroDeInversores
 			} || null;
@@ -232,16 +155,16 @@ function filtrarData(Propuesta){
 
 		if(Propuesta.power){
 			if(Propuesta.tipoCotizacion === "bajaTension" || Propuesta.tipCotizacion === "bajaTension" && Propuesta.tipoCotizacion === "Combinacion"){ //BajaTension || BajaTension c/Commbinaciones
-				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
-				dataToSave.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
+				dataFiltrada.nuevoConsumoBimestralKw = Propuesta.power.nuevosConsumos.promedioNuevoConsumoBimestral || null;
+				dataFiltrada.nuevoConsumoAnualKw = Propuesta.power.nuevosConsumos.nuevoConsumoAnual || null;
 			}
 			else{ //MediaTension
-				dataToSave.nuevoConsumoBimestralKw = Propuesta.power.generacion.promedioGeneracionBimestral || null;
-				dataToSave.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
+				dataFiltrada.nuevoConsumoBimestralKw = Propuesta.power.generacion.promedioGeneracionBimestral || null;
+				dataFiltrada.nuevoConsumoAnualKw = Propuesta.power.generacion.produccionAnualKwh || null;
 			}
 		}
 
-		return dataToSave;
+		return dataFiltrada;
 	}
 	catch(error){
 		console.log(error);
