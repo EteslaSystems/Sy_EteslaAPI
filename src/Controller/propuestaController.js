@@ -314,7 +314,8 @@ function consultaBD(data) {
 				}
 
 				reject(response);
-			} else {
+			} 
+			else {
 				const response = {
 					status: true,
 					message: rows[0]

@@ -68,8 +68,8 @@ BEGIN
 		UPDATE propuesta
 		SET fConsumoPromedio = consumoPromedio, cTarifaActual = tarifaActual, cNuevaTarifa = nuevaTarifa, vModeloPanel = modeloPanel, iCantidadPanel = cantidadPanel, vModeloInversor = modeloInversor, iCantidadInversor = cantidadInversor, vMarcaEstructura = marcaEstructura, iCantidadEstructura = cantidadEstructura, fPotenciaInstalada = potenciaInstalada, fPromedioNuevoConsumoMes = promedioNuevoConsumoMensual, fPromedioNuevoConsumoBim = promedioNuevoConsumoBimestral, fPromedioNuevoConsumoAnual = promedioNuevoConsumoAnual, cTipoCotizacion = TipoCotizacion, tPorcentajeDescuento = porcentajeDescuento, tPorcentajePropuesta = porcentajePropuesta, fCostoSinIvaMxn = costoSinIVAMXN, fCostoConIvaMxn = costoConIVAMXN, fCostoSinIvaUsd = costoSinIVAUSD, fCostoConIvaUsd = costoConIVAUSD, updated_at = NOW(), expired_at = expireAtModified;
 	ELSEIF(Opcion = 3) THEN
-		/*Leer[Vendedor] => TODAS LAS PROPUESTAS PERTENECIENTES A UN CLIENTE_ESPECIFICO*/
-		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
+		/*Leer TODAS LAS PROPUESTAS*/
+		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
 		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
 		FROM propuesta
 		WHERE deleted_at IS NULL
@@ -82,11 +82,12 @@ BEGIN
 		WHERE idPropuesta = UNHEX(xIdPropuesta)
 		AND deleted_at IS NULL;
 	ELSEIF (Opcion = 5) THEN
-		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
+		/*Leer TODAS LAS PROPUESTAS TODAS LAS PROPUESTAS PERTENECIENTES A UN CLIENTE_ESPECIFICO*/
+		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
 		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
 		FROM propuesta
-		WHERE id_Cliente = UNHEX(xIdCliente)
-		AND deleted_at IS NULL
+		WHERE deleted_at IS NULL
+		AND id_Cliente = UNHEX(xIdCliente)
 		ORDER BY created_at DESC;
 	END IF;
 END

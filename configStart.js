@@ -5,7 +5,7 @@
  * @date: 11/Febrero/2020
  */
 //Requires
-/* const compression = require('compression'); */ //Compression GZIP - Necesaria
+require('dotenv').config();
 const path = require('path');
 const express = require('express'); //Constante que instancia la libreria 'express'.
 const http = require('http'); /////\\\\
@@ -16,7 +16,7 @@ const app = express(); //Constante que inicializa express para su uso en la apli
 const server = http.createServer(app); //Constante que crea/inicializa el servidor.  /////\\\\
 
 //Settings
-app.set('port', process.env.PORT || 4000); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
+app.set('port', process.env.PORT_APPLICATION); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
 app.set('views', path.join(process.cwd(),'src','PDF','templates'));//Borrar cuando se deje de utilizar el testeo de la plantilla del PDF
 app.engine('.hbs', exphbs({ layoutsDir: app.get('views'), defaultLayout: 'cotizacion', extname: '.hbs' }));//Borrar cuando se deje de utilizar el testeo de la plantilla del PDF
 app.set('view engine','.hbs');//Borrar cuando se deje de utilizar el testeo de la plantilla del PDF
