@@ -342,7 +342,7 @@ async function calcularViaticosBTI(data){
             await Notificacion.notificar(objCotizacionBTI);
 
             //Limpiar de propiedades inecesarias (Solo para propuestas[Combinaciones])
-            if(tipoCotizacion != 'Combinacion'){
+            if(tipoCotizacion === 'Combinacion'){
                 objCotizacionBTI.vendedor = null;
                 objCotizacionBTI.cliente = null;
             }
