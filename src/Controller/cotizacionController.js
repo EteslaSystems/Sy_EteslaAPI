@@ -394,13 +394,11 @@ function filtrarEquiposSelectos(data){ ///Return: [Array]
 
             //Obtener la lista de -MarcasSelectas-
             let _lstMarcaSelectas = MatrizEquipoSelectos.split(",");
-            _lstMarcaSelectas.filter(Boolean); //Borrar los espacios en blanco del [array]
+            _lstMarcaSelectas = _lstMarcaSelectas.filter(Boolean); //Borrar los espacios en blanco del [array]
 
             //Iterar marcas
             for(let marca of _lstMarcaSelectas)
             {
-                
-
                 //Filtrar los equipos que pertenecen a la *marca*
                 _equipos.filter(Equipo => {
                     //Comprobar si el *Objeto* iterado tiene propiedad [panel]
@@ -414,7 +412,9 @@ function filtrarEquiposSelectos(data){ ///Return: [Array]
                 });    
             }
 
-            _equipos = _EquiposFiltrados;
+            //
+            //Si [_EquiposFiltrados] se encuentra vacio, se pasa la matriz limpia de [_equipos]
+            _equipos = _EquiposFiltrados.length > 0 ? _EquiposFiltrados : _equipos;
         }
 
         return _equipos;
