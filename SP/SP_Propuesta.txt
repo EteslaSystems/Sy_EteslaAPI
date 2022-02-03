@@ -76,7 +76,7 @@ BEGIN
 		ORDER BY created_at DESC;
 	ELSEIF (Opcion = 4) THEN
 		/*Consulta filtrada*/
-		SELECT HEX(idPropuesta) as idPropuesta, HEX(id_Cliente) as id_Cliente, HEX(id_Usuario) as id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
+		SELECT HEX(idPropuesta) AS idPropuesta, HEX(id_Cliente) AS id_Cliente, HEX(id_Usuario) AS id_Usuario, vCliente, fConsumoPromedio, cTarifaActual, cNuevaTarifa, vNombreVendedor, vModeloPanel, iCantidadPanel, vModeloInversor, iCantidadInversor, vMarcaEstructura, iCantidadEstructura, fPotenciaInstalada, fPromedioNuevoConsumoMes,
 		fPromedioNuevoConsumoBim, fPromedioNuevoConsumoAnual, cTipoCotizacion, tPorcentajeDescuento, tPorcentajePropuesta, fCostoSinIvaMxn, fCostoConIvaMxn, fCostoSinIvaUsd, fCostoConIvaUsd, siStatusProjectFV, created_at, updated_at, expired_at
 		FROM propuesta
 		WHERE idPropuesta = UNHEX(xIdPropuesta)
