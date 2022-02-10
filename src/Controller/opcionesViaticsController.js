@@ -227,7 +227,7 @@ async function calcularViaticosBTI(data){
                 costoTotalProyecto = Math.round(costoTotalProyecto + ((inflacionPropuesta / 100) * costoTotalProyecto));
             }
 
-            ///Aumento
+            ///Aumento - [Ajuste de propuesta]
             if(parseInt(data.aumento) > 0){
                 let aumentoPorcentaje = parseInt(data.aumento);
                 let aumento = (aumentoPorcentaje * costoTotalProyecto) / 100;
@@ -239,7 +239,7 @@ async function calcularViaticosBTI(data){
                 Aumento.precioSinAumento = costoTotalProyecto;
             }
 
-            /// Descuento
+            /// Descuento - [Ajuste de propuesta]
             if(parseInt(data.descuento) > 0){ ///[Return: $$USD]
                 let descuentPorcentaje = parseInt(data.descuento);
                 let descuento = (descuentPorcentaje * costoTotalProyecto) / 100;//USD

@@ -6,21 +6,21 @@ CREATE OR REPLACE PROCEDURE SP_Agregados
 	IN xIdPropuesta VARCHAR(255),
 	IN Cantidad SMALLINT,
 	IN Agregado VARCHAR(50),
-	IN Costo FLOAT
+	IN CostoUnitario FLOAT
 )
 BEGIN
 	IF(Opcion = 0) THEN
 	/*Insertar*/
 	   	INSERT INTO agregados
-		VALUES(UUID(), UNHEX(xIdPropuesta), Cantidad, Agregado, Costo);
+		VALUES(UUID(), UNHEX(xIdPropuesta), Cantidad, Agregado, CostoUnitario, 'Pesos');
 	ELSEIF(Opcion = 1) THEN
 	/*Actualizar*/
 		UPDATE agregados
-		SET tiCantidad = Cantidad, vAgregado = Agregado, fCosto = Costo
+		SET tiCantidad = Cantidad, vAgregado = Agregado, fCostoUnitario = CostoUnitario, cTipoMoneda = 'Pesos' 
 		WHERE idAgregado = UNHEX(xIdAgregado);
 	ELSEIF(Opcion = 2) THEN
 	/*Leer - AGREGADOS pertenecientes a una PROPUESTA*/
-		SELECT HEX(idAgregado) AS idAgregado, tiCantidad, vAgregado, fCosto
+		SELECT HEX(idAgregado) AS idAgregado, tiCantidad, vAgregado, fCostoUnitario, cTipoMoneda
 		FROM agregados
 		WHERE id_Propuesta = UNHEX(xIdPropuesta);
 	END IF;

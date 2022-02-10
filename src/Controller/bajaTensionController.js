@@ -113,7 +113,7 @@ function promedio_consumos(consumos){
     consumoAnual = consumoAnual(consumoMensual);
     consumoDiario = consumoDiario(consumoAnual);
 
-    objResp = {
+    return {
         promedioConsumosMensuales: promedioConsumosMensuales,
         promConsumosBimestrales: promConsumosBimestrales,
         consumoMensual: consumoMensual,
@@ -121,8 +121,6 @@ function promedio_consumos(consumos){
         consumoDiario: consumoDiario,
         _consumosBimestrales: consumos
     };
-
-    return objResp;
 }
 
 async function calcular_potenciaRequerida(objPromedioDeConsumos, tarifa, data){ 

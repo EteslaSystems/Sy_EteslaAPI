@@ -27,17 +27,17 @@ BEGIN
     /* Editar Panel */
     ELSEIF (Opcion = 2) THEN
         UPDATE panel
-        SET vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, fPrecio = Precio, vTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, fVOC = VOC, fVMP = VMP, imgRuta = ImageRuta, updated_at = NOW()
+        SET vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, fPrecio = Precio, cTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, fVOC = VOC, fVMP = VMP, imgRuta = ImageRuta, updated_at = NOW()
         WHERE idPanel = UNHEX(xIdPanel);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at
+        SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at
         FROM panel
         WHERE deleted_at IS NULL
         ORDER BY vMarca, fPotencia ASC;
     /* Leer - filtrado */
     ELSEIF (Opcion = 4) THEN
-        SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at
+        SELECT HEX(idPanel) AS idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta, created_at, updated_at
         FROM panel
         WHERE deleted_at IS NULL AND idPanel = UNHEX(xIdPanel);
     END IF;

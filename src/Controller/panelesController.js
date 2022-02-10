@@ -154,7 +154,6 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 		let noModulos = Math.round(energiaRequerida / arrayAllOfPanels[i].fPotencia);
 		let potenciaReal = Math.round((arrayAllOfPanels[i].fPotencia * noModulos) * 100) / 100; 
 		
-
 		arrayNoDeModulosPorPotenciaDelPanel[i] = {
 			idPanel: arrayAllOfPanels[i].idPanel,
 			nombre: arrayAllOfPanels[i].vNombreMaterialFot,

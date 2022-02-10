@@ -605,7 +605,6 @@ function getConsumosGeneracionMXN(_pagosTotales){
 /*#region Power_BTI*/
 async function getPowerBTI(data){
     let objResult = { _consumos: null, nuevosConsumos: '', porcentajePotencia:'', generacion:'', old_dac_o_nodac: '', new_dac_o_nodac: '', objConsumoEnPesos: null, objGeneracionEnpesos: null, objImpactoAmbiental: null, Ahorro: null };
-    let dac_o_nodac = '';
     
     try{
         let _consumos = data.consumos || null;
@@ -627,21 +626,20 @@ async function getPowerBTI(data){
     
             //Es DAC o NO
             if(tarifa != null){
-                dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
-                objResult.old_dac_o_nodac = dac_o_nodac;
+                objResult.old_dac_o_nodac = dac(tarifa, promedioConsumosMensuales); //Valuacion [Consumo_energia]
      
                 //Consumo en pesos
-                objResult.objConsumoEnPesos = await consumoEnPesos(dac_o_nodac, data.consumos);
+                objResult.objConsumoEnPesos = await consumoEnPesos(objResult.old_dac_o_nodac, data.consumos);
             }
     
             objResult.nuevosConsumos = objNuevosConsumos;
     
+            //Nuevos consumos
             if(objNuevosConsumos != null){ //Generacion en pesos MXN
-                dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
-                objResult.new_dac_o_nodac = dac_o_nodac;
+                objResult.new_dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
     
                 //Generacion en pesos
-                objResult.objGeneracionEnpesos = await consumoEnPesos(dac_o_nodac, objNuevosConsumos);
+                objResult.objGeneracionEnpesos = await consumoEnPesos(objResult.new_dac_o_nodac, objNuevosConsumos);
             }
     
             ///Ahorro [kw/bim]
@@ -665,7 +663,7 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
 
     try{
         let _pagosMensuales = (consumoProm, _demanda) => {//[Retorna: Object] *consumoProm: promedio de consumos -MENSUALES- *_demanda: 'Viene la tarifa, escalones y precios $$mxn'
-            let kwhACotizar = 0, costoKwhPesos = 0, costo = 0;
+            let costoKwhPesos = 0, costo = 0;
             let _pagosAnio = [];
 
             //Se arregla el array de 'tarifas' para poder ordenar el rango de la tarifa, mas bajo (nivel/escalon #1)
@@ -674,17 +672,29 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             }
 
             ///Se obtiene el costo en pesos mxn equivalente a 1 mes
-            _demanda.forEach(Demanda => {
+            _demanda.forEach((Demanda, i) => {
                 if(consumoProm > 0){
-                    kwhACotizar = consumoProm - Demanda.iRango;
-                    costoKwhPesos = kwhACotizar * Demanda.fPrecio;
-                    
-                    //Costo total del kwh de 1 mes
-                    costo += costoKwhPesos;
-                    costo = Math.round(costo); //Redondeamos
+                    if(consumoProm > Demanda.iRango){
+                        if(Demanda.iRango === 0){
+                            //Excedentes [section]
+                            costoKwhPesos = consumoProm * Demanda.fPrecio;
+                            //
+                            consumoProm = 0;
+                        }
+                        else{
+                            costoKwhPesos = Demanda.iRango * Demanda.fPrecio;
+                        }
+                    }
+                    else{
+                        costoKwhPesos = consumoProm * Demanda.fPrecio;
+                    }
 
-                    //Restar los kwh cotizados a 'consumoProm'
-                    consumoProm -= kwhACotizar;
+                    //Descontar los Kwh ya contabilizados
+                    consumoProm = consumoProm - Demanda.iRango;
+
+                    //Sumar los Kwh que van contabilizados
+                    costo += costoKwhPesos;
+                    costo = Math.round(costo);
                 }
             });
 
@@ -694,12 +704,10 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
                 _pagosAnio[x] = costo;
             }
 
-            let result = {
+            return {
                 costoTotalMensual: costo,
                 _pagosMensualesAnual: _pagosAnio
             };
-
-            return result;
         };
 
         let _pagosBimestrales = (_pagosMensuales) => { //$$ - Bimestrales
@@ -723,12 +731,10 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             _pagosBim.forEach(bimst => promBimst += bimst);
             promBimst = Math.round(promBimst / _pagosBim.length);
 
-            let objResult = {
+            return {
                 _bimestres: _pagosBim,
                 pagsPromBimestrales: promBimst
             };
-            
-            return objResult;
         };
     
         let pagoAnual = (_pagosMensuales) => { 
@@ -982,15 +988,14 @@ function getGeneration(origen, potenciaReal){
     promeDGeneracionBimestral = promeDGeneracionBimestral(_generacionBimestral);
     generacionAnual = generacionAnual(_generacion);
 
-    let objrespuesta = { /* Todo esta en [Kw] */
+    return { 
+        /* Todo esta en [Kw] */
         _generacion: _generacion,
         _generacionBimestral: _generacionBimestral,
         promeDGeneracionBimestral: promeDGeneracionBimestral,
         promedioDeGeneracion: promeDGeneracionMensual,
         generacionAnual: generacionAnual
     };
-
-    return objrespuesta;
 }
 
 function getNewConsumption(__consumos, __generacion){
