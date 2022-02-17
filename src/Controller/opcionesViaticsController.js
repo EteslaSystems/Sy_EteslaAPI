@@ -30,14 +30,6 @@ const viaticos_otros = 0.05; //Cotizador - viejo (??)
 async function calcularViaticosBTI(data){
     let _result = [];
     let objROI = null, objPower = null, objCotizacionBTI = {};
-    let idUsuario = data.idUsuario;
-    let idCliente = data.idCliente;
-    let origen = data.origen;
-    let destino = data.destino; 
-    let _consums = data.consumos || null;
-    let _agregados = data._agregados || null;
-    let tipoCotizacion = data.tipoCotizacion || null;
-    let tarifa = data.tarifa || null;
     let Descuento = { porcentaje: 0, descuento: 0, precioSinDescuento: 0 };
     let Aumento = { porcentaje: 0, aumento: 0, precioSinAumento: 0 };
     let cantidadEstructuras = 0;
@@ -46,7 +38,14 @@ async function calcularViaticosBTI(data){
     let uCliente = null, uVendedor = null;
 
     try{
-        // let _opciones = await consultaOpcionesVPropuestaBD();
+        let idUsuario = data.idUsuario;
+        let idCliente = data.idCliente;
+        let origen = data.origen;
+        let destino = data.destino; 
+        let _consums = data.consumos || null;
+        let _agregados = data._agregados || null;
+        let tipoCotizacion = data.tipoCotizacion || null;
+        let tarifa = data.tarifa || null;
         let _configFile = await configFile.getArrayOfConfigFile();
         let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
         distanciaEnKm = distanciaEnKm.message;
@@ -336,7 +335,7 @@ async function calcularViaticosBTI(data){
                     cantidad: infoPropuesta.expiracion.numero,
                     unidadMedida: infoPropuesta.expiracion.unidadMedida
                 }
-            };        
+            };       
 
             //Notificar
             await Notificacion.notificar(objCotizacionBTI);
@@ -406,13 +405,15 @@ module.exports.calcularViaticosBTI = async function (data){
 async function main_calcularViaticos(data){
     let _resultado = [], objViaticosCalculados = {};
     let pagoPasaje = 0, pagoPasajeTotal = 0, pagoComidaTotal = 0, pagoHospedajeTotal = 0;
+    let costoTotalAgregados = 0;
 
     try{
         let origen = data.origen;
         let destino = data.destino;
+        let idUsuario = data.idUsuario;
         let idCliente = data.idCliente;
         let descuento = (parseFloat(data.descuento) / 100) || 0;
-        let propuesta = data.propuesta; //Obj
+        let propuesta = data.arrayBTI[0]; //Obj
         let panel = JSON.parse(propuesta.panel); //Obj
         let inversor = propuesta.inversor; //Obj
         let _agregados = data._agregados || null;
@@ -427,13 +428,20 @@ async function main_calcularViaticos(data){
         uCliente = uCliente.message;
         uCliente = uCliente[0];
 
+        //Datos vendedor
+        let uVendedor = await vendedor.consultarId({ idPersona: idUsuario });
+        uVendedor = uVendedor.message;
+        uVendedor = uVendedor[0];
+
         //Estructuras
         let _estructuras = await estructura.leer();
         _estructuras = _estructuras.message;
 
         //AGREGADOS
-        costoTotalAgregados = _agregados != null ? getCostoTotalAgregados(_agregados) : 0; ///CostoTotalAgregados - MXN
-        costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
+        if(_agregados != null){
+            costoTotalAgregados = getCostoTotalAgregados(_agregados); ///CostoTotalAgregados - MXN
+            costoTotalAgregados = costoTotalAgregados / precioDolar; ///CostoTotalAgregados - USD (para poderlo sumar a los totales)
+        } 
 
         //
         let confFile = await configFile.getArrayOfConfigFile();
@@ -454,7 +462,7 @@ async function main_calcularViaticos(data){
         }
 
         //Estructura seleccionada por el usuario
-        if(data.propuesta.hasOwnProperty('estructura')){ 
+        if(propuesta.hasOwnProperty('estructura')){ 
             //Filtrar estructura
             _estructuras = _estructuras.filter(estructura => { return estructura.vMarca.includes(data.propuesta.estructura) });
             _estructuras = _estructuras[0]; //Formating Wto Object
@@ -468,8 +476,8 @@ async function main_calcularViaticos(data){
         let totalViaticos = pagoPasajeTotal + pagoComidaTotal + pagoHospedajeTotal;
         let costoTotalPanInvEstr = Math.round((panel.costoTotal + parseFloat(inversor.costoTotal) + costoTotalEstructuras) * 100) /100;
         let costoTotalFletes = Math.floor(costoTotalPanInvEstr * confFile.costos.porcentaje_fletes);
-        let costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
-        let subtotOtrFletManObrTPIE = Math.round((costoManoDeObra[1] + costoTotalFletes + costoManoDeObra[0] + costoTotalPanInvEstr + costoTotalAgregados) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
+        let _costoManoDeObra = getPrecioDeManoDeObraMT(panel.noModulos, costoTotalPanInvEstr, precioDolar);
+        let subtotOtrFletManObrTPIE = Math.round((_costoManoDeObra[1] + costoTotalFletes + _costoManoDeObra[0] + costoTotalPanInvEstr + costoTotalAgregados) * 100) / 100; //TPIE = Total Paneles Inversores Estructuras
         let margen = Math.round(((subtotOtrFletManObrTPIE / (1 - confFile.costos.porcentaje_margen)) - subtotOtrFletManObrTPIE) * 100)/100;
         let totalDeTodo = Math.round((subtotOtrFletManObrTPIE + margen + totalViaticos) * 100)/100;
         let precio = Math.round(totalDeTodo * (1 - descuento)); //USD
@@ -477,7 +485,7 @@ async function main_calcularViaticos(data){
         let precioMXN = Math.round(precio * precioDolar); //MXN
         let precioMasIVAMXN = Math.round(precioMasIVA * precioDolar); //MXN + IVA
 
-        let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potencia)) * 100)/100;
+        let precio_watt = Math.round((totalDeTodo / (panel.noModulos * panel.potenciaReal)) * 100)/100;
 
         /* POWER - ROI - FINANCIAMIENTO */
         let objPower = await power.obtenerPowerMT(data); //Return an Object
@@ -502,8 +510,8 @@ async function main_calcularViaticos(data){
                 pagoTotalHospedaje: pagoHospedajeTotal
             },
             totales: {
-                manoDeObra: costoManoDeObra[0] || null,
-                otrosTotal: costoManoDeObra[1] || null,
+                manoDeObra: _costoManoDeObra[0] || null,
+                otrosTotal: _costoManoDeObra[1] || null,
                 costoTotalFletes: costoTotalFletes,
                 totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
                 subTotalOtrosFleteManoDeObraTPIE: subtotOtrFletManObrTPIE,
