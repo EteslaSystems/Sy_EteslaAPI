@@ -28,25 +28,30 @@ function getIrradiacionDiasDeMesesDelAnio(){
 }
 
 async function getCargoFijo(tarifa){ //Return: (number)
-    let cargoFijo = 0; //Costo -cargoFijo-
-    
     try{
         let _CargoFijo = await ConfigController.getArrayOfConfigFile();
-        _CargoFijo = Config.energia.costos.cargoFijo;
+        _CargoFijo = _CargoFijo.energia.costos.cargoFijo;
 
-        //
-        for(let CargoFijo in _CargoFijo)
-        {
-            cargoFijo = CargoFijo.tarifa[tarifa];
-
-            //Validar si se encontro el -cargoFijo- dentro de la coleccion anterior
-            if(cargoFijo != null){
-                return cargoFijo = CargoFijo.costo;
+        //Validar si es un [Object]
+        if(typeof tarifa != 'object'){
+            //Iterar coleccion hasta encontrar el [Object] del CargoFijo de la tarifa
+            for(let CargoFijo of _CargoFijo)
+            {
+                //Filtrar
+                for(let Tarifa of CargoFijo.tarifa)
+                {
+                    if(Tarifa === tarifa){
+                        return await getCargoFijo(CargoFijo);
+                    }
+                }
             }
         }
+
+        return tarifa.costo; //$$ - MXN
     }
     catch(error){
         console.log(error);
+        throw error;
     }
 }
 
@@ -585,9 +590,14 @@ async function getPowerBTI(data){
             //Nuevos consumos
             if(objNuevosConsumos != null){ //Generacion en pesos MXN
                 objResult.new_dac_o_nodac = await dac(tarifa, objNuevosConsumos.promedioNuevosConsumosMensuales); //Valuacion [Generacion_energia]
-    
-                //Generacion en pesos
-                objResult.objGeneracionEnpesos = await consumoEnPesos(objResult.new_dac_o_nodac, objNuevosConsumos);
+
+                if(objResult.porcentajePotencia >= 100){/*[Cargo fijo*/
+                    let cargoFijo = await getCargoFijo(objResult.new_dac_o_nodac);
+                    objResult.objGeneracionEnpesos = await consumoEnPesos(objResult.new_dac_o_nodac, cargoFijo);
+                }
+                else{/*Generacion en pesos*/
+                    objResult.objGeneracionEnpesos = await consumoEnPesos(objResult.new_dac_o_nodac, objNuevosConsumos);
+                }
             }
     
             ///Ahorro [kw/bim]
@@ -601,50 +611,75 @@ async function getPowerBTI(data){
     }
     catch(error){
         console.log(error);
+        throw error;
     }
 }
 
 async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = promedioConsumosMensuales    
     let consumoPromedioMens = 0, consumoAnual = 0; //Wtts
-    let __demanda = [];
+    let __demanda = null;
     let _noVerano = [], _verano = [];
+    let bndCargoFijo = false; //Bandera [CargoFijo]
 
     try{
         let _pagosMensuales = (consumoProm, _demanda) => {//[Retorna: Object] *consumoProm: promedio de consumos -MENSUALES- *_demanda: 'Viene la tarifa, escalones y precios $$mxn'
             let costoKwhPesos = 0, costo = 0;
             let _pagosAnio = [];
 
-            //Se arregla el array de 'tarifas' para poder ordenar el rango de la tarifa, mas bajo (nivel/escalon #1)
-            if(_demanda.length > 1){
-                _demanda.sort((Tarifa1, Tarifa2) => { return Tarifa1.siNivel - Tarifa2.siNivel });
-            }
+            if(_demanda != null){
+                //Se arregla el array de 'tarifas' para poder ordenar el rango de la tarifa, mas bajo (nivel/escalon #1)
+                if(_demanda.length > 1){
+                    let banderaNivelCero = false;
 
-            ///Se obtiene el costo en pesos mxn equivalente a 1 mes
-            _demanda.forEach((Demanda, i) => {
-                if(consumoProm > 0){
-                    if(consumoProm > Demanda.iRango){
-                        if(Demanda.iRango === 0){
-                            //Excedentes [section]
-                            costoKwhPesos = consumoProm * Demanda.fPrecio;
-                            //
-                            consumoProm = 0;
+                    /* Acomodar el -siNivel- 0, hacia el final */
+                    //Validar si la [_demanda] cuenta con un -siNivel- igual a 0
+                    _demanda.filter(Tarifa => { banderaNivelCero = Tarifa.siNivel === 0 ? true : banderaNivelCero });
+
+                    //
+                    _demanda.sort((Tarifa1, Tarifa2) => { return Tarifa1.siNivel - Tarifa2.siNivel });
+
+                    //Ordenar -siNivel- para que, el nivel 0, quede como ultimo
+                    if(banderaNivelCero === true){
+                        let ObjTemporal = _demanda[0];
+                        
+                        //Se borra el primer indice /*Que contiene la Tarifa con -siNivel- [0]*/
+                        _demanda.shift();
+
+                        //Se manda hacia el ultimo espacio la Tarifa con -siNivel- [0]
+                        _demanda.push(ObjTemporal);
+                    }
+                }
+
+                ///Se obtiene el costo en pesos mxn equivalente a 1 mes
+                _demanda.forEach(Demanda => {
+                    if(consumoProm > 0){
+                        if(consumoProm > Demanda.iRango){
+                            if(Demanda.iRango === 0){
+                                //Excedentes [section]
+                                costoKwhPesos = consumoProm * Demanda.fPrecio;
+                                //
+                                consumoProm = 0;
+                            }
+                            else{
+                                costoKwhPesos = Demanda.iRango * Demanda.fPrecio;
+                            }
                         }
                         else{
-                            costoKwhPesos = Demanda.iRango * Demanda.fPrecio;
+                            costoKwhPesos = consumoProm * Demanda.fPrecio;
                         }
-                    }
-                    else{
-                        costoKwhPesos = consumoProm * Demanda.fPrecio;
-                    }
 
-                    //Descontar los Kwh ya contabilizados
-                    consumoProm = consumoProm - Demanda.iRango;
+                        //Descontar los Kwh ya contabilizados
+                        consumoProm = consumoProm - Demanda.iRango;
 
-                    //Sumar los Kwh que van contabilizados
-                    costo += costoKwhPesos;
-                    costo = Math.round(costo);
-                }
-            });
+                        //Sumar los Kwh que van contabilizados
+                        costo += costoKwhPesos;
+                        costo = Math.round(costo);
+                    }
+                });
+            }
+            else{ /* Solo se cobra [CargoFijo] */
+                costo = consumoProm;
+            }
 
             ///Se agrega el costo kwh de 1 mes a un array(12)
             for(let x=0; x<12; x++)
@@ -735,40 +770,47 @@ async function consumoEnPesos(dacOnoDac, dataConsumo){ ///consumoPromedio = prom
             return objResult;
         };
 
-        ///
-        let _tarifas = await tarifas.obtenerTodasLasTarifas();
-        _tarifas = _tarifas.message;
-
         if(dataConsumo.hasOwnProperty('_promCons')){ ///Consumos
             consumoPromedioMens = parseFloat(dataConsumo._promCons.consumoMensual.promedioConsumoMensual);
             consumoAnual = parseFloat(dataConsumo._promCons.consumoAnual);
         }
-        else{ ///Generacion
+        else if(dataConsumo.hasOwnProperty('promedioNuevosConsumosMensuales')){ ///Generacion
             consumoPromedioMens = parseFloat(dataConsumo.promedioNuevosConsumosMensuales);
             consumoAnual = parseFloat(dataConsumo.nuevoConsumoAnual);
         }
+        else{ //CargoFijo
+            consumoPromedioMens = dataConsumo / 2; //Se pasa el -cargoFijo[bimestral]- a [mensual]
+            consumoAnual = consumoPromedioMens * 12; //Se pasa el -cargoFijo[bimestral]- a [anual]
+            bndCargoFijo = true;
+        }
 
-        if(dacOnoDac != 'DAC'){ // <> DAC
-            _noVerano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
-            _noVerano = _noVerano.filter(tarifa => { return noVerano = tarifa.siVerano === 0 }); //Se obtienen [] las -NO VERANO- acorde a la tarifa de la propuesta (1, 1c, 1a, etc...)
-            
-            _verano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
-            _verano = _verano.filter(tarifa => { return verano = tarifa.siVerano === 1 }); 
-        }
-    
-        //DAC
-        let demanda_consulta = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
-        demanda_consulta = demanda_consulta.filter(tarifa => { return tarifa = tarifa.siVerano === 0 && tarifa.siNivel === 0 ? tarifa : null; });
+        ///
+        if(bndCargoFijo != true){
+            let _tarifas = await tarifas.obtenerTodasLasTarifas();
+            _tarifas = _tarifas.message;
 
-        //Validacion tarifa
-        if(_noVerano.length > 0){
-            __demanda = _noVerano;
-        }
-        else if(_verano.length > 0){
-            __demanda = _verano;
-        }
-        else if(demanda_consulta.length > 0){ //DAC
-            __demanda = demanda_consulta;
+            if(dacOnoDac != 'DAC'){ // <> DAC
+                _noVerano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
+                _noVerano = _noVerano.filter(tarifa => { return noVerano = tarifa.siVerano === 0 }); //Se obtienen [] las -NO VERANO- acorde a la tarifa de la propuesta (1, 1c, 1a, etc...)
+                
+                _verano = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
+                _verano = _verano.filter(tarifa => { return verano = tarifa.siVerano === 1 }); 
+            }
+        
+            //DAC
+            let demanda_consulta = _tarifas.filter(tarifa => { return tarifa.vNombreTarifa.includes(dacOnoDac); });
+            demanda_consulta = demanda_consulta.filter(tarifa => { return tarifa = tarifa.siVerano === 0 && tarifa.siNivel === 0 ? tarifa : null; });
+
+            //Validacion tarifa
+            if(_noVerano.length > 0){
+                __demanda = _noVerano;
+            }
+            else if(_verano.length > 0){
+                __demanda = _verano;
+            }
+            else if(demanda_consulta.length > 0){ //DAC
+                __demanda = demanda_consulta;
+            }
         }
         
         //Pagos_mensuales && Promedio Pagos_mensuales
