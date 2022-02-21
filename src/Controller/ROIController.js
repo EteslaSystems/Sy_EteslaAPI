@@ -1,10 +1,11 @@
-module.exports.obtenerROI = async function getROI(objPower, _consums, costoProyectoMXN){
-    let costoDeProyecto = costoProyectoMXN; //CostoProyectoMXN con IVA
+module.exports.obtenerROI = async function getROI(data){
     let generacionAnualKwp = 0; //*KWp* 
     let consumoAnualPesosMXN = 0, consumoBimestralPesosMXN = 0, consumoMensualPesosMXN = 0;
     let generacionBimestralPesosMXN = 0, generacionAnualPesosMXN = 0;
 
     try{
+        let { objPower, _consums, precioMXNSinIVA } = data;
+        
         let consumoAnualKwh = parseFloat(_consums._promCons.consumoAnual); //*KWH*
 
         if(objPower.generacion.generacionAnualMwh){ ///MediaTension - KWH
@@ -40,8 +41,7 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
         let ahorroMensualEnPesosMXN = Math.round(ahorroBimestralEnPesosMXN / 2); //$$
     
         /*ROI [Anual - c/Deduccion] */
-        let ROIenAnios = Math.round((costoDeProyecto / ahorroAnualEnPesosMXN) * 10) / 10;
-        let ROIcnDeduccion = Math.round((ROIenAnios * 0.7) * 100) / 100;
+        let ROI = obtainROI({ ahorroMensualEnPesosMXN, precioMXNSinIVA });
 
         return {
             ahorro: {
@@ -59,11 +59,36 @@ module.exports.obtenerROI = async function getROI(objPower, _consums, costoProye
                 nuevoPagoAnual: generacionAnualPesosMXN,
                 nuevoPagoBimestral: generacionBimestralPesosMXN
             },
-            roiEnAnios: ROIenAnios,
-            roiConDeduccion: ROIcnDeduccion
+            roiEnAnios: ROI.ROIbruto,
+            roiConDeduccion: ROI.ROIneto
         };
     }
     catch(error){
         console.log(error);
+        throw error;
+    }
+}
+
+function obtainROI(data){
+    try{
+        let { ahorroMensualEnPesosMXN, precioMXNSinIVA } = data;
+
+        let meses = 0;
+        let ahorro_acumulado = ahorroMensualEnPesosMXN;
+        ahorroMensualEnPesosMXN = ahorroMensualEnPesosMXN * (1 + 0.00643403/*IncrementoCFE*/);
+
+        while(ahorro_acumulado <= precioMXNSinIVA){
+            meses++;
+            ahorro_acumulado += ahorroMensualEnPesosMXN;
+        }
+
+        let ROIbruto = Math.round((meses/12) * 10) / 10;
+        let ROIneto = Math.round((ROIbruto * 0.7) * 10) / 10;
+
+        return { ROIbruto, ROIneto };
+    }
+    catch(error){
+        console.log(error);
+        throw error;
     }
 }
