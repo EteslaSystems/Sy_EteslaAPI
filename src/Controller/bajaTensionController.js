@@ -79,12 +79,10 @@ function promedio_consumos(consumos){
         
         promConsums = Math.round((promConsums/_consumMens.length)*100)/100;
 
-        objResult = {
+        return {
             promedioConsumoMensual: promConsums,
             _consumosMensuales: _consumMens
         };
-
-        return objResult;
     };
     let consumoAnual = (consMesual) => {
         _consumosMensual = consMesual._consumosMensuales;
@@ -98,8 +96,7 @@ function promedio_consumos(consumos){
         return consAnual;  
     };
     let consumoDiario = (cnsAnual) => {
-        consDiario = Math.round((cnsAnual / 365) * 100) / 100;
-        return consDiario;
+        return  Math.round((cnsAnual / 365) * 100) / 100;
     };
 
     promConsumosBimestrales = promConsumosBimestrales(consumos);
