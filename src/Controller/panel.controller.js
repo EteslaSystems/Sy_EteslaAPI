@@ -1,62 +1,50 @@
 const Panel = require('../Entities/Panel');
 const Log = require('../../config/logConfig');
 
-class PanelController{
-	//Instancia
-	panel = new Panel();
+//Propuesta
+module.exports.getPanelesPropuesta = async function(potenciaNecesaria){
+	try{
+		let _paneles = await this.consulta();
+		let _result = [];
 
-	//Propuesta
-	async getPanelesPropuesta(potenciaNecesaria){
-		try{
-			let _paneles = await panel.consultaBD();
-			let _result = [];
-	
-			_paneles.find(Panel => {
-				let numeroDeModulos = Math.round(potenciaNecesaria / Panel.fPotencia);
-				let potenciaReal = Math.round((Panel.fPotencia * numeroDeModulos) * 100) / 100;
-	
-				//Agregar propiedades al objeto [Panel]
-				Object.assign(Panel, {
-					potenciaReal: potenciaReal / 1000, /*[PotenciaInstalada] wtts => kwp */
-					numeroDeModulos: numeroDeModulos
-				});
-	
-				_result.push(Panel);
+		_paneles.find(Panel => {
+			let numeroDeModulos = Math.round(potenciaNecesaria / Panel.fPotencia);
+			let potenciaReal = Math.round((Panel.fPotencia * numeroDeModulos) * 100) / 100;
+
+			//Agregar propiedades al objeto [Panel]
+			Object.assign(Panel, {
+				potenciaReal: potenciaReal / 1000, /*[PotenciaInstalada] wtts => kwp */
+				numeroDeModulos: numeroDeModulos
 			});
-	
-			return _result;
-		}
-		catch(error){
-			await Log.generateLog({ tipo: 'Error', contenido: 'getPanelesPropuesta(): ' +error });
-			throw 'Error PanelController getPanelesPropuesta: '+error;
-		}
-	}
 
-	//CRUD
-	async insertar(datas){
-		const result = await panel.insertarBD(datas);
-		return result;
-	}
+			_result.push(Panel);
+		});
 
-	async eliminar(datas){
-		const result = await panel.eliminarBD(datas);
-		return result;
+		return _result;
 	}
-
-	async editar(datas){
-		const result = await panel.editarBD(datas);
-		return result;
-	}
-
-	async consulta(){
-		const result = await panel.consultaBD;
-		return result;
-	}
-
-	async buscar(datas){
-		const result = await panel.buscarBD(datas);
-		return result;
+	catch(error){
+		await Log.generateLog({ tipo: 'Error', contenido: 'getPanelesPropuesta(): ' +error });
+		throw 'Error PanelController getPanelesPropuesta: '+error;
 	}
 }
 
-module.exports = PanelController;
+//CRUD
+module.exports.insertar = async function(datas){
+	return await Panel.insertarBD(datas);
+}
+
+module.exports.eliminar = async function(datas){
+	return await Panel.eliminarBD(datas);
+}
+
+module.exports.editar = async function(datas){
+	return await Panel.editarBD(datas);
+}
+
+module.exports.consulta = async function(){
+	return await Panel.consultaBD;
+}
+
+module.exports.buscar = async function(datas){
+	return await Panel.buscarBD(datas);
+}

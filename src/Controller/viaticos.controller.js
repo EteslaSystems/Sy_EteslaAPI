@@ -15,9 +15,7 @@ module.exports.calcularViaticos = async function(data){
     let Estructuras = null;
 
     try{
-        let origen = data.origen;
-        let destino = data.destino; 
-        let tipoCotizacion = data.tipoCotizacion;
+        let { origen, destino, tipoCotizacion } = data;
 
         let precioDolar = JSON.parse(await DolarController.obtenerPrecioDolar());
         let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
@@ -45,6 +43,8 @@ module.exports.calcularViaticos = async function(data){
             precioDolar: precioDolar,
             ComplementosConfig: data
         });
+
+        return { Viaticos, Agregados };
     }
     catch(error){
         await Log.generateLog({ tipo: 'Error', contenido: 'Viaticos.calcularViaticos(): ' +error });
@@ -95,15 +95,13 @@ async function obtenerViaticos(data){
             precioDolar: precioDolar
         });
 
-        const Result = {
+        return {
             noDias: noDias,
             totalFletes: totalFletes,
             manoObra: OtrosManoO.costoMO,
             otros: OtrosManoO.costoOtros,
             ViaticosForaneos: ViaticosForaneos
         };
-
-        return Result;
     }
     catch(error){
         await Log.generateLog({ tipo: 'Error', contenido: 'ViaticosController.obtenerViaticos(): ' +error });
@@ -114,83 +112,104 @@ async function obtenerViaticos(data){
 //@static
 function obtenerViaticosForaneos(data){
     let hospedaje = 0, comida = 0, pasaje = 0, gasolina = 0;
-    let { noDias, Config, Viaticos, distanciaEnKm  } = data;
+    
+    try{
+        let { noDias, Config, Viaticos, distanciaEnKm  } = data;
 
-    //
-    Config = Config.cotizacion_config;
+        //
+        Config = Config.cotizacion_config;
 
-    //Variables de configuracion (validaciones)
-    let km_cobro_gasolina = Config.viaticos.km_cobro_gasol;
+        //Variables de configuracion (validaciones)
+        let km_cobro_gasolina = Config.viaticos.km_cobro_gasol;
 
-    //Conceptos [Viaticos]
-    let hospedaje_dia = Viaticos.HOSPEDAJE;
-    let noPersonasRequeridas = Viaticos.PERSONAS_REQUERIDAS;
-    let comida_dia = Viaticos.COMIDA;
-    let km_hospedaje = Viaticos.KM_HOSPEDAJE;
-    let km_pasaje = Viaticos.KM_PASAJE;
-    let costo_km_gasolina = Viaticos.COSTO_KM_GASOLINA;
+        //Conceptos [Viaticos]
+        let hospedaje_dia = Viaticos.HOSPEDAJE;
+        let noPersonasRequeridas = Viaticos.PERSONAS_REQUERIDAS;
+        let comida_dia = Viaticos.COMIDA;
+        let km_hospedaje = Viaticos.KM_HOSPEDAJE;
+        let km_pasaje = Viaticos.KM_PASAJE;
+        let costo_km_gasolina = Viaticos.COSTO_KM_GASOLINA;
 
-    //[ Gasolina ]
-    if(distanciaEnKm >= km_cobro_gasolina){
-        gasolina = distanciaEnKm * costo_km_gasolina;
+        //[ Gasolina ]
+        if(distanciaEnKm >= km_cobro_gasolina){
+            gasolina = distanciaEnKm * costo_km_gasolina;
+        }
+
+        //[ Cotizacion_Foranea = { hospedaje, comida, pasaje } ]
+        if(distanciaEnKm >= km_hospedaje || distanciaEnKm >= km_pasaje && noDias > 7){
+            hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
+            comida = noDias * comida_dia * noPersonasRequeridas;
+            pasaje = gasolina * noPersonasRequeridas * 2;
+        }
+        else if(distanciaEnKm >= km_pasaje && noDias < 7){
+            pasaje = distanciaEnKm * costo_km_gasolina * noPersonasRequeridas * 2 * noDias;
+        }
+
+        costoTotal = distanciaEnKm < km_hospedaje ? gasolina : Math.round( hospedaje + comida + pasaje );
+        costoTotal = Math.round(costoTotal * (1 + Viaticos.VIATICOS_OTROS));
+
+        return { costoTotal, viaticos_foraneos: { gasolina, hospedaje, comida, pasaje } }
     }
-
-    //[ Cotizacion_Foranea = { hospedaje, comida, pasaje } ]
-    if(distanciaEnKm >= km_hospedaje || distanciaEnKm >= km_pasaje && noDias > 7){
-        hospedaje = noDias * hospedaje_dia * noPersonasRequeridas;
-        comida = noDias * comida_dia * noPersonasRequeridas;
-        pasaje = gasolina * noPersonasRequeridas * 2;
+    catch(error){
+        throw error;
     }
-    else if(distanciaEnKm >= km_pasaje && noDias < 7){
-        pasaje = distanciaEnKm * costo_km_gasolina * noPersonasRequeridas * 2 * noDias;
-    }
-
-    costoTotal = distanciaEnKm < km_hospedaje ? gasolina : Math.round( hospedaje + comida + pasaje );
-    costoTotal = Math.round(costoTotal * (1 + Viaticos.VIATICOS_OTROS));
-
-    return { costoTotal, viaticos_foraneos: { gasolina, hospedaje, comida, pasaje } }
 }
 
 //@static
 function obtenerDiasNaturales(data){
-    let { noPanelesInstalar, noPersonasRequeridas, personasPorPanel } = data;
-    return Math.ceil((noPanelesInstalar / noPersonasRequeridas) / personasPorPanel);
+    try{
+        let { noPanelesInstalar, noPersonasRequeridas, personasPorPanel } = data;
+        return Math.ceil((noPanelesInstalar / noPersonasRequeridas) / personasPorPanel);
+    }
+    catch(error){
+        throw error;
+    }
 }
 
 //@static
 function obtenerFletes(data){
-    let { Config, costoTotalPanel, costoTotalInversor, costoTotalEstructura } = data;
+    try{
+        let { Config, costoTotalPanel, costoTotalInversor, costoTotalEstructura } = data;
 
-    let porcentaje_flete = parseFloat(Config.cotizacion_config.porcentajes.porcentaje_fletes);
-    let subtotalPIE = costoTotalPanel + costoTotalInversor + costoTotalEstructura; //PIE => [ Panel, Inversor, Estructura ]
+        let porcentaje_flete = parseFloat(Config.cotizacion_config.porcentajes.porcentaje_fletes);
+        let subtotalPIE = costoTotalPanel + costoTotalInversor + costoTotalEstructura; //PIE => [ Panel, Inversor, Estructura ]
 
-    return Math.floor(subtotalPIE * porcentaje_flete);
+        return Math.floor(subtotalPIE * porcentaje_flete);
+    }
+    catch(error){
+        throw error;
+    }
 }
 /*#endregion*/
 
 //@static
 function obtenerMOyOtros(data){ /* Nota: Debe de retornar los costos en [USD] */
-    let { Config, cantidadPaneles, subtotalPIEV, precioDolar } = data; /* PIEV => Panel, Inversor, Estructura, Viaticos */
+    try{
+        let { Config, cantidadPaneles, subtotalPIEV, precioDolar } = data; /* PIEV => Panel, Inversor, Estructura, Viaticos */
     
-    //
-    let costoMO = 0, costoOtros = 0;
-    let mo_unitario = 12; //USD
-    let otros_porcentaje = 0.035;
+        //
+        let costoMO = 0, costoOtros = 0;
+        let mo_unitario = 12; //USD
+        let otros_porcentaje = 0.035;
 
-    //Costos en MXN de -Mano de Obra- & -Otros-
-    let ManoObraDictionary = Config.cotizacion_config.mano_obra;
-    let OtrosDictionary = Config.cotizacion_config.otros;
+        //Costos en MXN de -Mano de Obra- & -Otros-
+        let ManoObraDictionary = Config.cotizacion_config.mano_obra;
+        let OtrosDictionary = Config.cotizacion_config.otros;
 
-    if(ManoObraDictionary.hasOwnProperty(cantidadPaneles) == true){ //Se busca coincidencia en los diccionarios (Sobre la cantidad de paneles a instalar)
-        costoMO = Math.round((ManoObraDictionary[cantidadPaneles] / precioDolar) * 100) / 100;
-        costoOtros = Math.round((OtrosDictionary[cantidadPaneles] / precioDolar) * 100) / 100;  
+        if(ManoObraDictionary.hasOwnProperty(cantidadPaneles) == true){ //Se busca coincidencia en los diccionarios (Sobre la cantidad de paneles a instalar)
+            costoMO = Math.round((ManoObraDictionary[cantidadPaneles] / precioDolar) * 100) / 100;
+            costoOtros = Math.round((OtrosDictionary[cantidadPaneles] / precioDolar) * 100) / 100;  
+        }
+        else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
+            costoMO = Math.round(((cantidadPaneles * mo_unitario)) * 100) / 100;
+            costoOtros = Math.round((((subtotalPIEV + costoMO) * otros_porcentaje)) * 100) / 100;
+        }
+
+        return { costoMO, costoOtros }
     }
-    else{ //Si no se encuentra coincidencia en el bloque anterior, se calcula de manera manual
-        costoMO = Math.round(((cantidadPaneles * mo_unitario)) * 100) / 100;
-        costoOtros = Math.round((((subtotalPIEV + costoMO) * otros_porcentaje)) * 100) / 100;
+    catch(error){
+        throw error;
     }
-
-    return { costoMO, costoOtros }
 }
 
 //@static
@@ -215,19 +234,14 @@ async function obtenerDistanciaEnKm(origen, destino){
                     }
     
                     distanciaEnKm = Math.ceil(distanciaEnKm / 1000);
-    
-                    response = {
-                        status: true,
-                        message: distanciaEnKm
-                    };
-                    resolve(response);
+
+                    resolve({ status: true, message: distanciaEnKm });
                 }
                 else{
-                    response = {
+                    reject({
                         status: false,
                         message: 'Hubo un error al intentar calcular la distancia, revisa tu destino (direccion_cliente): '+error
-                    };
-                    reject(response);
+                    });
                 }
             });   
         });

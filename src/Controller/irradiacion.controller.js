@@ -1,12 +1,12 @@
-class IrradiacionController{
-    obtenerIrradiacion(origen){
-        if(origen == 'CDMX' || origen == 'Puebla'){
-            return 5.42;
-        }
-        else{
-            return 4.6;
-        }
-    }
-}
+module.exports.obtenerIrradiacion = function(origen){
+    let irradiacion = 0;
 
-module.exports = IrradiacionController;
+    if(origen == 'CDMX' || origen == 'Puebla'){
+        irradiacion =  5.42;
+    }
+    else{
+        irradiacion =  4.6;
+    }
+
+    return irradiacion;
+}

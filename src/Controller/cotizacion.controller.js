@@ -51,9 +51,7 @@ module.exports.getSecondStepCotizacion = function(data){
 
     try{
         if(tipoCotizacion === "bajatension"){
-            let Viaticos = await viaticosController.calcularViaticos({
-
-            }); 
+            let Viaticos = await viaticosController.calcularViaticos({ origen, destino, tipoCotizacion }); 
 
             let Produccion = await energiaController.getProduccion(data); 
 

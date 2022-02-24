@@ -1,19 +1,10 @@
 const Tarifa = require('../Entities/Tarifa');
 
-class TarifaController{
-    //Instancia
-    tarifa = new Tarifa();
+//CRUD
+module.exports.consulta = async function(){
+    return await Tarifa.consultaBD();
+}
 
-    //CRUD
-    async consulta(){
-        const result = tarifa.consultaBD();
-        return result;
-    }
-
-    async buscar(datas){
-        const result = tarifa.buscarBD(datas);
-        return result;
-    }
-};
-
-module.exports = TarifaController;
+module.exports.buscar = async function(datas){
+    return await Tarifa.buscarBD(datas);
+}
