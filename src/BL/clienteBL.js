@@ -7,7 +7,6 @@
 const cliente = require('../Controller/clienteController');
 const log = require('../../config/logConfig');
 const validations = require('../Middleware/clienteMiddleware');
-const vendedor_clienteBL = require('./vendedor_clienteBL');
 
 var moment = require('moment-timezone');
 
@@ -46,25 +45,8 @@ module.exports.insertar = async function (request, response) {
 	
 				throw new Error('Error al insertar los datos: '+result.message.sqlMessage.toString());
 			}
-	
-			const dCliente = {
-				idUsuario: datas.id_Usuario,
-				idCliente: result.message[0].idCliente
-			} 
-	
-			new_result = await vendedor_clienteBL.insertar(dCliente);
-			
-			if(new_result.status !== 200) {
-				const eCliente = {
-					idCliente: new_result.message
-				};
-	
-				del_result = await cliente.destruir(eCliente);
-	
-				return del_result.message;
-			}
-	
-			return new_result.message;
+
+			return result.message;
 		}
 		else{
 			throw validate.message;
