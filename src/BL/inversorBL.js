@@ -32,7 +32,7 @@ module.exports.insertar = async function (request, response) {
 			vInversor1: request.microInversor1 || null,
 			vInversor2: request.microInversor2 || null,
 			imgRuta: request.imgRuta || null,
-			iPanelSoportados: request.panelesSoportados != null ? parseInt(request.panelesSoportados) : null
+			siPanelSoportados: request.panelesSoportados != null ? parseInt(request.panelesSoportados) : null
 		};
 
 		result = await inversor.insertar(datas);

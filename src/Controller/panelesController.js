@@ -6,10 +6,10 @@
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas){
-	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
+	const { vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP  } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP ], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -33,7 +33,7 @@ function eliminarBD(datas) {
 	const { idPanel } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [1, idPanel, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -54,10 +54,10 @@ function eliminarBD(datas) {
 }
 
 function editarBD (datas) {
-	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta } = datas;
+	const { idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP  } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP, imgRuta], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idPanel, vNombreMaterialFot, vMarca, fPotencia, fPrecio, vGarantia, vOrigen, fISC, fVOC, fVMP ], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -79,7 +79,7 @@ function editarBD (datas) {
 
 function consultaBD () {
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [3, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -102,7 +102,7 @@ function consultaBD () {
 function buscarBD (datas) {
 	const { idPanel } = datas;
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null, null], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Panel(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [4, idPanel, null, null, null, null, null, null, null, null, null], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -164,8 +164,7 @@ function getArrayObjectsNoOfModuls(arrayAllOfPanels, energiaRequerida){
 			potenciaReal: Math.round((potenciaReal / 1000) * 100) / 100, // wtts ===> kwp
 			noModulos: noModulos,
 			fPrecio: parseFloat(arrayAllOfPanels[i].fPrecio),
-			costoTotal: 0,
-			imgRuta: arrayAllOfPanels[i].imgRuta
+			costoTotal: 0
 		};
 	}
 	return arrayNoDeModulosPorPotenciaDelPanel;

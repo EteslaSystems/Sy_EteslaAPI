@@ -15,14 +15,13 @@ CREATE OR REPLACE PROCEDURE SP_Inversor
     IN VMIN FLOAT,
     IN VMAX FLOAT,
     IN PMAX FLOAT,
-    IN PMIN FLOAT,
-    IN ImageRuta VARCHAR(100)
+    IN PMIN FLOAT
 )
 BEGIN
     /* Insertar nuevo Inversor*/
     IF (Opcion = 0) THEN
         INSERT INTO inversor
-        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, 'Dolar', Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, ImageRuta, NOW(), NULL, NULL);
+        VALUES (UUID(), TipoInversor, NombreMaterialFot, Marca, Potencia, PanelesSoportados, Precio, 'Dolar', Garantia, Origen, ISC, VMIN, VMAX, PMAX, PMIN, NOW(), NULL, NULL);
     /* Eliminar Panel */
     ELSEIF (Opcion = 1) THEN
         UPDATE inversor
@@ -31,28 +30,28 @@ BEGIN
     /* Editar Panel */
     ELSEIF (Opcion = 2) THEN
         UPDATE inversor
-        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, iPanelSoportados = PanelesSoportados, fPrecio = Precio, cTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, imgRuta = ImageRuta, updated_at = NOW()
+        SET vTipoInversor = TipoInversor, vNombreMaterialFot = NombreMaterialFot, vMarca = Marca, fPotencia = Potencia, siPanelSoportados = PanelesSoportados, fPrecio = Precio, cTipoMoneda = 'Dolar', vGarantia = Garantia, vOrigen = Origen, fISC = ISC, iVMIN = VMIN, iVMAX = VMAX, iPMAX = PMAX, iPMIN = PMIN, updated_at = NOW()
         WHERE idInversor = UNHEX(xIdInversor);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, updated_at
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siNumeroCanales, siPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, updated_at
         FROM inversor
         WHERE deleted_at IS NULL
         ORDER BY vMarca, fPotencia ASC;
     /* Leer - filtrado */
     ELSEIF (Opcion = 4) THEN
-        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, deleted_at, updated_at
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siNumeroCanales, siPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, deleted_at, updated_at
         FROM inversor
         WHERE deleted_at IS NULL AND idInversor = UNHEX(xIdInversor);
     /* Obtener los equipos - filtrado['vTipoInversor'] */
     ELSEIF (Opcion = 5) THEN
-        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, updated_at
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siNumeroCanales, siPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, updated_at
         FROM inversor
         WHERE vTipoInversor = TipoInversor
         AND deleted_at IS NULL;
     /* Obtener los equipos por su nombre - filtrado['vNombreMaterialFot'] */
     ELSEIF (Opcion = 6) THEN
-        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta, created_at, updated_at
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siNumeroCanales, siPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, updated_at
         FROM inversor
         WHERE vNombreMaterialFot = NombreMaterialFot
         AND deleted_at IS NULL;
