@@ -25,13 +25,13 @@
         "costos": {
             "cargoFijo": [
                 {
-                    "tarifa": ["1","1a","1b","1c","1d","1e","1f"],
+                    "tarifa": ["IC","2"],
                     "costo": 114,
                     "periodo": "bimestral"
                 },
                 {
-                    "tarifa": ["IC","2"],
-                    "costo": 50,
+                    "tarifa": ["1","1a","1b","1c","1d","1e","1f"],
+                    "costo": 62,
                     "periodo": "bimestral"
                 }
             ]
