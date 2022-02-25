@@ -1,13 +1,6 @@
-/*
-- @description: 		Archivo correspondiente a la sección de reglas a cumplir de los datos recibidos.
-- @author: 				Yael Ramirez Herrerias / Jesus Daniel Carrera Falcon
-- @date: 				19/02/2020
-*/
-
-const cliente = require('../Controller/clienteController');
+const cliente = require('../Controller/cliente.controller');
 const log = require('../../config/logConfig');
 const validations = require('../Middleware/clienteMiddleware');
-const vendedor_clienteBL = require('./vendedor_clienteBL');
 
 var moment = require('moment-timezone');
 
@@ -51,8 +44,7 @@ module.exports.insertar = async function (request, response) {
 				idUsuario: datas.id_Usuario,
 				idCliente: result.message[0].idCliente
 			} 
-	
-			new_result = await vendedor_clienteBL.insertar(dCliente);
+
 			
 			if(new_result.status !== 200) {
 				const eCliente = {

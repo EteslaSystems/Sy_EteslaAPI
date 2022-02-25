@@ -76,18 +76,15 @@ BEGIN
         INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
         WHERE persona.deleted_at IS NULL 
         AND cliente.idCliente = UNHEX(xIdPersona);
-    /* Leer - Clientes por Id de Vendedor */
+    /* Leer - Clientes pertenecientes a un [Vendedor - Id] */
     ELSEIF (Opcion = 5) THEN
-        SELECT HEX(cliente.idCliente) AS idCliente, 
-        HEX(persona.idPersona) AS idPersona, persona.vNombrePersona, persona.vPrimerApellido, persona.vSegundoApellido, persona.vTelefono, persona.vCelular, persona.vEmail, persona.created_at, persona.updated_at, 
-        HEX(direccion.idDireccion) AS idDireccion, direccion.cCodigoPostal, direccion.vCalle, direccion.vMunicipio, direccion.vCiudad, direccion.vEstado
-        FROM cliente
-        INNER JOIN persona ON cliente.id_Persona = persona.idPersona
-        INNER JOIN direccion ON cliente.idCliente = direccion.id_Cliente
-        INNER JOIN vendedor_cliente ON cliente.idCliente = vendedor_cliente.id_Cliente
-        WHERE persona.deleted_at IS NULL AND vendedor_cliente.id_Usuario = UNHEX(xIdCliente)
-        ORDER BY persona.created_at DESC;
-    /* Consultar - Clientes pertenecientes a un Vendedor, *Por Nombre* */
+        SELECT per.vNombrePersona, per.vPrimerApellido, per.vSegundoApellido, per.vTelefono, per.vCelular, per.vEmail
+        FROM persona per
+        INNER JOIN cliente cli
+        ON per.idPersona = cli.id_Persona
+        WHERE cli.id_Usuario = UNHEX(xIdCliente)
+        ORDER BY per.created_at DESC;
+    /* Leer - Busqueda de Clientes [por su NOMBRE] */
     ELSEIF (Opcion = 6) THEN
         SELECT HEX(cli.idCliente) AS idCliente, per.vNombrePersona, per.vPrimerApellido, per.vSegundoApellido, per.vTelefono, per.vCelular, per.vEmail, cli.cCodigoPostal, cli.vCalle, cli.vMunicipio, cli.vCiudad, cli.vEstado
         FROM

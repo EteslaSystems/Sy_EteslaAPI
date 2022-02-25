@@ -1,21 +1,15 @@
 /**
  * En este archivo se define la conexión a base de datos a utilizar en el proyecto.
- * @author: Jesús Daniel Carrera Falcón
- * @version: 1.0.0
  * @date: 11/Febrero/2020
  */
-
+require('dotenv').config();
 const mysql = require ('mysql'); //Constante que instancia la dependencia de MySQL
 
 const mysqlConnection = mysql.createConnection({ //Cadena de conexión a la base de datos de MySQL
-	// host: '137.184.97.127',
-	// user: 'esclavo',
-	// password: '$!Etesla123$',
-	// database: 'eteslapanelessolares_sy',
-	host: 'localhost',
-	user: 'root',
-	password: '',
-	database: 'eteslapanelessolares_sy',
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME,
 });
 
 mysqlConnection.connect(function (err){ //función que manda un mensaje a la consola con el resultado de la conección, ya sea exitosa o no

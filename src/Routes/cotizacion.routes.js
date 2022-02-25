@@ -1,17 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const cotizacion = require('../Controller/cotizacionController');
-
-const bajaTensionController = require('../Controller/bajaTensionController');
-const mediaTensionController = require('../Controller/mediaTensionController');
-const powerController = require('../Controller/powerController');
+const CotizacionController = require('../Controller/cotizacion.controller');
 
 //Initializations
 router.use(express.json());
 
 router.post('/busqueda-inteligente', function(request, response){
-	cotizacion.mainBusqInteligente(request.body)
+	CotizacionController.mainBusqInteligente(request.body)
 	.then(result => {
 		response.json({
 			status: 200,

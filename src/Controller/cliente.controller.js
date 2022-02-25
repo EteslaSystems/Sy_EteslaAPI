@@ -1,4 +1,4 @@
-const Cliente = require('./Entities/Cliente');
+const Cliente = require('../Entities/Cliente');
 const Log = require('../../config/logConfig');
 
 // [ CRUD ]

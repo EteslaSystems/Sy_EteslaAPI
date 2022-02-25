@@ -6,11 +6,8 @@ const EstructuraBL = require('../BL/estructura.bl');
 //Initializations
 router.use(express.json());
 
-//Instancia
-let estructuraBL = new EstructuraBL();
-
 router.post('/agregar-estructura', function(request, response){
-	estructuraBL.insertar(request.body)
+	EstructuraBL.insertar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,
@@ -26,7 +23,7 @@ router.post('/agregar-estructura', function(request, response){
 });
 
 router.put('/eliminar-estructura', function (request, response) {
-	estructuraBL.eliminar(request.body)
+	EstructuraBL.eliminar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,
@@ -42,7 +39,7 @@ router.put('/eliminar-estructura', function (request, response) {
 });
 
 router.get('/lista-estructuras', function(request, response){
-	estructuraBL.leer()
+	EstructuraBL.leer()
 	.then(estructura => {
 		response.json({
 			status: 200,
@@ -58,7 +55,7 @@ router.get('/lista-estructuras', function(request, response){
 });	
 
 router.put('/buscar-estructura', function(request, response){
-	estructuraBL.buscar(request.body)
+	EstructuraBL.buscar(request.body)
 	.then(estructura => {
 		response.json({
 			status: 200,

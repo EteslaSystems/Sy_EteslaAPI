@@ -1,19 +1,21 @@
-let Estructura = require('../Entities/Estructura');
+const Estructura = require('../Entities/Estructura');
 const Log = require('../../config/logConfig');
 
-//@
+//@main
 module.exports.obtenerEstructurasCotizacion = async function(data){
     try{
         let { marca, cantidad } = data;
 
-        let Estructura =  await this.consultar();
-        Estructura = Estructura.filter(estructura => { estructura.vMarca === marca });
+        let EstructuraCollection =  await this.consultar();
+        EstructuraCollection = EstructuraCollection.filter(Estructura => { Estructura.vMarca === marca });
 
         //Agregar :propiedades: -cantidad- && -costoTotal- al objetco [ Estructuras ]
-        Object.assign(Estructura,{ cantidad, costoTotal });
+        Object.assign(EstructuraCollection,{ cantidad, costoTotal });
 
-        Estructura.cantidad = cantidad;
-        Estructura.costoTotal = cantidad * Estructura.fPrecio;
+        EstructuraCollection.cantidad = cantidad;
+        EstructuraCollection.costoTotal = cantidad * Estructura.fPrecio;
+
+        return EstructuraCollection;
     }
     catch(error){
         await Log.generateLog({ tipo: 'Error', contenido: 'EstructuraController.obtenerEstructurasCotizacion(): ' +error });
@@ -21,28 +23,24 @@ module.exports.obtenerEstructurasCotizacion = async function(data){
     }
 }
 
-//CRUD
+/*#region CRUD*/
 module.exports.insertar = async function(datas){
-    const result = await estructura.insertarBD(datas);
-    return result;
+    return await Estructura.insertarBD(datas);
 }
 
 module.exports.eliminar = async function(datas){
-    const result = await estructura.eliminarBD(datas);
-    return result;
+    return await Estructura.eliminarBD(datas);
 }
 
 module.exports.buscar = async function(idInversor){
-    const result = await estructura.buscarBD(idInversor);
-    return result;
+    return await Estructura.buscarBD(idInversor);
 }
 
-// async editar(datas){
-//     const result = await estructura.editarBD(datas);
-//     return result;
+// module.exports.editar = async function(datas){
+//     return await Estructura.editarBD(datas);
 // }
 
 module.exports.consultar = async function(){
-    const result = await estructura.consultaBD();
-    return result;
+    return await Estructura.consultaBD();
 }
+/*#endregion*/

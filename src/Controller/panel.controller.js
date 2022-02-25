@@ -28,7 +28,7 @@ module.exports.getPanelesPropuesta = async function(potenciaNecesaria){
 	}
 }
 
-//CRUD
+/*#region CRUD*/
 module.exports.insertar = async function(datas){
 	return await Panel.insertarBD(datas);
 }
@@ -48,3 +48,4 @@ module.exports.consulta = async function(){
 module.exports.buscar = async function(datas){
 	return await Panel.buscarBD(datas);
 }
+/*#endregion*/

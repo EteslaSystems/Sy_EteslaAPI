@@ -23,13 +23,13 @@ const app = express(); //Constante que inicializa express para su uso en la apli
 const server = http.createServer(app); //Constante que crea/inicializa el servidor
 
 //Settings
-app.set('port', process.env.PORT || 3000); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
+app.set('port', process.env.PORT); //Esta variable obtiene el numero de puerto que queramos poner, si no recibe nada le asigna el valor '3000'.
 
 //Ruta inicial
 app.get('/', (req, res) => {
     res.json({
         name: 'API Etesla',
-        author: '@SistemasEtesla[2019-2021?]',
+        author: '@SistemasEtesla[2019-2022]',
         description: 'Interfaz de Programacion de Aplicaciones',
         version: '0.0.1?'
     });

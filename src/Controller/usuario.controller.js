@@ -1,44 +1,36 @@
-const Usuario = require('./Entities/Usuario');
+const Usuario = require('../Entities/Usuario');
 const Log = require('../../config/logConfig');
 
-/* #region CRUD */
+/*#region CRUD*/
 module.exports.insertar = async function(datas){
-	const result = await Usuario.insertarBD(datas);
-	return result;
+	return await Usuario.insertarBD(datas);
 }
 
 module.exports.eliminar = async function(datas){
-	const result = await Usuario.eliminarBD(datas);
-	return result;
+	return await Usuario.eliminarBD(datas);
 }
 
 module.exports.editar = async function(datas){
-	const result = await Usuario.editarBD(datas);
-	return result;
+	return await Usuario.editarBD(datas);
 }
 
 module.exports.consultar = async function(){
-	const result = await Usuario.consultaBD();
-	return result;
+	return await Usuario.consultaBD();
 }
 
 module.exports.consultarId = async function(datas){
-	const result = await Usuario.consultaIdBD(datas);
-	return result;
+	return await Usuario.consultaIdBD(datas);
 }
-/* #endregion */
+/*#endregion*/
 
 module.exports.validar = async function(datas){
-	const result = await Usuario.validarBD(datas);
-	return result;
+	return await Usuario.validarBD(datas);
 }
 
 module.exports.verificarEmail = async function(datas){
-	const result = await Usuario.verificarEmailDB(datas);
-	return result;
+	return await Usuario.verificarEmailDB(datas);
 }
 
 module.exports.recuperarPassword = async function(datas){
-	const result = await Usuario.recuperarPasswordDB(datas);
-	return result;
+	return await Usuario.recuperarPasswordDB(datas);
 }

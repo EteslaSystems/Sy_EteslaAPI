@@ -1,7 +1,7 @@
 const mysqlConnection = require('../../config/database');
 const Log = require('../../config/logConfig');
 
-module.exports.insertarBD = function(datas) {
+module.exports.insertarBD = async function(datas) {
 	try{
 		let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
 
@@ -36,7 +36,7 @@ module.exports.insertarBD = function(datas) {
 	}
 }
 
-module.exports.eliminarBD = function(datas) {
+module.exports.eliminarBD = async function(datas) {
 	try{
 		const { idInversor } = datas;
 

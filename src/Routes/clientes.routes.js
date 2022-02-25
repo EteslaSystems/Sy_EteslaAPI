@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const clienteBL = require('../BL/clienteBL');
-const clienteCont = require('../Controller/clienteController');
+const clienteBL = require('../BL/cliente.bl');
 
 //Initializations
 router.use(express.json());

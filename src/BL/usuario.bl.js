@@ -1,4 +1,4 @@
-const UsuarioController = require('../Controller/usuarioController.controller');
+const UsuarioController = require('../Controller/usuario.controller');
 const Log = require('../../config/logConfig');
 const Validations = require('../Middleware/usuarioMiddleware');
 const mailer = require('../../config/mailConfig');

@@ -1,8 +1,8 @@
 const Log = require('../../config/logConfig');
 const ConfigFile = require('../Controller/configFile.controller');
 
-const Cotizacion = require('../Entities/Panel');
-const ClienteController = require('../Controller/clienteController');
+const Cotizacion = require('../Entities/Cotizacion');
+const ClienteController = require('../Controller/cliente.controlelr');
 const UsuarioController = require('../Controller/usuario.controller');
 const PanelController = require('../Controller/panel.controller');
 const EnergiaController = require('../Controller/energia.controller');
@@ -13,7 +13,7 @@ const ViaticosController = require('../Controller/viaticos.controller');
 
 /* #region Cotizacion/Propuesta */
 //@main - First Step - "Obtener *potenica necesaria* y *paneles*"
-maodule.exports.getFirstStepCotizacion = function(data){
+maodule.exports.getFirstStepCotizacion = async function(data){
     let PotenciaNecesaria = {};
     let Combinaciones = {};
     let _Paneles = [];
@@ -46,7 +46,7 @@ maodule.exports.getFirstStepCotizacion = function(data){
 }
 
 //@main - Second Step - "Obtener *Viaticos* *PRODUCCION* *ROI* *Financiamiento*"
-module.exports.getSecondStepCotizacion = function(data){
+module.exports.getSecondStepCotizacion = async function(data){
     let Result = {};
 
     try{
