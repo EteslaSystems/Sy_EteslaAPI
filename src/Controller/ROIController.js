@@ -4,9 +4,7 @@ module.exports.obtenerROI = async function getROI(data){
     let generacionBimestralPesosMXN = 0, generacionAnualPesosMXN = 0;
 
     try{
-        let { objPower, _consums, precioMXNSinIVA } = data;
-        
-        let consumoAnualKwh = parseFloat(_consums._promCons.consumoAnual); //*KWH*
+        let { objPower, consumoAnualKwh, precioMXNSinIVA } = data;
 
         if(objPower.generacion.generacionAnualMwh){ ///MediaTension - KWH
             generacionAnualKwp = objPower.generacion.produccionAnualKwh;

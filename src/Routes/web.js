@@ -9,7 +9,6 @@ const router = express.Router();
 const usuarioBL = require('../BL/usuarioBL');
 const inversorBL = require('../BL/inversorBL');
 const panelBL = require('../BL/panelesBL');
-const vendedor_clienteBL = require('../BL/vendedor_clienteBL');
 //const mediaTensionBL = require('../BL/mediaTensionBL');
 const otrosMaterialesBL = require('../BL/otrosMaterialesBL');
 const opcionesViaticsBL = require('../BL/opcionesViaticsBL');
@@ -702,7 +701,7 @@ router.post('/agregar-cliente', function (request, response) {
 	.then(cliente => {
 		response.json({
 			status: 200,
-			message: cliente,
+			message: "Registro de cliente, exitoso",
 		}).end();
 	})
 	.catch(error => {
@@ -797,26 +796,6 @@ router.put('/lista-clientes-usuario', function (request, response) {
 - @section: 		Rutas para la sección de vendedores/clientes.
 */
 
-router.post('/actualizarVendedorCliente', function (request, response) {
-    const vendedor_clienteModel = {
-        id_Usuario: request.body.id_Usuario,
-		id_Cliente: request.body.id_Cliente
-	};
-
-	vendedor_clienteBL.actualizar(vendedor_clienteModel)
-	.then(vendedor_cliente => {
-		response.json({
-			status: 200,
-			message: "Se ha actualizado correctamente la relación del usuario con el cliente."
-		}).end();
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error.message
-		}).end();
-	});
-});
 
 /*
 - @section: 		Rutas para la sección de media tensión.
