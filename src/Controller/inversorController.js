@@ -7,14 +7,14 @@
 const mysqlConnection = require('../../config/database');
 
 function insertarBD(datas) {
-	let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN } = datas;
+	let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, siPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN } = datas;
 
 	if(vTipoInversor === 'Combinacion'){
 		vNombreMaterialFot = vInversor1 + '+' + vInversor2;
 	}
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [0, null, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN], (error, rows) => {
 				if (error) {
 				const response = {
 					status: false,
@@ -59,10 +59,10 @@ function eliminarBD(datas) {
 }
 
 function editarBD(datas) {
-	const { idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
+	const { idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, imgRuta } = datas;
 
   	return new Promise((resolve, reject) => {
-    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, iPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN], (error, rows) => {
+    	mysqlConnection.query('CALL SP_Inversor(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [2, idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, siPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN], (error, rows) => {
 			if (error) {
 				const response = {
 					status: false,
@@ -228,7 +228,7 @@ async function getInversores_cotizacion(_data){
 	
 			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
 			if(Inversor.vTipoInversor === 'MicroInversor'){ //Calculo de MicroInversores
-				numeroDeInversores =  Math.round(noPaneles / Inversor.iPanelSoportados);
+				numeroDeInversores =  Math.round(noPaneles / Inversor.siPanelSoportados);
 
 				switch(Inversor.vMarca)
 				{
@@ -261,7 +261,7 @@ async function getInversores_cotizacion(_data){
 					let MicroUno = Micros.primerEquipo;
 					let MicroDos = Micros.segundoEquipo;
 
-					numeroDeInversores = Math.floor(noPaneles / MicroUno.iPanelSoportados);
+					numeroDeInversores = Math.floor(noPaneles / MicroUno.siPanelSoportados);
 
 					//Se agregan la cantidad de equipos requeridos a -MicroUno- && -MicroDos-
 					Object.assign(MicroUno,{
@@ -269,11 +269,11 @@ async function getInversores_cotizacion(_data){
 					});
 
 					//Se descuentan los paneles calculados anteriores de la cantidad original de [Paneles]
-					noPaneles = Math.round(noPaneles - (MicroUno.numeroDeInversores * MicroUno.iPanelSoportados));
+					noPaneles = Math.round(noPaneles - (MicroUno.numeroDeInversores * MicroUno.siPanelSoportados));
 
 					//Se valida que haya paneles suficientes para poder hacer el calculo con el siguiente Micro
 					if(noPaneles >= 1){
-						numeroDeInversores = Math.ceil(noPaneles / MicroDos.iPanelSoportados);
+						numeroDeInversores = Math.ceil(noPaneles / MicroDos.siPanelSoportados);
 
 						Object.assign(MicroDos,{
 							numeroDeInversores: numeroDeInversores
@@ -338,7 +338,6 @@ async function getInversores_cotizacion(_data){
 					vNombreMaterialFot: Inversor.vNombreMaterialFot,
 					costoTotal: precioTotal,
 					numeroDeInversores: numeroDeInversores,
-					imgRuta: Inversor.imgRuta,
 					vGarantia: Inversor.vGarantia,
 					vOrigen: Inversor.vOrigen,
 					combinacion: false
