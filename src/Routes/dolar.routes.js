@@ -5,11 +5,8 @@ const DolarBL = require('../BL/dolar.bl');
 //Initializations
 router.use(express.json());
 
-//Instancia
-let dolarBL = new DolarBL();
-
 router.get('/tipoDeCambio', function(request, response){
-	dolarBL.obtenerPrecioDolar()
+	DolarBL.obtenerPrecioDolar()
 	.then(result => {
 		response.json({ status: 200, message: result });
 	})
@@ -19,7 +16,7 @@ router.get('/tipoDeCambio', function(request, response){
 });
 
 router.get('/manualUpdate', function(request, response){
-	dolarBL.actualizarPrecioDolar()
+	DolarBL.actualizarPrecioDolar()
 	.then(result => {
 		response.json({ status: 200, message: result });
 	})

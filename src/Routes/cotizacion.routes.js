@@ -74,26 +74,7 @@ router.post('/obtenerPowerBT',function(request, response){
 	});
 });
 /*#endregion*/
-/*#region individual*/
-const cotizIndiv = require('../Controller/cotizacion_individualController');
 
-router.post('/cotizacionIndividual', function(request, response){
-	cotizIndiv.cotizacion_individual(request.body)
-	.then(cotizacion_individual => {
-		response.json({
-			status: 200,
-			message: cotizacion_individual
-		});
-	})
-	.catch(error => {
-		response.json({
-			status: 500,
-			message: error
-		});
-	});
-	
-});
-/*#endregion*/
 /*#region mediaTension*/ 
 /*#region GDMTO*/
 /*#endregion*/

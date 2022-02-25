@@ -12,7 +12,7 @@
     Dicha tarea programada debe de ejecutarse cada 24 hrs, para asi evitar un banneo por parte de
     la pagina, por extracion del dato sin permiso.
 */
-const configFile = require('../Controller/configFileController');
+const configFile = require('../Controller/configFile.controller');
 const request = require('request-promise');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;

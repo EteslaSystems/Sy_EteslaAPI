@@ -6,7 +6,7 @@ const ClienteController = require('../Controller/cliente.controller');
 const UsuarioController = require('../Controller/usuario.controller');
 const AgregadosController = require('../Controller/agregado.controller');
 const EstructuraController = require('../Controller/estructura.controller');
-const ConfigController = require('../Controller/configFileController');
+const ConfigController = require('../Controller/configFile.controller');
 
 /*#region Cotizacion*/
 //@main() - [ 'bajaTension', 'mediaTension', 'individual' ] 

@@ -175,9 +175,9 @@ function calcularPotenciaRequerida(data){
         let { origen, porcentajePropuesta, tarifa, PromedioConsumos } = data;
 
         let irradiacion = irradiacionController.obtenerIrradiacion(origen);
-        let porcentajePropuesta = parseFloat(porcentajePropuesta) / 100 || 0;
         let _tarifas = tarifaController.consulta();
         let Tarifa = _tarifas[tarifa];
+        porcentajePropuesta = parseFloat(porcentajePropuesta) / 100 || 0;
 
         if(data.tipoCotizacion === "bajatension"){ /* BajaTension */
             let cuantoMenos = Tarifa.limite - (PromedioConsumos.promedios.bimestral * 0.10);
