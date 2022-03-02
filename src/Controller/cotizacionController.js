@@ -143,7 +143,7 @@ async function getCombinacionEconomica(_paneles, matrizEquipos){
         Panel = getEquipoEconomico(_paneles);
 
         //[Inversores] (Obtener lista de los inversores para ese panel)
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: Panel });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ potenciaReal: Panel.potenciaReal, numeroPaneles: Panel.noModulos });
         _inversores = filtrarEquiposSelectos({
             MatrizEquipoSelectos: matrizEquipos,
             _equipos: _inversores,
@@ -174,6 +174,8 @@ async function getCombinacionEconomica(_paneles, matrizEquipos){
 
 async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
     /*Resumen: Se obtienen los equipos mas POTENTES y CAROS */
+    let Inversor = {};
+
     try{
         let getEquipoPotentes = (_equipos) => { ///Return [Array de Objetos]
             /*Resumen: Se obtienen los equipos mas POTENTES */
@@ -240,7 +242,7 @@ async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
         let Panel = getEquipoMasCaro(_lstPanelesPotentes);
 
         //Obtener lista de los inversores para ese panel
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: Panel });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ potenciaReal: Panel.potenciaReal, numeroPaneles: Panel.noModulos });
         _inversores = filtrarEquiposSelectos({
             MatrizEquipoSelectos: matrizEquipos,
             _equipos: _inversores,
@@ -248,10 +250,15 @@ async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
             nombreCombinacion: "combinacionPremium"
         });
 
-        //Obtener el [INVERSOR] mas potente
-        let _lstInversoresPotentes = getEquipoPotentes(_inversores);
-        //Obtener el [INVERSOR] mas caro
-        let Inversor = getEquipoMasCaro(_lstInversoresPotentes);
+        if(_inversores.length > 1){
+            //Obtener el [INVERSOR] mas potente
+            let _lstInversoresPotentes = getEquipoPotentes(_inversores);
+            //Obtener el [INVERSOR] mas caro
+            Inversor = getEquipoMasCaro(_lstInversoresPotentes);
+        }
+        else{
+            Inversor = _inversores[0];
+        }
 
         return { panel: Panel, inversor: Inversor, tipoCombinacion: 'Premium' };
     }
@@ -320,7 +327,7 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
         PanelSeleccionado = getEquiposCercanos(_lstPaneleSelectos, mediaCostos);
 
         //Se obtienen los [Inversores] que le quedan a ese [Panel_Seleccionado]
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ objPanelSelect: PanelSeleccionado });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ potenciaReal: PanelSeleccionado.potenciaReal, numeroPaneles: PanelSeleccionado.noModulos });
         //Se trata la data de [INVERSORES]
         let _lstInversoreSelectos = filtrarEquiposSelectos({
             MatrizEquipoSelectos: matrizEquipos,
