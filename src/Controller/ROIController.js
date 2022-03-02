@@ -71,14 +71,9 @@ function obtainROI(data){
     try{
         let { ahorroMensualEnPesosMXN, precioMXNSinIVA } = data;
 
-        let meses = 0;
-        let ahorro_acumulado = ahorroMensualEnPesosMXN;
         ahorroMensualEnPesosMXN = ahorroMensualEnPesosMXN * (1 + 0.00643403/*IncrementoCFE*/);
 
-        while(ahorro_acumulado <= precioMXNSinIVA){
-            meses++;
-            ahorro_acumulado += ahorroMensualEnPesosMXN;
-        }
+        let meses = precioMXNSinIVA / ahorroMensualEnPesosMXN;
 
         let ROIbruto = Math.round((meses/12) * 10) / 10;
         let ROIneto = Math.round((ROIbruto * 0.7) * 10) / 10;

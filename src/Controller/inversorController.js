@@ -183,171 +183,86 @@ function buscarInversorPorNombre(datas){
 */
 
 /*#region SI_SIRVE*/
-async function getInversores_cotizacion(_data){
-	let inversoresResult = null;
-	let arrayInversor = [];
-	let data = _data;
+async function getInversores_cotizacion(data){
+	let _InversoresResult = [];
 
 	try{
-		if(data.objPanelSelect.hasOwnProperty("potenciaNecesaria")){
-			if(data.objPanelSelect.potenciaNecesaria.hasOwnProperty("potenciaNecesaria")){
-				data = data.objPanelSelect;
-	
-				///potenciaNecesaria
-				potenciaNecesaria = data.potenciaNecesaria.potenciaNecesaria; //watts
-				///panel seleccionado
-				data = data.panel;
-			}
-			else{ 
-				potenciaNecesaria = JSON.parse(data.objPanelSelect.potenciaNecesaria);
-				potenciaNecesaria = potenciaNecesaria.consumo.potenciaNecesaria;
-				data = data.objPanelSelect.panel.panel;
-			}
-		}
-		else{ ///MediaTension
-			///panel seleccionado
-			if(data.objPanelSelect.panel){
-				data = data.objPanelSelect.panel
-			}
-			//BT
-			data = data.objPanelSelect;
-		}
-	
+		let { potenciaReal, numeroPaneles } = data;
+		potenciaReal = potenciaReal != null ? potenciaReal * 1000 : potenciaReal;
+
 		let allInversores = await consultaBD();
 		allInversores = allInversores.message;
 
-		let potenciaReal_ = data.potenciaReal * 1000; ///Watss
-
 		for(let Inversor of allInversores)
 		{
-			let precioTotal = 0;
-			let noPaneles = parseInt(data.noModulos); //Numero de paneles de la propuesta
-			let numeroDeInversores = 0;
-			let potenciaNominal = 0;
-			let potenciaNominalRedimenArriba = 0, potenciaNominalRedimenAbajo = 0;
-	
-			//DEFINICION DE CANTIDAD DE INVERSORES / MICROS
-			if(Inversor.vTipoInversor === 'MicroInversor'){ //Calculo de MicroInversores
-				numeroDeInversores =  Math.round(noPaneles / Inversor.siPanelSoportados);
+			let Result = {};
 
-				switch(Inversor.vMarca)
-				{
-					case 'Enphase':
-						precioTotal = Math.round((numeroDeInversores * Inversor.fPrecio) + 232.3 + ((noPaneles / 4) * 33));
-					break;
-					case 'Solaredge':
-						precioTotal = Math.round(((numeroDeInversores * Inversor.fPrecio) + (noPaneles * 54.83)));
-					break;
-					case 'APSystem':
-						if(Inversor.vNombreMaterialFot === "Microinversor APS YC600"){
-							precioTotal = Math.round(((numeroDeInversores * 300) + 170.9) + (noPaneles * 13.775) + 144.9);
-						}
-						else{
-							precioTotal = Math.round((numeroDeInversores * 300) + (noPaneles * 13.775) + 144.9);
-						}
-					break;
-					default: 
-						-1;
-					break;
-				}
-			}
-			else if(Inversor.vTipoInversor === 'Combinacion'){ ///Calculo de Combinacion de micro-inversores
-				//Se valida el noPaneles, que sea >=5, para que pudiera aplicar para al menos 1 combinacion (6 paneles en total)
-				if(noPaneles >= 5){
-					let costoTotalEquipos = 0;
-
-					//Obtener el nombre de equipo 1 y equipo2
-					let Micros = await getEquiposCombinacionMicros(Inversor.vNombreMaterialFot);
-					let MicroUno = Micros.primerEquipo;
-					let MicroDos = Micros.segundoEquipo;
-
-					numeroDeInversores = Math.floor(noPaneles / MicroUno.siPanelSoportados);
-
-					//Se agregan la cantidad de equipos requeridos a -MicroUno- && -MicroDos-
-					Object.assign(MicroUno,{
-						numeroDeInversores: numeroDeInversores
-					});
-
-					//Se descuentan los paneles calculados anteriores de la cantidad original de [Paneles]
-					noPaneles = Math.round(noPaneles - (MicroUno.numeroDeInversores * MicroUno.siPanelSoportados));
-
-					//Se valida que haya paneles suficientes para poder hacer el calculo con el siguiente Micro
-					if(noPaneles >= 1){
-						numeroDeInversores = Math.ceil(noPaneles / MicroDos.siPanelSoportados);
-
-						Object.assign(MicroDos,{
-							numeroDeInversores: numeroDeInversores
-						});
-					}
-					else{
-						continue;
-					}
-
-					//
-					costoTotalEquipos = (MicroUno.numeroDeInversores * MicroUno.fPrecio) + (MicroDos.numeroDeInversores * MicroDos.fPrecio);
-
-					//
-					inversoresResult = {
-						id: Inversor.idInversor,
-						fPotencia: (MicroUno.fPotencia + MicroDos.fPotencia),
-						vMarca: MicroUno.vMarca,
-						vNombreMaterialFot: Inversor.vNombreMaterialFot,
-						costoTotal: costoTotalEquipos,
-						numeroDeInversores: { MicroUno, MicroDos },
-						vGarantia: MicroUno.vGarantia,
-						vOrigen: Inversor.vOrigen,
-						combinacion: true
-					}
-					//
-					arrayInversor.push(inversoresResult);
-				}
-			}
-			else{//Calculo de inversores /* Centrales */
-				///
-				numeroDeInversores = Math.round(potenciaReal_ / Inversor.fPotencia);
-				potenciaNominal = numeroDeInversores * Inversor.fPotencia;
-				potenciaNominalRedimenArriba = potenciaNominal * 1.25;
-				potenciaNominalRedimenAbajo = potenciaNominal - ((25/100) * potenciaNominal);
-
-				///
-				if(potenciaNominal === potenciaReal_){
-					numeroDeInversores = numeroDeInversores;
-				}
-				else if((potenciaNominalRedimenAbajo <= potenciaReal_ && potenciaNominalRedimenArriba >= potenciaReal_) && potenciaNominal <= (potenciaReal_ + 1000/*watts*/) ){//Si la *potenciaNominal* es menor a *potenciaReal* se redimenciona
-					numeroDeInversores = numeroDeInversores;
-				}
-				else{
-					numeroDeInversores = 0;
-				}
-			}
-	
-			//CALCULO DE COSTO_TOTAL DE INVERSORES
-			if(numeroDeInversores >= 1 && Inversor.vTipoInversor != 'Combinacion'){
-				//Calculo de precioTotal -Normal-
-				if(precioTotal === 0){
-					precioTotal = Math.round((Inversor.fPrecio * numeroDeInversores)*100)/100; //Precio total de los inversores_totales
-				}
+			///Combinaciones de -MicroInversores-
+			if(Inversor.vTipoInversor === "Combinacion"){
+				/* Obtener el -Equipo1- & -Equipo2- (por separado) */
+				let Micros = await getEquiposCombinacionMicros(Inversor.vNombreMaterialFot);
 				
-				///
-				inversoresResult = {
-					id: Inversor.idInversor,
-					fPotencia: parseFloat(Inversor.fPotencia),
-					potenciaNominal: potenciaNominal,
-					fPrecio: Inversor.fPrecio,
-					vMarca: Inversor.vMarca,
-					vNombreMaterialFot: Inversor.vNombreMaterialFot,
-					costoTotal: precioTotal,
-					numeroDeInversores: numeroDeInversores,
-					vGarantia: Inversor.vGarantia,
-					vOrigen: Inversor.vOrigen,
-					combinacion: false
+				/*#region MicroInversor1*/
+				let MicroUno = Micros.primerEquipo;
+				Result = calcularEquipos({
+					Inversor: MicroUno,
+					noPaneles: numeroPaneles,
+					potenciaReal: null
+				});
+				
+				Object.assign(MicroUno,{
+					numeroDeInversores: Result.numeroEquipos,
+					costoTotal: Result.precioTotal
+				});
+				/*#endregion */
+
+				//Descontar *No. Paneles*
+				numeroPaneles = numeroPaneles - (Result.numeroEquipos * (MicroUno.siNumeroCanales * MicroUno.siPanelSoportados));
+
+				/*#region MicroInversor2*/
+				let MicroDos = Micros.segundoEquipo;
+				Result = calcularEquipos({
+					Inversor: MicroDos,
+					noPaneles: numeroPaneles,
+					potenciaReal: null
+				});
+				Object.assign(MicroDos,{
+					numeroDeInversores: Result.numeroEquipos,
+					costoTotal: Result.precioTotal
+				});
+				/*#endregion */
+
+				//Modificar [fPotencia] del objeto [Inversor => CombinacionMicros]
+				Inversor.fPotencia = MicroUno.fPotencia + MicroDos.fPotencia;
+
+				//Objeto [Inversor] a * pushear *
+				Object.assign(Inversor,{
+					costoTotal: MicroUno.costoTotal + MicroDos.costoTotal,
+					numeroDeInversores: { MicroUno, MicroDos },
+					combinacion: true
+				});
+			}
+			else{ /* [Inversor] && [MicroInversor] */
+				Result = calcularEquipos({ Inversor, noPaneles: numeroPaneles, potenciaReal });
+
+				if(Result != null){
+					//Objeto [Inversor] a * pushear *
+					Object.assign(Inversor,{
+						numeroDeInversores: Result.numeroEquipos,
+						costoTotal: Result.precioTotal,
+						combinacion: false
+					});
 				}
-				///
-				arrayInversor.push(inversoresResult);
+			}
+
+			//
+			if(Result != null){
+				//Push[]
+				_InversoresResult.push(Inversor);
 			}
 		}
 
-		return arrayInversor;
+		return _InversoresResult;
 	}
 	catch(error){
 		console.log(error);
@@ -381,6 +296,88 @@ async function getEquiposCombinacionMicros(vNombreMaterialFotovoltaico){ ///Retu
 		return NombresEquipos;
 	}
 	catch(error){
+		throw error;
+	}
+}
+
+//@static
+function calcularEquipos(data){
+	let numeroEquipos = 0;
+	let precioTotal = 0;
+
+	try{
+		let { Inversor, noPaneles, potenciaReal } = data;
+
+		if(Inversor.vTipoInversor === 'Inversor'){ /*[InversorCentral]*/
+			numeroEquipos = Math.round(potenciaReal / Inversor.fPotencia);
+			let potenciaNominal = numeroEquipos * Inversor.fPotencia;
+
+			///
+			if(potenciaNominal === potenciaReal || (Inversor.iPMIN <= potenciaReal && Inversor.iPMAX >= potenciaReal) && potenciaNominal <= (potenciaReal + 1000/*Watts*/)){
+				numeroEquipos = numeroEquipos;
+			}
+			else{
+				numeroEquipos = 0;
+			}
+		}
+		else{ /*[MicroInversor]*/
+			let totalMicros = 0;
+			let totalPanelesSoportados = Inversor.siNumeroCanales * Inversor.siPanelSoportados;
+
+			///
+			if(noPaneles >= totalPanelesSoportados){
+				numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
+				noPaneles -= (totalPanelesSoportados * numeroEquipos);
+				totalMicros += numeroEquipos;
+			}
+
+			///
+			if(noPaneles >= Inversor.siPanelSoportados){
+				numeroEquipos = Math.round(noPaneles / Inversor.siPanelSoportados);
+				noPaneles -= (Inversor.siPanelSoportados * numeroEquipos);
+				totalMicros += numeroEquipos;
+			}
+
+			///
+			numeroEquipos = totalMicros;
+		}
+
+		//Calcular costo totales de los equipos
+		if(numeroEquipos > 0){
+			precioTotal = numeroEquipos * Inversor.fPrecio;
+
+			/*[??]*/
+			if(Inversor.vTipoInversor === 'MicroInversor'){
+				switch(Inversor.vMarca)
+				{
+					case 'Enphase':
+						precioTotal = precioTotal + 232.3 + ((noPaneles / 4) * 33);
+					break;
+					case 'Solaredge':
+						precioTotal = precioTotal + (noPaneles * 54.83);
+					break;
+					case 'APSystem':
+						if(Inversor.vNombreMaterialFot.match(/YC600/g) != null){
+							precioTotal = Math.round((((numeroEquipos * 300) + 170.9) + (noPaneles * 13.775) + 144.9) * 100) / 100;
+						}
+						else{
+							precioTotal = Math.round(((numeroEquipos * 300) + (noPaneles * 13.775) + 144.9) * 100) / 100;
+						}
+					break;
+					default:
+						precioTotal;
+					break;
+				}
+			}
+
+			/*[ Result ]*/
+			return { numeroEquipos, precioTotal };
+		}
+
+		return null;
+	}
+	catch(error){
+		console.log(error);
 		throw error;
 	}
 }
