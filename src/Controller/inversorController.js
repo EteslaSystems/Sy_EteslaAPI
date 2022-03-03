@@ -311,9 +311,11 @@ function calcularEquipos(data){
 		if(Inversor.vTipoInversor === 'Inversor'){ /*[InversorCentral]*/
 			numeroEquipos = Math.round(potenciaReal / Inversor.fPotencia);
 			let potenciaNominal = numeroEquipos * Inversor.fPotencia;
+			potenciaNominalRedimenArriba = potenciaNominal * 1.25;
+			potenciaNominalRedimenAbajo = potenciaNominal - ((25/100) * potenciaNominal);
 
 			///
-			if(potenciaNominal === potenciaReal || (Inversor.iPMIN <= potenciaReal && Inversor.iPMAX >= potenciaReal) && potenciaNominal <= (potenciaReal + 1000/*Watts*/)){
+			if(potenciaNominal === potenciaReal || (potenciaNominalRedimenAbajo <= potenciaReal && potenciaNominalRedimenArriba  >= potenciaReal) && potenciaNominal <= (potenciaReal + 1000/*Watts*/)){
 				numeroEquipos = numeroEquipos;
 			}
 			else{
