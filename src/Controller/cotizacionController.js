@@ -143,7 +143,11 @@ async function getCombinacionEconomica(_paneles, matrizEquipos){
         Panel = getEquipoEconomico(_paneles);
 
         //[Inversores] (Obtener lista de los inversores para ese panel)
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ potenciaReal: Panel.potenciaReal, numeroPaneles: Panel.noModulos });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ 
+            potenciaReal: Panel.potenciaReal, 
+            numeroPaneles: Panel.noModulos,
+            potenciaPanel: Panel.fPotencia
+        });
         _inversores = filtrarEquiposSelectos({
             MatrizEquipoSelectos: matrizEquipos,
             _equipos: _inversores,
@@ -242,7 +246,11 @@ async function getCombinacionPremium(_paneles, matrizEquipos){//MayorProduccion
         let Panel = getEquipoMasCaro(_lstPanelesPotentes);
 
         //Obtener lista de los inversores para ese panel
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ potenciaReal: Panel.potenciaReal, numeroPaneles: Panel.noModulos });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ 
+            potenciaReal: Panel.potenciaReal, 
+            numeroPaneles: Panel.noModulos,
+            potenciaPanel: Panel.fPotencia
+        });
         _inversores = filtrarEquiposSelectos({
             MatrizEquipoSelectos: matrizEquipos,
             _equipos: _inversores,
@@ -327,7 +335,11 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
         PanelSeleccionado = getEquiposCercanos(_lstPaneleSelectos, mediaCostos);
 
         //Se obtienen los [Inversores] que le quedan a ese [Panel_Seleccionado]
-        let _inversores = await bajaTension.obtenerInversores_Requeridos({ potenciaReal: PanelSeleccionado.potenciaReal, numeroPaneles: PanelSeleccionado.noModulos });
+        let _inversores = await bajaTension.obtenerInversores_Requeridos({ 
+            potenciaReal: PanelSeleccionado.potenciaReal, 
+            numeroPaneles: PanelSeleccionado.noModulos,
+            potenciaPanel: Panel.fPotencia
+        });
         //Se trata la data de [INVERSORES]
         let _lstInversoreSelectos = filtrarEquiposSelectos({
             MatrizEquipoSelectos: matrizEquipos,
