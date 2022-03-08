@@ -315,10 +315,10 @@ function calcularEquipos(data){
 			potenciaNominalRedimenAbajo = potenciaNominal - ((25/100) * potenciaNominal);
 
 			///
-			if(potenciaNominal === potenciaReal){
+			if(potenciaNominal === potenciaReal || (potenciaNominalRedimenAbajo <= potenciaReal && potenciaNominalRedimenArriba  >= potenciaReal)){
 				numeroEquipos = numeroEquipos;
 			}
-			else if((potenciaNominalRedimenAbajo <= potenciaReal && potenciaNominalRedimenArriba  >= potenciaReal) && potenciaNominal <= (potenciaReal + 1500/*Watts*/)){
+			else if((potenciaNominalRedimenAbajo <= potenciaReal && potenciaNominalRedimenArriba  >= potenciaReal) && potenciaNominal <= (potenciaReal + 1000/*Watts*/)){
 				numeroEquipos = numeroEquipos;
 			}
 			else{
