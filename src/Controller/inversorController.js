@@ -356,17 +356,18 @@ function calcularEquipos(data){
 				switch(Inversor.vMarca)
 				{
 					case 'Enphase':
-						precioTotal = precioTotal + 232.3 + ((noPaneles / 4) * 33);
+						precioTotal = (numeroEquipos * Inversor.fPrecio) + 232.3 + ((noPaneles/4)*33);
 					break;
 					case 'Solaredge':
-						precioTotal = precioTotal + (noPaneles * 54.83);
+						precioTotal = (numeroEquipos * Inversor.fPrecio) + (noPaneles*54.83);
 					break;
 					case 'APSystem':
 						if(Inversor.vNombreMaterialFot.match(/YC600/g) != null){
-							precioTotal = Math.round((((numeroEquipos * 300) + 170.9) + (noPaneles * 13.775) + 144.9) * 100) / 100;
+							precioTotal = (((numeroEquipos - 1) * 300) + 170.9) + (noPaneles * 13.775) + 144.9;
+							precioTotal = Math.round(precioTotal * 100) / 100;
 						}
 						else{
-							precioTotal = Math.round(((numeroEquipos * 300) + (noPaneles * 13.775) + 144.9) * 100) / 100;
+							precioTotal = (numeroEquipos * 300) + (noPaneles * 13.775) + 144.9;
 						}
 					break;
 					default:
