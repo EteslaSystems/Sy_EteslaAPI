@@ -19,7 +19,7 @@
             "numero": 15,
             "unidadMedida": "dias"
         },
-        "inflacion": 6.4
+        "inflacion": 3
     },
     "energia": {
         "costos": {
