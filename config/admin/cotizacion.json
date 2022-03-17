@@ -11,7 +11,7 @@
         },
         "combinacionPremium": {
             "panel": "Jinko,",
-            "inversor": "Enphase,"
+            "inversor": "Enphase,Fronius Solar,SMA,"
         }
     },
     "propuesta_cotizacion": {
