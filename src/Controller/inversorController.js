@@ -320,6 +320,8 @@ function calcularEquipos(data){
 	try{
 		let { Inversor, noPaneles, potenciaReal, potenciaPanel } = data;
 
+		let cantidadPaneles = noPaneles;
+
 		if(Inversor.vTipoInversor === 'Inversor'){ /*[InversorCentral]*/
 			numeroEquipos = Math.round(potenciaReal / Inversor.fPotencia);
 			potenciaNominal = numeroEquipos * Inversor.fPotencia;
@@ -379,17 +381,18 @@ function calcularEquipos(data){
 				switch(Inversor.vMarca)
 				{
 					case 'Enphase':
-						precioTotal = precioTotal + 232.3 + ((noPaneles / 4) * 33);
+						precioTotal = (numeroEquipos * Inversor.fPrecio) + 232.3 + ((cantidadPaneles/4)*33);
 					break;
 					case 'Solaredge':
-						precioTotal = precioTotal + (noPaneles * 54.83);
+						precioTotal = (numeroEquipos * Inversor.fPrecio) + (cantidadPaneles*54.83);
 					break;
 					case 'APSystem':
 						if(Inversor.vNombreMaterialFot.match(/YC600/g) != null){
-							precioTotal = Math.round((((numeroEquipos * 300) + 170.9) + (noPaneles * 13.775) + 144.9) * 100) / 100;
+							precioTotal = (((numeroEquipos - 1) * 300) + 170.9) + (cantidadPaneles * 13.775) + 144.9;
+							precioTotal = Math.round(precioTotal * 100) / 100;
 						}
 						else{
-							precioTotal = Math.round(((numeroEquipos * 300) + (noPaneles * 13.775) + 144.9) * 100) / 100;
+							precioTotal = (numeroEquipos * 300) + (cantidadPaneles * 13.775) + 144.9;
 						}
 					break;
 					default:

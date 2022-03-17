@@ -216,14 +216,14 @@ async function calcularViaticosBTI(data){
             }
             
             let subtotOtrFletManObrTPIE = Math.round(((_manoDeObra[1] + totalFletes + _manoDeObra[0] + costoTotalPanInvEstr + viaticos + costoTotalAgregados)) * 100) / 100;
-            let margen = Math.round(((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE) * 100) / 100;
-            let costoTotalProyecto = Math.round((subtotOtrFletManObrTPIE + margen)*100)/100;
+            let margen = ((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE);
+            let costoTotalProyecto = Math.round(((subtotOtrFletManObrTPIE + margen) + ((Number(data.descuento) / 100) * (subtotOtrFletManObrTPIE + margen))) * 100) / 100;
            
             /// %
             let inflacionPropuesta = _configFile.propuesta_cotizacion.inflacion;
 
             if(inflacionPropuesta > 0){
-                costoTotalProyecto = Math.round(costoTotalProyecto + ((inflacionPropuesta / 100) * costoTotalProyecto));
+                costoTotalProyecto = Math.round(costoTotalProyecto * ((inflacionPropuesta / 100) + 1));
             }
 
             ///Aumento - [Ajuste de propuesta]
