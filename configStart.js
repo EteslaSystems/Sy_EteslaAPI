@@ -7,6 +7,7 @@
 //Requires
 const express = require('express'); //Constante que instancia la libreria 'express'.
 const http = require('http');
+require('dotenv').config();
 
 //Routes - Directory
 const usuarioRoutes = require('./src/Routes/usuario.routes');
