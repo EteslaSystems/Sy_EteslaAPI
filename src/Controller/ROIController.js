@@ -71,7 +71,7 @@ function obtainROI(data){
     try{
         let { ahorroMensualEnPesosMXN, precioMXNSinIVA } = data;
 
-        ahorroMensualEnPesosMXN = ahorroMensualEnPesosMXN * (1 + 0.00643403/*IncrementoCFE*/);
+        ahorroMensualEnPesosMXN = ahorroMensualEnPesosMXN * (1 + 0.10/*IncrementoCFE*/);
 
         let meses = precioMXNSinIVA / ahorroMensualEnPesosMXN;
 
