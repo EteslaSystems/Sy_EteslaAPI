@@ -338,7 +338,7 @@ async function getCombinacionMediana(_paneles, matrizEquipos){//Mediana
         let _inversores = await bajaTension.obtenerInversores_Requeridos({ 
             potenciaReal: PanelSeleccionado.potenciaReal, 
             numeroPaneles: PanelSeleccionado.noModulos,
-            potenciaPanel: Panel.fPotencia
+            potenciaPanel: PanelSeleccionado.fPotencia
         });
         //Se trata la data de [INVERSORES]
         let _lstInversoreSelectos = filtrarEquiposSelectos({

@@ -34,7 +34,7 @@ BEGIN
         WHERE idInversor = UNHEX(xIdInversor);
     /* Consultar todos los registros de Paneles */
     ELSEIF (Opcion = 3) THEN
-        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, vRangPotenciaPermit, siNumeroCanales, siPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, created_at, updated_at
+        SELECT HEX(idInversor) AS idInversor, vTipoInversor, vNombreMaterialFot, vMarca, fPotencia, vRangPotenciaPermit, siNumeroCanales, siPanelSoportados, fPrecio, cTipoMoneda, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN, bAccesorio, created_at, updated_at
         FROM inversor
         WHERE deleted_at IS NULL
         ORDER BY vMarca, fPotencia ASC;

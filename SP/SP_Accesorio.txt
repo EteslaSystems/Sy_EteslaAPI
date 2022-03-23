@@ -1,0 +1,40 @@
+DELIMITER //
+CREATE OR REPLACE PROCEDURE SP_Accesorio
+(
+    IN Opcion INT,
+    IN IdAccesorio VARCHAR(255),
+    IN xIdMicroInversor VARCHAR(255),
+    IN Nombre VARCHAR(50),
+    IN Precio DECIMAL(4,2),
+    IN TipoMoneda CHAR(20)
+)
+BEGIN
+    IF (Opcion = 0) THEN
+    /*Insertar*/
+        INSERT INTO accesorio_especial
+        VALUES (UUID(), xIdMicroInversor, Nombre, Precio, TipoMoneda, NOW(), NULL, NULL);
+    ELSEIF (Opcion = 1) THEN
+    /*Eliminar*/
+        UPDATE accesorio_especial
+        SET deleted_at = NOW()
+        WHERE idAccesorio = UNHEX(IdAccesorio);
+    ELSEIF (Opcion = 2) THEN
+    /*Editar*/
+        SELECT HEX(idAccesorio) AS idAccesorio, HEX(id_micro) AS id_micro, vNombre, dPrecio, cTipoMoneda, created_at, updated_at
+        FROM accesorio_especial
+        WHERE deleted_at IS NULL
+        AND idAccesorio = UNHEX(IdAccesorio);
+    ELSEIF (Opcion = 3) THEN
+    /*Consultar*/
+        SELECT HEX(idAccesorio) AS idAccesorio, HEX(id_micro) AS id_micro, vNombre, dPrecio, cTipoMoneda, created_at, updated_at
+        FROM accesorio_especial
+        WHERE deleted_at IS NULL
+        AND id_micro = UNHEX(xIdMicroInversor);
+    ELSEIF (Opcion = 4) THEN
+    /*Actualizar*/
+        UPDATE accesorio_especial
+        SET id_micro = UNHEX(xIdMicroInversor), vNombre = Nombre, dPrecio = Precio
+        WHERE idAccesorio = UNHEX(IdAccesorio);
+    END IF;
+END
+// DELIMITER ;

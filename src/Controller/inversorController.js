@@ -5,6 +5,7 @@
 */
 
 const mysqlConnection = require('../../config/database');
+const Accesorio = require('../Controller/accesorioEspecialController');
 
 function insertarBD(datas) {
 	let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, siPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN } = datas;
@@ -185,6 +186,7 @@ function buscarInversorPorNombre(datas){
 /*#region SI_SIRVE*/
 async function getInversoresCotizacion(data){
 	let _InversoresResult = [];
+	let _Accesorios = {}; //Puede ser 1 objeto o 1 array de objetos
 
 	try{
 		let { potenciaReal, numeroPaneles, potenciaPanel } = data;
@@ -248,6 +250,7 @@ async function getInversoresCotizacion(data){
 				});
 			}
 			else{ /* [Inversor] && [MicroInversor] */
+				//
 				Result = calcularEquipos({ 
 					Inversor,
 					noPaneles: Number(numeroPaneles), 
@@ -255,6 +258,7 @@ async function getInversoresCotizacion(data){
 					potenciaPanel: Number(potenciaPanel) 
 				});
 
+				//
 				if(Result != null){
 					//Objeto [Inversor] a * pushear *
 					Object.assign(Inversor,{
@@ -263,6 +267,24 @@ async function getInversoresCotizacion(data){
 						potenciaNominal: Result.potenciaNominal,
 						combinacion: false
 					});
+
+					//Validar si es un [MicroInversor] para validar si cuenta con [accesorio_especial]
+					if(Inversor.vTipoInversor === "MicroInversor"){
+						//Validar si el [MicroInversor] tiene [accesorio_especial]
+						if(Inversor.bAccesorio == 1){
+							let costoTotalAccesorios = 0; //USD
+
+							//
+							_Accesorios = await Accesorio.calcular(Inversor)
+							_Accesorios.filter(Accesorio => { costoTotalAccesorios += Accesorio.costoTotal });
+
+							//
+							Object.assign(Inversor,{ Accesorios: _Accesorios });
+							
+							//Modificar el [costoTotal] anterior para contemplar el -costoTotalAccesorios-
+							Inversor.costoTotal = Inversor.costoTotal + costoTotalAccesorios;
+						}
+					}
 				}
 			}
 
@@ -338,7 +360,7 @@ function calcularEquipos(data){
 			let totalMicros = 0;
 			let totalPanelesSoportados = Inversor.siNumeroCanales * Inversor.siPanelSoportados;
 
-			/* Se obtiene el rango de potencia del -[Panel]- permitido */
+			/* Se obtiene RANGOS de potencia del -[Panel]- permitido */
 			/*#region Obtener [rango1] && [rango2]*/
 			/*[Rango1]*/
 			let totalCaracteres = Inversor.vRangPotenciaPermit.length;
@@ -350,19 +372,25 @@ function calcularEquipos(data){
 
 			/* Validar que la potencia del [Panel] se encuentre dentro de la indicada para el MicroInversor [.vRangPotenciaPermit] */
 			if(potenciaPanel >= rangoMenor && potenciaPanel <= rangoMayor){
-				///
-				if(noPaneles >= totalPanelesSoportados){
-					numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
-					noPaneles -= (totalPanelesSoportados * numeroEquipos);
-					totalMicros += numeroEquipos;
-				}
+				//
+				if(Inversor.siPanelSoportados <= 1){ /* Todos los [MicroInversores] que soportan 1 Panel por canal */
+					///
+					if(noPaneles >= totalPanelesSoportados){
+						numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
+						noPaneles -= (totalPanelesSoportados * numeroEquipos);
+						totalMicros += numeroEquipos;
+					}
 
-				///
-				if(noPaneles >= Inversor.siPanelSoportados){
-					numeroEquipos = Math.round(noPaneles / Inversor.siPanelSoportados);
-					noPaneles -= (Inversor.siPanelSoportados * numeroEquipos);
-					totalMicros += numeroEquipos;
+					///
+					if(noPaneles >= Inversor.siPanelSoportados){
+						numeroEquipos = Math.round(noPaneles / Inversor.siPanelSoportados);
+						noPaneles -= (Inversor.siPanelSoportados * numeroEquipos);
+						totalMicros += numeroEquipos;
+					}
 				}
+				else if(noPaneles % 2 == 0){/* [DS3D] - Todos los [MicroInversores] que soportan 2 o mas paneles por canal */
+					totalMicros = Math.round(noPaneles / totalPanelesSoportados);
+				}				
 			}
 
 			///
