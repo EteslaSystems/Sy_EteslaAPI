@@ -6,6 +6,7 @@
 
 const mysqlConnection = require('../../config/database');
 const Accesorio = require('../Controller/accesorioEspecialController');
+const Monitoreo = require('../Controller/monitoreoController');
 
 function insertarBD(datas) {
 	let { vTipoInversor, vNombreMaterialFot, vInversor1, vInversor2, vMarca, fPotencia, siPanelSoportados, fPrecio, vGarantia, vOrigen, fISC, iVMIN, iVMAX, iPMAX, iPMIN } = datas;
@@ -273,17 +274,29 @@ async function getInversoresCotizacion(data){
 						//Validar si el [MicroInversor] tiene [accesorio_especial]
 						if(Inversor.bAccesorio == 1){
 							let costoTotalAccesorios = 0; //USD
-
-							//
+							
+							//[Accesorio_Especial]
 							_Accesorios = await Accesorio.calcular(Inversor)
 							_Accesorios.filter(Accesorio => { costoTotalAccesorios += Accesorio.costoTotal });
 
-							//
+							//Agregar propiedades extras
 							Object.assign(Inversor,{ Accesorios: _Accesorios });
-							
-							//Modificar el [costoTotal] anterior para contemplar el -costoTotalAccesorios-
-							Inversor.costoTotal = Inversor.costoTotal + costoTotalAccesorios;
 						}
+
+						//Validar si el [MicroInversor] tiene [monitoreo]
+						// if(Inversor.bMonitoreo == 1){
+						// 	let costoMonitoreo = 0; //USD
+
+						// 	//[Monitoreo]
+						// 	costoMonitoreo = await Monitoreo.leer(Inversor.idInversor);
+						// 	costoTotalMonitoreo = costoMonitoreo.fPrecio;
+
+						// 	//
+						// 	Object.assign(Inversor, { costoMonitoreo });
+						// }
+
+						//Modificar el [costoTotal] anterior para contemplar el -costoTotalAccesorios-
+						Inversor.costoTotal = Inversor.costoTotal + Inversor.Accesorios.costoTotalAccesorios /*+ costoTotalMonitoreo*/;
 					}
 				}
 			}

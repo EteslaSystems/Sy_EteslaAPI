@@ -3,7 +3,7 @@
 - @author: 				LH420
 - @date: 				09/04/2020
 */
-const request = require('request');
+require('dotenv').config();
 const mysqlConnection = require('../../config/database');
 const configFile = require('../Controller/configFileController');
 const dolar = require('../Controller/dolar_tipoCambio');
@@ -14,6 +14,8 @@ const cliente = require('../Controller/clienteController');
 const vendedor = require('../Controller/usuarioController');
 const estructura = require('../Controller/estructuraController');
 const Notificacion = require('../Controller/notificationController');
+
+const Fetch = require("node-fetch");
 
 var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
@@ -491,7 +493,7 @@ async function main_calcularViaticos(data){
         let objPower = await power.obtenerPowerMT(data); //Return an Object
         let objROI = await roi.obtenerROI({ objPower, consumoAnualKwh: parseFloat(data.consumos.consumo._promCons.consumoAnual), precioMXN });
 
-        let objFinanciamiento = await financiamiento.financiamiento({ costoTotal: precioMXN });
+        let objFinanciamiento = await financiamiento.financiamiento({ costoTotal: precioMasIVAMXN });
 
         objViaticosCalculados = {
             cliente: uCliente,
@@ -804,8 +806,7 @@ function getBusPayment(_distanciaEnKm){
 }
 
 /*#region API-GoogleMaps*/
-function obtenerDistanciaEnKm(origen, destino){
-    let apikey = 'AIzaSyD0cJDO0IwwolWkvCCnzVFTmbsvQjsdOyo';
+async function obtenerDistanciaEnKm(origen, destino){
     let distanciaEnKm = 0;
 
     try{
@@ -813,34 +814,10 @@ function obtenerDistanciaEnKm(origen, destino){
         origen = origen.replace(/\s/g,"+");
         destino = destino.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         destino = destino.replace(/\s/g,"+");
-    
-        return new Promise((resolve, reject) => {
-            request.get("https://maps.googleapis.com/maps/api/distancematrix/json?key="+apikey+"&origins="+origen+"&destinations="+destino, (error, response, body) => {
-                if(!error){
-                    body = JSON.parse(body);
-                    body = body.rows[0].elements;
-    
-                    for(var i=0; i<body.length; i++){
-                        distanciaEnKm = body[i].distance.value;
-                    }
-    
-                    distanciaEnKm = Math.ceil(distanciaEnKm / 1000);
-    
-                    response = {
-                        status: true,
-                        message: distanciaEnKm
-                    };
-                    resolve(response);
-                }
-                else{
-                    response = {
-                        status: false,
-                        message: 'Hubo un error al intentar calcular la distancia, revisa tu destino (direccion_cliente): '+error
-                    };
-                    reject(response);
-                }
-            });   
-        });
+
+        const route = "https://maps.googleapis.com/maps/api/distancematrix/json?key="+process.env.APIKEY_GOOGLEMAPS+"&origins="+origen+"&destinations="+destino;
+        let response = await Fetch(route);
+        return response = await response.json();
     }
     catch(error){
         console.log(error);
