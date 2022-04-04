@@ -271,10 +271,10 @@ async function getInversoresCotizacion(data){
 
 					//Validar si es un [MicroInversor] para validar si cuenta con [accesorio_especial]
 					if(Inversor.vTipoInversor === "MicroInversor"){
+						let costoTotalAccesorios = 0; //USD
+
 						//Validar si el [MicroInversor] tiene [accesorio_especial]
 						if(Inversor.bAccesorio == 1){
-							let costoTotalAccesorios = 0; //USD
-							
 							//[Accesorio_Especial]
 							_Accesorios = await Accesorio.calcular(Inversor)
 							_Accesorios.filter(Accesorio => { costoTotalAccesorios += Accesorio.costoTotal });
@@ -296,7 +296,7 @@ async function getInversoresCotizacion(data){
 						// }
 
 						//Modificar el [costoTotal] anterior para contemplar el -costoTotalAccesorios-
-						Inversor.costoTotal = Inversor.costoTotal + Inversor.Accesorios.costoTotalAccesorios /*+ costoTotalMonitoreo*/;
+						Inversor.costoTotal = Inversor.costoTotal + costoTotalAccesorios /*+ costoTotalMonitoreo*/;
 					}
 				}
 			}

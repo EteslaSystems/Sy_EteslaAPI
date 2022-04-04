@@ -17,8 +17,6 @@ const Notificacion = require('../Controller/notificationController');
 
 const Fetch = require("node-fetch");
 
-var comida = 180; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
-var hospedaje = 150; //Preguntar a gerencia, si este dato va a ser ingresado por el usuario
 /*#region Viaticos BajaTension && Individual*/ //BTI = BajaTension - Individual
 const noPersonasRequeridas = 3; //Esta es el numero de personas requeridas para instalar 1 panel //Cotizador - viejo (??)
 const km_hospedaje = 130;
@@ -38,6 +36,7 @@ async function calcularViaticosBTI(data){
     let costoTotalEstructuras = 0, costoTotalPaneles = 0, costoTotalInversores = 0, costoTotalAgregados = 0;
     let precio_watt = 0;
     let uCliente = null, uVendedor = null;
+    let comida = 0, hospedaje = 0;
 
     try{
         let idUsuario = data.idUsuario;
@@ -50,7 +49,6 @@ async function calcularViaticosBTI(data){
         let tarifa = data.tarifa || null;
         let _configFile = await configFile.getArrayOfConfigFile();
         let distanciaEnKm = await obtenerDistanciaEnKm(origen, destino);
-        distanciaEnKm = distanciaEnKm.message;
         let precioDolar = JSON.parse(await dolar.obtenerPrecioDolar());
         precioDolar = precioDolar.precioDolar;
         let noDias = 0;
@@ -64,6 +62,9 @@ async function calcularViaticosBTI(data){
             return false;
         };
     
+        //Array - Viaticos
+        let _Viaticos = await consultaOpcionesVPropuestaBD();
+
         //Propuesta - Caducidad
         let infoPropuesta = _configFile.propuesta_cotizacion;
 
@@ -286,7 +287,7 @@ async function calcularViaticosBTI(data){
             }
     
             //F I N A N C I A M I E N T O
-            let ddata = { costoTotal: precioMXNSinIVA };
+            let ddata = { costoTotal: precioMXNConIVA };
             let objFinan = await financiamiento.financiamiento(ddata);
     
             /*#region Foromating . . .*/
@@ -817,7 +818,13 @@ async function obtenerDistanciaEnKm(origen, destino){
 
         const route = "https://maps.googleapis.com/maps/api/distancematrix/json?key="+process.env.APIKEY_GOOGLEMAPS+"&origins="+origen+"&destinations="+destino;
         let response = await Fetch(route);
-        return response = await response.json();
+        response = await response.json();
+
+        //Formatear la response, para obtener los km
+        distanciaEnKm = Number(response.rows[0].elements[0].distance.value);
+        distanciaEnKm = Math.round(distanciaEnKm / 1000); //Se pasa a km
+
+        return distanciaEnKm;
     }
     catch(error){
         console.log(error);
@@ -899,7 +906,23 @@ function editarOpcionesVPropuestaBD (datas) {
 
 function consultaOpcionesVPropuestaBD () {
     return new Promise((resolve, reject) => {
-        mysqlConnection.query('CALL SP_Opciones_Viatics(?, ?, ?, ?, ?)', [3, null, null, null, null], (error, rows) => {
+        // mysqlConnection.query('CALL SP_Opciones_Viatics(?, ?, ?, ?, ?)', [3, null, null, null, null], (error, rows) => {
+        //     if (error) {
+        //         const response = {
+        //             status: false,
+        //             message: error
+        //         }
+        //         resolve (response);
+        //     } else {
+        //         const response = {
+        //             status: true,
+        //             message: rows[0]
+        //         }
+        //         resolve(response);
+        //     }
+        // });
+
+        mysqlConnection.query('SELECT * FROM opciones_viatics', (error, rows) => {
             if (error) {
                 const response = {
                     status: false,
@@ -909,7 +932,7 @@ function consultaOpcionesVPropuestaBD () {
             } else {
                 const response = {
                     status: true,
-                    message: rows[0]
+                    message: rows
                 }
                 resolve(response);
             }
