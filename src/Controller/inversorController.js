@@ -388,13 +388,11 @@ function calcularEquipos(data){
 			/* Validar que la potencia del [Panel] se encuentre dentro de la indicada para el MicroInversor [.vRangPotenciaPermit] */
 			if(potenciaPanel >= rangoMenor && potenciaPanel <= rangoMayor){
 				//
-				if(Inversor.siPanelSoportados <= 1){ /* Todos los [MicroInversores] que soportan 1 Panel por canal */
+				if(noPaneles >= totalPanelesSoportados){ /* Todos los [MicroInversores] que soportan 1 Panel por canal */
 					///
-					if(noPaneles >= totalPanelesSoportados){
-						numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
-						noPaneles -= (totalPanelesSoportados * numeroEquipos);
-						totalMicros += numeroEquipos;
-					}
+					numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
+					noPaneles -= (totalPanelesSoportados * numeroEquipos);
+					totalMicros += numeroEquipos;
 
 					///
 					if(noPaneles >= Inversor.siPanelSoportados){
