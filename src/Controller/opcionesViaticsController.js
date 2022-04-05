@@ -64,6 +64,7 @@ async function calcularViaticosBTI(data){
     
         //Array - Viaticos
         let _Viaticos = await consultaOpcionesVPropuestaBD();
+        _Viaticos = _Viaticos.message;
 
         //Propuesta - Caducidad
         let infoPropuesta = _configFile.propuesta_cotizacion;
@@ -220,11 +221,12 @@ async function calcularViaticosBTI(data){
             
             let subtotOtrFletManObrTPIE = Math.round(((_manoDeObra[1] + totalFletes + _manoDeObra[0] + costoTotalPanInvEstr + viaticos + costoTotalAgregados)) * 100) / 100;
             let margen = ((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE);
-            let costoTotalProyecto = Math.round(((subtotOtrFletManObrTPIE + margen) + ((Number(data.descuento) / 100) * (subtotOtrFletManObrTPIE + margen))) * 100) / 100;
+            let costoTotalProyecto = Math.round(subtotOtrFletManObrTPIE + margen); //USD - s/IVA
            
             /// %
             let inflacionPropuesta = _configFile.propuesta_cotizacion.inflacion;
 
+            //Inflacion
             if(inflacionPropuesta > 0){
                 costoTotalProyecto = Math.round(costoTotalProyecto * ((inflacionPropuesta / 100) + 1));
             }
@@ -239,37 +241,31 @@ async function calcularViaticosBTI(data){
                 Aumento.porcentaje = aumentoPorcentaje;
                 Aumento.aumento = aumento;
                 Aumento.precioSinAumento = costoTotalProyecto;
+
+                //Aplicar aumento
+                costoTotalProyecto = Math.round(costoTotalProyecto + aumento);
             }
 
             /// Descuento - [Ajuste de propuesta]
             if(parseInt(data.descuento) > 0){ ///[Return: $$USD]
-                let descuentPorcentaje = parseInt(data.descuento);
-                let descuento = (descuentPorcentaje * costoTotalProyecto) / 100;//USD
-                descuento = Math.round((descuento) * 100) / 100; //USD [NO - Porcentaje]
+                let descuentoPorcentaje = parseInt(data.descuento);
+                let descuentoEquivalente =  costoTotalProyecto * (descuentoPorcentaje / 100);
 
-                ///
-                Descuento.porcentaje = descuentPorcentaje;
-                Descuento.descuento = descuento;
+                //Guardar costoTotal antes del [Descuento]
                 Descuento.precioSinDescuento = costoTotalProyecto;
+                Descuento.porcentaje = descuentoPorcentaje;
+                Descuento.descuento = descuentoEquivalente;
+
+                //Aplicar descuento
+                costoTotalProyecto = Math.round(costoTotalProyecto - descuentoEquivalente); //USD
             }
 
-            ///PRECIO - COSTO_TOTAL
-            if(Descuento.porcentaje > 0){ ///[ Descuento ]
-                precio = Math.round((costoTotalProyecto - Descuento.descuento) * 100) / 100;
-            }
-            else if(Aumento.porcentaje > 0){ ///[ Aumento ]
-                precio = Math.round((costoTotalProyecto + Aumento.aumento) * 100) / 100;
-            }
-            else{
-                precio = costoTotalProyecto;
-            }
-
-            let precioUSDConIVA = Math.round((precio * 1.16)); //USD //Con IVA
-            let precioMXNSinIVA = Math.round(precio * precioDolar); //MXN SIN IVA
+            let precioUSDConIVA = Math.round((costoTotalProyecto * 1.16)); //USD //Con IVA
+            let precioMXNSinIVA = Math.round(costoTotalProyecto * precioDolar); //MXN SIN IVA
             let precioMXNConIVA = Math.round(precioUSDConIVA * precioDolar); //MXN + IVA
     
             if(_arrayCotizacion[x].panel != null){ ///Validar que se esten cotizando [PANELES]
-                /*????*/ precio_watt = Math.round(((precio / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.fPotencia))) * 100) / 100;
+                /*????*/ precio_watt = Math.round(((costoTotalProyecto / (_arrayCotizacion[x].panel.noModulos * _arrayCotizacion[x].panel.fPotencia))) * 100) / 100;
             }
     
             if(_consums != null){
@@ -318,7 +314,7 @@ async function calcularViaticosBTI(data){
                     totalPanelesInversoresEstructuras: costoTotalPanInvEstr,
                     subtotalSinMarge: subtotOtrFletManObrTPIE,
                     margen: margen,
-                    precio: precio, //USD sin IVA
+                    precio: costoTotalProyecto, //USD sin IVA
                     precioMasIVA: precioUSDConIVA, //USD con IVA
                     precioMXNSinIVA: precioMXNSinIVA, //MXN sin IVA
                     precioMXNConIVA: precioMXNConIVA, //MXN con IVA
