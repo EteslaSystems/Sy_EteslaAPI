@@ -372,7 +372,7 @@ function calcularEquipos(data){
 			}
 		}
 		else{ /*[MicroInversor]*/
-			let totalPanelesSoportados = Inversor.siNumeroCanales * Inversor.siPanelSoportados;
+			let totalPanelesSoportados = Inversor.	siNumeroCanales * Inversor.siPanelSoportados;
 
 			/* Se obtiene RANGOS de potencia del -[Panel]- permitido */
 			/*#region Obtener [rango1] && [rango2]*/
@@ -386,8 +386,8 @@ function calcularEquipos(data){
 
 			/* Validar que la potencia del [Panel] se encuentre dentro de la indicada para el MicroInversor [.vRangPotenciaPermit] */
 			if(potenciaPanel >= rangoMenor && potenciaPanel <= rangoMayor){
-				if(noPaneles % Inversor.siPanelSoportados == 0){ /* [DS3D] - Todos los [MicroInversores] que soportan 2 o mas paneles por canal */
-				numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
+				if(noPaneles % Inversor.siPanelSoportados == 0 && Inversor.siPanelSoportados >= 2){ /* [DS3D] - Todos los [MicroInversores] que soportan 2 o mas paneles por canal */
+					numeroEquipos = Math.round(noPaneles / totalPanelesSoportados);
 				}
 				else{
 					numeroEquipos = Math.ceil(noPaneles / totalPanelesSoportados);
