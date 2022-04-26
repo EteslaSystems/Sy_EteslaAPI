@@ -23,12 +23,12 @@ module.exports.obtenerROI = async function getROI(data){
 
             ///Consumo - MXN
             consumoAnualPesosMXN = objPower.objConsumoEnPesos.pagoAnual;
-            consumoBimestralPesosMXN = objPower.objConsumoEnPesos.pagoPromedioBimestral;    
+            consumoBimestralPesosMXN = objPower.objConsumoEnPesos.pagoPromedioBimestralConIva;    
             consumoMensualPesosMXN = objPower.objConsumoEnPesos.pagoPromedioMensual;
             
             ///Generacion - MXN
             generacionAnualPesosMXN = objPower.objGeneracionEnpesos.pagoAnual; 
-            generacionBimestralPesosMXN = objPower.objGeneracionEnpesos.pagoPromedioBimestral;
+            generacionBimestralPesosMXN = objPower.objGeneracionEnpesos.pagoPromedioBimestralConIva;
         }
     
         let ahorroAnualKw = Math.round((consumoAnualKwh - generacionAnualKwp) * 100)/100; //kwh

@@ -34,9 +34,9 @@ const moment = require('moment-timezone');
     PD2. LOS ARCIHVOS DEBEN DE SER TEMPORALES, PARA NO REPRESENTAR CARGA/ALMACENAMIENTO EN EL SERVER
 */
 //Tarea programada
-/* cronJob.schedule("* * 6 * * *", async function(){
+cronJob.schedule("* * 6 * * *", async function(){
     await saveDollarPrice();
-}); */
+}); 
 
 //Salvar precio del dolar en un archivo local
 async function saveDollarPrice(){    
