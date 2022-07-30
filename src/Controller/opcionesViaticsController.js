@@ -337,7 +337,7 @@ async function calcularViaticosBTI(data){
             };       
 
             //Notificar
-            await Notificacion.notificar(objCotizacionBTI);
+            //await Notificacion.notificar(objCotizacionBTI);
 
             //Limpiar de propiedades inecesarias (Solo para propuestas[Combinaciones])
             if(tipoCotizacion === 'Combinacion'){
@@ -802,7 +802,9 @@ function getBusPayment(_distanciaEnKm){
     return _distanciaEnKm;
 }
 
-/*#region API-GoogleMaps*/
+/*#region API-GoogleMaps 
+26/07/2022 *Revisar API KEY
+*/
 async function obtenerDistanciaEnKm(origen, destino){
     let distanciaEnKm = 0;
 
