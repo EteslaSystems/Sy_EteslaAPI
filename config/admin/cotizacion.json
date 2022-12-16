@@ -38,7 +38,7 @@
         }
     },
     "costos": {
-        "porcentaje_fletes": 0.07,
+        "porcentaje_fletes": 0.045,
         "porcentaje_margen": 0.30,
         "precio_mas_iva": 1.16
     },
