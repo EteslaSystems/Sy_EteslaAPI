@@ -863,7 +863,7 @@ function getArbolesPlantados(generacionAnualKw){
     */
 
     try{
-        let numeroArboles = Math.round(generacionAnualKw/145);
+        let numeroArboles = Math.round(generacionAnualKw/1450);
         let co2NogeneradoKg = Math.round((generacionAnualKw * 800) * 100) / 100;
         
         return { numeroArboles, co2NogeneradoKg };
