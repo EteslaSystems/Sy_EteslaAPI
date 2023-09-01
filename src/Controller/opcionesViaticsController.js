@@ -220,7 +220,7 @@ async function calcularViaticosBTI(data){
             }
             
             let subtotOtrFletManObrTPIE = Math.round(((_manoDeObra[1] + totalFletes + _manoDeObra[0] + costoTotalPanInvEstr + viaticos + costoTotalAgregados)) * 100) / 100;
-            let margen = ((subtotOtrFletManObrTPIE / 0.7) - subtotOtrFletManObrTPIE);
+            let margen = ((subtotOtrFletManObrTPIE / 0.64) - subtotOtrFletManObrTPIE);
             let costoTotalProyecto = Math.round(subtotOtrFletManObrTPIE + margen); //USD - s/IVA
            
             /// %
