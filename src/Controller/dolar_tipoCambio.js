@@ -65,7 +65,7 @@ async function saveDollarPrice(){
         
         await fs.writeFile(uriFile+'/'+fileName, objPrecioDelDolar, { encoding: 'utf-8' });
         
-        return 'Precio del dolar actualizado';
+        return 'Precio del dolar actualizado ', precioDolar;
     }
     catch(error){
         console.log("Error (1):\n"+error);
@@ -84,6 +84,8 @@ async function scrapDollarPrice(){
         let $ = cheerio.load(precioDolarRequest);
         let priceDolar = $('#Referencia tbody td.colCompraVenta').text().trim().slice(1);
         priceDolar = parseFloat(priceDolar);
+
+        priceDolar = Math.ceil(priceDolar * 100) / 100; // Redondea hacia arriba a 2 decimales
     
         return priceDolar;
     }
